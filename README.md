@@ -51,3 +51,5 @@ Opens the app at `http://localhost:5173`
 - Icons
 - Making faction sheets look closer to irl sheets
 - Changing optional swaps and adds to happen after faction components are confirmed after draft is done
+- P2P "Multiplayer"
+
