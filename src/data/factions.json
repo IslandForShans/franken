@@ -1,0 +1,518 @@
+{
+  "factions": [
+    {
+      "name": "The Emirates of Hacan",
+      "abilities": [
+        {
+          "id": "hacan_guild_ships",
+          "name": "Guild Ships",
+          "description": "You may negotiate transactions with players who are not your neighbors."
+        },
+        {
+          "id": "hacan_arbiters", 
+          "name": "Arbiters",
+          "description": "When you are negotiating a transaction, action cards can be exchanged as part of a transacation."
+        },
+        {
+          "id": "hacan_masters_of_trade",
+          "name": "Masters of Trade",
+          "description": "You do not have to spend a command token to resolve the secondary ability of the 'Trade' strategy card"
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "hacan_quantum_datahub",
+          "name": "Quantum Datahub Node (YYY)",
+          "description": "At the end of the strategy phase, you may spend 1 token from your strategy pool and give another player 3 of your trade goods. If you do, give 1 of your strategy cards to that player and take 1 of their strategy cards."
+        },
+        {
+          "id": "hacan_production_biomes",
+          "name": "Production Biomes (GG)",
+          "description": "ACTON: Exhaust this card and spend 1 strategy token from your strategy pool to gain 4 trade goods and choose 1 other player; that player gains 2 trade goods."
+        }
+      ],
+      "agents": [
+        {
+          "id": "hacan_agent",
+          "name": "Carth of Golden Sands",
+          "description": "During the action phase: You may exhaust tis card to gain 2 commodities or replenish another player's commodities."
+        }
+      ],
+      "commanders": [
+        {
+          "id": "hacan_commander",
+          "name": "Gila the Silvertongue",
+          "description": "Unlock: Have 10 Trade Goods. When you cast votes: You may spend any number of trade goods; cast 2 additional votes for each trade good spent."
+        }
+      ],
+      "heroes": [
+        {
+          "id": "hacan_hero",
+          "name": "Harrugh Gafhara",
+          "description": "GALACTIC SECURITIES NET When one or more of your units use PRODUCTION: You may reduce the cost of each of your units to 0 during this use of PRODUCTION. If you do, purge this card."
+        }
+      ],
+      "promissory": [
+        {
+          "id": "hacan_promissory",
+          "name": "Trade Convoys",
+          "description": "ACTION: Place this card face-up in your play area. While this card is in your play area, you may negotiate transactions with players who are not your neighbor. If you activate a systemthat contains one or more of the Hacan player's units, return this card ot the Hacan player."
+        }
+      ],
+      "flagship": [
+        {
+          "id": "hacan_flagship",
+          "name": "Wrath of Kenara",
+          "description": "Cost 8, Combat 7 (x2), Move 1, Capacity 3. Sustain Damage. After you roll a die during a space combat in this system, you may spend 1 trade good to apply +1 to the result."
+        }
+      ],
+      "mech": [
+        {
+          "id": "hacan_mech",
+          "name": "Pride of Kenara",
+          "description": "Cost 2, Combat 6. Sustain Damage. This planet's card may be traded as part of a transaction; if you do, move all of your units from this planet to another planet you control."
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "efficient_builders",
+          "name": "Efficient Builders",
+          "description": "Antimass Deflectors (B), Sarween Tools (Y)"
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "merchant_fleet",
+          "name": "Merchant Fleet",
+          "description": "2 Carriers, 1 Cruiser, 2 Fighters, 4 Infantry, 1 Space Dock"
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "hacan_commodities",
+          "name": "Commodities", 
+          "description": "6"
+        }
+      ],
+      "home_system": [
+        {
+          "id": "hacan_home_system",
+          "name": "Hacan Home System",
+          "planets": [
+            {
+              "name": "Hercant",
+              "resource": 1,
+              "influence": 1
+            },
+            {
+              "name": "Arretze",
+              "resource": 2,
+              "influence": 0
+            },
+            {
+              "name": "Kamdorn",
+              "resource": 0,
+              "influence": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Federation of Sol",
+      "abilities": [
+        {
+          "id": "sol_versatile",
+          "name": "Versatile",
+          "description": "When you gain command tokens during the status phase, gain 1 additional command token."
+        },
+        {
+          "id": "sol_orbital_drop",
+          "name": "Orbital Drop",
+          "description": "ACTION: Spend 1 token from your tactic pool to drop up to 2 infantry from 1 of your cruisers or destroyers into 1 or more systems that do not contain another player's ships; infantry cannot be placed on planets that contain another player's ground forces."
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "sol_spec_ops",
+          "name": "Spec Ops II (G)",
+          "description": "Infantry upgrade: Combat 6. When this unit is destroyed, roll 1 die. On a 5+, place 1 infantry in the same system."
+        },
+        {
+          "id": "sol_advanced_carrier",
+          "name": "Advanced Carrier II (B)",
+          "description": "Carrier upgrade: Move 2, Capacity 6."
+        }
+      ],
+      "agents": [
+        {
+          "id": "sol_agent",
+          "name": "Rear Admiral Tarvok",
+          "description": "When a fleet moves, you may allow it to move +1 space."
+        }
+      ],
+      "commanders": [
+        {
+          "id": "sol_commander", 
+          "name": "Evelyn Delouis",
+          "description": "Unlock: Win a space combat. When producing units, produce 1 extra destroyer."
+        }
+      ],
+      "heroes": [
+        {
+          "id": "sol_hero",
+          "name": "Jace X. 4th Air Division",
+          "description": "Once per game: Place 1 infantry on every planet you control."
+        }
+      ],
+      "promissory": [
+        {
+          "id": "sol_promissory",
+          "name": "Military Support",
+          "description": "When you recruit ground forces, gain 1 infantry on any planet you control."
+        }
+      ],
+      "flagship": [
+        {
+          "id": "sol_flagship",
+          "name": "Genesis",
+          "description": "Cost 8, Combat 5 (x2), Move 1, Capacity 12. When in combat, add 2 dice."
+        }
+      ],
+      "mech": [
+        {
+          "id": "sol_mech",
+          "name": "Zeta Division", 
+          "description": "Combat 6. After you win a ground combat, place 1 infantry on that planet."
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "neural_motivator",
+          "name": "Neural Motivator (G)",
+          "description": "During the action phase, you may spend 1 command token from your tactic pool to allow 1 of your factions to use its PRODUCTION ability."
+        },
+        {
+          "id": "antimass_deflectors",
+          "name": "Antimass Deflectors (B)",
+          "description": "Your ships can move through systems that contain other player's ships."
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "sol_fleet_carrier",
+          "name": "Carrier",
+          "description": "Move 1, Capacity 4, Combat 9"
+        },
+        {
+          "id": "sol_fleet_destroyer",
+          "name": "Destroyer",
+          "description": "Move 2, Combat 9, Anti-Fighter Barrage 9(x3)"
+        },
+        {
+          "id": "sol_fleet_infantry",
+          "name": "5 Infantry",
+          "description": "Combat 8"
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "sol_commodities",
+          "name": "4 Commodities",
+          "description": "Trade goods value: 4"
+        }
+      ]
+    },
+    {
+      "name": "The Mentak Coalition",
+      "abilities": [
+        {
+          "id": "mentak_ambush",
+          "name": "Ambush",
+          "description": "At the start of a space combat, you may roll 1 die for each of up to 2 of your cruisers or destroyers in the system. For each result equal to or greater than that ship's combat value, produce 1 hit."
+        },
+        {
+          "id": "mentak_pillage",
+          "name": "Pillage",
+          "description": "After 1 or more of your units use PRODUCTION, gain 1 trade good for each player that has units in systems adjacent to that system."
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "mentak_salvage",
+          "name": "Salvage Operations (Y)",
+          "description": "After you win or lose a space combat, you may place 1 cruiser in the system if you have capacity."
+        },
+        {
+          "id": "mentak_mirror",
+          "name": "Mirror Computing (Y)",
+          "description": "When you spend trade goods, you may spend 1 less trade good."
+        }
+      ],
+      "agents": [
+        {
+          "id": "mentak_agent",
+          "name": "Suffi An, Spymaster",
+          "description": "At the start of a combat, you may spend 1 trade good to apply +2 to the result of each of your unit's combat rolls during that combat."
+        }
+      ],
+      "commanders": [
+        {
+          "id": "mentak_commander",
+          "name": "Ipswitch, Loose Cannon",
+          "description": "Unlock: Have 4 cruisers on the game board. During combat, apply +1 to the result of each of your unit's combat rolls."
+        }
+      ],
+      "heroes": [
+        {
+          "id": "mentak_hero",
+          "name": "Thundra, the Coalescence",
+          "description": "Once per game: For each player, destroy up to 2 of their non-fighter ships in systems that contain your ships."
+        }
+      ],
+      "promissory": [
+        {
+          "id": "mentak_promissory",
+          "name": "Promise of Protection",
+          "description": "At the start of your turn: Remove all of another player's command tokens from the board except those in their home system and systems that contain 1 or more of their ships."
+        }
+      ],
+      "flagship": [
+        {
+          "id": "mentak_flagship",
+          "name": "Fourth Moon",
+          "description": "Cost 8, Combat 5 (x2), Move 1, Capacity 3. Other players' ships in this system cannot use SUSTAIN DAMAGE."
+        }
+      ],
+      "mech": [
+        {
+          "id": "mentak_mech",
+          "name": "Starlancer",
+          "description": "Combat 6. At the start of ground combat, roll 1 die for each ground force on this planet; for each result of 8 or higher, 1 of your opponent's ground forces is destroyed."
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "plasma_scoring",
+          "name": "Plasma Scoring (R)",
+          "description": "When 1 or more of your units use BOMBARDMENT or SPACE CANNON, 1 of those units may roll 1 additional die."
+        },
+        {
+          "id": "sarween_tools",
+          "name": "Sarween Tools (G)",
+          "description": "When you produce units, reduce the combined cost by 1."
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "mentak_fleet_cruiser",
+          "name": "2 Cruisers",
+          "description": "Move 2, Combat 7"
+        },
+        {
+          "id": "mentak_fleet_infantry",
+          "name": "4 Infantry",
+          "description": "Combat 8"
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "mentak_commodities",
+          "name": "2 Commodities",
+          "description": "Trade goods value: 2"
+        }
+      ]
+    }
+  ],
+  "tiles": {
+    "blue_tiles": [
+      {
+        "id": "18",
+        "name": "Mecatol Rex",
+        "planets": [
+          {
+            "name": "Mecatol Rex",
+            "resource": 1,
+            "influence": 6,
+            "traits": [],
+            "technology_specialty": [],
+            "legendary_ability": "At the end of the status phase, gain 1 victory point if you control Mecatol Rex."
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "19",
+        "name": "Wellon",
+        "planets": [
+          {
+            "name": "Wellon",
+            "resource": 4,
+            "influence": 1,
+            "traits": ["Industrial"],
+            "technology_specialty": ["Yellow"],
+            "legendary_ability": null
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "20",
+        "name": "Vefut II",
+        "planets": [
+          {
+            "name": "Vefut II",
+            "resource": 2,
+            "influence": 2,
+            "traits": ["Hazardous"],
+            "technology_specialty": [],
+            "legendary_ability": null
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "21",
+        "name": "Tiamat",
+        "planets": [
+          {
+            "name": "Tiamat",
+            "resource": 1,
+            "influence": 1,
+            "traits": ["Cultural"],
+            "technology_specialty": ["Red"],
+            "legendary_ability": null
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "22",
+        "name": "Tar'Mann",
+        "planets": [
+          {
+            "name": "Tar'Mann",
+            "resource": 1,
+            "influence": 1,
+            "traits": ["Industrial"],
+            "technology_specialty": ["Blue"],
+            "legendary_ability": null
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "23",
+        "name": "Saudor",
+        "planets": [
+          {
+            "name": "Saudor",
+            "resource": 2,
+            "influence": 2,
+            "traits": [],
+            "technology_specialty": [],
+            "legendary_ability": null
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "24",
+        "name": "Mehar Xull",
+        "planets": [
+          {
+            "name": "Mehar Xull",
+            "resource": 1,
+            "influence": 3,
+            "traits": ["Hazardous"],
+            "technology_specialty": ["Red"],
+            "legendary_ability": null
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "25",
+        "name": "Quann & Lodor",
+        "planets": [
+          {
+            "name": "Quann",
+            "resource": 2,
+            "influence": 1,
+            "traits": ["Cultural"],
+            "technology_specialty": [],
+            "legendary_ability": null
+          },
+          {
+            "name": "Lodor",
+            "resource": 1,
+            "influence": 2,
+            "traits": ["Cultural"],
+            "technology_specialty": [],
+            "legendary_ability": null
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      }
+    ],
+    "red_tiles": [
+      {
+        "id": "26",
+        "name": "Asteroid Field",
+        "planets": [],
+        "wormhole": null,
+        "anomalies": ["Asteroid Field"]
+      },
+      {
+        "id": "27",
+        "name": "Supernova",
+        "planets": [],
+        "wormhole": null,
+        "anomalies": ["Supernova"]
+      },
+      {
+        "id": "28",
+        "name": "Nebula",
+        "planets": [],
+        "wormhole": null,
+        "anomalies": ["Nebula"]
+      },
+      {
+        "id": "29",
+        "name": "Gravity Rift",
+        "planets": [],
+        "wormhole": null,
+        "anomalies": ["Gravity Rift"]
+      },
+      {
+        "id": "30",
+        "name": "Alpha Wormhole",
+        "planets": [],
+        "wormhole": "Alpha",
+        "anomalies": []
+      },
+      {
+        "id": "31",
+        "name": "Beta Wormhole",
+        "planets": [],
+        "wormhole": "Beta",
+        "anomalies": []
+      },
+      {
+        "id": "32",
+        "name": "Asteroid Field & Alpha",
+        "planets": [],
+        "wormhole": "Alpha",
+        "anomalies": ["Asteroid Field"]
+      }
+    ]
+  }
+}

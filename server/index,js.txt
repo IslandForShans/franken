@@ -1,0 +1,324 @@
+// server/index.js
+// Simple multiplayer server for local draft using socket.io
+// Run with: node server/index.js
+import express from "express";
+import http from "http";
+import { Server } from "socket.io";
+import { shuffle as _shuffle } from "lodash"; // small utility; we'll implement fallback if lodash not present
+import fs from "fs";
+import path from "path";
+
+const PORT = process.env.PORT || 4000;
+
+const app = express();
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+// Load factions + tiles json (server serves the same data used by client)
+const DATA_PATH = path.join(process.cwd(), "src", "data", "factions.json");
+let factionsData = {};
+try {
+  factionsData = JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
+  console.log("Loaded factions.json for server.");
+} catch (err) {
+  console.warn("Could not load factions.json at", DATA_PATH, err.message);
+  factionsData = { factions: [], tiles: {} };
+}
+
+/**
+ * Very small shuffle fallback (Fisher-Yates)
+ */
+function shuffleArray(arr) {
+  const a = Array.isArray(arr) ? [...arr] : [];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/**
+ * The server stores lobbies keyed by lobbyId
+ * Each lobby:
+ *  {
+ *    id,
+ *    players: [{ socketId, name, confirmed, picksThisRound: [], bag: {category: [components]}, progress: {category: count} }],
+ *    draftState: { round, variant, draftLimits, firstRoundPickCount, subsequentRoundPickCount, draftHistory: [] }
+ *  }
+ */
+const lobbies = {};
+
+io.on("connection", (socket) => {
+  console.log("socket connected:", socket.id);
+
+  socket.on("createLobby", ({ lobbyId, playerName }, ack) => {
+    if (!lobbyId) lobbyId = Math.random().toString(36).slice(2, 8);
+    if (lobbies[lobbyId]) {
+      return ack && ack({ ok: false, error: "Lobby already exists" });
+    }
+    lobbies[lobbyId] = {
+      id: lobbyId,
+      players: [],
+      draftState: {
+        round: 1,
+        variant: "franken",
+        draftLimits: {},
+        firstRoundPickCount: 3,
+        subsequentRoundPickCount: 2,
+        draftHistory: []
+      }
+    };
+    socket.join(lobbyId);
+    const player = {
+      socketId: socket.id,
+      name: playerName || `Player-${socket.id.slice(0,4)}`,
+      confirmed: false,
+      picksThisRound: [],
+      bag: {},
+      progress: {}
+    };
+    lobbies[lobbyId].players.push(player);
+    socket.data.lobbyId = lobbyId;
+    console.log(`Lobby ${lobbyId} created by ${player.name}`);
+    ack && ack({ ok: true, lobbyId, player });
+    io.to(lobbyId).emit("lobbyUpdate", lobbies[lobbyId]);
+  });
+
+  socket.on("joinLobby", ({ lobbyId, playerName }, ack) => {
+    const lobby = lobbies[lobbyId];
+    if (!lobby) return ack && ack({ ok: false, error: "Lobby not found" });
+    socket.join(lobbyId);
+    const player = {
+      socketId: socket.id,
+      name: playerName || `Player-${socket.id.slice(0,4)}`,
+      confirmed: false,
+      picksThisRound: [],
+      bag: {},
+      progress: {}
+    };
+    lobby.players.push(player);
+    socket.data.lobbyId = lobbyId;
+    console.log(`${player.name} joined lobby ${lobbyId}`);
+    ack && ack({ ok: true, lobby });
+    io.to(lobbyId).emit("lobbyUpdate", lobby);
+  });
+
+  socket.on("leaveLobby", (_, ack) => {
+    const lobbyId = socket.data.lobbyId;
+    if (!lobbyId) return ack && ack({ ok: false });
+    const lobby = lobbies[lobbyId];
+    if (!lobby) return ack && ack({ ok: false });
+    lobby.players = lobby.players.filter(p => p.socketId !== socket.id);
+    socket.leave(lobbyId);
+    delete socket.data.lobbyId;
+    io.to(lobbyId).emit("lobbyUpdate", lobby);
+    ack && ack({ ok: true });
+    // destroy lobby if empty
+    if (lobby.players.length === 0) {
+      delete lobbies[lobbyId];
+      console.log("Destroyed empty lobby", lobbyId);
+    }
+  });
+
+  socket.on("startDraft", ({ lobbyId, draftOptions }, ack) => {
+    const lobby = lobbies[lobbyId];
+    if (!lobby) return ack && ack({ ok: false, error: "Lobby not found" });
+
+    // merge draftOptions (variant, limits, picks)
+    lobby.draftState.variant = draftOptions.variant || "franken";
+    lobby.draftState.draftLimits = draftOptions.draftLimits || {};
+    lobby.draftState.firstRoundPickCount = draftOptions.firstRoundPickCount || 3;
+    lobby.draftState.subsequentRoundPickCount = draftOptions.subsequentRoundPickCount || 2;
+    lobby.draftState.draftHistory = [];
+
+    // Create initial bags per player
+    const limits = lobby.draftState.draftLimits;
+    const playersCount = lobby.players.length;
+
+    // For each category, assemble pool from server data (tiles + factions)
+    const categories = Object.keys(limits);
+    const allComponents = {};
+    categories.forEach(cat => {
+      const tilesList = factionsData.tiles && factionsData.tiles[cat] ? factionsData.tiles[cat] : [];
+      const factionList = factionsData.factions ? factionsData.factions.flatMap(f => f[cat] || []) : [];
+      allComponents[cat] = [...tilesList, ...factionList];
+    });
+
+    // If variant === power, apply power limits (these are server defaults; client may have set them too)
+    const activeLimits = { ...limits };
+    if (lobby.draftState.variant === "power") {
+      activeLimits.abilities = Math.max(5, activeLimits.abilities || 5);
+      activeLimits.faction_techs = Math.max(4, activeLimits.faction_techs || 4);
+      activeLimits.agents = Math.max(3, activeLimits.agents || 3);
+      activeLimits.commanders = Math.max(3, activeLimits.commanders || 3);
+      activeLimits.heroes = Math.max(3, activeLimits.heroes || 3);
+    }
+
+    // Build bags
+    lobby.players.forEach((p, idx) => {
+      p.bag = {};
+      p.progress = {};
+      categories.forEach(cat => {
+        const pool = allComponents[cat] || [];
+        p.bag[cat] = shuffleArray(pool).slice(0, activeLimits[cat] || 0);
+        p.progress[cat] = 0;
+      });
+      p.picksThisRound = [];
+      p.confirmed = false;
+    });
+
+    lobby.draftState.round = 1;
+    io.to(lobbyId).emit("draftStarted", {
+      draftState: lobby.draftState,
+      players: lobby.players.map(p => ({ socketId: p.socketId, name: p.name })) // basic info
+    });
+
+    // Send initial private bags to each player socket
+    lobby.players.forEach(p => {
+      io.to(p.socketId).emit("yourBag", { bag: p.bag });
+    });
+
+    io.to(lobbyId).emit("lobbyUpdate", lobby);
+    ack && ack({ ok: true });
+  });
+
+  // Player submits picks (could be multiple picks across categories)
+  socket.on("submitPicks", ({ picks }, ack) => {
+    const lobbyId = socket.data.lobbyId;
+    if (!lobbyId) return ack && ack({ ok: false, error: "Not in lobby" });
+    const lobby = lobbies[lobbyId];
+    const player = lobby.players.find(p => p.socketId === socket.id);
+    if (!player) return ack && ack({ ok: false, error: "Player not found" });
+
+    // picks: [{ category, componentId }]
+    // We store picks in player.picksThisRound as objects (component IDs)
+    player.picksThisRound = picks || [];
+    player.confirmed = false; // not confirmed yet
+    io.to(lobbyId).emit("playerUpdated", { socketId: player.socketId, name: player.name });
+    ack && ack({ ok: true });
+  });
+
+  // Player confirms their picks for this round
+  socket.on("confirmPicks", (_, ack) => {
+    const lobbyId = socket.data.lobbyId;
+    if (!lobbyId) return ack && ack({ ok: false, error: "Not in lobby" });
+    const lobby = lobbies[lobbyId];
+    const player = lobby.players.find(p => p.socketId === socket.id);
+    if (!player) return ack && ack({ ok: false, error: "Player not found" });
+
+    player.confirmed = true;
+    io.to(lobbyId).emit("playerUpdated", { socketId: player.socketId, name: player.name, confirmed: true });
+
+    // Check for all confirmed
+    const allConfirmed = lobby.players.every(p => p.confirmed === true);
+    if (allConfirmed) {
+      // Process picks: remove picked items from bags and add to player's drafted components (server stores them)
+      processRoundPicks(lobbyId);
+      // Rotate bags to the right (pass to next player index)
+      rotateBagsAndPrepareNextRound(lobbyId);
+    }
+    ack && ack({ ok: true });
+  });
+
+  /**
+   * Process picks: for each player, remove picked items from their bag and add to their drafted list
+   * We will also increase progress counts and add to draft history.
+   */
+  function processRoundPicks(lobbyId) {
+    const lobby = lobbies[lobbyId];
+    if (!lobby) return;
+    const categories = Object.keys(lobby.draftState.draftLimits || {});
+    lobby.players.forEach((player) => {
+      const picks = player.picksThisRound || [];
+      // For each pick item, find in player's bag and remove + add to player.drafted (create container)
+      if (!player.drafted) player.drafted = {};
+      picks.forEach(pick => {
+        const { category, componentId } = pick;
+        if (!category || !componentId) return;
+        player.bag[category] = (player.bag[category] || []).filter(c => c.id !== componentId && c.name !== componentId);
+        player.drafted[category] = player.drafted[category] || [];
+        // find original component in server pool to store whole object
+        const pool = [
+          ...(factionsData.tiles[category] || []),
+          ...(factionsData.factions ? factionsData.factions.flatMap(f => f[category] || []) : [])
+        ];
+        const comp = pool.find(it => it.id === componentId || it.name === componentId);
+        if (comp) {
+          player.drafted[category].push(comp);
+        } else {
+          // if not found, push a simple object to keep history
+          player.drafted[category].push({ id: componentId, name: componentId });
+        }
+        player.progress[category] = (player.progress[category] || 0) + 1;
+        // Add to lobby history
+        lobby.draftState.draftHistory.push({
+          playerSocketId: player.socketId,
+          playerName: player.name,
+          category,
+          componentId,
+          round: lobby.draftState.round
+        });
+      });
+      // clear picksThisRound for next round (they're moved to drafted)
+      player.picksThisRound = [];
+      player.confirmed = false; // reset confirmation now that we've processed
+    });
+    // broadcast new history to lobby
+    io.to(lobbyId).emit("draftHistoryUpdate", lobby.draftState.draftHistory);
+  }
+
+  function rotateBagsAndPrepareNextRound(lobbyId) {
+    const lobby = lobbies[lobbyId];
+    if (!lobby) return;
+    // Rotate bags to the right (last bag -> first)
+    if (lobby.players.length > 1) {
+      const last = lobby.players[lobby.players.length - 1].bag;
+      for (let i = lobby.players.length - 1; i > 0; i--) {
+        lobby.players[i].bag = lobby.players[i - 1].bag;
+      }
+      lobby.players[0].bag = last;
+    }
+    // increment round
+    lobby.draftState.round = (lobby.draftState.round || 1) + 1;
+    // Reset picks/confirmed
+    lobby.players.forEach(p => {
+      p.picksThisRound = [];
+      p.confirmed = false;
+    });
+    // Send each player's private bag to them
+    lobby.players.forEach(p => {
+      io.to(p.socketId).emit("yourBag", { bag: p.bag });
+    });
+    io.to(lobbyId).emit("lobbyUpdate", lobby);
+  }
+
+  socket.on("getLobby", (_, ack) => {
+    const lobbyId = socket.data.lobbyId;
+    if (!lobbyId) return ack && ack({ ok: false, error: "Not in lobby" });
+    ack && ack({ ok: true, lobby: lobbies[lobbyId] });
+  });
+
+  socket.on("disconnect", () => {
+    const lobbyId = socket.data.lobbyId;
+    console.log("socket disconnect:", socket.id, "lobby:", lobbyId);
+    if (!lobbyId) return;
+    const lobby = lobbies[lobbyId];
+    if (!lobby) return;
+    lobby.players = lobby.players.filter(p => p.socketId !== socket.id);
+    io.to(lobbyId).emit("lobbyUpdate", lobby);
+    if (lobby.players.length === 0) {
+      delete lobbies[lobbyId];
+      console.log("Deleted empty lobby", lobbyId);
+    }
+  });
+
+});
+
+httpServer.listen(PORT, () => {
+  console.log(`Multiplayer server running on http://localhost:${PORT}`);
+});
