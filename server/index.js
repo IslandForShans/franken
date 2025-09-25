@@ -3,8 +3,8 @@
 // Run with: node server/index.js
 import express from "express";
 import http from "http";
+import pkg from "lodash";
 import { Server } from "socket.io";
-import { shuffle } from "lodash";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 4000;
+const { shuffle } = pkg;
 
 const app = express();
 const httpServer = http.createServer(app);
