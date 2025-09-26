@@ -37,9 +37,12 @@ export default function Sidebar({
     <div className="w-80 border-r bg-gray-100 flex flex-col h-full">
       <div className="p-3 border-b bg-gray-200">
         <h2 className="font-bold text-lg">Draft Categories</h2>
-        {!isMultiplayer && (
-          <div className="text-sm text-gray-600 mt-1">
-            Click categories to view available components
+        <div className="text-sm text-gray-600 mt-1">
+          Click categories to view available components
+        </div>
+        {draftVariant === "rotisserie" && (
+          <div className="text-xs text-orange-600 mt-1 font-medium">
+            Rotisserie Mode: One pick per turn
           </div>
         )}
       </div>
@@ -65,7 +68,13 @@ export default function Sidebar({
                     <div className="font-medium">{formatCategoryName(cat)}</div>
                     <div className="text-sm text-gray-600">
                       {progress}/{limit} selected
+                      {!canPick && <span className="text-red-500 ml-1">(MAX)</span>}
                     </div>
+                    {components.length > 0 && (
+                      <div className="text-xs text-blue-600">
+                        {components.length} available
+                      </div>
+                    )}
                   </div>
                   <div className="text-gray-400">
                     {isExpanded ? "▲" : "▼"}
@@ -77,22 +86,31 @@ export default function Sidebar({
                 <div className="bg-white border-t max-h-80 overflow-y-auto">
                   {components.length === 0 ? (
                     <div className="p-3 text-sm text-gray-500 italic">
-                      No components available
+                      No components available in your {draftVariant === "rotisserie" ? "pool" : "bag"}
                     </div>
                   ) : (
                     <div className="p-2">
+                      <div className="text-xs text-gray-500 mb-2 px-1">
+                        {draftVariant === "rotisserie" ? "Shared Pool" : "Your Bag"} • Click to pick
+                      </div>
+                      
                       {components
-                        .sort((a, b) => (a.name || "").localeCompare(b.name || ""))
+                        .sort((a, b) => {
+                          // Sort by faction first, then by name
+                          const factionSort = (a.faction || "").localeCompare(b.faction || "");
+                          if (factionSort !== 0) return factionSort;
+                          return (a.name || "").localeCompare(b.name || "");
+                        })
                         .map((component, idx) => {
-                          const isDisabled = !canPick || (draftVariant === "rotisserie" && progress >= limit);
+                          const isDisabled = !canPick || (draftVariant === "rotisserie" && !canPick);
                           
                           return (
                             <div
                               key={component.id || component.name || idx}
-                              className={`p-2 mb-1 rounded border cursor-pointer transition-colors text-sm ${
+                              className={`p-2 mb-1 rounded border cursor-pointer transition-all text-sm ${
                                 isDisabled 
-                                  ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
-                                  : "bg-gray-50 hover:bg-blue-50 hover:border-blue-300"
+                                  ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200" 
+                                  : "bg-gray-50 hover:bg-blue-50 hover:border-blue-300 border-gray-300 hover:shadow-sm"
                               }`}
                               onClick={() => {
                                 if (!isDisabled) {
@@ -100,22 +118,28 @@ export default function Sidebar({
                                 }
                               }}
                             >
-                              <div className="font-medium truncate">{component.name}</div>
+                              <div className="font-medium text-gray-900">{component.name}</div>
+                              
                               {component.faction && (
-                                <div className="text-xs text-blue-600">{component.faction}</div>
+                                <div className="text-xs text-blue-600 font-medium">{component.faction}</div>
                               )}
+                              
                               {component.description && (
-                                <div className="text-xs text-gray-600 truncate mt-1">
-                                  {component.description}
+                                <div className="text-xs text-gray-600 mt-1 line-clamp-2">
+                                  {component.description.length > 100 
+                                    ? component.description.substring(0, 100) + "..." 
+                                    : component.description
+                                  }
                                 </div>
                               )}
                               
                               {/* Show tile info for system tiles */}
                               {component.planets && component.planets.length > 0 && (
                                 <div className="text-xs text-green-600 mt-1">
-                                  {component.planets.map(p => 
-                                    `${p.name} (${p.resource}/${p.influence})`
-                                  ).join(", ")}
+                                  {component.planets.length === 1 
+                                    ? `${component.planets[0].name} (${component.planets[0].resource}R/${component.planets[0].influence}I)`
+                                    : `${component.planets.length} planets`
+                                  }
                                 </div>
                               )}
                               
@@ -128,6 +152,12 @@ export default function Sidebar({
                               {component.wormhole && (
                                 <div className="text-xs text-purple-600 mt-1">
                                   Wormhole: {component.wormhole}
+                                </div>
+                              )}
+
+                              {isDisabled && (
+                                <div className="text-xs text-red-500 mt-1 font-medium">
+                                  Cannot pick (limit reached)
                                 </div>
                               )}
                             </div>

@@ -40,7 +40,7 @@ Opens the app at `http://localhost:5173`
 - Component search and filtering
 - Tile resource/influence calculations (semi-working)
 
-## Adding soon
+## Adding/Fixing soon
 
 - Ability to cancel the draft
 - Creating custom Non-Draft Components
@@ -52,4 +52,6 @@ Opens the app at `http://localhost:5173`
 - Making faction sheets look closer to irl sheets
 - Changing optional swaps and adds to happen after faction components are confirmed after draft is done
 - P2P "Multiplayer"
+- Fix reduction indicators to only show up during reduction phase
+- Ban screen goes away after selecting something to ban
 

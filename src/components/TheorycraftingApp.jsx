@@ -2,20 +2,16 @@ import React, { useState } from "react";
 import FactionSheet from "./FactionSheet.jsx";
 import factionsJSON from "../data/factions.json";
 
-const defaultDraftLimits = {
-  blue_tiles: 3,
-  red_tiles: 2,
-  abilities: 3,
-  faction_techs: 3,
-  agents: 1,
-  commanders: 1,
-  heroes: 1,
-  promissory: 1,
-  starting_techs: 1,
-  starting_fleet: 1,
-  commodity_values: 1,
-  flagship: 1,
-  mech: 1
+const baseFactionLimits = {
+  blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
+  commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
+  commodity_values: 1, flagship: 1, mech: 1
+};
+
+const powerFactionLimits = {
+  blue_tiles: 3, red_tiles: 2, abilities: 5, faction_techs: 4, agents: 3,
+  commanders: 3, heroes: 3, promissory: 2, starting_techs: 2, starting_fleet: 2,
+  commodity_values: 2, flagship: 1, mech: 1
 };
 
 export default function TheorycraftingApp() {
@@ -36,10 +32,11 @@ export default function TheorycraftingApp() {
     blue_tiles: [],
     red_tiles: []
   });
-  const [draftLimits, setDraftLimits] = useState(defaultDraftLimits);
+  const [draftLimits, setDraftLimits] = useState(baseFactionLimits);
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const [powerMode, setPowerMode] = useState(false);
 
-  const categories = Object.keys(defaultDraftLimits);
+  const categories = Object.keys(baseFactionLimits);
 
   const getAllComponents = (category) => {
     const allComponents = [
@@ -50,7 +47,8 @@ export default function TheorycraftingApp() {
   };
 
   const handleAddComponent = (category, component) => {
-    if (customFaction[category].length >= draftLimits[category]) return;
+    const currentLimit = powerMode ? powerFactionLimits[category] : baseFactionLimits[category];
+    if (customFaction[category].length >= currentLimit) return;
     
     setCustomFaction(prev => ({
       ...prev,
@@ -107,13 +105,36 @@ export default function TheorycraftingApp() {
     });
   };
 
+  const handleTogglePowerMode = () => {
+    setPowerMode(!powerMode);
+    setDraftLimits(powerMode ? baseFactionLimits : powerFactionLimits);
+  };
+
   const formatCategoryName = (category) => {
     return category.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
   };
 
+  const exportFaction = () => {
+    const factionData = {
+      ...customFaction,
+      mode: powerMode ? "power" : "standard",
+      created: new Date().toISOString()
+    };
+    
+    const dataStr = JSON.stringify(factionData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `${customFaction.name.replace(/\s+/g, '_')}_faction.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  };
+
   return (
-    <div className="h-screen w-screen bg-gray-200 p-4">
-      <div className="h-full flex bg-white rounded-lg shadow">
+    <div className="h-screen w-screen bg-gray-200">
+      <div className="h-full flex bg-white rounded-lg shadow m-4">
         {/* Sidebar */}
         <div className="w-80 border-r bg-gray-100 flex flex-col">
           <div className="p-4 border-b bg-gray-200">
@@ -155,6 +176,28 @@ export default function TheorycraftingApp() {
               className="w-full border p-2 rounded mb-4"
               placeholder="Faction Name"
             />
+
+            <div className="mb-4">
+              <label className="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={powerMode}
+                  onChange={handleTogglePowerMode}
+                  className="mr-2"
+                />
+                <span className="font-medium">Power Mode Limits</span>
+              </label>
+              <div className="text-xs text-gray-600">
+                {powerMode ? "Higher component limits" : "Standard component limits"}
+              </div>
+            </div>
+
+            <button 
+              onClick={exportFaction}
+              className="w-full px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 mb-4"
+            >
+              Export Faction
+            </button>
           </div>
 
           <div className="flex-1 overflow-y-auto">
@@ -247,6 +290,7 @@ export default function TheorycraftingApp() {
             drafted={customFaction}
             onRemove={handleRemoveComponent}
             draftLimits={draftLimits}
+            title={`${customFaction.name} ${powerMode ? "(Power Mode)" : "(Standard)"}`}
           />
         </div>
       </div>

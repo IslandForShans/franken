@@ -1,4 +1,3 @@
-// Complete updated DraftSimulator with all new features
 import React, { useEffect, useRef, useState } from "react";
 import Sidebar from "./Sidebar.jsx";
 import FactionSheet from "./FactionSheet.jsx";
@@ -12,35 +11,15 @@ import { isComponentUndraftable, getSwapOptions, getExtraComponents } from "../d
 
 // Updated limits system
 const baseFactionLimits = {
-  blue_tiles: 3, 
-  red_tiles: 2, 
-  abilities: 3, 
-  faction_techs: 2, 
-  agents: 1,
-  commanders: 1, 
-  heroes: 1, 
-  promissory: 1, 
-  starting_techs: 1, 
-  starting_fleet: 1,
-  commodity_values: 1, 
-  flagship: 1, 
-  mech: 1
+  blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
+  commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
+  commodity_values: 1, flagship: 1, mech: 1
 };
 
 const powerFactionLimits = {
-  blue_tiles: 3, 
-  red_tiles: 2, 
-  abilities: 4, 
-  faction_techs: 3, 
-  agents: 2,
-  commanders: 2, 
-  heroes: 2, 
-  promissory: 1, 
-  starting_techs: 1, 
-  starting_fleet: 1,
-  commodity_values: 1, 
-  flagship: 1, 
-  mech: 1
+  blue_tiles: 3, red_tiles: 2, abilities: 5, faction_techs: 4, agents: 3,
+  commanders: 3, heroes: 3, promissory: 2, starting_techs: 2, starting_fleet: 2,
+  commodity_values: 2, flagship: 1, mech: 1
 };
 
 const defaultDraftLimits = Object.fromEntries(
@@ -66,7 +45,9 @@ export default function DraftSimulator() {
   const [showSummary, setShowSummary] = useState(false);
   const [picksThisRound, setPicksThisRound] = useState(0);
   const [draftStarted, setDraftStarted] = useState(false);
-  const [draftPhase, setDraftPhase] = useState("draft"); // "draft" or "reduction"
+  const [draftPhase, setDraftPhase] = useState("draft");
+  const [firstRoundPickCount, setFirstRoundPickCount] = useState(3);
+  const [subsequentRoundPickCount, setSubsequentRoundPickCount] = useState(2);
 
   // Ban system
   const [bannedFactions, setBannedFactions] = useState(new Set());
@@ -78,8 +59,51 @@ export default function DraftSimulator() {
   const [serverUrl, setServerUrl] = useState("http://localhost:4000");
   const [lobby, setLobby] = useState(null);
   const [playerBag, setPlayerBag] = useState(null);
+  const [localSocketId, setLocalSocketId] = useState(null);
+  const [selectedPicks, setSelectedPicks] = useState([]);
+  const [draftedComponents, setDraftedComponents] = useState({});
 
   const categories = Object.keys(baseFactionLimits);
+
+  // Setup socket listeners for multiplayer
+  useEffect(() => {
+    if (!multiplayerEnabled || !socketRef.current) return;
+
+    const socket = socketRef.current;
+
+    const handleYourBag = ({ bag }) => {
+      setPlayerBag(bag);
+    };
+
+    const handleDraftStarted = ({ draftState, players }) => {
+      setRound(draftState.round);
+      const emptyDrafted = {};
+      categories.forEach(cat => emptyDrafted[cat] = []);
+      setDraftedComponents(emptyDrafted);
+    };
+
+    const handleDraftHistoryUpdate = (history) => {
+      setDraftHistory(history);
+    };
+
+    const handleLobbyUpdate = (updatedLobby) => {
+      setLobby(updatedLobby);
+      setRound(updatedLobby.draftState?.round || 1);
+    };
+
+    socket.on("yourBag", handleYourBag);
+    socket.on("draftStarted", handleDraftStarted);
+    socket.on("draftHistoryUpdate", handleDraftHistoryUpdate);
+    socket.on("lobbyUpdate", handleLobbyUpdate);
+    socket.on("connect", () => setLocalSocketId(socket.id));
+
+    return () => {
+      socket.off("yourBag", handleYourBag);
+      socket.off("draftStarted", handleDraftStarted);
+      socket.off("draftHistoryUpdate", handleDraftHistoryUpdate);
+      socket.off("lobbyUpdate", handleLobbyUpdate);
+    };
+  }, [multiplayerEnabled]);
 
   // Update limits when variant changes
   useEffect(() => {
@@ -196,8 +220,6 @@ export default function DraftSimulator() {
 
     // Add component and handle swap/extra components
     const newComponent = { ...component };
-    const swapOptions = getSwapOptions(component.name, component.faction);
-    const extraComponents = getExtraComponents(component.name, component.faction);
 
     if (draftVariant === "rotisserie") {
       const compId = component.id || component.name;
@@ -228,7 +250,7 @@ export default function DraftSimulator() {
       if (nextPlayer === 0) setRound(r => r + 1);
       
     } else {
-      // Bag draft logic (similar to rotisserie but with bags)
+      // Bag draft logic
       const bag = playerBags[currentPlayer];
       if (!bag?.[category]) return;
       
@@ -259,7 +281,7 @@ export default function DraftSimulator() {
       const newPicksThisRound = picksThisRound + 1;
       setPicksThisRound(newPicksThisRound);
 
-      const neededPicks = 3; // Simplified for now
+      const neededPicks = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
       if (newPicksThisRound >= neededPicks) {
         const nextPlayer = (currentPlayer + 1) % playerCount;
         setCurrentPlayer(nextPlayer);
@@ -303,14 +325,142 @@ export default function DraftSimulator() {
     return draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
   };
 
+  const handleSwap = (playerIndex, category, componentIndex, swapOption) => {
+    if (!swapOption) return;
+
+    // Replace the component with its swap option
+    const fc = [...factions];
+    const originalComponent = fc[playerIndex][category][componentIndex];
+    
+    // Create swap component based on undraftable data
+    const swapComponent = {
+      id: swapOption.name.toLowerCase().replace(/\s+/g, '_'),
+      name: swapOption.name,
+      faction: swapOption.faction,
+      description: `Swapped from ${originalComponent.name}`,
+      isSwap: true,
+      originalComponent: originalComponent.name
+    };
+
+    fc[playerIndex][category][componentIndex] = swapComponent;
+    setFactions(fc);
+
+    // Add to history
+    setDraftHistory(prev => [...prev, {
+      playerIndex,
+      category,
+      item: swapComponent,
+      round: "SWAP",
+      componentId: swapComponent.id,
+      action: `Swapped ${originalComponent.name} for ${swapComponent.name}`
+    }]);
+  };
+
+  const handleAddExtraComponent = (playerIndex, category, triggerComponent) => {
+    const extraComponents = getExtraComponents(triggerComponent.name, triggerComponent.faction);
+    
+    extraComponents.forEach(extra => {
+      // Find the correct category for this extra component
+      let targetCategory = category;
+      
+      // Map extra components to their correct categories
+      const categoryMap = {
+        "Artuno": "agents",
+        "Thundarian": "agents", 
+        "Awaken": "abilities",
+        "Coalescence": "abilities",
+        "Devour": "abilities",
+        "Dark Pact": "promissory"
+      };
+
+      if (categoryMap[extra.name]) {
+        targetCategory = categoryMap[extra.name];
+      }
+
+      const extraComponent = {
+        id: extra.name.toLowerCase().replace(/\s+/g, '_'),
+        name: extra.name,
+        faction: extra.faction,
+        description: `Gained from ${triggerComponent.name}`,
+        isExtra: true,
+        triggerComponent: triggerComponent.name
+      };
+
+      // Add to the faction
+      const fc = [...factions];
+      if (!fc[playerIndex][targetCategory]) {
+        fc[playerIndex][targetCategory] = [];
+      }
+      fc[playerIndex][targetCategory].push(extraComponent);
+      setFactions(fc);
+
+      // Add to history
+      setDraftHistory(prev => [...prev, {
+        playerIndex,
+        category: targetCategory,
+        item: extraComponent,
+        round: "ADD",
+        componentId: extraComponent.id,
+        action: `Added ${extraComponent.name} from ${triggerComponent.name}`
+      }]);
+    });
+  };
+
   const handleReduction = (playerIndex, category, componentIndex) => {
+    const component = factions[playerIndex][category][componentIndex];
+    
+    // Check if this component triggers extra adds
+    const extraComponents = getExtraComponents(component.name, component.faction);
+    if (extraComponents.length > 0) {
+      // Component is being kept - add extra components
+      handleAddExtraComponent(playerIndex, category, component);
+    }
+
+    // Remove the component
     const fc = [...factions];
     fc[playerIndex][category].splice(componentIndex, 1);
     setFactions(fc);
+
+    // Check if reduction is complete for all players
+    const factionLimits = getCurrentFactionLimits();
+    const allPlayersReduced = fc.every(faction => 
+      categories.every(cat => (faction[cat]?.length || 0) <= factionLimits[cat])
+    );
+
+    if (allPlayersReduced) {
+      setDraftPhase("complete");
+    }
   };
 
+  // Ban management functions
+  const handleBanFaction = (factionName) => {
+    setBannedFactions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(factionName)) {
+        newSet.delete(factionName);
+      } else {
+        newSet.add(factionName);
+      }
+      return newSet;
+    });
+  };
+
+  const handleBanComponent = (componentId) => {
+    setBannedComponents(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(componentId)) {
+        newSet.delete(componentId);
+      } else {
+        newSet.add(componentId);
+      }
+      return newSet;
+    });
+  };
+
+  // Fixed Ban Management Panel with working checkboxes
   const BanManagementPanel = () => {
     const [showBanPanel, setShowBanPanel] = useState(false);
+    const [componentSearchTerm, setComponentSearchTerm] = useState("");
     
     if (!showBanPanel) {
       return (
@@ -323,18 +473,152 @@ export default function DraftSimulator() {
       );
     }
 
+    // Get all components for search/ban
+    const getAllComponentsForBanning = () => {
+      const allComponents = [];
+      categories.forEach(category => {
+        const categoryComponents = [
+          ...(factionsJSON.factions.flatMap(f => 
+            (f[category] || []).map(comp => ({
+              ...comp,
+              faction: f.name,
+              category,
+              displayName: `${comp.name} (${f.name} - ${category})`
+            }))
+          )),
+          ...(factionsJSON.tiles[category] || []).map(comp => ({
+            ...comp,
+            category,
+            displayName: `${comp.name} (${category})`
+          }))
+        ];
+        allComponents.push(...categoryComponents);
+      });
+      return allComponents;
+    };
+
+    const allComponents = getAllComponentsForBanning();
+    const filteredComponents = componentSearchTerm 
+      ? allComponents.filter(comp => 
+          comp.name.toLowerCase().includes(componentSearchTerm.toLowerCase()) ||
+          comp.faction?.toLowerCase().includes(componentSearchTerm.toLowerCase())
+        )
+      : [];
+
     return (
-      <div className="border rounded p-4 bg-red-50 mb-4">
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="font-bold">Ban Management</h3>
-          <button 
-            onClick={() => setShowBanPanel(false)}
-            className="px-2 py-1 text-sm bg-gray-400 text-white rounded"
-          >
-            Close
-          </button>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 max-w-4xl max-h-[80vh] overflow-hidden">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold">Ban Management</h3>
+            <button 
+              onClick={() => setShowBanPanel(false)}
+              className="px-3 py-1 text-sm bg-gray-400 text-white rounded hover:bg-gray-500"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 h-96">
+            {/* Faction Bans */}
+            <div className="border rounded p-4">
+              <h4 className="font-semibold mb-3">Banned Factions ({bannedFactions.size})</h4>
+              <div className="max-h-80 overflow-y-auto space-y-2">
+                {factionsJSON.factions.map(faction => (
+                  <label key={faction.name} className="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded">
+                    <input 
+                      type="checkbox" 
+                      checked={bannedFactions.has(faction.name)}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleBanFaction(faction.name);
+                      }}
+                      className="mr-3"
+                    />
+                    <span className={bannedFactions.has(faction.name) ? "line-through text-gray-500" : ""}>
+                      {faction.name}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Component Bans */}
+            <div className="border rounded p-4">
+              <h4 className="font-semibold mb-3">Component Bans ({bannedComponents.size})</h4>
+              
+              <input 
+                type="text" 
+                placeholder="Search components to ban..."
+                value={componentSearchTerm}
+                onChange={(e) => setComponentSearchTerm(e.target.value)}
+                className="w-full border p-2 rounded mb-3"
+              />
+              
+              {componentSearchTerm && (
+                <div className="max-h-32 overflow-y-auto border rounded p-2 mb-3 bg-gray-50">
+                  {filteredComponents.slice(0, 20).map((comp, idx) => (
+                    <div 
+                      key={`${comp.name}-${comp.faction}-${idx}`}
+                      className="flex justify-between items-center py-1 hover:bg-gray-100 px-2 rounded"
+                    >
+                      <span className="text-sm">{comp.displayName}</span>
+                      <button 
+                        onClick={() => {
+                          handleBanComponent(comp.id || comp.name);
+                          setComponentSearchTerm("");
+                        }}
+                        className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                      >
+                        Ban
+                      </button>
+                    </div>
+                  ))}
+                  {filteredComponents.length > 20 && (
+                    <div className="text-xs text-gray-500 p-2">
+                      Showing first 20 results. Refine search for more.
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="text-sm text-gray-600 mb-2 font-medium">Currently Banned:</div>
+              <div className="max-h-40 overflow-y-auto text-sm space-y-1">
+                {Array.from(bannedComponents).map(compId => (
+                  <div key={compId} className="flex justify-between items-center bg-red-50 p-2 rounded">
+                    <span className="truncate flex-1">{compId}</span>
+                    <button 
+                      onClick={() => handleBanComponent(compId)}
+                      className="text-red-600 hover:underline ml-2 text-xs"
+                    >
+                      Unban
+                    </button>
+                  </div>
+                ))}
+                {bannedComponents.size === 0 && (
+                  <div className="text-gray-500 italic">No components banned</div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 flex justify-between">
+            <button 
+              onClick={() => {
+                setBannedFactions(new Set());
+                setBannedComponents(new Set());
+              }}
+              className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+            >
+              Clear All Bans
+            </button>
+            <button 
+              onClick={() => setShowBanPanel(false)}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Done
+            </button>
+          </div>
         </div>
-        {/* Ban interface implementation */}
       </div>
     );
   };
@@ -344,7 +628,16 @@ export default function DraftSimulator() {
       return (
         <div className="mb-4 p-3 bg-orange-100 rounded">
           <h3 className="font-bold">Reduction Phase</h3>
-          <div className="text-sm">Remove 1 component from each category to meet faction limits</div>
+          <div className="text-sm">Remove excess components to meet faction limits</div>
+        </div>
+      );
+    }
+
+    if (draftPhase === "complete") {
+      return (
+        <div className="mb-4 p-3 bg-green-100 rounded">
+          <h3 className="font-bold">Draft Complete!</h3>
+          <div className="text-sm">All factions finalized</div>
         </div>
       );
     }
@@ -361,16 +654,21 @@ export default function DraftSimulator() {
       return (
         <div className="mb-4 p-3 bg-blue-100 rounded">
           <h3 className="font-bold">Multiplayer Draft - Round {round}</h3>
+          <div className="text-sm">Selected picks: {selectedPicks.length}</div>
         </div>
       );
     }
 
-    const neededPicks = draftVariant === "rotisserie" ? 1 : 3;
+    const neededPicks = draftVariant === "rotisserie" ? 1 : 
+                        (round === 1 ? firstRoundPickCount : subsequentRoundPickCount);
     return (
       <div className="mb-4 p-3 bg-blue-100 rounded">
         <h3 className="font-bold">Player {currentPlayer + 1}'s Turn - Round {round}</h3>
         <div className="text-sm">Picks this round: {picksThisRound} / {neededPicks}</div>
         <div className="text-sm">Variant: {draftVariant}</div>
+        {draftVariant === "rotisserie" && (
+          <div className="text-sm text-orange-600">One pick per turn</div>
+        )}
       </div>
     );
   };
@@ -427,10 +725,10 @@ export default function DraftSimulator() {
                 setDraftVariant={setDraftVariant}
                 draftLimits={draftLimits}
                 setDraftLimits={setDraftLimits}
-                firstRoundPickCount={3}
-                setFirstRoundPickCount={() => {}}
-                subsequentRoundPickCount={2}
-                setSubsequentRoundPickCount={() => {}}
+                firstRoundPickCount={firstRoundPickCount}
+                setFirstRoundPickCount={setFirstRoundPickCount}
+                subsequentRoundPickCount={subsequentRoundPickCount}
+                setSubsequentRoundPickCount={setSubsequentRoundPickCount}
               />
             )}
 
@@ -442,14 +740,15 @@ export default function DraftSimulator() {
                 lobby={lobby}
                 setLobby={setLobby}
                 playerBag={playerBag}
-                onConfirmPicks={() => {}}
-                onSubmitPicks={() => {}}
-                localPlayerSocketId={null}
+                onConfirmPicks={() => setSelectedPicks([])}
+                onSubmitPicks={(picks) => console.log("Submitted picks:", picks)}
+                localPlayerSocketId={localSocketId}
                 draftState={{ round, variant: draftVariant }}
               />
             )}
 
             {renderCurrentPlayerInfo()}
+            
           </div>
 
           <div className="flex-1 overflow-auto p-4 space-y-4">
