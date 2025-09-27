@@ -316,6 +316,227 @@
       ]
     },
     {
+      "name": "The Barony of Letnev",
+      "abilities": [
+        {
+          "id": "barony_mr",
+          "name": "Munitions Reserves",
+          "description": "At the start of each round of space combat, you may spend 2 trade goods; you may re-roll any number of your dice during that combat round."
+        },
+        {
+          "id": "barony_armada",
+          "name": "Armada",
+          "description": "The maximum number of non-fighter ships you can have in each system is equal to 2 more than the number of tokens in your fleet pool."
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "barony_l4",
+          "name": "L4 Disruptors (Y)",
+          "description": "During an invasion, units cannot use SPACE CANNON against your units."
+        },
+        {
+          "id": "barony_nes",
+          "name": "Non-Euclidean Shielding (RR)",
+          "description": "When 1 of your units uses SUSTAIN DAMAGE, cancel 2 hits instead of 1."
+        }
+      ],
+      "agents": [
+        {
+          "id": "barony_agent",
+          "name": "Viscount Unlenn",
+          "description": "At the start of a space combat round: You may exhaust this card to choose 1 ship in the active system. That ship rolls 1 additional die during this combat round."
+        }
+      ],
+      "commanders": [
+        {
+          "id": "barony_commander",
+          "name": "Rear Admiral Farran",
+          "description": "After 1 of your units uses SUSTAIN DAMAGE: You may gain 1 trade good."
+        }
+      ],
+      "heroes": [
+        {
+          "id": "barony_hero",
+          "name": "Darktalon Treilla",
+          "description": "DARK MATTER AFFINITY. ACTION: Place this card near the game board; the number of non-fighter ships you can have in systems is not limited by laws or by the number of command tokens in you fleet pool during this game round. At the end of that game round, purge this card."
+        }
+      ],
+      "promissory": [
+        {
+          "id": "barony_pn",
+          "name": "War Funding Ω",
+          "description": "After you and your opponent roll dice during space combat: You may reroll all of your opponent's dice. You may reroll any number of your dice. Then, return this card to the Letnev player."
+        }
+      ],
+      "flagship": [
+        {
+          "id": "barony_fs",
+          "name": "Arc Secundus",
+          "description": "Cost 8, Combat 5(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, BOMBARDMENT 5(x3). Other players' units in this system lose PLANETARY SHIELD. At the start of each space combat round, repair this ship."
+        }
+      ],
+      "mech": [
+        {
+          "id": "barony_mech",
+          "name": "Dunlain Reaper",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: At the start of a round of ground combat, you may spend 2 resources to replace 1 of your infantry in that combat with 1 mech."
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "barony_starting_tech",
+          "name": "War Mongers",
+          "description": "Antimass Deflectors, Plasma Scoring"
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "barony_starting_fleet",
+          "name": "Battle-Ready Armada",
+          "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 1 Fighter, 3 Infantry, 1 Space Dock"
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "barony_comms",
+          "name": "Commodities", 
+          "description": "2"
+        }
+      ],
+      "home_system": [
+        {
+          "id": "barony_hs",
+          "name": "Barony Home System",
+          "planets": [
+            {
+              "name": "Arc Prime",
+              "resource": 4,
+              "influence": 0
+            },
+            {
+              "name": "Wren Terra",
+              "resource": 2,
+              "influence": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Clan of Saar",
+      "abilities": [
+        {
+          "id": "saar_scavenge",
+          "name": "Scavenge",
+          "description": "After you gain control of a planet, gain 1 trade good."
+        },
+        {
+          "id": "saar_nomadic",
+          "name": "Nomadic",
+          "description": "You can score objectives even if you do not control the planets in your home system."
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "saar_cm",
+          "name": "Chaos Mapping (B)",
+          "description": "Other players cannot activate asteroid fields that contain 1 or more of your ships. At the start of your turn during the action phasem you may produce 1 unit in a system that contains at least 1 of your units that has production."
+        },
+        {
+          "id": "saar_ff1",
+          "name": "Floating Factory I",
+          "description": "Move 1, Capacity 4. PRODUCTION 5. This unit is placed in a space area instead of on a planet. This unit can move and retreat as if it were a ship. If this unit is blockaded, It is destroyed."
+        },
+        {
+          "id": "saar_ff2",
+          "name": "Floating Factory II",
+          "description": "Move 2, Capacity 5. PRODUCTION 7. This unit is placed in a space area instead of on a planet. This unit can move and retreat as if it were a ship. If this unit is blockaded, It is destroyed."
+        }
+      ],
+      "agents": [
+        {
+          "id": "saar_agent",
+          "name": "Captain Mendosa",
+          "description": "After a player activates a system: You may exhaust this card to increase the move value of 1 of that player's ships to match the move value of the ship on the game board that has the highest move value."
+        }
+      ],
+      "commanders": [
+        {
+          "id": "saar_commander",
+          "name": "Rowl Sarrig",
+          "description": "UNLOCK: Have 3 space docks on the game board. When you produce fighters or infantry: You may place each of those units at any of your space docks that are not blockaded."
+        }
+      ],
+      "heroes": [
+        {
+          "id": "saar_hero",
+          "name": "Gurno Aggero",
+          "description": "ARMAGEDDON RELAY. ACTION: Choose 1 system that is adjacent to 1 of your space docks. Destroy all other player's infantry and fighters in that system. The, purge this card."
+        }
+      ],
+      "promissory": [
+        {
+          "id": "saar_pn",
+          "name": "Ragh's Call",
+          "description": "After you commit 1 or more units to land on a planet: Remove all of the Saar player's ground forces from that planet and place them on a planet controlled by the Saar player. The return this card to the Saar player."
+        }
+      ],
+      "flagship": [
+        {
+          "id": "saar_fs",
+          "name": "Son of Ragh",
+          "description": "Cost 8, Combat 5(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 6(x4)."
+        }
+      ],
+      "mech": [
+        {
+          "id": "saar_mech",
+          "name": "Scavenger Zeta",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: After you gain control of a planet, you may spend 1 trade good to place 1 mech on that planet."
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "saar_starting_tech",
+          "name": "Asteroid Scavengers",
+          "description": "Antimass Deflectors"
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "saar_starting_fleet",
+          "name": "Mobile Factory",
+          "description": "2 Carriers, 1 Cruiser, 2 Fighters, 4 Infantry, 1 Space Dock"
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "saar_comms",
+          "name": "Commodities", 
+          "description": "3"
+        }
+      ],
+      "home_system": [
+        {
+          "id": "saar_hs",
+          "name": "Saar Home System",
+          "planets": [
+            {
+              "name": "Lisis II",
+              "resource": 1,
+              "influence": 0
+            },
+            {
+              "name": "Ragh",
+              "resource": 2,
+              "influence": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "The Emirates of Hacan",
       "abilities": [
         {
