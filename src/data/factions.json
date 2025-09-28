@@ -1930,90 +1930,105 @@
       "name": "Sardakk N'orr",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_unrelenting",
+          "name": "Unrelenting",
+          "description": "Apply +1 to the resukt of each of your unit's combat rolls."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_vpw",
+          "name": "Valkyrie Particle Weave (RR)",
+          "description": "After making combat rolls during a round of ground combat, if your opponent produced 1 or more hits, you produce 1 additional hit"
+        },
+        {
+          "id": "sardakk_e1",
+          "name": "Exotrireme I",
+          "description": "Cost 4, Combat 5, Move 1, Capacity 1. SUSTAIN DAMAGE, BOMBARDMENT 4(x2)."
+        },
+        {
+          "id": "sardakk_e2",
+          "name": "Exotrireme II (BBY)",
+          "description": "Cost 4, Combat 5, Move 2, Capacity 1. SUSTAIN DAMAGE, BOMBARDMENT 4(x2). This unit cannot be destroyed by 'Direct Hit' action cards. After a round of space combat, you may ddestroy this unit to destroy up to 2 ships in this system."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_agent",
+          "name": "T'ro",
+          "description": "At the end of a player's tactical action: You may exhaust this card; if you do, that player may place 2 infantry from their reinforcements on a planet they control in the active system."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_commander",
+          "name": "G'hom Sek'kus",
+          "description": "UNLOCK: Control 5 planets in non-home systems. During the 'Commit Ground Forces' step: You can commit up to 1 ground force from each planet in the active system and each planet in adjacent systems that do not contain 1 of your command tokens."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_hero",
+          "name": "Sh'val, Harbinger",
+          "description": "TEKKLAR CONDITIONING. After you move ships into the active system: You may skip directly to the 'Commit Ground Forces' step. If you do, after you commit ground forces to land on planets, purge this card and return each of your ships in the active system to your reinforcements."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_pn",
+          "name": "Tekklar Legion",
+          "description": "At the start of an invasion combat: Apply +1 to the result of each of your unit's combat rolls during this combat. If your opponent is the N'orr player, apply -1 to the result of each of their unit's combat rolls during this combat. The, return this card to the N'orr player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_fs",
+          "name": "C'Morran N'orr",
+          "description": "Cost 8, Combat 6(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. Apply +1 to the result of each of your other ship's combat rolls in this system."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_mech",
+          "name": "Valkyrie Exoskeleton",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. Afer this unit uses its SUSTAIN DAMAGE ability during Ground Combat, it produces 1 hit against your opponent's ground forces on this planet."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_starting_tech",
+          "name": "Sardakk Starting Tech",
+          "description": "None"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "sardakk_starting_fleet",
+          "name": "Sardakk Starting Fleet",
+          "description": "2 Carriers, 1 Cruiser, 5 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "sardakk_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "sardakk_hs",
+          "name": "Sardakk Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Tren'lak",
+              "resource": 1,
               "influence": 0
+            },
+            {
+              "name": "Quinarra",
+              "resource": 3,
+              "influence": 1
             }
           ]
         }
@@ -2023,90 +2038,115 @@
       "name": "The Titans of Ul",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_terragenesis",
+          "name": "Terragenesis",
+          "description": "After you explore a planet that does not have a sleeper token, you may place or move 1 sleeper token onto that planet."
+        },
+        {
+          "id": "titans_awaken",
+          "name": "Awaken",
+          "description": "After you activate a system that contains 1 or more of your sleeper tokens, you may replace each of those tokens with 1 PDS from your reinforcements."
+        },
+        {
+          "id": "titans_coalescence",
+          "name": "Coalescence",
+          "description": "If your flagship or your AWAKEN ability places your units into the same space area or onto the same planet as another player's units, your units must participate in combat during 'Space Combat' or 'Ground Combat' steps."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_se1",
+          "name": "Saturn Engine I",
+          "description": "Cost 2, Combat 7, Move 2, Capacity 1."
+        },
+        {
+          "id": "titans_se2",
+          "name": "Saturn Engine II (GYR)",
+          "description": "Cost 2, Combat 6, Move 3, Capacity 2. SUSTAIN DAMAGE."
+        },
+        {
+          "id": "titans_ht1",
+          "name": "Hel-Titan I",
+          "description": "Combat 7. PLANETARY SHIELD, SPACE CANNON 6, SUSTAIN DAMAGE, PRODUCTION 1. This unit is treated as both a structure and a ground force. It cannot be transported."
+        },
+        {
+          "id": "titans_ht2",
+          "name": "Hel-Titan II (YR)",
+          "description": "Combat 6. PLANETARY SHIELD, SPACE CANNON 5, SUSTAIN DAMAGE, PRODUCTION 1. This unit is treated as both a structure and a ground force. It cannot be transported. You may use this unit's SPACE CANNON against ships that are adjaent to this unit's system."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_agent",
+          "name": "Tellurian",
+          "description": "Whena hit is produced against a unit: You may exhaust this card to cancel that hit."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_commander",
+          "name": "Tungstantus",
+          "description": "UNLOCK: Have 5 structures on the game board. When 1 or more of your units use PRODUCTION: You may gain 1 trade good."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_hero",
+          "name": "Ul the Progenitor",
+          "description": "GEOFORM. ACTION: Ready Elysium and attach this card to it. Its resource and influence values are each increased by 3, and it gains the SPACE CANNON 5 (x3) ability as if it were a unit."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_pn",
+          "name": "Terraform",
+          "description": "ACTION: Attach this card to a non-home planet you control other than Mecatol Rex. Its resource and influence values are each increased by 1 and it is treated as having all 3 planet traits (Culutral, Hazardous, and Industrial)."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_fs",
+          "name": "Ouranos",
+          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. DEPLOY: After you activate a system that contains 1 or more of your PDS, you may replace 1 of those PDS with this unit."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_mech",
+          "name": "Hecatoncheires",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. When you would place a PDS on a planet, you may place 1 mech and 1 infantry on that planet instead."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_starting_tech",
+          "name": "Titans Starting Tech",
+          "description": "Antimass Deflectors, Scanlink Drone Network"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "titans_starting_fleet",
+          "name": "Titans Starting Fleet",
+          "description": "1 Dreadnought, 2 Cruisers, 2 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "titans_comms",
+          "name": "Commodities", 
+          "description": "2"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "titans_hs",
+          "name": "Titans Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Elysium",
+              "resource": 4,
+              "influence": 1
             }
           ]
         }
@@ -2116,90 +2156,110 @@
       "name": "The Universities of Jol-Nar",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_fragile",
+          "name": "Fragile",
+          "description": "Apply -1 to the result of each of your unit's combat rolls."
+        },
+        {
+          "id": "jolnar_brilliant",
+          "name": "Brilliant",
+          "description": "When you spend a command token to resolve the secondary ability of the 'Technology' strategy card, you may resolve the primary ability instead."
+        },
+        {
+          "id": "jolnar_analytical",
+          "name": "Analytical",
+          "description": "When you research a technology that is not a unit upgrade technology, you may ignore 1 prerequisite."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_eres",
+          "name": "E-Res Siphons (YY)",
+          "description": "After another player activates a system that contains 1 or more of your ships, gain 4 trade goods."
+        },
+        {
+          "id": "jolnar_scc",
+          "name": "Spatial Conduit Cylinder (BB)",
+          "description": "You may exhaust this card after you activate a system that contains 1 or more of your units; that system is adjacent to all other systems that contain 1 or more of your units during this activation."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_agent",
+          "name": "Doctor Sucaban",
+          "description": "When a player spends resources to research: You may exhaust this card to allow that player to remove any number of their infantry from the game board. for each unit removed, reduce the resources spent by 1."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_commander",
+          "name": "Ta Zernm",
+          "description": "UNLOCK: Own 8 technologies. After you roll dice for a unit ability: You may reroll any of those dice."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_hero",
+          "name": "Rin, The Master's Legacy",
+          "description": "GENETIC MEMORY. ACTION: For each non-unit upgrade technology you own, you may replace that technology with any technology of the same color from the deck. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_pn",
+          "name": "Research Agreement",
+          "description": "After the Jol-Nar player researches a technology that is not a faction technology: Gain that technology. Then, return this card to the Jol-Nar player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_fs",
+          "name": "J.N.S. Hylarim",
+          "description": "Cost 8, Combat 6(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. When making a combat roll for this ship, each result of 9 or 10, before applying modifiers, produces 2 additional hits."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_mech",
+          "name": "Shield Paling",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. Your infantry on this planet are not affected by your FRAGILE faction ability."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_starting_tech",
+          "name": "Jol-Nar Starting Tech",
+          "description": "Neural Motivator, Antimass Deflectors, Sarween Tools, Plasma Scoring"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "jolnar_starting_fleet",
+          "name": "Jol-Nar Starting Fleet",
+          "description": "1 Dreadnought, 2 Carriers, 1 Fighter, 2 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "jolnar_comms",
+          "name": "Commodities", 
+          "description": "4"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "jolnar_hs",
+          "name": "Jol-Nar Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Jol",
+              "resource": 1,
+              "influence": 2
+            },
+            {
+              "name": "Nar",
+              "resource": 2,
+              "influence": 3
             }
           ]
         }
