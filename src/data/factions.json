@@ -1385,90 +1385,100 @@
       "name": "The Mentak Coalition",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_ambush",
+          "name": "Ambush",
+          "description": "At the sart of a space combat, you may roll 1 die each of up to 2 of your cruisers or destroyers in the system. For each result equal to or greater than that ship's combat value, produce 1 hit; your opponent must assign i to 1 of their ships."
+        },
+        {
+          "id": "mentak_pillage",
+          "name": "Pillage",
+          "description": "After 1 of your neighbors gains trade goods or resolves a transaction, if they have 3 or more trade goods, youmay take 1 of their trade goods or commodities."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_so",
+          "name": "Salvage Operations (YY)",
+          "description": "After you win or lose a space combat, gain 1 trade good; if you won the combat, you may also produce 1 ship in that system of any ship type that was destroyed during the combat"
+        },
+        {
+          "id": "mentak_mc",
+          "name": "Mirror Computing (YYY)",
+          "description": "When you spend trade goods, each trade good is worth 2 resources or influence instead of 1"
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_agent",
+          "name": "Suffi An",
+          "description": "After the PILLAGE faction ability is used against another player: You may exhaust this card; if you do, you and that player each draw 1 action card."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_commander",
+          "name": "S'Ula Mentarion",
+          "description": "UNLOCK: Have 4 cruisers on the game board. After you win a space combat: You may force your opponent to give you 1 promissory note from their hand."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_hero",
+          "name": "Ipswitch, Loose Cannon",
+          "description": "SLEEPER CELL. At the start of space combat that you are participating in: You may purge this card; if you do, for each other player's ship that is destroyed during this combat, place 1 ship of that type from your reinforcements in the active system."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_pn",
+          "name": "Promise of Protection",
+          "description": "ACTION: Place this card face-up in your play area. While this card is in your play area, the Mentak player cannot use their Pillage faction ability against you. If you activate a system that contains 1 or more of the Mentak player's units, return this card to the Mentak player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_fs",
+          "name": "Fourth Moon",
+          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DMAAGE. Other players' ships in this system cannot use sustain damage."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_mech",
+          "name": "Moll Terminus",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. Other players' ground forces on this planet cannot use SUSTAIN DAMAGE."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_starting_tech",
+          "name": "Mentak Starting Tech",
+          "description": "Sarween Tools, Plasma Scoring"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mentak_starting_fleet",
+          "name": "Mentak Starting Fleet",
+          "description": "1 Carrier, 2 Cruisers, 3 Fighter, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "mentak_comms",
+          "name": "Commodities", 
+          "description": "2"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "mentak_hs",
+          "name": "Mentak Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Moll Primus",
+              "resource": 4,
+              "influence": 1
             }
           ]
         }
@@ -1478,90 +1488,110 @@
       "name": "The Naalu Collective",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_telepathic",
+          "name": "Telepathic",
+          "description": "At the end of the strategy phase, place the Naalu '0' token on your strategy card; you are first in initiative order."
+        },
+        {
+          "id": "naalu_foresight",
+          "name": "Foresight",
+          "description": "After another player moves ships into a system that contains 1 or more of your ships, you may place 1 token from your strategy pool in an adjacent system that does not contain another player's ships; move your ships from the active system into that system."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_ng",
+          "name": "Neuroglaive (GGG)",
+          "description": "After another player activates a system that contains 1 or more of oyur ships, that player removes 1 token from their fleet pool and returns it to their reinforcements."
+        },
+        {
+          "id": "naalu_hcf1",
+          "name": "Hybrid Crystal Fighter I",
+          "description": "Cost 1(x2), Combat 8"
+        },
+        {
+          "id": "naalu_hcf2",
+          "name": "Hybrid Crystal Fighter II (GB)",
+          "description": "Cost 1(x2), Combat 7, Move 2. This unit may move without being transported. Each fighter in excess of your ships' capacity counts as 1/2 of a ship against your fleet pool."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_agent",
+          "name": "Z'eu Ω",
+          "description": "ACTION: Exhaust this card and shoose a player; That player may perform a tactical action in a non-home system without placing a command token; that system still counts as being activated."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_commander",
+          "name": "M'aban Ω",
+          "description": "UNLOCK: Have ground forces in or adjacent to the Mecatol Rex system. At any time: You may look at your neighbors' hand of promissory notes and the top and bottom card of the agenda deck."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_hero",
+          "name": "The Oracle",
+          "description": "C-RADIUM GEOMETRY. At the end of the status phase: You may force each other player to give you 1 promissory note from their hand. If you do, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_pn",
+          "name": "Gift of Prescience",
+          "description": "At the end of the strategy phase: Place this card face-up in your play area and place the Naalu '0' token on your strategy card; you are first in the initiative order. The Naalu player cannot use their TELEPATHIC faction ability during this game round. Return this card to the Naalu player at the end of the status phase."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_fs",
+          "name": "Matriarch",
+          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 6. SUSTAIN DAMAGE. During an invasion in this system, you may commit fighters to planets as if they were ground forces. When combat ends, return those units to the space area."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_mech",
+          "name": "Iconoclast Ω",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. Other players cannot use ANTI-FIGHTER BARRAGE against your units in this system."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_starting_tech",
+          "name": "Naalu Starting Tech",
+          "description": "Neural Motivator, Sarween Tools"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "naalu_starting_fleet",
+          "name": "Naalu Starting Fleet",
+          "description": "1 Carrier, 1 Cruiser, 1 Destroyer, 3 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "naalu_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "naalu_hs",
+          "name": "Naalu Home System",
           "planets": [
             {
-              "name": "",
+              "name": "Maaluuk",
               "resource": 0,
-              "influence": 0
+              "influence": 2
+            },
+            {
+              "name": "Druaa",
+              "resource": 3,
+              "influence": 1
             }
           ]
         }
@@ -1571,90 +1601,105 @@
       "name": "The Naaz-Rokha Alliance",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_ds",
+          "name": "Distant Suns",
+          "description": "When you explore a planet that contains 1 of your mechs, you may draw 1 additional card; choose 1 to resolve and discard the rest."
+        },
+        {
+          "id": "nra_fabrication",
+          "name": "Fabrication",
+          "description": "ACTION: Either purge 2 of your relic fragments of the same type to gain 1 relic; or purge 1 of your relic fragments to gain 1 command token."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_supercharge",
+          "name": "Supercharge (R)",
+          "description": "At the start of a combat round, you may exhaust this card to apply +1 to the result of each of your unit's combat rolls during this combat round."
+        },
+        {
+          "id": "nra_pfa",
+          "name": "Pre-Fab Arcologies (GGG)",
+          "description": "After you explore a planet, ready that planet."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_agent",
+          "name": "Garv and Gunn",
+          "description": "At the end of a player's turn: You may exhaust this card to allow that player to explore 1 of their planets."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_commander",
+          "name": "Dart and Tai",
+          "description": "UNLOCK: Have 3 mechs in 3 systems. After you gain control of a planet that was controlled by another player: You may explore that planet."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_hero",
+          "name": "Hesh and Prit",
+          "description": "PERFECT SYNTHESIS. ACTION: Gain 1 relic and perform the secondary ability of up to 2 readied or unchosen strategy cards; during this action, spend command tokens from your reinforcements instead of your strategy pool. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_pn",
+          "name": "Black Market Forgery",
+          "description": "ACTION: Purge 2 of your relic fragments of the same type to gain 1 relic. Then, return this card to the Naaz-Rokha player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_fs",
+          "name": "Visz el Vir",
+          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 4. SUSTAIN DAMAGE. Your mechs in this system roll 1 additional die during combat."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_mech",
+          "name": "Eidolon | Z-Grav Eidolon",
+          "description": "Cost 2, Combat 6(x2). SUSTAIN DAMAGE. If this unit is in the space area of the active system at the start of a space combat, flip this card. (This card begins the game with this side face up) | Cost 2, Combat 8(x2). If this unit is in the space area of the active system, it is also a ship. At the end of a space battle in the active system, flip this card. (This card begins the game with this side face down)"
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_starting_tech",
+          "name": "Naaz-Rokha Alliance Starting Tech",
+          "description": "Psychoarchaeology, AI Development Algorithm"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nra_starting_fleet",
+          "name": "Naaz-Rokha Alliance Starting Fleet",
+          "description": "2 Carriers, 1 Destroyer, 2 Fighters, 1 Mech, 3 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "nra_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "nra_hs",
+          "name": "Naaz-Rokha Alliance Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Naazir",
+              "resource": 2,
+              "influence": 1
+            },
+            {
+              "name": "Rokha",
+              "resource": 1,
+              "influence": 2
             }
           ]
         }
@@ -1664,89 +1709,104 @@
       "name": "The Nekro Virus",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_gt",
+          "name": "Galactic Threat",
+          "description": "You cannot vote on agendas. Once per agenda phase, after an agenda is revealed, you may predict aloud the outcome of that agenda. If your prediction is correct, gain 1 technology that is owned by a player who voted how you predicted."
+        },
+        {
+          "id": "nekro_ts",
+          "name": "Technological Singularity",
+          "description": "Once per combat, after 1 of your opponet's units is destroyed, you may gain 1 technology that is owned by that player."
+        },
+        {
+          "id": "nekro_propagation",
+          "name": "Propagation",
+          "description": "You cannot research technology. When you would research a technology, gain 3 command tokens instead."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_valx",
+          "name": "Valefar Assimilator X",
+          "description": "When you would gain another player's technology using one of your faction abilities, you may place the 'X' assimilator token on a faction technology owned by that player instead. While this token is on a technology, this card gains that technology's text. You cannot place an assimilator token on technology that already has an assimilator token."
+        },
+        {
+          "id": "nekro_valy",
+          "name": "Valefar Assimilator Y",
+          "description": "When you would gain another player's technology using one of your faction abilities, you may place the 'Y' assimilator token on a faction technology owned by that player instead. While this token is on a technology, this card gains that technology's text. You cannot place an assimilator token on technology that already has an assimilator token."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_agent",
+          "name": "Nekro Malleon",
+          "description": "During the action phase: You may exhaust this card to choose a player; that player may discard 1 action card or spend 1 command token from their command sheet to gain 2 trade goods."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_commander",
+          "name": "Nekro Acidos",
+          "description": "UNLOCK: Own 3 technologies. A 'Valefar Assimilator' technology counts only if its X or Y token is on a technology. After you gain a technology: you may draw 1 action card."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_hero",
+          "name": "UNIT.DSGN.FLAYESH",
+          "description": "POLYMORPHIC ALGORITHM. ACTION: Choose a planet that has a technology specialty in a system that contains your units. Destroy any other player's unit's on that planet. Gain trade goods equal to that planet's combined resource and influence values and gain 1 technology that matches the specialty of that planet. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_pn",
+          "name": "Antivirus",
+          "description": "At the start of a combat: Place this card face-up in your play area. While this card is in your play area, the Nekro player cannot use their TECHNOLOGICAL SINGULARITY faction ability against you. If you activate a system that contains 1 or more of the Nekro player's units, return this card to the Nekro player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_fs",
+          "name": "The Alastor",
+          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. At the start of a space combat, choose any number of your ground forces in this system to participate in combat as if they were ships."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_mech",
+          "name": "Mordred",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. During a combat against an opponent who has an 'X' or 'Y' token on 1 or more of their technologies, apply +2 to the result of each of this unit's combat rolls."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_starting_tech",
+          "name": "Nekro Starting Tech",
+          "description": "Daxcive Animators"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nekro_starting_fleet",
+          "name": "Nekro Starting Fleet",
+          "description": "1 Dreadnought, 1 Carrier, 1 Cruiser, 2 Fighters, 2 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "nekro_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "nekro_hs",
+          "name": "Nekro Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Mordai II",
+              "resource": 4,
               "influence": 0
             }
           ]
@@ -1757,90 +1817,110 @@
       "name": "The Nomad",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_company",
+          "name": "The Company",
+          "description": "During setup, take the 2 additional Nomad faction agents and place them next to your faction sheet; you have 3 agents."
+        },
+        {
+          "id": "nomad_future_sight",
+          "name": "Future Sight",
+          "description": "During the Agenda phase, after an outcome that you voted for or predicted is resolved, gain 1 trade good."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_tcs",
+          "name": "Temporal Command Suite (Y)",
+          "description": "After any player's agent becomes exhausted, you may exhaust this card to ready that agent; if your ready another player's agent, you may perform a transaction with that player."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_agent1",
+          "name": "Artuno the Betrayer",
+          "description": "When you gain trade goods from the supply: You may exhaust this card to place an equal number of trade goods on this card. When this card readies, gain the trade goods on this card."
+        },
+        {
+          "id": "nomad_agent2",
+          "name": "Field Marshal Mercer",
+          "description": "At the end of a player's turn: You may exhaust this card to allow that player to remove up to 2 of their ground forces form the game board and place them on planets they control in the active system."
+        },
+        {
+          "id": "nomad_agent3",
+          "name": "The Thundarian",
+          "description": "After the 'Roll Dice' step of combat: You may exhaust this card. If you do, hits are not assigned to either players' units. Return to the start of this combat round's 'Roll Dice' step."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_commander",
+          "name": "Navarch Feng",
+          "description": "UNLOCK: Have 1 scored secret objective. You can produce your flagship without spending resources."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_hero",
+          "name": "Ahk-Syl Siven",
+          "description": "PROBABILITY MATRIX. ACTION: Place this card near the game board; your flagship and units it transports can move out of systems that contain your command tokens during this game round. At the end of that game round, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_pn",
+          "name": "The Cavalry",
+          "description": "At the start of a space combat against a player other than the Nomad: During this combat, treat 1 of your non-fighter ships as if it has the SUSTAIN DAMAGE ability, combat value, and ANTI-FIGHTER BARRAGE value of the Nomad's Flagship. Return this card to the Nomad player at the end of this combat."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_fs1",
+          "name": "Memoria I",
+          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 8(x3). You may treat this unit as if it were adjacent to systems that contain one or more of your mechs."
+        },
+        {
+          "id": "nomad_fs2",
+          "name": "Memoria II (GBY)",
+          "description": "Cost 8, Combat 5(x2), Move 2, Capacity 6. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 5(x3). You may treat this unit as if it were adjacent to systems that contain one or more of your mechs."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_mech",
+          "name": "Quantum Manipulator",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. While this unit is in a space area during combat, you may use its SUSTAIN DAMAGE ability to cancel a hit that is produced against your ships in this system."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_starting_tech",
+          "name": "Nomad Starting Tech",
+          "description": "Sling Relay"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "nomad_starting_fleet",
+          "name": "Nomad Starting Fleet",
+          "description": "1 Flagship, 1 Carrier, 1 Destroyer, 3 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "nomad_comms",
+          "name": "Commodities", 
+          "description": "4"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "nomad_hs",
+          "name": "Nomad Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Arcturus",
+              "resource": 4,
+              "influence": 4
             }
           ]
         }
