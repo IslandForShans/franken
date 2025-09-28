@@ -72,14 +72,14 @@
       "starting_techs": [
         {
           "id": "arborec_starting_tech",
-          "name": "Replicators",
+          "name": "Arborec Starting Tech",
           "description": "Magen Defense Grid"
         }
       ],
       "starting_fleet": [
         {
           "id": "arborec_starting_fleet",
-          "name": "G R O W T H",
+          "name": "Arborec Starting Fleet",
           "description": "1 Carrier, 1 Cruiser, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -180,14 +180,14 @@
       "starting_techs": [
         {
           "id": "argent_starting_tech",
-          "name": "Adaptable Zealots",
+          "name": "Argent Starting Tech",
           "description": "Choose two of the following: Neural Motivator, Sarween Tools, Plasma Scoring"
         }
       ],
       "starting_fleet": [
         {
           "id": "argent_starting_fleet",
-          "name": "Strike Force",
+          "name": "Argent Starting Fleet",
           "description": "1 Carrier, 2 Destroyers, 2 Fighters, 5 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -293,14 +293,14 @@
       "starting_techs": [
         {
           "id": "barony_starting_tech",
-          "name": "War Mongers",
+          "name": "Barony Starting Tech",
           "description": "Antimass Deflectors, Plasma Scoring"
         }
       ],
       "starting_fleet": [
         {
           "id": "barony_starting_fleet",
-          "name": "Battle-Ready Armada",
+          "name": "Barony Starting Fleet",
           "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 1 Fighter, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -406,14 +406,14 @@
       "starting_techs": [
         {
           "id": "saar_starting_tech",
-          "name": "Asteroid Scavengers",
+          "name": "Saar Starting Tech",
           "description": "Antimass Deflectors"
         }
       ],
       "starting_fleet": [
         {
           "id": "saar_starting_fleet",
-          "name": "Mobile Factory",
+          "name": "Saar Starting Fleet",
           "description": "2 Carriers, 1 Cruiser, 2 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -529,14 +529,14 @@
       "starting_techs": [
         {
           "id": "keleres_starting_tech",
-          "name": "Adaptable",
+          "name": "Keleres Starting Tech",
           "description": "Choose 2 non-faction technologies owned by other players."
         }
       ],
       "starting_fleet": [
         {
           "id": "keleres_starting_fleet",
-          "name": "Council Escort",
+          "name": "Keleres Starting Fleet",
           "description": "2 Carriers, 1 Cruiser, 2 Fighters, 2 Infantry, 1 Space Dock"
         }
       ],
@@ -674,14 +674,14 @@
       "starting_techs": [
         {
           "id": "muaat_starting_tech",
-          "name": "Molten Weapons",
+          "name": "Muaat Starting Tech",
           "description": "Plasma Scoring"
         }
       ],
       "starting_fleet": [
         {
           "id": "muaat_starting_fleet",
-          "name": "Forge Fleet",
+          "name": "Muaat Starting Fleet",
           "description": "1 War Sun, 2 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -782,14 +782,14 @@
       "starting_techs": [
         {
           "id": "hacan_starting_techs",
-          "name": "Efficient Builders",
+          "name": "Hacan Starting Tech",
           "description": "Antimass Deflectors (B), Sarween Tools (Y)"
         }
       ],
       "starting_fleet": [
         {
           "id": "hacan_starting_fleet",
-          "name": "Merchant Fleet",
+          "name": "Hacan Starting Fleet",
           "description": "2 Carriers, 1 Cruiser, 2 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -905,14 +905,14 @@
       "starting_techs": [
         {
           "id": "emp_starting_tech",
-          "name": "Void Explorers",
+          "name": "Empyrean Starting Tech",
           "description": "Dark Energy Tap"
         }
       ],
       "starting_fleet": [
         {
           "id": "emp_starting_fleet",
-          "name": "Shrouded Fleet",
+          "name": "Empyrean Starting Fleet",
           "description": "2 Carriers, 1 Destroyer, 2 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -1019,14 +1019,14 @@
       "starting_techs": [
         {
           "id": "sol_starting_tech",
-          "name": "Military Training",
+          "name": "Sol Starting Tech",
           "description": "Antimass Deflectors, Neural Motivator"
         }
       ],
       "starting_fleet": [
         {
           "id": "sol_starting_fleet",
-          "name": "Militia",
+          "name": "Sol Starting Fleet",
           "description": "2 Carriers, 1 Destroyer, 3 Fighters, 5 Infantry, 1 Space Dock"
         }
       ],
@@ -1127,14 +1127,14 @@
       "starting_techs": [
         {
           "id": "ghosts_starting_tech",
-          "name": "Wormhole Travelers",
+          "name": "Ghost Starting Tech",
           "description": "Gravity Drive"
         }
       ],
       "starting_fleet": [
         {
           "id": "ghosts_starting_fleet",
-          "name": "Wormhole Fleet",
+          "name": "Ghosts Starting Fleet",
           "description": "1 Carrier, 2 Destroyers, 2 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -1169,99 +1169,99 @@
           "description": "When you gain control of a planet, replace each PDS and space dock that is on that planet with a matching unit from your reinforcements."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_harrow",
+          "name": "Harrow",
+          "description": "At the end of each round of ground combat, your ships in the active system may use their Bombardment abilities against your opponent's ground forces on the planet."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_is",
+          "name": "Inheritance Systems (YY)",
+          "description": "You may exhaust this card and spend 2 resources when you research of technology; ignore all of that technology's prerequisites."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_sd1",
+          "name": "Super-Dreadnought I",
+          "description": "Cost 4, Combat 5, Move 1, Capacity 2. SUSTAIN DAMAGE, BOMBARDMENT 5."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_sd2",
+          "name": "Super-Dreadnought II (BBY)",
+          "description": "Cost 4, Combat 4, Move 2, Capacity 2. SUSTAIN DAMAGE, BOMBARDMENT 4. This unit cannot be destroyed by 'Direct Hit' action cards."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_agent",
+          "name": "I48S",
+          "description": "After a player activates a system: You may exhaust this card to allow that player to replace 1 of their infantry in the active system with 1 mech from their reinforcements."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_commander",
+          "name": "2RAM",
+          "description": "UNLOCK: Have 4 dreadnoughts on the board. Units that have PLANETARY SHIELD do not prevent you from using Bombardment."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_hero",
+          "name": "The Helmsman",
+          "description": "DARK SPACE NAVIGATION. ACTION: Choose 1 system that does not contain otehr players' ships: you may move your flagship and any number of your dreadnoughts from other systems into the chosen system. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_pn",
+          "name": "Cybernetic Enhancements Ω",
+          "description": "When you gain command tokens during the status phase: Gain 1 additional command token. Then, return this card to the L1Z1X player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_fs",
+          "name": "[0.0.1]",
+          "description": "Cost 8, Combat 5(x2), Move 1, Capacity 5. SUSTAIN DAMAGE. During a space combat, hits produced by this ship and by your dreadnoughts in this system must be assigned to non-fighter ships if able."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_mech",
+          "name": "Annihilator",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE, BOMBARDMENT 8. While not participating in ground combat, this unit can use its BOMBARDMENT ability on planets in its system as if it were a ship."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_starting_tech",
+          "name": "L1Z1X Starting Tech",
+          "description": "Neural Motivator, Plasma Scoring"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "l1_starting_fleet",
+          "name": "L1Z1X Starting Fleet",
+          "description": "1 Dreadnought, 1 Carrier, 3 Fighters, 5 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "l1_comms",
+          "name": "Commodities", 
+          "description": "2"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "l1_hs",
+          "name": "L1Z1X Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "[0.0.0]",
+              "resource": 5,
               "influence": 0
             }
           ]
@@ -1272,90 +1272,110 @@
       "name": "The Mahact Gene-Sorcerers",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_edict",
+          "name": "Edict",
+          "description": "When you win a combat, place 1 command token from your opponent's reinforcements in your fleet pool if it does not already contain 1 of that player's tokens; other player's tokens in your fleet pool increase your fleet limit but cannot be redistributed."
+        },
+        {
+          "id": "mahact_imperia",
+          "name": "Imperia",
+          "description": "When you win a combat, place 1 command token from your opponent's reinforcements on your faction sheet if it does not already contain 1 of their command tokens; While another player's command token is on your faction sheet, you can use the ability of that player's commander, if it is unlocked."
+        },
+        {
+          "id": "mahact_hubris",
+          "name": "Hubris",
+          "description": "During setup, purge your 'Alliance' promissory note. Other players cannot give you their 'Alliance' promissory note."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_gr",
+          "name": "Genetic Recombination (G)",
+          "description": "You may exhaust this card before a player casts votes; that player must cast at least 1 vote for an outcome of your choice or remove 1 token from their fleet pool and return it to their reinforcements."
+        },
+        {
+          "id": "mahact_cl1",
+          "name": "Crimson Legionnaire I",
+          "description": "Cost 1(x2), Combat 8. After this unit is destroyed, gain 1 commodity or convert 1 of your commodities to a trade good."
+        },
+        {
+          "id": "mahact_cl2",
+          "name": "Crimson Legionnaire II",
+          "description": "Cost 1(x2), Combat 7. After this unit is destroyed, gain 1 commodity or convert 1 of your commodities to a trade good. Then, place the unit on this card. At the start of your next turn, place each unit that is on this card on a planet you control in your home system."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_agent",
+          "name": "Jae Mir Kan",
+          "description": "When you would spend a command token during the secondary ability of a strategic action: You may exhaust this card to remove 1 of the active player's command tokens from the board and use it instead."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_commander",
+          "name": "Il Na Viroset",
+          "description": "UNLOCK: Have 2 other factions' command tokens in your fleet pool. During your tactical actions, you can activate systems that contain your command tokens. If you do, return both command tokens to your reinforcements and end your turn."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_hero",
+          "name": "Airo Shir Aur",
+          "description": "BENEDICTION. ACTION: Move all units in the space area of any system to an adjacent system that contains a different player's ships. Space combat is resolved in that system; neither player can retreat or resolve abilities that would move their ships. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_pn",
+          "name": "Scepter of Dominion",
+          "description": "Ar the start of the strategy phase: Choose 1 nonhome system that contains your unitss; each other player who has a token on the Mahact player's command sheet places a token from their reinforcements in that system. The, return this card to the Mahact player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_fs",
+          "name": "Arvicon Rex",
+          "description": "Cost 8, Combat 5(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. During combat against an opponent whose command token is not in your fleet pool, apply +2 to the results of this units combat rolls."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_mech",
+          "name": "Starlancer",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. After a player whose command token is in your fleet pool activates this system, you may spend their tokenfrom your fleet pool to end their turn; they gain that token."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_starting_tech",
+          "name": "Mahact Starting Tech",
+          "description": "Bio Stims, Predictive Intelligence"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "mahact_starting_fleet",
+          "name": "Mahact Starting Fleet",
+          "description": "1 Dreadnought, 1 Carrier, 1 Cruiser, 2 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "mahact_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "mahact_hs",
+          "name": "Mahact Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Ixth",
+              "resource": 3,
+              "influence": 5
             }
           ]
         }
