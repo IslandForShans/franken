@@ -2269,89 +2269,109 @@
       "name": "The Vuil'Raith Cabal",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_devour",
+          "name": "Devour",
+          "description": "Capture your opponet's non-structure units that are destroyed during combat."
+        },
+        {
+          "id": "cabal_amalgamation",
+          "name": "Amalgamation",
+          "description": "When you produce a unit, you may return 1 captured unit of that type to produce that unit without spending resources."
+        },
+        {
+          "id": "cabal_riftmeld",
+          "name": "Riftmeld",
+          "description": "When you research a unit upgrade technology, you may return 1 captured unit of that type to ignore all of the technology's prerequisites."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_vortex",
+          "name": "Vortex (R)",
+          "description": "ACTION: Exhaust this card to choose another player's non-structure unit in a system that is adjacent to 1 or more of your space docks. Capture 1 unit of that type from that player's reinforcements"
+        },
+        {
+          "id": "cabal_dt1",
+          "name": "Dimensional Tear I",
+          "description": "PRODUCTION 5. This system is a gravity rift; your ships do not roll for this gravity rift. Place a dimensional tear token beneath this unit as a reminder. Up to 6 fighters in this system do not count against your ships' capacity."
+        },
+        {
+          "id": "cabal_dt2",
+          "name": "Dimensional Tear II (YY)",
+          "description": "PRODUCTION 7. This system is a gravity rift; your ships do not roll for this gravity rift. Place a dimensional tear token beneath this unit as a reminder. Up to 12 fighters in this system do not count against your ships' capacity."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_agent",
+          "name": "The Stillness of Stars",
+          "description": "After another player replenishes commodities: You may exhaust this card to convert their commodities to trade goods and capture 1 unit from their reinforcements that has a cost equal to or lower than their commodity value."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_commander",
+          "name": "That Which Molds Flesh",
+          "description": "UNLOCK: Have units in 3 Gravity Rifts. When you produce fighter or infantry units: Up to 2 of those units do not count against your PRODUCTION limit."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_hero",
+          "name": "It Feeds on Carrion",
+          "description": "DIMENSIONAL ANCHOR. ACTION: Each other player rolls a die for each of their non-fighter ships that are in or adjacent to a asystem that contains a dimensional tear; on a 1-3, capture that unit. If this causes a player's ground forces or fighters to be removed, also capture those units."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_pn",
+          "name": "Crucible",
+          "description": "After you activate a system: Your ships do not roll for gravity rifts during this movement; apply an additional +1 to the move values of your ships that would move out of or through a gravity rift instead. Then, return this card to the Vuil'raith player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_fs",
+          "name": "The Terror Between",
+          "description": "Cost 8, Combat 5(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, BOMBARDMENT 5. Capture all non-structure units that are destroyed in this system, including your own."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_mech",
+          "name": "Reanimator",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. When your infantry on this planet are destroyed, place them on your faction sheet; those units are captured."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_starting_tech",
+          "name": "Cabal Starting Tech",
+          "description": "Self Assembly Routines"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cabal_starting_fleet",
+          "name": "Cabal Starting Fleet",
+          "description": "1 Dreadnought, 1 Carrier, 1 Cruiser, 3 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "cabal_comms",
+          "name": "Commodities", 
+          "description": "2"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "cabal_hs",
+          "name": "Cabal Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Acheron",
+              "resource": 4,
               "influence": 0
             }
           ]
@@ -2362,90 +2382,100 @@
       "name": "The Winnu",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_bt",
+          "name": "Blood Ties",
+          "description": "You do not have to spend influence to remove the custodians token from Mecatol Rex."
+        },
+        {
+          "id": "winnu_reclamation",
+          "name": "Reclamation",
+          "description": "After you resolve a tactical action during which you gained control of Mecatol Rex, you may place 1 PDS and 1 space dock from your reinforcements on Mecatol Rex."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_lgf",
+          "name": "Lazax Gate Folding (BB)",
+          "description": "During your tactical actions, if you do not control Mecatol Rex, treat its system as if it contains both an alpha and beta wormhole. ACTION: If you control Mecatol Rex, exhaust this card to place 1 infantry from your reinforcements on Mecatol Rex."
+        },
+        {
+          "id": "winnu_htp",
+          "name": "Hegemonic Trade Policy (YY)",
+          "description": "Exhaust this card when 1 or more of your units use PRODUCTION; swap the resource and influence values of 1 planet you control during that use of Production."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_agent",
+          "name": "Berekar Berekon",
+          "description": "When 1 or more of a player's units use PRODUCTION: You may exhaust this card to reduce the combined cost of the produced units by 2."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_commander",
+          "name": "Rickar Rickani",
+          "description": "UNLOCK: Control Mecatol Rex or enter into a combat in the Mecatol Rex system. During combat: Apply +2 to the result of each of your unit's combat rolls in the Mecatol Res system, your home system, and each system that contains a legendary planet."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_hero",
+          "name": "Mathis Mathinus",
+          "description": "IMPERIAL SEAL. ACTION: Perform the primary ability of any strategy card. Then, choose any number of other players. Those players may perform the secondary ability of that strategy card. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_pn",
+          "name": "Acquiescence Ω",
+          "description": "When the Winnu player resolves a strategic action: You do not have to spend or place a command token to resolve the secondary ability of that strategy card. The, return this card ot the Winnu player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_fs",
+          "name": "Salai Sai Corian",
+          "description": "Cost 8, Combat 7, Move 1, Capacity 3. SUSTAIN DAMAGE. When this unit makes a combat roll, it rolls a number of dice equal to the number of your opponent's non-fighter ships in this system."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_mech",
+          "name": "Reclaimer",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. After you resolve a tactical action where you gained control of this planet, you may place 1 PDS or 1 Space Dock from your reinforcements on this planet."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_starting_techs",
+          "name": "Winnu Starting Techs",
+          "description": "Choose any 1 technology that has no prerequisites."
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "winnu_starting_fleet",
+          "name": "Winnu Starting Fleet",
+          "description": "1 Carrier, 1 Cruiser, 2 Fighters, 2 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "winnu_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "winnu_hs",
+          "name": "Winnu Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Winnu",
+              "resource": 3,
+              "influence": 4
             }
           ]
         }
@@ -2455,90 +2485,105 @@
       "name": "The Xxcha Kingdom",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_pa",
+          "name": "Peace Accords",
+          "description": "After you resolve the primary or secondary ability of the 'Diplomacy' strategy card, you may gain control of 1 planet other than Mecatol Rex that does not contain any units and is in a system that is adjacent to a planet oyu control."
+        },
+        {
+          "id": "xxcha_quash",
+          "name": "Quash",
+          "description": "When an agenda is revealed, you may spend 1 token from your strategy pool to discard that agenda and reveal 1 agenda from the top of the deck. Players vote on this agenda instead."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_nf",
+          "name": "Nullification Field (YY)",
+          "description": "After another player activates a system that contains 1 or more of your ships, you may exhaust this card and spend 1 token from your strategy pool; immediately end that player's turn."
+        },
+        {
+          "id": "xxcha_it",
+          "name": "Instinct Training (G)",
+          "description": "You may exhaust this card and spend 1 token from your strategy pool when another player plays an action card; cancel that action card."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_agent",
+          "name": "Ggrocuto Rinn",
+          "description": "ACTION: Exhaust this card to ready any planet; if that planet is in a system that is adjacent to a planet you control, you may remove 1 infantry form that planet and return it to its reinforcements."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_commander",
+          "name": "Elder Qanoj",
+          "description": "UNLOCK: Control planets that have a combined value of at least 12 influence. Each planet you exhaust to cast votes provides 1 additional vote. Game effects cannot prevent you from voting on an agenda."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_hero",
+          "name": "Xxekir Grom Ω",
+          "description": "POLITICLA DATA NEXUS. When you exhaust planets, combine the values of their resources and influence. Treat the combined value as if it were both resources and influence."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_pn",
+          "name": "Political Favor",
+          "description": "When an agenda is revealed: Remove 1 token from the Xxcha player's strategy pool and return it to thier reinforcements. Then, discard the revealed agenda and reveal 1 agenda from the top of the dec. Players vote on this agenda instead. Then, return this card to the Xxcha player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_fs",
+          "name": "Loncara Ssodu",
+          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, SPACE CANNON 5(x3). You may use this unit's SPACE CANNON against ships that are in adjacent systems."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_mech",
+          "name": "Indomitus",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE, SPACE CANNON 8. You may use this unit's Space Cannon ability against ships that are in adjacent systems."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_starting_tech",
+          "name": "Xxcha Starting Tech",
+          "description": "Graviton Laser System"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "xxcha_starting_fleet",
+          "name": "Xxcha StartingFleet",
+          "description": "1 Carrier, 2 Cruisers, 3 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "xxcha_comms",
+          "name": "Commodities", 
+          "description": "4"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "xxcha_hs",
+          "name": "Xxcha Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Archon Ren",
+              "resource": 2,
+              "influence": 3
+            },
+            {
+              "name": "Archon Tau",
+              "resource": 1,
+              "influence": 1
             }
           ]
         }
@@ -2548,90 +2593,100 @@
       "name": "The Yin Brotherhood",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_indoctrination",
+          "name": "Indoctrination",
+          "description": "At the start of a ground combat, you may spend 2 influence to replace 1 of your opponent's participating infantry with 1 infantry from your reinforcements."
+        },
+        {
+          "id": "yin_devotion",
+          "name": "Devotion",
+          "description": "After each space battle round, you may destroy 1 of your cruisers or destroyers in the active system to produce 1 hit and assign it to 1 of your opponent's ships in that system."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_ic",
+          "name": "Impulse Core (YY)",
+          "description": "At the sart of a space combat, you may destroy 1 of your cruisers or destroyers in the active system to produce 1 hit against your opponent's ships; that hit must be assigned by your opponent to 1 of their non-fighter ships, if able."
+        },
+        {
+          "id": "yin_ys",
+          "name": "Yin Spinner Ω (GG)",
+          "description": "After you produce units, place up to 2 infantry from your reinforcements on any planet you control or in any space area that contains 1 or more of your ships."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_agent",
+          "name": "Brother Milor Ω",
+          "description": "After a player's unit is destroyed: You may exhaust this card to allow that player to place 2 fighters in the destroyed unit's system if it were a ship, or 2 infantry on its planet if it was a ground force."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_commander",
+          "name": "Brother Omar Ω",
+          "description": "UNLOCK: Use one of your faction abilities. This card satisfies a green technology prerequisite. When you research a technology owned by another player, you may return 1 of your infantry to reinforcements to ignore its prerequisites."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_hero",
+          "name": "Dannel of the Tenth Ω",
+          "description": "QUANTUM DISSEMINATION Ω. ACTION: Commit up to 3 infantry from your reinforcements to any non-home planets and resolve invasions on those planets; players cannot use SPACE CANNON against those units. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_pn",
+          "name": "Greyfire Mutagen Ω",
+          "description": "At the start of a ground combat against 2 or more gorund forces that are not controlled by the yin player: Replace 1 of your opponent's infantry with 1 infantry from your reinforcements. Then, return this card to the Yin player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_fs",
+          "name": "Van Hauge",
+          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. When this ship is destroyed, destroy all ships in this system."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_mech",
+          "name": "Moyin's Ashes",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: When you use your INDOCTRINATION faction ability, you may spend 1 additional influence to replace your opponent's unit with 1 mech instead of 1 infantry."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_starting_tech",
+          "name": "Yin Starting Tech",
+          "description": "Sarween Tools"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yin_starting_fleet",
+          "name": "Yin Starting Fleet",
+          "description": "2 Carriers, 1 Destroyer, 4 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "yin_comms",
+          "name": "Commodities", 
+          "description": "2"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "yin_hs",
+          "name": "Yin Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Darien",
+              "resource": 4,
+              "influence": 4
             }
           ]
         }
@@ -2641,90 +2696,110 @@
       "name": "The Yssaril Tribes",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_st",
+          "name": "Stall Tactics",
+          "description": "ACTION: Discard 1 action card from your hand."
+        },
+        {
+          "id": "yssaril_scheming",
+          "name": "Scheming",
+          "description": "When you draw 1 or more action cards, draw 1 additional action card. Then, choose and discard 1 action card from your hand."
+        },
+        {
+          "id": "yssaril_crafty",
+          "name": "Crafty",
+          "description": "You can have any number of action cards in your hand. Game effects cannot prevent you from using this ability."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_tp",
+          "name": "Transparasteel Plating (G)",
+          "description": "During your turn of the action phase, players that have passed cannot play action cards."
+        },
+        {
+          "id": "yssaril_mi",
+          "name": "Mageon Implants (GGG)",
+          "description": "ACTION: Exhaust this card to look at another player's hand of action cards. Choose 1 of those cards and add it to your hand."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_agent",
+          "name": "Ssruu",
+          "description": "This card has the text ability of each other player's agent, even if that agent is exhausted."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_commander",
+          "name": "So Ata",
+          "description": "UNLOCK: Have 7 action cards. After another player activates a system that contains your units: You may look at that player's action cards, promissory notes, or secret objectives."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_hero",
+          "name": "Kyver, Blade and Key",
+          "description": "GUILD OF SPIES. ACTION: Each other player shows you 1 action card from their hand. For each player, you may either take that card or force that player to discard 3 random action cards from their hand. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_pn",
+          "name": "Spy Net",
+          "description": "At the start of your turn: Look at the Yssaril player's hand of action cards. Choose 1 of those cards and add it to your hand. Then, return this card to the Yssaril player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_fs",
+          "name": "Y'sia Y'ssrila",
+          "description": "Cost 8, Combat 5(x2), Move 2, Capacity 3. SUSTAIN DAMAGE. This ship can move through systems that contain other player's ships."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_mech",
+          "name": "Blackshade Infiltrator",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. After you use your STALL TACTICS faction ability, you may place 1 mech on a planet you control."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_starting_tech",
+          "name": "Yssaril Starting Tech",
+          "description": "Neural Motivator"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "yssaril_starting_fleet",
+          "name": "Yssaril Starting Fleet",
+          "description": "2 Carriers, 1 Cruiser, 2 Fighters, 5 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "yssaril_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "yssaril_hs",
+          "name": "Yssaril Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Retillion",
+              "resource": 2,
+              "influence": 3
+            },
+            {
+              "name": "Shalloq",
+              "resource": 1,
+              "influence": 2
             }
           ]
         }
