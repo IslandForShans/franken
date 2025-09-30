@@ -42,7 +42,6 @@ Opens the app at `http://localhost:5173`
 
 ## Adding/Fixing soon
 
-- Ability to cancel the draft
 - Creating custom Non-Draft Components
 - Adding DS as an optional/standalone
 - Adding US as an optional/standalone
@@ -50,8 +49,8 @@ Opens the app at `http://localhost:5173`
 - Better styling
 - Icons
 - Making faction sheets look closer to irl sheets
-- Changing optional swaps and adds to happen after faction components are confirmed after draft is done
 - P2P "Multiplayer"
-- Fix reduction indicators to only show up during reduction phase
 - Ban screen goes away after selecting something to ban
+- Ability to remove components is broken
+- Non-Draft Components not properly being excluded from the draft
 
