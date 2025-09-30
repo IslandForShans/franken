@@ -748,7 +748,29 @@ export default function DraftSimulator() {
             )}
 
             {renderCurrentPlayerInfo()}
-            
+
+            {/* Cancel Draft Button */}
+            {draftStarted && (
+              <button 
+                onClick={() => {
+                  if (confirm("Are you sure you want to cancel the draft? All progress will be lost.")) {
+                    setDraftStarted(false);
+                    setDraftPhase("draft");
+                    setFactions([]);
+                    setPlayerBags([]);
+                    setPlayerProgress([]);
+                    setRotisseriePool({});
+                    setDraftHistory([]);
+                    setCurrentPlayer(0);
+                    setRound(1);
+                    setPicksThisRound(0);
+                  }
+                }}
+                className="mt-2 px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700"
+              >
+                Cancel Draft
+              </button>
+            )}
           </div>
 
           <div className="flex-1 overflow-auto p-4 space-y-4">
@@ -768,14 +790,16 @@ export default function DraftSimulator() {
                   key={i}
                   drafted={f}
                   onRemove={(cat, idx) => handleReduction(i, cat, idx)}
+                  onSwapComponent={(playerIdx, category, componentIdx, swapOption) => handleSwap(playerIdx, category, componentIdx, swapOption)}
                   draftLimits={getCurrentFactionLimits()}
                   title={`Player ${i + 1} - Remove Excess Components`}
                   showReductionHelper={true}
+                  playerIndex={i}
                 />
               ))
             ) : multiplayerEnabled ? (
               <FactionSheet
-                drafted={{}}
+                drafted={draftedComponents}
                 onRemove={() => {}}
                 draftLimits={draftLimits}
                 title="Your Multiplayer Draft"
