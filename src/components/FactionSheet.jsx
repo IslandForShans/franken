@@ -103,7 +103,7 @@ export default function FactionSheet({
               </h3>
               <div className="text-sm">
                 <span className={status.needsReduction ? "text-red-600 font-bold" : "text-gray-600"}>
-                  {status.items.length}/{status.limit} 
+                  {status.items.length}/{status.limit}
                   {status.needsReduction && ` (-${status.excess} needed)`}
                 </span>
               </div>
@@ -132,16 +132,16 @@ export default function FactionSheet({
                     }`}
                     onClick={() => setExpandedId(isExpanded ? null : id)}
                   >
-                    <div className="flex justify-between">
-                      <div className="flex-1">
-                        <div className="font-semibold">
+                    <div className="flex justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold break-words">
                           {item.name}
                           {item.isSwap && <span className="text-blue-600 text-xs ml-2">[SWAPPED]</span>}
                           {item.isExtra && <span className="text-green-600 text-xs ml-2">[EXTRA]</span>}
                         </div>
                         
                         {item.faction && (
-                          <div className="text-xs text-blue-600">{item.faction}</div>
+                          <div className="text-xs text-blue-600 break-words">{item.faction}</div>
                         )}
                         
                         {item.description && !isExpanded && (
@@ -154,10 +154,10 @@ export default function FactionSheet({
                         {!isExpanded && showReductionHelper && (
                           <div className="mt-1 text-xs">
                             {swapOption && (
-                              <div className="text-blue-600">↔ Swap available: {swapOption.name}</div>
+                              <div className="text-blue-600 break-words">↔ Swap available: {swapOption.name}</div>
                             )}
                             {extraComponents.length > 0 && (
-                              <div className="text-green-600">+ Will add: {extraComponents.map(e => e.name).join(", ")}</div>
+                              <div className="text-green-600 break-words">+ Will add: {extraComponents.map(e => e.name).join(", ")}</div>
                             )}
                           </div>
                         )}
@@ -167,22 +167,22 @@ export default function FactionSheet({
                           <div className="mt-2 text-xs text-gray-700 border-t pt-2">
                             {item.planets?.map((p, idx) => (
                               <div key={p.name + idx} className="mb-2 p-1 bg-gray-100 rounded">
-                                <div className="font-semibold text-sm text-green-700">{p.name}</div>
+                                <div className="font-semibold text-sm text-green-700 break-words">{p.name}</div>
                                 <div className="text-xs">
                                   Resources: {p.resource || 0} • Influence: {p.influence || 0}
                                 </div>
                                 {p.traits && p.traits.length > 0 && (
-                                  <div className="text-xs text-purple-600">
+                                  <div className="text-xs text-purple-600 break-words">
                                     Traits: {p.traits.join(", ")}
                                   </div>
                                 )}
                                 {p.technology_specialty && p.technology_specialty.length > 0 && (
-                                  <div className="text-xs text-orange-600">
+                                  <div className="text-xs text-orange-600 break-words">
                                     Tech: {p.technology_specialty.join(", ")}
                                   </div>
                                 )}
                                 {p.legendary_ability && (
-                                  <div className="text-xs text-yellow-700 font-medium">
+                                  <div className="text-xs text-yellow-700 font-medium break-words">
                                     Legendary: {p.legendary_ability}
                                   </div>
                                 )}
@@ -205,7 +205,7 @@ export default function FactionSheet({
 
                         {/* Full description when expanded */}
                         {isExpanded && item.description && (
-                          <div className="mt-2 text-sm text-gray-700 whitespace-pre-line border-t pt-2">
+                          <div className="mt-2 text-sm text-gray-700 whitespace-pre-line border-t pt-2 break-words">
                             {item.description}
                           </div>
                         )}
@@ -216,7 +216,7 @@ export default function FactionSheet({
                             {swapOption && (
                               <div className="text-sm text-blue-700 mb-2">
                                 <strong>Swap Option:</strong> {swapOption.name}
-                                <div className="text-xs">Reason: {swapOption.triggerComponent}</div>
+                                <div className="text-xs break-words">Reason: {swapOption.triggerComponent}</div>
                               </div>
                             )}
                             {extraComponents.length > 0 && (
@@ -224,7 +224,7 @@ export default function FactionSheet({
                                 <strong>Will Add if Kept:</strong>
                                 <ul className="text-xs ml-4 list-disc">
                                   {extraComponents.map((extra, idx) => (
-                                    <li key={idx}>{extra.name} ({extra.type.replace('_', ' ')})</li>
+                                    <li key={idx} className="break-words">{extra.name} ({extra.type.replace('_', ' ')})</li>
                                   ))}
                                 </ul>
                               </div>
@@ -234,7 +234,7 @@ export default function FactionSheet({
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex flex-col gap-1 ml-2">
+                      <div className="flex flex-col gap-1 flex-shrink-0">
                         {/* Swap button - only show during reduction if swap available */}
                         {showReductionHelper && swapOption && !item.isSwap && (
                           <button
@@ -242,7 +242,7 @@ export default function FactionSheet({
                               e.stopPropagation(); 
                               handleSwap(category, index);
                             }}
-                            className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                            className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 whitespace-nowrap"
                           >
                             Swap
                           </button>
@@ -255,7 +255,7 @@ export default function FactionSheet({
                               e.stopPropagation(); 
                               handleRemove(category, index); 
                             }}
-                            className={`text-xs hover:underline px-2 py-1 rounded ${
+                            className={`text-xs hover:underline px-2 py-1 rounded whitespace-nowrap ${
                               showReductionHelper && status.needsReduction 
                                 ? "bg-red-500 text-white font-bold hover:bg-red-600" 
                                 : "text-red-600 hover:bg-red-50"
@@ -271,6 +271,7 @@ export default function FactionSheet({
               })}
             </div>
 
+            {showReductionHelper && status.needsReduction && (
               <div className="mt-2 text-sm text-red-600 font-medium bg-red-50 p-2 rounded">
                 ⚠️ Remove {status.excess} component{status.excess !== 1 ? 's' : ''} from this category
               </div>

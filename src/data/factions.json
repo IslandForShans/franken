@@ -931,7 +931,7 @@
             {
               "name": "The Dark",
               "resource": 3,
-              "influence": 4
+              "influence": 4,
               "anomalies": ["Nebula"]
             }
           ]
@@ -2805,25 +2805,9 @@
         }
       ]
     }
-  ]
+  ],
   "tiles": {
     "blue_tiles": [
-      {
-        "id": "18",
-        "name": "Mecatol Rex",
-        "planets": [
-          {
-            "name": "Mecatol Rex",
-            "resource": 1,
-            "influence": 6,
-            "traits": [],
-            "technology_specialty": [],
-            "legendary_ability": null
-          }
-        ],
-        "wormhole": null,
-        "anomalies": []
-      },
       {
         "id": "19",
         "name": "Wellon",
@@ -3614,7 +3598,7 @@
             "name": "Cormund",
             "resource": 2,
             "influence": 0,
-            "traits": ["Hazardous"]
+            "traits": ["Hazardous"],
             "technology_specialty": []
           }
         ],

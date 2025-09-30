@@ -10,7 +10,8 @@ export const undraftableComponents = {
     { name: "Devour", faction: "Cabal", triggerComponent: "Riftmeld", type: "gain_when_draft" },
     { name: "Fragile", faction: "Jol-Nar", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Mitosis", faction: "Arborec", reason: "Just Plain Garbage", type: "garbage" },
-    { name: "Hubris", faction: "Mahact", reason: "Just Plain Garbage", type: "garbage" }
+    { name: "Hubris", faction: "Mahact", reason: "Just Plain Garbage", type: "garbage" },
+    { name: "Propagation", faction: "Nekro", reason: "Just Plain Garbage", type:"garbage" }
   ],
 
   // Home systems with optional swaps
