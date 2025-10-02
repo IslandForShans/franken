@@ -34,10 +34,7 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Better styling
 - Icons
 - Making faction sheets look closer to irl sheets
-- Ability to remove components is broken in main draft screen, fixed in faction builder
-- Have Res/Inf show in sidebar
 - Fix local multiplayer, currently unusable
-- Restrict draft picks to one of each component type per round of picks
 
 ## Eventual Non-Franken features to add
 

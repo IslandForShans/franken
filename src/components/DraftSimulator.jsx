@@ -49,6 +49,8 @@ export default function DraftSimulator() {
   const [draftPhase, setDraftPhase] = useState("draft");
   const [firstRoundPickCount, setFirstRoundPickCount] = useState(3);
   const [subsequentRoundPickCount, setSubsequentRoundPickCount] = useState(2);
+  const [pendingPicks, setPendingPicks] = useState([]); // Temporary picks before submission
+  const [isPickingPhase, setIsPickingPhase] = useState(true); // true = picking, false = locked in
 
   // Ban system
   const [bannedFactions, setBannedFactions] = useState(new Set());
@@ -226,100 +228,121 @@ export default function DraftSimulator() {
   };
 
   const handlePick = (category, component) => {
-    if (!category || !component || !draftStarted || draftPhase !== "draft") return;
+    if (!category || !component || !draftStarted || draftPhase !== "draft" || !isPickingPhase) return;
 
     const currentProgress = playerProgress[currentPlayer][category] || 0;
-    if (currentProgress >= draftLimits[category]) return;
+    const pendingCountInCategory = pendingPicks.filter(p => p.category === category).length;
+  
+    // Check total category limit
+    if (currentProgress + pendingCountInCategory >= draftLimits[category]) {
+        alert(`Cannot pick more ${category}. Limit: ${draftLimits[category]}`);
+        return;
+    }
 
-    // Add component and handle swap/extra components
-    const newComponent = { ...component };
+    // NEW: Check if already picked one from this category this round
+    if (pendingCountInCategory >= 1) {
+        alert(`You can only pick one ${category.replace('_', ' ')} per round.`);
+        return;
+    }
 
+    // Add to pending picks
+    setPendingPicks(prev => [...prev, {
+        category,
+        component: { ...component }
+    }]);
+  };
+
+  // Add function to remove from pending picks
+  const handleRemovePendingPick = (category, componentId) => {
+    setPendingPicks(prev => 
+        prev.filter(pick => 
+        !(pick.category === category && (pick.component.id || pick.component.name) === componentId)
+        )
+    );
+  };
+
+  // Add submit picks function
+  const handleSubmitPicks = () => {
     if (draftVariant === "rotisserie") {
-      const compId = component.id || component.name;
-      if (!rotisseriePool[category]?.find(c => (c.id || c.name) === compId)) return;
-
-      setFactions(prev => {
-        const newF = [...prev];
-        newF[currentPlayer] = { ...newF[currentPlayer] };
-        newF[currentPlayer][category] = [...(newF[currentPlayer][category] || []), newComponent];
-        return newF;
-      });
-
-      setPlayerProgress(prev => {
-        const np = [...prev];
-        np[currentPlayer] = { ...np[currentPlayer] };
-        np[currentPlayer][category] = (np[currentPlayer][category] || 0) + 1;
-        return np;
-      });
-
-      setRotisseriePool(prev => {
-        const pool = { ...prev };
-        pool[category] = pool[category].filter(c => (c.id || c.name) !== compId);
-        return pool;
-      });
-
-      const nextPlayer = (currentPlayer + 1) % playerCount;
-      setCurrentPlayer(nextPlayer);
-      if (nextPlayer === 0) setRound(r => r + 1);
-      
+        // Rotisserie: must pick exactly 1
+        if (pendingPicks.length !== 1) {
+        alert("You must pick exactly 1 component in Rotisserie mode.");
+        return;
+        }
     } else {
-      // Bag draft logic
-      const bag = playerBags[currentPlayer];
-      if (!bag?.[category]) return;
-      
-      const compId = component.id || component.name;
-      if (!bag[category].find(c => (c.id || c.name) === compId)) return;
+        // Bag draft: must pick required amount
+        const neededPicks = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
+        if (pendingPicks.length < neededPicks) {
+        alert(`You must pick ${neededPicks} components this round. Currently: ${pendingPicks.length}`);
+        return;
+        }
+    }
 
-      setFactions(prev => {
-        const nf = [...prev];
-        nf[currentPlayer] = { ...nf[currentPlayer] };
-        nf[currentPlayer][category] = [...(nf[currentPlayer][category] || []), newComponent];
-        return nf;
-      });
+    // Move pending picks to actual faction
+    const fc = [...factions];
+    const pg = [...playerProgress];
 
-      setPlayerProgress(prev => {
-        const np = [...prev];
-        np[currentPlayer] = { ...np[currentPlayer] };
-        np[currentPlayer][category] = (np[currentPlayer][category] || 0) + 1;
-        return np;
-      });
+    pendingPicks.forEach(({ category, component }) => {
+        fc[currentPlayer][category] = [...(fc[currentPlayer][category] || []), component];
+        pg[currentPlayer][category] = (pg[currentPlayer][category] || 0) + 1;
 
-      setPlayerBags(prev => {
-        const nb = [...prev];
-        nb[currentPlayer] = { ...nb[currentPlayer] };
-        nb[currentPlayer][category] = nb[currentPlayer][category].filter(c => (c.id || c.name) !== compId);
-        return nb;
-      });
+        // Remove from bags/pools
+        if (draftVariant === "rotisserie") {
+        setRotisseriePool(prev => {
+            const pool = { ...prev };
+            const compId = component.id || component.name;
+            pool[category] = pool[category].filter(c => (c.id || c.name) !== compId);
+            return pool;
+        });
+        } else {
+        setPlayerBags(prev => {
+            const nb = [...prev];
+            nb[currentPlayer] = { ...nb[currentPlayer] };
+            const compId = component.id || component.name;
+            nb[currentPlayer][category] = nb[currentPlayer][category].filter(c => (c.id || c.name) !== compId);
+            return nb;
+        });
+        }
 
-      const newPicksThisRound = picksThisRound + 1;
-      setPicksThisRound(newPicksThisRound);
+        // Add to history
+        setDraftHistory(prev => [...prev, { 
+        playerIndex: currentPlayer, 
+        category, 
+        item: component, 
+        round,
+        componentId: component.id || component.name
+        }]);
+    });
 
-      const neededPicks = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
-      if (newPicksThisRound >= neededPicks) {
+    setFactions(fc);
+    setPlayerProgress(pg);
+    setPendingPicks([]);
+    setIsPickingPhase(false);
+
+    // Move to next player after short delay
+    setTimeout(() => {
         const nextPlayer = (currentPlayer + 1) % playerCount;
         setCurrentPlayer(nextPlayer);
+        setIsPickingPhase(true);
         setPicksThisRound(0);
-        
+    
         if (nextPlayer === 0) {
-          setRound(r => r + 1);
-          setPlayerBags(prev => {
+        setRound(r => r + 1);
+        // Rotate bags in bag draft
+        if (draftVariant !== "rotisserie") {
+            setPlayerBags(prev => {
             if (prev.length <= 1) return prev;
             const rotated = [...prev];
             const last = rotated.pop();
             rotated.unshift(last);
             return rotated;
-          });
+            });
         }
       }
-    }
 
-    setDraftHistory(prev => [...prev, { 
-      playerIndex: currentPlayer, category, item: component, round,
-      componentId: component.id || component.name
-    }]);
-
-    // Check if draft is complete
-    checkDraftCompletion();
+        // Check if draft is complete
+        checkDraftCompletion();
+    },    300);
   };
 
   const checkDraftCompletion = () => {
@@ -472,53 +495,89 @@ export default function DraftSimulator() {
 
   const [showBanModal, setShowBanModal] = useState(false);
 
+  // Update renderCurrentPlayerInfo to show pending picks
   const renderCurrentPlayerInfo = () => {
     if (draftPhase === "reduction") {
-      return (
+        return (
         <div className="mb-4 p-3 bg-orange-100 rounded">
-          <h3 className="font-bold">Reduction Phase</h3>
-          <div className="text-sm">Remove excess components to meet faction limits</div>
+            <h3 className="font-bold">Reduction Phase</h3>
+            <div className="text-sm">Remove excess components to meet faction limits</div>
         </div>
-      );
+        );
     }
 
     if (draftPhase === "complete") {
-      return (
+        return (
         <div className="mb-4 p-3 bg-green-100 rounded">
-          <h3 className="font-bold">Draft Complete!</h3>
-          <div className="text-sm">All factions finalized</div>
+            <h3 className="font-bold">Draft Complete!</h3>
+            <div className="text-sm">All factions finalized</div>
         </div>
-      );
+        );
     }
 
     if (!draftStarted) {
-      return (
+        return (
         <div className="mb-4 p-3 bg-yellow-100 rounded">
-          <h3 className="font-bold">Configure settings and click "Start Draft" to begin</h3>
+            <h3 className="font-bold">Configure settings and click "Start Draft" to begin</h3>
         </div>
-      );
+        );
     }
 
     if (multiplayerEnabled) {
-      return (
+        return (
         <div className="mb-4 p-3 bg-blue-100 rounded">
-          <h3 className="font-bold">Multiplayer Draft - Round {round}</h3>
-          <div className="text-sm">Selected picks: {selectedPicks.length}</div>
+            <h3 className="font-bold">Multiplayer Draft - Round {round}</h3>
+            <div className="text-sm">Selected picks: {selectedPicks.length}</div>
         </div>
-      );
+        );
     }
 
     const neededPicks = draftVariant === "rotisserie" ? 1 : 
-                        (round === 1 ? firstRoundPickCount : subsequentRoundPickCount);
+                      (round === 1 ? firstRoundPickCount : subsequentRoundPickCount);
+  
     return (
-      <div className="mb-4 p-3 bg-blue-100 rounded">
+        <div className="mb-4 p-3 bg-blue-100 rounded">
         <h3 className="font-bold">Player {currentPlayer + 1}'s Turn - Round {round}</h3>
-        <div className="text-sm">Picks this round: {picksThisRound} / {neededPicks}</div>
+        <div className="text-sm">
+            Pending picks: {pendingPicks.length} / {neededPicks}
+            {draftVariant === "rotisserie" && " (One pick per turn)"}
+        </div>
         <div className="text-sm">Variant: {draftVariant}</div>
-        {draftVariant === "rotisserie" && (
-          <div className="text-sm text-orange-600">One pick per turn</div>
+      
+        {pendingPicks.length > 0 && (
+            <div className="mt-2">
+            <div className="text-xs font-semibold mb-1">Your pending picks:</div>
+            <div className="flex flex-wrap gap-1">
+                {pendingPicks.map((pick, idx) => (
+                <span 
+                    key={idx}
+                    className="bg-blue-200 px-2 py-1 rounded text-xs cursor-pointer hover:bg-red-200"
+                    onClick={() => handleRemovePendingPick(pick.category, pick.component.id || pick.component.name)}
+                    title="Click to remove"
+                >
+                    {pick.component.name} ×
+                </span>
+                ))}
+            </div>
+            </div>
         )}
-      </div>
+
+        {isPickingPhase && (
+            <button
+            onClick={handleSubmitPicks}
+            disabled={pendingPicks.length < neededPicks}
+            className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+            Submit Picks ({pendingPicks.length}/{neededPicks})
+            </button>
+        )}
+      
+        {!isPickingPhase && (
+            <div className="mt-2 text-sm text-gray-600">
+            Picks submitted. Moving to next player...
+            </div>
+        )}
+        </div>
     );
   };
 

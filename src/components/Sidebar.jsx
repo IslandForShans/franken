@@ -135,22 +135,41 @@ export default function Sidebar({
                               
                               {/* Show tile info for system tiles */}
                               {component.planets && component.planets.length > 0 && (
-                                <div className="text-xs text-green-600 mt-1">
-                                  {component.planets.length === 1 
-                                    ? `${component.planets[0].name} (${component.planets[0].resource}R/${component.planets[0].influence}I)`
-                                    : `${component.planets.length} planets`
-                                  }
+                                <div className="mt-1 border-t pt-1">
+                                  {component.planets.map((planet, pIdx) => (
+                                    <div key={pIdx} className="text-xs mb-1">
+                                      <div className="font-semibold text-green-700">{planet.name}</div>
+                                      <div className="text-gray-700">
+                                        {planet.resource}R / {planet.influence}I
+                                      </div>
+                                      {planet.traits && planet.traits.length > 0 && (
+                                        <div className="text-purple-600">
+                                          {planet.traits.join(", ")}
+                                        </div>
+                                      )}
+                                      {planet.technology_specialty && planet.technology_specialty.length > 0 && (
+                                        <div className="text-orange-600">
+                                          Tech: {planet.technology_specialty.join(", ")}
+                                        </div>
+                                      )}
+                                      {planet.legendary_ability && (
+                                        <div className="text-yellow-700 font-medium">
+                                          Legendary: {planet.legendary_ability}
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
                                 </div>
                               )}
                               
                               {component.anomalies && component.anomalies.length > 0 && (
-                                <div className="text-xs text-red-600 mt-1">
-                                  {component.anomalies.join(", ")}
+                                <div className="text-xs text-red-600 mt-1 font-medium">
+                                  Anomalies: {component.anomalies.join(", ")}
                                 </div>
                               )}
                               
                               {component.wormhole && (
-                                <div className="text-xs text-purple-600 mt-1">
+                                <div className="text-xs text-purple-600 mt-1 font-medium">
                                   Wormhole: {component.wormhole}
                                 </div>
                               )}
