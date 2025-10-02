@@ -11,6 +11,7 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 ### Solo Draft Mode
    ```bash
    npm run dev
+   ```
 
 - **Franken**: Each player gets a bag of components, picks items, then passes bags
 - **Rotisserie**: All components in shared pools, players pick in turn order
@@ -44,5 +45,6 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Lore Reference
 - Milty Draft
 - Map Builder
+
 
 
