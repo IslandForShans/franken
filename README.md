@@ -1,32 +1,16 @@
 # TI4 Franken Draft
 
-A React application for drafting custom Twilight Imperium 4 factions using the Franken Draft format. Supports both solo and multiplayer drafting.
+A React application for drafting custom Twilight Imperium 4 factions using the Franken Draft format. Supports both solo and multiplayer(eventually) drafting.
 
 ## Quick Setup
 
-1. **Install dependencies**:
+**Install dependencies**:
    ```bash
    npm install
    ```
 ### Solo Draft Mode
-```bash
-npm run dev
-```
-Opens the app at `http://localhost:5173`
-
-### Multiplayer Mode
-1. Start the server:
-   ```bash
-   npm run start-server
-   ```
-   Server runs on `http://localhost:4000`
-
-2. Start the client:
    ```bash
    npm run dev
-   ```
-
-3. Enable multiplayer in the UI and connect to server
 
 - **Franken**: Each player gets a bag of components, picks items, then passes bags
 - **Rotisserie**: All components in shared pools, players pick in turn order
@@ -60,4 +44,5 @@ Opens the app at `http://localhost:5173`
 - Lore Reference
 - Milty Draft
 - Map Builder
+
 
