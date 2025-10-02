@@ -50,7 +50,14 @@ Opens the app at `http://localhost:5173`
 - Icons
 - Making faction sheets look closer to irl sheets
 - P2P "Multiplayer"
-- Ban screen goes away after selecting something to ban
-- Ability to remove components is broken
-- Non-Draft Components not properly being excluded from the draft
+- Ability to remove components is broken in main draft screen, fixed in faction builder
+- Have Res/Inf show in sidebar
+- Fix local multiplayer, currently unusable
+
+## Eventual Non-Franken features to add
+
+- Faction Reference
+- Lore Reference
+- Milty Draft
+- Map Builder
 
