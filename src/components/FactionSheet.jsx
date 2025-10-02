@@ -51,15 +51,19 @@ export default function FactionSheet({
   const handleRemove = (category, index) => {
     const component = drafted[category][index];
     
-    // Check if removing this component would trigger adds
-    const extraComponents = getExtraComponents(component.name, component.faction);
-    if (extraComponents.length > 0 && showReductionHelper) {
-      const confirmMessage = `Keeping ${component.name} will add: ${extraComponents.map(e => e.name).join(", ")}. Continue?`;
-      if (!confirm(confirmMessage)) {
-        return;
+    // Check if removing this component would trigger adds (only during reduction)
+    if (showReductionHelper) {
+      const extraComponents = getExtraComponents(component.name, component.faction);
+      if (extraComponents.length > 0) {
+        const confirmMessage = `Keeping ${component.name} will add: ${extraComponents.map(e => e.name).join(", ")}. Continue?`;
+        if (!confirm(confirmMessage)) {
+          return;
+        }
       }
     }
     
+    // Call the parent's onRemove function
+    console.log("Removing component:", category, index, component.name);
     onRemove(category, index);
   };
 

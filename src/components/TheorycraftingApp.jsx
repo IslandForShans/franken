@@ -3,15 +3,15 @@ import FactionSheet from "./FactionSheet.jsx";
 import factionsJSON from "../data/factions.json";
 
 const baseFactionLimits = {
-  blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
+  blue_tiles: 3, red_tiles: 2, abilities: 3, faction_techs: 2, agents: 1,
   commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
   commodity_values: 1, flagship: 1, mech: 1
 };
 
 const powerFactionLimits = {
-  blue_tiles: 3, red_tiles: 2, abilities: 5, faction_techs: 4, agents: 3,
-  commanders: 3, heroes: 3, promissory: 2, starting_techs: 2, starting_fleet: 2,
-  commodity_values: 2, flagship: 1, mech: 1
+  blue_tiles: 3, red_tiles: 2, abilities: 4, faction_techs: 3, agents: 2,
+  commanders: 2, heroes: 2, promissory: 1, starting_techs: 1, starting_fleet: 1,
+  commodity_values: 1, flagship: 1, mech: 1
 };
 
 export default function TheorycraftingApp() {
@@ -57,10 +57,12 @@ export default function TheorycraftingApp() {
   };
 
   const handleRemoveComponent = (category, index) => {
-    setCustomFaction(prev => ({
-      ...prev,
-      [category]: prev[category].filter((_, i) => i !== index)
-    }));
+    setCustomFaction(prev => {
+      const updated = { ...prev };
+      updated[category] = [...prev[category]];
+      updated[category].splice(index, 1);
+      return updated;
+    });
   };
 
   const handleLoadFaction = (factionName) => {

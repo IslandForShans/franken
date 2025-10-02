@@ -53,8 +53,9 @@ export default function MultiplayerPanel({
       alert("Set server URL (e.g. http://192.168.1.123:4000)");
       return;
     }
-    const socket = io(serverUrl);
-    socketRef.current = socket;
+    if (!socketRef.current || !socketRef.current.connected) {
+      socketRef.current = io(serverUrl, { transports: ["websocket"] });
+    }
     socket.emit("createLobby", { lobbyId: lobby?.id || undefined, playerName }, (res) => {
       if (res && res.ok) {
         setLobby({ id: res.lobbyId, players: [res.player] });
@@ -70,8 +71,9 @@ export default function MultiplayerPanel({
       alert("Set server URL (ex: http://192.168.1.123:4000)");
       return;
     }
-    const socket = io(serverUrl);
-    socketRef.current = socket;
+    if (!socketRef.current || !socketRef.current.connected) {
+      socketRef.current = io(serverUrl, { transports: ["websocket"] });
+    }
     socket.emit("joinLobby", { lobbyId: lobbyIdInput, playerName }, (res) => {
       if (res && res.ok) {
         setLobby(res.lobby);

@@ -8,6 +8,7 @@ import MultiplayerPanel from "./MultiplayerPanel.jsx";
 import { shuffleArray } from "../utils/shuffle.js";
 import factionsJSON from "../data/factions.json";
 import { isComponentUndraftable, getSwapOptions, getExtraComponents } from "../data/undraftable-components.js";
+import BanManagementModal from "./BanManagementModal.jsx";
 
 // Updated limits system
 const baseFactionLimits = {
@@ -56,7 +57,11 @@ export default function DraftSimulator() {
   // Multiplayer state
   const [multiplayerEnabled, setMultiplayerEnabled] = useState(false);
   const socketRef = useRef(null);
-  const [serverUrl, setServerUrl] = useState("http://localhost:4000");
+  const LAN_IP = "192.168.0.10";
+  const [serverUrl, setServerUrl] = useState( window.location.hostname === "localhost"
+    ? "http://localhost:4000"
+    : `http://${LAN_IP}:4000`
+  );
   const [lobby, setLobby] = useState(null);
   const [playerBag, setPlayerBag] = useState(null);
   const [localSocketId, setLocalSocketId] = useState(null);
@@ -114,7 +119,7 @@ export default function DraftSimulator() {
     }
   }, [draftVariant]);
 
-  // Component filtering with ban system
+  // Component filtering with ban system - FIXED to exclude ALL undraftable types
   const getFilteredComponents = (category) => {
     return [
       ...(factionsJSON.factions
@@ -122,14 +127,22 @@ export default function DraftSimulator() {
         .flatMap(f => (f[category] || [])
           .filter(comp => !bannedComponents.has(comp.id || comp.name))
           .filter(comp => {
+            // Check if component is undraftable
             const undraftable = isComponentUndraftable(comp.name, f.name);
-            return !undraftable || undraftable.type !== "base_unit";
+            // Exclude if undraftable exists (any type)
+            // These components should only be available through swaps/adds during reduction
+            return !undraftable;
           })
           .map(item => ({ ...item, faction: f.name }))
         )
       ),
       ...(factionsJSON.tiles[category] || [])
         .filter(comp => !bannedComponents.has(comp.id || comp.name))
+        .filter(comp => {
+          // Check tiles for undraftable status (though most won't have faction)
+          const undraftable = isComponentUndraftable(comp.name);
+          return !undraftable;
+        })
     ];
   };
 
@@ -457,171 +470,7 @@ export default function DraftSimulator() {
     });
   };
 
-  // Fixed Ban Management Panel with working checkboxes
-  const BanManagementPanel = () => {
-    const [showBanPanel, setShowBanPanel] = useState(false);
-    const [componentSearchTerm, setComponentSearchTerm] = useState("");
-    
-    if (!showBanPanel) {
-      return (
-        <button 
-          onClick={() => setShowBanPanel(true)}
-          className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
-        >
-          Manage Bans
-        </button>
-      );
-    }
-
-    // Get all components for search/ban
-    const getAllComponentsForBanning = () => {
-      const allComponents = [];
-      categories.forEach(category => {
-        const categoryComponents = [
-          ...(factionsJSON.factions.flatMap(f => 
-            (f[category] || []).map(comp => ({
-              ...comp,
-              faction: f.name,
-              category,
-              displayName: `${comp.name} (${f.name} - ${category})`
-            }))
-          )),
-          ...(factionsJSON.tiles[category] || []).map(comp => ({
-            ...comp,
-            category,
-            displayName: `${comp.name} (${category})`
-          }))
-        ];
-        allComponents.push(...categoryComponents);
-      });
-      return allComponents;
-    };
-
-    const allComponents = getAllComponentsForBanning();
-    const filteredComponents = componentSearchTerm 
-      ? allComponents.filter(comp => 
-          comp.name.toLowerCase().includes(componentSearchTerm.toLowerCase()) ||
-          comp.faction?.toLowerCase().includes(componentSearchTerm.toLowerCase())
-        )
-      : [];
-
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 max-w-4xl max-h-[80vh] overflow-hidden">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold">Ban Management</h3>
-            <button 
-              onClick={() => setShowBanPanel(false)}
-              className="px-3 py-1 text-sm bg-gray-400 text-white rounded hover:bg-gray-500"
-            >
-              Close
-            </button>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6 h-96">
-            {/* Faction Bans */}
-            <div className="border rounded p-4">
-              <h4 className="font-semibold mb-3">Banned Factions ({bannedFactions.size})</h4>
-              <div className="max-h-80 overflow-y-auto space-y-2">
-                {factionsJSON.factions.map(faction => (
-                  <label key={faction.name} className="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded">
-                    <input 
-                      type="checkbox" 
-                      checked={bannedFactions.has(faction.name)}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        handleBanFaction(faction.name);
-                      }}
-                      className="mr-3"
-                    />
-                    <span className={bannedFactions.has(faction.name) ? "line-through text-gray-500" : ""}>
-                      {faction.name}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Component Bans */}
-            <div className="border rounded p-4">
-              <h4 className="font-semibold mb-3">Component Bans ({bannedComponents.size})</h4>
-              
-              <input 
-                type="text" 
-                placeholder="Search components to ban..."
-                value={componentSearchTerm}
-                onChange={(e) => setComponentSearchTerm(e.target.value)}
-                className="w-full border p-2 rounded mb-3"
-              />
-              
-              {componentSearchTerm && (
-                <div className="max-h-32 overflow-y-auto border rounded p-2 mb-3 bg-gray-50">
-                  {filteredComponents.slice(0, 20).map((comp, idx) => (
-                    <div 
-                      key={`${comp.name}-${comp.faction}-${idx}`}
-                      className="flex justify-between items-center py-1 hover:bg-gray-100 px-2 rounded"
-                    >
-                      <span className="text-sm">{comp.displayName}</span>
-                      <button 
-                        onClick={() => {
-                          handleBanComponent(comp.id || comp.name);
-                          setComponentSearchTerm("");
-                        }}
-                        className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                      >
-                        Ban
-                      </button>
-                    </div>
-                  ))}
-                  {filteredComponents.length > 20 && (
-                    <div className="text-xs text-gray-500 p-2">
-                      Showing first 20 results. Refine search for more.
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className="text-sm text-gray-600 mb-2 font-medium">Currently Banned:</div>
-              <div className="max-h-40 overflow-y-auto text-sm space-y-1">
-                {Array.from(bannedComponents).map(compId => (
-                  <div key={compId} className="flex justify-between items-center bg-red-50 p-2 rounded">
-                    <span className="truncate flex-1">{compId}</span>
-                    <button 
-                      onClick={() => handleBanComponent(compId)}
-                      className="text-red-600 hover:underline ml-2 text-xs"
-                    >
-                      Unban
-                    </button>
-                  </div>
-                ))}
-                {bannedComponents.size === 0 && (
-                  <div className="text-gray-500 italic">No components banned</div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 flex justify-between">
-            <button 
-              onClick={() => {
-                setBannedFactions(new Set());
-                setBannedComponents(new Set());
-              }}
-              className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-            >
-              Clear All Bans
-            </button>
-            <button 
-              onClick={() => setShowBanPanel(false)}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Done
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  const [showBanModal, setShowBanModal] = useState(false);
 
   const renderCurrentPlayerInfo = () => {
     if (draftPhase === "reduction") {
@@ -693,7 +542,11 @@ export default function DraftSimulator() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">Franken Draft Simulator</h2>
               <div className="flex space-x-2">
-                <BanManagementPanel />
+                <button onClick={() => setShowBanModal(true)} className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"> 
+                Manage Bans
+                </button>
+
+                <BanManagementModal isOpen={showBanModal} onClose={() => setShowBanModal(false)} bannedFactions={bannedFactions} bannedComponents={bannedComponents} onBanFaction={handleBanFaction} onBanComponent={handleBanComponent} categories={categories} />
                 {!multiplayerEnabled && !draftStarted && (
                   <button 
                     className="px-3 py-1 rounded bg-green-500 text-white hover:bg-green-600" 
