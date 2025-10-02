@@ -1,7 +1,7 @@
 {
   "name": "ti4-franken-draft",
   "version": "1.0.0",
-  "homepage": "./",
+  "homepage": "https://islandforshans.github.io/franken",
   "private": true,
   "type": "module",
   "scripts": {
