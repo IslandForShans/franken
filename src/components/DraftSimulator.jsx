@@ -58,10 +58,6 @@ export default function DraftSimulator() {
 
   // Multiplayer state
   const [multiplayerEnabled, setMultiplayerEnabled] = useState(false);
-  const LAN_IP = "192.168.0.10";
-    ? "http://localhost:4000"
-    : `http://${LAN_IP}:4000`
-  );
   const [selectedPicks, setSelectedPicks] = useState([]);
   const [draftedComponents, setDraftedComponents] = useState({});
 
