@@ -1,0 +1,3685 @@
+{
+  "factions": [
+    {
+      "name": "The Augurs of Ilyxum",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Bentor Conglomerate",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Beserkers of Kjalengard",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Celdauri Trade Confederation",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Cheiran Hordes",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Dih-Mohn Flotilla",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Edyn Mandate",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Florzen Profiteers",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Free Systems Compact",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Ghemina Raiders",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Ghoti Wayfarers",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The GLEdge Union",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Glimmer of Mortheus",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Kyro Sodality",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Kortali Tribunal",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Kollecc Society",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Lanefir Remnants",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Li-Zho Dynasty",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The L'tokk Khrask",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Mirveda Protectorate",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Monks of Kolume",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Myko-Mentori",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Nivyn Star Kings",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Nokar Sellships",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Olradin League",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Roh'Dhna Mechatronics",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Savages of Cymiae",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Shipwrights of Axis",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+      {
+      "name": "The Tnelis Syndicate",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Vaden Banking Clans",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Vaylerian Scourge",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Veldyr Sovereignty",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Zealots of Rhodun",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Zelian Purifier",
+      "abilities": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        
+        }
+      ],
+      "faction_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        },
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "agents": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commanders": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "heroes": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "promissory": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "flagship": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "mech": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_techs": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "starting_fleet": [
+        {
+          "id": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "commodity_values": [
+        {
+          "id": "",
+          "name": "", 
+          "description": ""
+        }
+      ],
+      "home_system": [
+        {
+          "id": "",
+          "name": "",
+          "planets": [
+            {
+              "name": "",
+              "resource": 0,
+              "influence": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "tiles": {
+    "blue_tiles": [
+      {
+        "id": "4257",
+        "name": "Troac",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4258",
+        "name": "Etir V",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4259",
+        "name": "Vioss",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4260",
+        "name": "Fakrenn",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4261",
+        "name": "San-Vit/Lodran",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4262",
+        "name": "Dorvok/Derbrae",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4263",
+        "name": "Moln/Rysaa",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4264",
+        "name": "Salin/Gwiyun",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4265",
+        "name": "Inan/Swog",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4266",
+        "name": "Detic/Lliot",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4267",
+        "name": "Qaak/Larred/Nairb",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4268",
+        "name": "Sierpen/Mandle/Regnem",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""]
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4253",
+        "name": "Silence",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""],
+            "legendary_ability": ""
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4254",
+        "name": "Echo",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""].
+            "legendary_ability": ""
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4255",
+        "name": "Tarrock",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""],
+            "legendary_ability": ""
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      },
+      {
+        "id": "4256",
+        "name": "Prism",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""],
+            "legendary_ability": ""
+          }
+        ],
+        "wormhole": null,
+        "anomalies": []
+      }
+    ],
+    "red_tiles": [
+      {
+        "id": "4269",
+        "name": "Domna",
+        "planets": [
+          {
+            "name": "",
+            "resource": 0,
+            "influence": 0,
+            "traits": [""],
+            "technology_specialty": [""],
+            "legendary_ability": ""
+          }
+        ],
+        "wormhole": "",
+        "anomalies": []
+      },
+      {
+        "id": "4270",
+        "name": "Empty Space",
+        "planets": [],
+        "wormhole": "",
+        "anomalies": []
+      },
+      {
+        "id": "4271",
+        "name": "Empty Space",
+        "planets": [],
+        "wormhole": "",
+        "anomalies": []
+      },
+      {
+        "id": "4272",
+        "name": "Beta Nebula",
+        "planets": [],
+        "wormhole": "",
+        "anomalies": []
+      },
+      {
+        "id": "4273",
+        "name": "Nebula Asteroid Field",
+        "planets": [],
+        "wormhole": "",
+        "anomalies": []
+      },
+      {
+        "id": "4274",
+        "name": "Gravity Rift Asteroid Field",
+        "planets": [],
+        "wormhole": "",
+        "anomalies": []
+      },
+      {
+        "id": "4275",
+        "name": "Gamma Rift",
+        "planets": [],
+        "wormhole": "",
+        "anomalies": []
+      },
+      {
+        "id": "4276",
+        "name": "Alpha Beta Nova",
+        "planets": [],
+        "wormhole": "",
+        "anomalies": []
+      }
+    ]
+  }
+}
