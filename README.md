@@ -19,7 +19,7 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 
 ## Key Features
 
-- Real-time multiplayer via Socket.io (broken)
+- Real-time multiplayer via Firebase
 - Faction theorycrafting mode
 - Draft history tracking
 - Component search and filtering
@@ -28,13 +28,15 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 ## Adding/Fixing soon
 
 - Creating custom Non-Draft Components
-- Adding DS as an optional/standalone
-- Adding US as an optional/standalone
+- Adding DS as an optional/standalone (in progress)
+- Adding US as an optional/standalone (in progress)
+- Make expansion content able to be separated.
+- Add Thunders Edge stuff once Luminous works out how to implement into franken (~month after release)
 - Fixing Res/Inf optimal calculations
 - Better styling
 - Icons
 - Making faction sheets look closer to irl sheets
-- Fix local multiplayer, currently unusable
+- Make draft actually start with local multiayer
 
 ## Eventual Non-Franken features to add
 
@@ -42,6 +44,7 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Lore Reference
 - Milty Draft
 - Map Builder
+
 
 
 
