@@ -4,7 +4,7 @@ import FactionSheet from "./FactionSheet.jsx";
 import DraftHistory from "./DraftHistory.jsx";
 import DraftSettingsPanel from "./DraftSettingsPanel.jsx";
 import DraftSummary from "./DraftSummary.jsx";
-import MultiplayerPanel from "./MultiplayerPanel.jsx";
+import FirebaseMultiplayerPanel from "./FirebaseMultiplayerPanel.jsx";
 import { shuffleArray } from "../utils/shuffle.js";
 import factionsJSON from "../data/factions.json";
 import { isComponentUndraftable, getSwapOptions, getExtraComponents } from "../data/undraftable-components.js";
@@ -58,59 +58,14 @@ export default function DraftSimulator() {
 
   // Multiplayer state
   const [multiplayerEnabled, setMultiplayerEnabled] = useState(false);
-  const socketRef = useRef(null);
   const LAN_IP = "192.168.0.10";
-  const [serverUrl, setServerUrl] = useState( window.location.hostname === "localhost"
     ? "http://localhost:4000"
     : `http://${LAN_IP}:4000`
   );
-  const [lobby, setLobby] = useState(null);
-  const [playerBag, setPlayerBag] = useState(null);
-  const [localSocketId, setLocalSocketId] = useState(null);
   const [selectedPicks, setSelectedPicks] = useState([]);
   const [draftedComponents, setDraftedComponents] = useState({});
 
   const categories = Object.keys(baseFactionLimits);
-
-  // Setup socket listeners for multiplayer
-  useEffect(() => {
-    if (!multiplayerEnabled || !socketRef.current) return;
-
-    const socket = socketRef.current;
-
-    const handleYourBag = ({ bag }) => {
-      setPlayerBag(bag);
-    };
-
-    const handleDraftStarted = ({ draftState, players }) => {
-      setRound(draftState.round);
-      const emptyDrafted = {};
-      categories.forEach(cat => emptyDrafted[cat] = []);
-      setDraftedComponents(emptyDrafted);
-    };
-
-    const handleDraftHistoryUpdate = (history) => {
-      setDraftHistory(history);
-    };
-
-    const handleLobbyUpdate = (updatedLobby) => {
-      setLobby(updatedLobby);
-      setRound(updatedLobby.draftState?.round || 1);
-    };
-
-    socket.on("yourBag", handleYourBag);
-    socket.on("draftStarted", handleDraftStarted);
-    socket.on("draftHistoryUpdate", handleDraftHistoryUpdate);
-    socket.on("lobbyUpdate", handleLobbyUpdate);
-    socket.on("connect", () => setLocalSocketId(socket.id));
-
-    return () => {
-      socket.off("yourBag", handleYourBag);
-      socket.off("draftStarted", handleDraftStarted);
-      socket.off("draftHistoryUpdate", handleDraftHistoryUpdate);
-      socket.off("lobbyUpdate", handleLobbyUpdate);
-    };
-  }, [multiplayerEnabled]);
 
   // Update limits when variant changes
   useEffect(() => {
@@ -645,18 +600,19 @@ export default function DraftSimulator() {
             )}
 
             {multiplayerEnabled && (
-              <MultiplayerPanel
-                serverUrl={serverUrl}
-                setServerUrl={setServerUrl}
-                socketRef={socketRef}
-                lobby={lobby}
-                setLobby={setLobby}
-                playerBag={playerBag}
-                onConfirmPicks={() => setSelectedPicks([])}
-                onSubmitPicks={(picks) => console.log("Submitted picks:", picks)}
-                localPlayerSocketId={localSocketId}
-                draftState={{ round, variant: draftVariant }}
-              />
+                <FirebaseMultiplayerPanel
+                    draftSettings={{
+                        variant: draftVariant,
+                        playerCount: playerCount,
+                        draftLimits: draftLimits,
+                        firstRoundPickCount: firstRoundPickCount,
+                        subsequentRoundPickCount: subsequentRoundPickCount
+                    }}
+                    onDraftStart={(lobbyData) => {
+                        // Handle draft start from Firebase
+                        console.log("Draft starting with lobby data:", lobbyData);
+                    }}
+                />
             )}
 
             {renderCurrentPlayerInfo()}
