@@ -169,7 +169,7 @@ export default function DraftSimulator() {
 
   const getAvailableComponents = () => {
     if (multiplayerEnabled) {
-      return playerBag || {};
+      return playerBags || {};
     } else if (draftVariant === "rotisserie") {
       return rotisseriePool;
     } else if (draftStarted && playerBags[currentPlayer]) {
