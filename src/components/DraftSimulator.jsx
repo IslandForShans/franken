@@ -132,33 +132,40 @@ export default function DraftSimulator() {
     return bags;
   };
 
-  const startDraftSolo = () => {
+  const initializeDraft = (settings) => {
+    const { variant, playerCount, players } = settings;
+
+    // Create empty factions, using provided player names if available
     const emptyFactions = Array.from({ length: playerCount }, (_, i) => {
-      const f = { name: `Player ${i + 1}` };
-      categories.forEach(cat => { f[cat] = []; });
-      return f;
+        const playerName = players?.[i]?.name || `Player ${i + 1}`;
+        const f = { name: playerName };
+        categories.forEach(cat => { f[cat] = []; });
+        return f;
     });
     setFactions(emptyFactions);
 
+    // Reset progress per player
     setPlayerProgress(Array.from({ length: playerCount }, () => {
-      const p = {};
-      categories.forEach(cat => { p[cat] = 0; });
-      return p;
+        const p = {};
+        categories.forEach(cat => { p[cat] = 0; });
+        return p;
     }));
 
-    if (draftVariant === "rotisserie") {
-      const pool = {};
-      categories.forEach(cat => {
+    // Setup based on variant
+    if (variant === "rotisserie") {
+        const pool = {};
+        categories.forEach(cat => {
         pool[cat] = getFilteredComponents(cat);
-      });
-      setRotisseriePool(pool);
-      setPlayerBags([]);
+        });
+        setRotisseriePool(pool);
+        setPlayerBags([]);
     } else {
-      const bags = createBagsWithUniqueDistribution();
-      setPlayerBags(bags);
-      setRotisseriePool({});
+        const bags = createBagsWithUniqueDistribution();
+        setPlayerBags(bags);
+        setRotisseriePool({});
     }
 
+    // Reset draft flow state
     setDraftHistory([]);
     setCurrentPlayer(0);
     setRound(1);
@@ -166,6 +173,18 @@ export default function DraftSimulator() {
     setDraftPhase("draft");
     setDraftStarted(true);
   };
+
+
+  const startDraftSolo = () => {
+    initializeDraft({
+        variant: draftVariant,
+        playerCount,
+        draftLimits,
+        firstRoundPickCount,
+        subsequentRoundPickCount,
+    });
+  };
+
 
   const getAvailableComponents = () => {
     if (multiplayerEnabled) {
@@ -605,8 +624,18 @@ export default function DraftSimulator() {
                         subsequentRoundPickCount: subsequentRoundPickCount
                     }}
                     onDraftStart={(lobbyData) => {
-                        // Handle draft start from Firebase
                         console.log("Draft starting with lobby data:", lobbyData);
+
+                        // Convert lobby players object into array sorted by join order
+                        const players = Object.values(lobbyData.players || {}).sort(
+                            (a, b) => a.joinedAt - b.joinedAt
+                        );
+
+                        initializeDraft({
+                            ...lobbyData.settings,
+                            playerCount: players.length,
+                            players, // pass real names from Firebase
+                        });
                     }}
                 />
             )}
