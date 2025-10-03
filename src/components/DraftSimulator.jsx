@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar.jsx";
 import FactionSheet from "./FactionSheet.jsx";
 import DraftHistory from "./DraftHistory.jsx";
