@@ -9,6 +9,7 @@ import { shuffleArray } from "../utils/shuffle.js";
 import factionsJSON from "../data/factions.json";
 import { isComponentUndraftable, getSwapOptions, getExtraComponents } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
+import { multiplayerService } from "../services/firebaseMultiplayer.js";
 
 // Updated limits system
 const baseFactionLimits = {
@@ -49,8 +50,8 @@ export default function DraftSimulator() {
   const [draftPhase, setDraftPhase] = useState("draft");
   const [firstRoundPickCount, setFirstRoundPickCount] = useState(3);
   const [subsequentRoundPickCount, setSubsequentRoundPickCount] = useState(2);
-  const [pendingPicks, setPendingPicks] = useState([]); // Temporary picks before submission
-  const [isPickingPhase, setIsPickingPhase] = useState(true); // true = picking, false = locked in
+  const [pendingPicks, setPendingPicks] = useState([]);
+  const [isPickingPhase, setIsPickingPhase] = useState(true);
 
   // Ban system
   const [bannedFactions, setBannedFactions] = useState(new Set());
@@ -63,6 +64,33 @@ export default function DraftSimulator() {
 
   const categories = Object.keys(baseFactionLimits);
 
+  // Sync draft state to Firebase when changes occur
+  const syncToFirebase = useRef(null);
+  
+  useEffect(() => {
+    if (multiplayerEnabled && draftStarted) {
+      // Debounce sync to avoid too many writes
+      if (syncToFirebase.current) {
+        clearTimeout(syncToFirebase.current);
+      }
+      
+      syncToFirebase.current = setTimeout(() => {
+        multiplayerService.syncDraftState({
+          factions,
+          draftHistory,
+          playerProgress,
+          currentPlayer,
+          round,
+          phase: draftPhase,
+          playerBags,
+          rotisseriePool,
+          pendingPicks,
+          isPickingPhase
+        });
+      }, 1000);
+    }
+  }, [multiplayerEnabled, draftStarted, factions, draftHistory, currentPlayer, round, draftPhase]);
+
   // Update limits when variant changes
   useEffect(() => {
     if (draftVariant === "rotisserie") {
@@ -72,7 +100,43 @@ export default function DraftSimulator() {
     }
   }, [draftVariant]);
 
-  // Component filtering with ban system - FIXED to exclude ALL undraftable types
+  // Expose end draft function to multiplayer panel
+  useEffect(() => {
+    if (multiplayerEnabled) {
+      window.endMultiplayerDraft = (endDraftCallback) => {
+        endDraftCallback(factions, draftHistory, {
+          variant: draftVariant,
+          playerCount,
+          draftLimits,
+          firstRoundPickCount,
+          subsequentRoundPickCount
+        });
+      };
+    }
+    
+    return () => {
+      delete window.endMultiplayerDraft;
+    };
+  }, [multiplayerEnabled, factions, draftHistory, draftVariant, playerCount, draftLimits]);
+
+  // Handle draft state sync from Firebase
+  const handleDraftStateSync = (draftState) => {
+    if (!draftState) return;
+    
+    // Update local state from Firebase
+    if (draftState.factions) setFactions(draftState.factions);
+    if (draftState.draftHistory) setDraftHistory(draftState.draftHistory);
+    if (draftState.playerProgress) setPlayerProgress(draftState.playerProgress);
+    if (typeof draftState.currentPlayer === 'number') setCurrentPlayer(draftState.currentPlayer);
+    if (typeof draftState.round === 'number') setRound(draftState.round);
+    if (draftState.phase) setDraftPhase(draftState.phase);
+    if (draftState.playerBags) setPlayerBags(draftState.playerBags);
+    if (draftState.rotisseriePool) setRotisseriePool(draftState.rotisseriePool);
+    if (draftState.pendingPicks) setPendingPicks(draftState.pendingPicks);
+    if (typeof draftState.isPickingPhase === 'boolean') setIsPickingPhase(draftState.isPickingPhase);
+  };
+
+  // Component filtering with ban system
   const getFilteredComponents = (category) => {
     return [
       ...(factionsJSON.factions
@@ -80,10 +144,7 @@ export default function DraftSimulator() {
         .flatMap(f => (f[category] || [])
           .filter(comp => !bannedComponents.has(comp.id || comp.name))
           .filter(comp => {
-            // Check if component is undraftable
             const undraftable = isComponentUndraftable(comp.name, f.name);
-            // Exclude if undraftable exists (any type)
-            // These components should only be available through swaps/adds during reduction
             return !undraftable;
           })
           .map(item => ({ ...item, faction: f.name }))
@@ -92,7 +153,6 @@ export default function DraftSimulator() {
       ...(factionsJSON.tiles[category] || [])
         .filter(comp => !bannedComponents.has(comp.id || comp.name))
         .filter(comp => {
-          // Check tiles for undraftable status (though most won't have faction)
           const undraftable = isComponentUndraftable(comp.name);
           return !undraftable;
         })
@@ -135,7 +195,6 @@ export default function DraftSimulator() {
   const initializeDraft = (settings) => {
     const { variant, playerCount, players } = settings;
 
-    // Create empty factions, using provided player names if available
     const emptyFactions = Array.from({ length: playerCount }, (_, i) => {
         const playerName = players?.[i]?.name || `Player ${i + 1}`;
         const f = { name: playerName };
@@ -144,14 +203,12 @@ export default function DraftSimulator() {
     });
     setFactions(emptyFactions);
 
-    // Reset progress per player
     setPlayerProgress(Array.from({ length: playerCount }, () => {
         const p = {};
         categories.forEach(cat => { p[cat] = 0; });
         return p;
     }));
 
-    // Setup based on variant
     if (variant === "rotisserie") {
         const pool = {};
         categories.forEach(cat => {
@@ -165,15 +222,15 @@ export default function DraftSimulator() {
         setRotisseriePool({});
     }
 
-    // Reset draft flow state
     setDraftHistory([]);
     setCurrentPlayer(0);
     setRound(1);
     setPicksThisRound(0);
     setDraftPhase("draft");
     setDraftStarted(true);
+    setPendingPicks([]);
+    setIsPickingPhase(true);
   };
-
 
   const startDraftSolo = () => {
     initializeDraft({
@@ -184,7 +241,6 @@ export default function DraftSimulator() {
         subsequentRoundPickCount,
     });
   };
-
 
   const getAvailableComponents = () => {
     if (multiplayerEnabled) {
@@ -203,26 +259,22 @@ export default function DraftSimulator() {
     const currentProgress = playerProgress[currentPlayer][category] || 0;
     const pendingCountInCategory = pendingPicks.filter(p => p.category === category).length;
   
-    // Check total category limit
     if (currentProgress + pendingCountInCategory >= draftLimits[category]) {
         alert(`Cannot pick more ${category}. Limit: ${draftLimits[category]}`);
         return;
     }
 
-    // NEW: Check if already picked one from this category this round
     if (pendingCountInCategory >= 1) {
         alert(`You can only pick one ${category.replace('_', ' ')} per round.`);
         return;
     }
 
-    // Add to pending picks
     setPendingPicks(prev => [...prev, {
         category,
         component: { ...component }
     }]);
   };
 
-  // Add function to remove from pending picks
   const handleRemovePendingPick = (category, componentId) => {
     setPendingPicks(prev => 
         prev.filter(pick => 
@@ -231,16 +283,13 @@ export default function DraftSimulator() {
     );
   };
 
-  // Add submit picks function
   const handleSubmitPicks = () => {
     if (draftVariant === "rotisserie") {
-        // Rotisserie: must pick exactly 1
         if (pendingPicks.length !== 1) {
         alert("You must pick exactly 1 component in Rotisserie mode.");
         return;
         }
     } else {
-        // Bag draft: must pick required amount
         const neededPicks = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
         if (pendingPicks.length < neededPicks) {
         alert(`You must pick ${neededPicks} components this round. Currently: ${pendingPicks.length}`);
@@ -248,7 +297,6 @@ export default function DraftSimulator() {
         }
     }
 
-    // Move pending picks to actual faction
     const fc = [...factions];
     const pg = [...playerProgress];
 
@@ -256,7 +304,6 @@ export default function DraftSimulator() {
         fc[currentPlayer][category] = [...(fc[currentPlayer][category] || []), component];
         pg[currentPlayer][category] = (pg[currentPlayer][category] || 0) + 1;
 
-        // Remove from bags/pools
         if (draftVariant === "rotisserie") {
         setRotisseriePool(prev => {
             const pool = { ...prev };
@@ -274,7 +321,6 @@ export default function DraftSimulator() {
         });
         }
 
-        // Add to history
         setDraftHistory(prev => [...prev, { 
         playerIndex: currentPlayer, 
         category, 
@@ -289,7 +335,6 @@ export default function DraftSimulator() {
     setPendingPicks([]);
     setIsPickingPhase(false);
 
-    // Move to next player after short delay
     setTimeout(() => {
         const nextPlayer = (currentPlayer + 1) % playerCount;
         setCurrentPlayer(nextPlayer);
@@ -298,7 +343,6 @@ export default function DraftSimulator() {
     
         if (nextPlayer === 0) {
         setRound(r => r + 1);
-        // Rotate bags in bag draft
         if (draftVariant !== "rotisserie") {
             setPlayerBags(prev => {
             if (prev.length <= 1) return prev;
@@ -310,13 +354,12 @@ export default function DraftSimulator() {
         }
       }
 
-        // Check if draft is complete
         checkDraftCompletion();
-    },    300);
+    }, 300);
   };
 
   const checkDraftCompletion = () => {
-    if (draftVariant === "rotisserie") return; // Rotisserie doesn't need reduction
+    if (draftVariant === "rotisserie") return;
 
     const allPlayersComplete = factions.every(faction => 
       categories.every(cat => (faction[cat]?.length || 0) >= draftLimits[cat])
@@ -334,11 +377,9 @@ export default function DraftSimulator() {
   const handleSwap = (playerIndex, category, componentIndex, swapOption) => {
     if (!swapOption) return;
 
-    // Replace the component with its swap option
     const fc = [...factions];
     const originalComponent = fc[playerIndex][category][componentIndex];
     
-    // Create swap component based on undraftable data
     const swapComponent = {
       id: swapOption.name.toLowerCase().replace(/\s+/g, '_'),
       name: swapOption.name,
@@ -351,7 +392,6 @@ export default function DraftSimulator() {
     fc[playerIndex][category][componentIndex] = swapComponent;
     setFactions(fc);
 
-    // Add to history
     setDraftHistory(prev => [...prev, {
       playerIndex,
       category,
@@ -366,10 +406,8 @@ export default function DraftSimulator() {
     const extraComponents = getExtraComponents(triggerComponent.name, triggerComponent.faction);
     
     extraComponents.forEach(extra => {
-      // Find the correct category for this extra component
       let targetCategory = category;
       
-      // Map extra components to their correct categories
       const categoryMap = {
         "Artuno": "agents",
         "Thundarian": "agents", 
@@ -392,7 +430,6 @@ export default function DraftSimulator() {
         triggerComponent: triggerComponent.name
       };
 
-      // Add to the faction
       const fc = [...factions];
       if (!fc[playerIndex][targetCategory]) {
         fc[playerIndex][targetCategory] = [];
@@ -400,7 +437,6 @@ export default function DraftSimulator() {
       fc[playerIndex][targetCategory].push(extraComponent);
       setFactions(fc);
 
-      // Add to history
       setDraftHistory(prev => [...prev, {
         playerIndex,
         category: targetCategory,
@@ -415,19 +451,15 @@ export default function DraftSimulator() {
   const handleReduction = (playerIndex, category, componentIndex) => {
     const component = factions[playerIndex][category][componentIndex];
     
-    // Check if this component triggers extra adds
     const extraComponents = getExtraComponents(component.name, component.faction);
     if (extraComponents.length > 0) {
-      // Component is being kept - add extra components
       handleAddExtraComponent(playerIndex, category, component);
     }
 
-    // Remove the component
     const fc = [...factions];
     fc[playerIndex][category].splice(componentIndex, 1);
     setFactions(fc);
 
-    // Check if reduction is complete for all players
     const factionLimits = getCurrentFactionLimits();
     const allPlayersReduced = fc.every(faction => 
       categories.every(cat => (faction[cat]?.length || 0) <= factionLimits[cat])
@@ -438,7 +470,6 @@ export default function DraftSimulator() {
     }
   };
 
-  // Ban management functions
   const handleBanFaction = (factionName) => {
     setBannedFactions(prev => {
       const newSet = new Set(prev);
@@ -465,7 +496,6 @@ export default function DraftSimulator() {
 
   const [showBanModal, setShowBanModal] = useState(false);
 
-  // Update renderCurrentPlayerInfo to show pending picks
   const renderCurrentPlayerInfo = () => {
     if (draftPhase === "reduction") {
         return (
@@ -626,7 +656,6 @@ export default function DraftSimulator() {
                     onDraftStart={(lobbyData) => {
                         console.log("Draft starting with lobby data:", lobbyData);
 
-                        // Convert lobby players object into array sorted by join order
                         const players = Object.values(lobbyData.players || {}).sort(
                             (a, b) => a.joinedAt - b.joinedAt
                         );
@@ -634,15 +663,15 @@ export default function DraftSimulator() {
                         initializeDraft({
                             ...lobbyData.settings,
                             playerCount: players.length,
-                            players, // pass real names from Firebase
+                            players,
                         });
                     }}
+                    onDraftStateSync={handleDraftStateSync}
                 />
             )}
 
             {renderCurrentPlayerInfo()}
 
-            {/* Cancel Draft Button */}
             {draftStarted && (
               <button 
                 onClick={() => {
@@ -657,6 +686,8 @@ export default function DraftSimulator() {
                     setCurrentPlayer(0);
                     setRound(1);
                     setPicksThisRound(0);
+                    setPendingPicks([]);
+                    setIsPickingPhase(true);
                   }
                 }}
                 className="mt-2 px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700"
@@ -667,17 +698,15 @@ export default function DraftSimulator() {
           </div>
 
           <div className="flex-1 overflow-auto p-4 space-y-4">
-            {/* Show only current player's faction in draft phase */}
             {draftPhase === "draft" && !multiplayerEnabled && draftStarted ? (
               <FactionSheet
                 drafted={factions[currentPlayer] || {}}
-                onRemove={() => {}} // No removal during draft
+                onRemove={() => {}}
                 draftLimits={draftLimits}
                 title={`Player ${currentPlayer + 1}'s Draft`}
                 isCurrentPlayer={true}
               />
             ) : draftPhase === "reduction" && !multiplayerEnabled ? (
-              // Show all players during reduction phase
               factions.map((f, i) => (
                 <FactionSheet
                   key={i}
@@ -698,7 +727,6 @@ export default function DraftSimulator() {
                 title="Your Multiplayer Draft"
               />
             ) : (
-              // Show all factions when draft hasn't started or is complete
               factions.map((f, i) => (
                 <FactionSheet
                   key={i}
