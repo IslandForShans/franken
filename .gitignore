@@ -67,5 +67,10 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+<<<<<<< HEAD
 dist/
 node_modules/
+=======
+
+# dist
+dist/
