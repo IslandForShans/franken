@@ -3,10 +3,19 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase, ref, set, get, onValue, remove, update, push } from "firebase/database";
 import { firebaseConfig } from '../config/firebase.js';
+import bcrypt from 'bcryptjs';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const database = getDatabase(app);
+const auth = getAuth(app);
+
+export const ensureAuthenticated = async () => {
+  if (!auth.currentUser) {
+    await signInAnonymously(auth);
+  }
+}
 
 export class MultiplayerService {
   constructor() {
@@ -63,6 +72,9 @@ export class MultiplayerService {
     if (!this.currentLobbyId || !this.playerId) return false;
 
     try {
+    
+      await ensureAuthenticated();
+    
       const lobbyRef = ref(database, `lobbies/${this.currentLobbyId}`);
       const snapshot = await get(lobbyRef);
       
@@ -83,6 +95,9 @@ export class MultiplayerService {
     }
 
     try {
+    
+      await ensureAuthenticated();
+    
       const lobbyRef = ref(database, `lobbies/${this.currentLobbyId}`);
       const snapshot = await get(lobbyRef);
 
@@ -116,6 +131,9 @@ export class MultiplayerService {
   // Create a new lobby
   async createLobby(lobbyName, password, playerName, draftSettings) {
     try {
+    
+      await ensureAuthenticated();
+    
       // Check if lobby name already exists
       const lobbyRef = ref(database, `lobbies/${lobbyName}`);
       const snapshot = await get(lobbyRef);
@@ -126,10 +144,12 @@ export class MultiplayerService {
 
       this.playerId = this.generatePlayerId();
       this.currentLobbyId = lobbyName;
+      
+      const hashedPassword = await bcrypt.has(password, 10)
 
       const lobbyData = {
         name: lobbyName,
-        password: password, // In production, hash this!
+        password: hashedPassword, // In production, hash this!
         host: this.playerId,
         created: Date.now(),
         status: 'waiting', // waiting, drafting, complete
@@ -166,6 +186,9 @@ export class MultiplayerService {
   // Join existing lobby
   async joinLobby(lobbyName, password, playerName) {
     try {
+    
+      await ensureAuthenticated();
+    
       const lobbyRef = ref(database, `lobbies/${lobbyName}`);
       const snapshot = await get(lobbyRef);
 
@@ -174,6 +197,11 @@ export class MultiplayerService {
       }
 
       const lobbyData = snapshot.val();
+      
+      const isValid = await bcrypt.compare(password, lobbyData.password);
+      if (!isValid) {
+        throw new Error("Incorrect Password");
+      }
 
       if (lobbyData.password !== password) {
         throw new Error("Incorrect password");
