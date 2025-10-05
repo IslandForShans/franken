@@ -139,23 +139,23 @@ export default function DraftSimulator() {
   // Component filtering with ban system
   const getFilteredComponents = (category) => {
     return [
-      ...(factionsJSON.factions
-        .filter(f => !bannedFactions.has(f.name))
-        .flatMap(f => (f[category] || [])
-          .filter(comp => !bannedComponents.has(comp.id || comp.name))
-          .filter(comp => {
-            const undraftable = isComponentUndraftable(comp.name, f.name);
-            return !undraftable;
-          })
-          .map(item => ({ ...item, faction: f.name }))
-        )
-      ),
-      ...(factionsJSON.tiles[category] || [])
+    ...(factionsJSON.factions
+      .filter(f => !bannedFactions.has(f.name))
+      .flatMap(f => (f[category] || [])
         .filter(comp => !bannedComponents.has(comp.id || comp.name))
         .filter(comp => {
-          const undraftable = isComponentUndraftable(comp.name);
+          const undraftable = isComponentUndraftable(comp.name, f.name, draftPhase);
           return !undraftable;
         })
+        .map(item => ({ ...item, faction: f.name }))
+      )
+    ),
+    ...(factionsJSON.tiles[category] || [])
+      .filter(comp => !bannedComponents.has(comp.id || comp.name))
+      .filter(comp => {
+        const undraftable = isComponentUndraftable(comp.name, null, draftPhase);
+        return !undraftable;
+      })
     ];
   };
 
