@@ -789,7 +789,7 @@
           "cost": 8,
           "combat": "5(x2)",
           "move": 1,
-          "capcity": 3,
+          "capacity": 3,
           "abilities": ["Sustain Damage"],
           "description": "ACTION: Spend 1 token from your strategy pool to place 1 cruiser in this unit's system."
         }
