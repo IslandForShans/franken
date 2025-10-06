@@ -124,7 +124,129 @@ export default function Sidebar({
                                 <div className="text-xs text-blue-600 font-medium">{component.faction}</div>
                               )}
                               
-                              {component.description && (
+                              {/* Tech card format - single tech or tech package */}
+                              {(cat === 'faction_techs' || cat === 'starting_techs') && (
+                                <div className="text-xs mt-2 border-t pt-2">
+                                  {/* Check if this is a tech package (multiple techs) */}
+                                  {component.techs && component.techs.length > 0 ? (
+                                    <div className="space-y-2">
+                                      {component.choose_count && (
+                                        <div className="text-[11px] font-semibold text-orange-600 mb-1 pb-1 border-b border-orange-200">
+                                          {component.note || `Choose ${component.choose_count} of the following:`}
+                                        </div>
+                                      )}
+                                      {component.techs.map((tech, techIdx) => (
+                                        <div key={techIdx} className="pb-2 border-b last:border-b-0">
+                                          <div className="flex items-center gap-2 mb-1">
+                                            <span className="font-semibold text-gray-800">{tech.name}</span>
+                                            {tech.tech_type && (
+                                              <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                                                tech.tech_type === 'Blue' ? 'bg-blue-500 text-white' :
+                                                tech.tech_type === 'Red' ? 'bg-red-500 text-white' :
+                                                tech.tech_type === 'Green' ? 'bg-green-500 text-white' :
+                                                tech.tech_type === 'Yellow' ? 'bg-yellow-500 text-white' :
+                                                'bg-gray-500 text-white'
+                                              }`}>
+                                                {tech.tech_type}
+                                              </span>
+                                            )}
+                                          </div>
+                                          {tech.description && (
+                                            <div className="text-gray-700 italic text-[11px]">
+                                              {tech.description}
+                                            </div>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    /* Single tech display */
+                                    <>
+                                      <div className="flex items-center gap-2 mb-1">
+                                        {component.tech_type && (
+                                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                                            component.tech_type === 'Blue' ? 'bg-blue-500 text-white' :
+                                            component.tech_type === 'Red' ? 'bg-red-500 text-white' :
+                                            component.tech_type === 'Green' ? 'bg-green-500 text-white' :
+                                            component.tech_type === 'Yellow' ? 'bg-yellow-500 text-white' :
+                                            'bg-gray-500 text-white'
+                                          }`}>
+                                            {component.tech_type}
+                                          </span>
+                                        )}
+                                        {component.prerequisites && component.prerequisites.length > 0 && (
+                                          <div className="flex gap-1 items-center">
+                                            <span className="text-gray-600 text-[10px]">Req:</span>
+                                            {component.prerequisites.map((prereq, idx) => (
+                                              <span key={idx} className={`w-3 h-3 rounded-full ${
+                                                prereq === 'Blue' ? 'bg-blue-500' :
+                                                prereq === 'Red' ? 'bg-red-500' :
+                                                prereq === 'Green' ? 'bg-green-500' :
+                                                prereq === 'Yellow' ? 'bg-yellow-500' :
+                                                'bg-gray-500'
+                                              }`} title={prereq}></span>
+                                            ))}
+                                          </div>
+                                        )}
+                                      </div>
+                                      
+                                      {/* For unit upgrade techs */}
+                                      {component.combat && (
+                                        <>
+                                          {component.abilities && component.abilities.length > 0 && (
+                                            <div className="font-semibold text-purple-700 mb-1">
+                                              {component.abilities.join(', ')}
+                                            </div>
+                                          )}
+                                          {component.description && (
+                                            <div className="text-gray-700 mb-1 italic">
+                                              {component.description}
+                                            </div>
+                                          )}
+                                          <div className="flex gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
+                                            {component.cost !== undefined && <span>Cost: {component.cost}</span>}
+                                            <span>Combat: {component.combat}</span>
+                                            {component.move !== undefined && <span>Move: {component.move}</span>}
+                                            {component.capacity !== undefined && <span>Capacity: {component.capacity}</span>}
+                                          </div>
+                                        </>
+                                      )}
+                                      
+                                      {/* For non-unit techs */}
+                                      {!component.combat && component.description && (
+                                        <div className="text-gray-700 italic">
+                                          {component.description}
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              )}
+                              
+                              {/* Unit card format for flagship and mech */}
+                              {(cat === 'flagship' || cat === 'mech') && component.combat && (
+                                <div className="text-xs mt-2 border-t pt-2">
+                                  {component.abilities && component.abilities.length > 0 && (
+                                    <div className="font-semibold text-purple-700 mb-1">
+                                      {component.abilities.join(', ')}
+                                    </div>
+                                  )}
+                                  {component.description && (
+                                    <div className="text-gray-700 mb-1 italic">
+                                      {component.description}
+                                    </div>
+                                  )}
+                                  <div className="flex gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
+                                    {component.cost !== undefined && <span>Cost: {component.cost}</span>}
+                                    {component.combat && <span>Combat: {component.combat}</span>}
+                                    {component.move !== undefined && <span>Move: {component.move}</span>}
+                                    {component.capacity !== undefined && <span>Capacity: {component.capacity}</span>}
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Regular description for non-units and non-techs */}
+                              {!(cat === 'flagship' || cat === 'mech' || cat === 'faction_techs' || cat === 'starting_techs') && component.description && (
                                 <div className="text-xs text-gray-600 mt-1 line-clamp-2">
                                   {component.description.length > 100 
                                     ? component.description.substring(0, 100) + "..." 

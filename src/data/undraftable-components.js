@@ -47,7 +47,7 @@ export const undraftableComponents = {
     { name: "Biophobic", faction: "The Zelian Purifier", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Paranoia", faction: "The Zelian Purifier", triggerComponent: "Zelian Home System", type: "gain_extra" },
     { name: "Ancient Blueprints", faction: "The Bentor Conglomerate", triggerComponent: "C.O.O. Mgur - Deft Tradesperson", type: "gain_extra" },
-    { name: "Byssus", faction: "The Cheiran Hordes", triggerComponent: "Operator Kkavras", type: "gain_extra" },
+    { name: "Byssus", faction: "The Cheiran Hordes", triggerComponent: "Operator Kkavras - Subspace Grapple", type: "gain_extra" },
     { name: "Decree", faction: "The Edyn Mandate", triggerComponent: "Rune Bearer", type: "optional_swap" },
     { name: "Radiance", faction: "The Edyn Mandate", triggerComponent: "Rune Bearer", type: "optional_swap" },
     { name: "Mobile Command", faction: "The Ghoti Wayfarers", triggerComponent: "Ghoti Starting Fleet", type: "gain_extra" },

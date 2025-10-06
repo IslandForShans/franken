@@ -124,6 +124,7 @@ export default function FactionSheet({
                 const id = getId(item);
                 const isExpanded = expandedId === id;
                 const isTile = ["blue_tiles", "red_tiles"].includes(category);
+                const isUnit = (category === 'flagship' || category === 'mech');
                 const swapOption = getSwapOptions(item.name, item.faction);
                 const extraComponents = getExtraComponents(item.name, item.faction);
                 
@@ -148,14 +149,46 @@ export default function FactionSheet({
                           <div className="text-xs text-blue-600 break-words">{item.faction}</div>
                         )}
                         
-                        {item.description && !isExpanded && (
+                        {/* Unit card format for flagships, mechs, and unit techs */}
+                        {isUnit && (
+                          <div className="mt-2">
+                            {/* Abilities as keywords */}
+                            {item.abilities && item.abilities.length > 0 && (
+                              <div className="text-xs font-semibold text-purple-700 mb-1">
+                                {item.abilities.join(', ')}
+                              </div>
+                            )}
+                            
+                            {/* Text ability description */}
+                            {item.description && (
+                              <div className="text-xs text-gray-700 mb-2 italic leading-tight">
+                                {isExpanded ? item.description : (
+                                  <span className="line-clamp-2">{item.description}</span>
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Stats bar */}
+                            {item.combat && (
+                              <div className="flex gap-2 text-[10px] font-mono bg-gray-200 p-1.5 rounded border border-gray-300">
+                                {item.cost !== undefined && <span className="font-semibold">Cost: {item.cost}</span>}
+                                <span className="font-semibold">Combat: {item.combat}</span>
+                                {item.move !== undefined && <span className="font-semibold">Move: {item.move}</span>}
+                                {item.capacity !== undefined && <span className="font-semibold">Capacity: {item.capacity}</span>}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Regular description for non-unit, non-tech components */}
+                        {!(category === 'flagship' || category === 'mech' || category === 'faction_techs') && item.description && !isExpanded && (
                           <div className="text-xs text-gray-600 truncate mt-1">
                             {item.description}
                           </div>
                         )}
 
                         {/* Show swap/extra info when not expanded */}
-                        {!isExpanded && showReductionHelper && (
+                        {!isExpanded && showReductionHelper && !isUnit && category !== 'faction_techs' && category !== 'starting_techs' && (
                           <div className="mt-1 text-xs">
                             {swapOption && (
                               <div className="text-blue-600 break-words">↔ Swap available: {swapOption.name}</div>
@@ -207,8 +240,8 @@ export default function FactionSheet({
                           </div>
                         )}
 
-                        {/* Full description when expanded */}
-                        {isExpanded && item.description && (
+                        {/* Full description when expanded for non-units, non-techs */}
+                        {isExpanded && !(category === 'flagship' || category === 'mech' || category === 'faction_techs' || category === 'starting_techs') && item.description && (
                           <div className="mt-2 text-sm text-gray-700 whitespace-pre-line border-t pt-2 break-words">
                             {item.description}
                           </div>

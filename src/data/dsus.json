@@ -467,96 +467,115 @@
       "name": "The Cheiran Hordes",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "cheiran_teeming",
+          "name": "Teeming",
+          "description": "During setup, place 2 additional dreadnoughts and 1 additional mech in your reinforcements."
+        },
+        {
+          "id": "cheiran_moult",
+          "name": "Moult",
+          "description": "After you win a space combat as the defender, you may produce 1 ship in the active system, reducing the cost by 1 for each of your non-fighter ships destroyed during that combat."
+        },
+        {
+          "id": "cheiran_byssus",
+          "name": "Byssus",
+          "description": "You may treat your mechs on planets you control as structures for any purpose other than scoring objectives."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_bp",
+          "name": "Brood Pod (RR)",
+          "description": "After another player activates a system that contains 1 or more of your structures, you may exhaust this card to produce 1 ship in the active system. For each of your structures in the active system, you may remove that unit from the game board to reduce the cost of the produced ship by 3."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_ch1",
+          "name": "Chitin Hulk I",
+          "description": "Cost 4, Combat 5, Move 1, Capacity 1. SUSTAIN DAMAGE, BOMBARDMENT 5. When this unit is destroyed, you may place 1 fighter from your reinforcements in this system's space area."
+        },
+        {
+          "id": "cheiran_ch2",
+          "name": "Chitin Hulk II (BBY)",
+          "description": "Cost 4, Combat 5, Move 2, Capacity 1. SUSTAIN DAMAGE, BOMBARDMENT 5. This unit cannot be destroyed by 'Direct Hit' action cards. When this unit is destroyed, you may place 1 fighter or 1 destroyer from your reinforcements in this system's space area."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_agent",
+          "name": "Operator Kkavras - Subspace Grapple",
+          "description": "At the end of a player's turn: Exhaust this card to allow that player to remove 1 of their command tokens from the game board and place that token in an adjacent system that contains 1 or more of their structures and none of their command tokens."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_commander",
+          "name": "Spc. Phquaiset - Alloyed Carapace",
+          "description": "UNLOCK: Have 4 structures on non-home planets. While you are the defender during ground combat: After your opponent produces 1 or more hits against your units, you may spend 1 commodity or 1 trade good to cancel 1 of those hits."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_hero",
+          "name": "Thakt Clqua - Polemarch",
+          "description": "CONTINGENCY PLAN - BIOMASS EVENT. ACTION: Gather units from your reinforcements up to equal to your starting units. Place these units, in any combination, in the space area of any systems that contain 1 of your structures and no other players' ships, or on planets you control. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_pn",
+          "name": "Carcinisation",
+          "description": "When 1 of your non-fighter ships is destroyed during combat in a system: You may place 2 fighters from your reinforcements in the space area of that system. At the end of that combat, return this card to the Cheiran Hordes player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_fs",
+          "name": "Lithodax",
+          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 7(x2). When this unit makes a combat or ability roll, it rolls 1 additional die if this system is adjacent to or contains 1 of your structures."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_mech",
+          "name": "Nauplius",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. When this unit is destroyed, you may place 1 infantry from your reinforcements on this planet."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_starting_tech",
+          "name": "Cheiran Starting Tech",
+          "description": "Choose one of the following: Magen Defense Grid, Self-Assembly Routines"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "cheiran_starting_fleet",
+          "name": "Cheiran Starting Fleet",
+          "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 2 fighters, 2 infantry, 1 Mech, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "cheiran_comms",
+          "name": "Commodities", 
+          "description": "2"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "cheiran_hs",
+          "name": "Cheiran Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Gghurn Theta",
+              "resource": 2,
+              "influence": 1
+            },
+            {
+              "name": "Arche",
+              "resource": 2,
+              "influence": 2
             }
           ]
         }
