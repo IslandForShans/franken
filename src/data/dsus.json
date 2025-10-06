@@ -4,96 +4,113 @@
       "name": "The Augurs of Ilyxum",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_oracle",
+          "name": "Oracle AI",
+          "description": "After the speaker reveals an unrevealed public objective, choose 1 unrevealed public objective card and place that card on your faction sheet. You may look at the card on your faction sheet at any time."
+        
+        },
+        {
+          "id": "augurs_limited",
+          "name": "Limited Vision",
+          "description": "You may not place a stage II objective card on your faction sheet until all stage I objectives have been revealed."
+        
+        },
+        {
+          "id": "augurs_pa",
+          "name": "Probability Algorithms",
+          "description": "When the speaker would reveal the next public objective, they must reveal the public objective card on your faction sheet instead. Place that card near the other public objectives."
         
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_psychographics",
+          "name": "Psychographics (GGG)",
+          "description": "During the status phase, you may score 1 additional public objective instead of a secret objective."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_sdp",
+          "name": "Sentient Datapool (YY)",
+          "description": "At the start of the status phase, you may spend 3 trade goods to research 1 technology."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_agent",
+          "name": "Clodho - Speaker",
+          "description": "After a player explores a legendary planet or a plane that has a technology specialty, you may exhaust this card to allow that player to gain 2 trade goods."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_commander",
+          "name": "Lachis - Reader",
+          "description": "UNLOCK: Win a combat in a system that contains a legendary planet or a planet that has a technology specialty. This card satisfies a yellow technology prerequisite. When you cast at least 1 vote, cast 1 additional vote for every 2 technologies you own."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_hero",
+          "name": "Atropha - Weaver",
+          "description": "SYNCHRONICITY ALGORITHM - WOVEN FATE. ACTION: Draw 3 objective cards from 1 of the public objective decks; choose up to 1 of those cards to replace an objective card on a player's faction sheet, and return the others to the bottom of their corresponding decks. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_pn",
+          "name": "Read the Fates",
+          "description": "ACTION: Place this card face up in your play area. While this card is in your play area, you may look at the public objective card on the Ilyxum player's faction sheet. If you activate a system that contains 1 or more of the Ilyxum player's units, return this card to the Ilyxum player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_fs",
+          "name": "Nemsys",
+          "description": "Cost 8, Combat 5, Move 1, Capacity 3. SUSTAIN DAMAGE. When this unit makes a combat roll, it rolls 1 additional die for each secret objective you have scored."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_mech",
+          "name": "Iledrith",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: After researching a technology, you may place 1 mech on a legendary planet, or a planet that has a technology specialty, that you control."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_starting_tech",
+          "name": "Augurs Starting Tech",
+          "description": "Scanlink Drone Nertwork, AI Development Algorithm"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "augurs_starting_fleet",
+          "name": "Augurs Starting Flet",
+          "description": "1 Carrier, 2 Destroyers, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "augurs_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "augurs_hs",
+          "name": "Augurs Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Chrion",
+              "resource": 2,
+              "influence": 3
+            },
+            {
+              "name": "Demis",
+              "resource": 2,
+              "influence": 2
             }
           ]
         }
@@ -103,194 +120,230 @@
       "name": "The Bentor Conglomerate",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_sm",
+          "name": "Secret Maps",
+          "description": "At the end of your tactical actions, you may explore 1 planet in the active system that is or contains 1 or more of your units with PRODUCTION that you did not explore during that tactical action."
+        
+        },
+        {
+          "id": "bentor_fortune_seekers",
+          "name": "Fortune Seekers",
+          "description": "Once per action, after you explore a planet or frontier token, you main gain 1 commodity."
+        
+        },
+        {
+          "id": "bentor_ab",
+          "name": "Ancient Blueprints",
+          "description": "The first time you gain a cultural, hazardous, industrial, or unknown relic fragment, place the corresponding 'Fragment' token on your faction sheet."
         
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_bn",
+          "name": "Broker Network (G)",
+          "description": "Each planet you control that has a technology specialty or an attachment gains the PRODUCTION 1 ability as if it were a unit."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_mr",
+          "name": "Merged Replicators (YY)",
+          "description": "When 1 or more of your units use PRODUCTION, you may exhaust this card to swap 1 of those unit's PRODUCTION with another on the game board, or apply +2 to the total PRODUCTION value of those units."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_agent",
+          "name": "C.O.O Mgur - Deft Tradesperson",
+          "description": "ACTION: Exhaust this card and choose 1 player. For each Fragment token on your faction sheet, that player gains 1 commodity. For each commodity they would gain in excess of their commodity value, they gain 1 trade good instead."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_commander",
+          "name": "C.M.O. Ranc - Marketing Guru",
+          "description": "UNLOCK: Have 3 Fragment tokens on your faction sheet. Your commodity value is increased by 1."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_hero",
+          "name": "C.E.O. Tucc - Visionary Explorer",
+          "description": "PRIMORDIAL DATA CORE - GRAND REVEAL. ACTION: Purge this card to explore each planet you control, in any order."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_pn",
+          "name": "Encryption Key",
+          "description": "ACTION: Attach this card to a non-home planet you control. This planet has 1 technology specialty of any color."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_fs",
+          "name": "Wayfinder",
+          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 9(x2), SPACE CANNON 9, BOMBARDMENT 9. Apply +1 to the results of this ship's combat and ability rolls for each Fragment token on your faction sheet."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_mech",
+          "name": "Auctioneer",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: When you place a fragment token on your faction sheet, you may place 1 mech on a planet you control."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_starting_tech",
+          "name": "Bentor Starting Tech",
+          "description": "Chose two of the following: Dark Energy Tap, Scanlink Drone Network, Psychoarchaeology"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "bentor_starting_fleet",
+          "name": "Bentor Starting Fleet",
+          "description": "1 Carrier, 2 Cruisers, 3 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "bentor_comms",
+          "name": "Commodities", 
+          "description": "2"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "bentor_hs",
+          "name": "Bentor Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Benc",
+              "resource": 2,
               "influence": 0
+            },
+            {
+              "name": "Hau",
+              "resource": 1,
+              "influence": 2
             }
           ]
         }
       ]
     },
     {
-      "name": "The Beserkers of Kjalengard",
+      "name": "The Berserkers of Kjalengard",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "berserkers_glory",
+          "name": "GLory",
+          "description": "After you win a combat, you may place or move a Glory token into the active system, or spend 1 token from your strategy pool to research a unit upgrade technology of the same type as 1 of your units that participated in that combat."
+        },
+        {
+          "id": "berserkers_heroism",
+          "name": "Heroism",
+          "description": "Capture your fighters and infantry that are destroyed during combat. When you pass, for each Glory token on the game board, you may return 4 of your captured units to gain 1 command token."
+        },
+        {
+          "id": "berserkers_valor",
+          "name": "Valor",
+          "description": "When units make a combat roll in a system that contains a Glory token, each result of 10, before applying modifiers, produces 1 additional hit."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_zs",
+          "name": "Zhrgar Stimulants (G)",
+          "description": "Once per action, after a player produces 1 or more hits during a round of combat in a system that contains a Glory token, gain 1 trade good. After a player rolls combat dice, you may exhaust this card to allow that player to reroll any number of those dice."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_sd1",
+          "name": "Star Dragon I",
+          "description": "Cost 3, Combat 8, Move 1, Capacity 4. This unit may ignore the movement effects of non-supernova anomalies."
+        },
+        {
+          "id": "berserkers_sd2",
+          "name": "Star Dragon II (BB)",
+          "description": "Cost 3, Combat 7, Move 2, Capacity 6. This unit may ignore the movement effects of anomalies."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_agent",
+          "name": "Merkismathr Asvand - Marshal of Trade",
+          "description": "At the start of a combat: Exhaust this card to move a glory token to the active system, if able. Then, the active player may gain a number of commodities equal to the number of neighbors they have."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_commander",
+          "name": "Sdallari Tvungovot - Marshal Engineer",
+          "description": "UNLOCK: Have 2 Glory tokens on the game board. When researching a unit upgrade technology, each of your unit upgrade technologies may satisfy 1 prerequisite it shares with the technology you are researching."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_hero",
+          "name": "Ygegnad, The Thunder - Honorary Skald",
+          "description": "A TALE OF LEGENDS - FOR ETERNAL GLORY. ACTION: For each system that contains a Glory token, remove up to 1 command token in or adjacent to that system from the game board and gain 1 command token, if able. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_pn",
+          "name": "Vassalage",
+          "description": "Apply +1 to the results of each of your fighters' combat rolls during this combat. The Kjalengard player captures each of your fighters destroyed during this combat. Then, return this card to the Kjalengard player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_fs",
+          "name": "Hulgade's Hammer",
+          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 6. SUSTAIN DAMAGE. After the first round of a combat in this system, place up to 2 of your captured units in this system or on that planet."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_mech",
+          "name": "Skald",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. When you pass, place 1 infantry from your reinforcements on this planet if there is a Glory token in or adjacent to this system."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_starting_tech",
+          "name": "Berserkers Starting Tech",
+          "description": "Choose one non-faction unit upgrade technology."
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "berserkers_starting_fleet",
+          "name": "Berserkers Starting Fleet",
+          "description": "2 Carriers, 1 Destroyer, 4 fighters, 4 infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "berserkers_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "berserkers_hs",
+          "name": "Berserkers Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Kjalengard",
+              "resource": 3,
+              "influence": 2
+            },
+            {
+              "name": "Hulgade",
+              "resource": 1,
               "influence": 0
             }
           ]
@@ -301,96 +354,110 @@
       "name": "The Celdauri Trade Confederation",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "celdauri_pop",
+          "name": "Projection of Power",
+          "description": "At the start of any space combat in a system that is adjacent to or contains 1 or more of your space docks, choose up to 1 ship in that system to gain ANTI-FIGHTER BARRAGE 6 during that combat."
+        },
+        {
+          "id": "celdauri_industrialists",
+          "name": "Industrialists",
+          "description": "During setup, place 1 additional space dock in your reinforcements."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_emp",
+          "name": "Emergency Mobilization Protocols (RR)",
+          "description": "At the end of your turn, you may exhaust this card and spend 1 token from your strategy pool to remove a command token from a system that contains 1 or more of your space docks."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_tp1",
+          "name": "Trade Port I",
+          "description": "ANTI-FIGHTER BARRAGE 6(x2), PRODUCTION X+2 (X is the resource or influence value of the planet). This unit's PRODUCTION value is equal to 2 more than the resource or influence value of this planet. Up to 3 fighters in this system do not count against your ships' capacity."
+        },
+        {
+          "id": "celdauri_tp2",
+          "name": "Trade Port II (YY)",
+          "description": "ANTI-FIGHTER BARRAGE 6(x2), PRODUCTION X+4 (X is the resource or influence value of the planet). This unit's PRODUCTION value is equal to 4 more than the resource or influence value of this planet. Up to 3 fighters in this system do not count against your ships' capacity. This unit may use its ANTI-FIGHTER BARRAGE during each round of space combat."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_agent",
+          "name": "George Nobin - Esteemed Merchantman",
+          "description": "At the end of a player's tactical action: You may exhaust this card to allow that player to spend 2 trade goods or 2 commodities to place 1 spacedock from their reinforcements on a planet they control in the active system."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_commander",
+          "name": "Henry Storcher - Starbase Commander",
+          "description": "UNLOCK: Have 1 space dock on the game board that is not adjacent to your home system. After you activate a system that contains 1 or more of your space docks, gain 1 commodity. Your ships may treat systems that contain 1 or more of your space docks as adjacent to each other."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_hero",
+          "name": "Titus Flavius - Councilman",
+          "description": "TRADER MOBILIZATION ACT - MERCHANT REARAMENT. After aplayer activates a system other than Mecatol Rex: You may place 1 space dock on a planet you control in the active system, convert each of your commodities to a trade good, and use the PRODUCTION ability of each of your units in the active system. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_pn",
+          "name": "Trade Alliance",
+          "description": "When you receive this card, if you are not the Celdauri player, you must place it face up in your play area. While this card is in your play area, you can use the Celdauri player's commander ability, if it is unlocked. If you activate a system that contains 1 or more of the Celdauri player's units, return this card to the Celdauri player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_fs",
+          "name": "Supremacy",
+          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 6. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 6(x2). You may use the PRODUCTION ability of other player's space docks in this system to produce ships."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_mech",
+          "name": "Minuteman",
+          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: After another player activates a system, you may spend 1 trade good or 1 commodity to place 1 mech on a planet in that system that contains 1 of your space docks."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_starting_tech",
+          "name": "Celdauri Starting Tech",
+          "description": "Choose two of the following: Antimass Deflectors, Sarween Tools, Plasma Scoring"
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "celdauri_starting_fleet",
+          "name": "Celdauri Starting Fleet",
+          "description": "2 Carriers, 1 Destroyer, 4 Fighters, 3 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "celdauri_comms",
+          "name": "Commodities", 
+          "description": "4"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "celdauri_hs",
+          "name": "Celdauri Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Louk",
+              "resource": 2,
+              "influence": 1
+            },
+            {
+              "name": "Auldane",
+              "resource": 1,
+              "influence": 3
             }
           ]
         }
@@ -2772,7 +2839,7 @@
         }
       ]
     },
-      {
+    {
       "name": "The Tnelis Syndicate",
       "abilities": [
         {

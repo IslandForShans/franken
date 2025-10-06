@@ -46,15 +46,15 @@ export const undraftableComponents = {
     { name: "Targeted Aquisition", faction: "The Veldyr Sovereignty", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Biophobic", faction: "The Zelian Purifier", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Paranoia", faction: "The Zelian Purifier", triggerComponent: "Zelian Home System", type: "gain_extra" },
-    { name: "Ancient Blueprints", faction: "The Bentor Conglomerate", triggerComponent: "C.O.O. Mgur", type: "gain_extra" },
+    { name: "Ancient Blueprints", faction: "The Bentor Conglomerate", triggerComponent: "C.O.O. Mgur - Deft Tradesperson", type: "gain_extra" },
     { name: "Byssus", faction: "The Cheiran Hordes", triggerComponent: "Operator Kkavras", type: "gain_extra" },
     { name: "Decree", faction: "The Edyn Mandate", triggerComponent: "Rune Bearer", type: "optional_swap" },
     { name: "Radiance", faction: "The Edyn Mandate", triggerComponent: "Rune Bearer", type: "optional_swap" },
     { name: "Mobile Command", faction: "The Ghoti Wayfarers", triggerComponent: "Ghoti Starting Fleet", type: "gain_extra" },
     { name: "Abyssal Embrace", faction: "The Ghoti Wayfarers", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Celestial Reclamation", faction: "The GLEdge Union", triggerComponent: "Mantle Cracking", type: "gain_extra" },
-    { name: "Heroism", faction: "The Beserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
-    { name: "Valor", faction: "The Beserkers of Kjalengard", triggerComponent: "GLory", type: "gain_extra" },
+    { name: "Heroism", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
+    { name: "Valor", faction: "The Berserkers of Kjalengard", triggerComponent: "GLory", type: "gain_extra" },
     { name: "Plague Reservoir", faction: "The Kyro Sodality", triggerComponent: "Contagion", type: "gain_extra" },
     { name: "Subversive", faction: "The Kyro Sodality", triggerComponent: "Contagion", type: "gain_extra" },
     { name: "A New Edifice", faction: "The Lanefir Remnants", reason: "Just Plain Garbage", type: "garbage" },
@@ -93,7 +93,7 @@ export const undraftableComponents = {
     { name: "Valefar Assimilator X", faction: "The Nekro Virus", triggerComponent: "Tech Singularity", type: "optional_swap" },
     //DS
     { name: "Voidflare Warden II", faction: "The Nivyn Star Kings", reason: "Just Plain Garbage", type: "garbage" },
-    { name: "Zhrgar Stimulants", faction: "The Beserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
+    { name: "Zhrgar Stimulants", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
     { name: "ATS Armaments", faction: "The Lanefir Remnants", reason: "Just Plain Garbage", type: "garbage" }
   ],
 
@@ -105,7 +105,7 @@ export const undraftableComponents = {
     { name: "Suffi An", faction: "The Mentak Coalition", triggerComponent: "Pillage", type: "optional_swap" },
     //DS
     { name: "Lactarius Indigo", faction: "The Myko-Mentori", triggerComponent: "Prescient Memories", type: "optional_swap" },
-    { name: "Merkismathr Asvand", faction: "The Beserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" }
+    { name: "Merkismathr Asvand - Marshal of Trade", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" }
   ],
   
   commanders: [
@@ -116,8 +116,8 @@ export const undraftableComponents = {
     { name: "Jarl Vel & Jarl Jotrun", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
     { name: "Dhume Tathu", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
     { name: "Vera Khage", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "optional_swap" },
-    { name: "C.M.O. Ranc", faction: "The Bentor Conglomerate", triggerComponent: "C.O.O. Mgur", type: "optional_swap" },
-    { name: "Sdallari Tvungovot", faction: "The Beserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
+    { name: "C.M.O. Ranc - Marketing Guru", faction: "The Bentor Conglomerate", triggerComponent: "C.O.O. Mgur - Deft Tradesperson", type: "optional_swap" },
+    { name: "Sdallari Tvungovot - Marshal Engineer", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
     { name: "Jack Hallard", faction: "The Nokar Sellships", triggerComponent: "Hired Guns", type: "optional_swap" }
   ],
 
@@ -128,12 +128,12 @@ export const undraftableComponents = {
     { name: "Demi-Queen Mdcksssk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
     { name: "Raze Order", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
     { name: "Destiny Drive", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
-    { name: "Synchronicity Algorithm", faction: "The Augurs of Ilyxum", triggerComponent: "Oracle AI", type: "optional_swap" },
+    { name: "Atropha - Weaver", faction: "The Augurs of Ilyxum", triggerComponent: "Oracle AI", type: "optional_swap" },
     { name: "Khaz-Rin Li", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
     { name: "Singularity Cradle", faction: "The Nivyn Star Kings", triggerComponent: "Voidflare Warden II", type: "optional_swap" },
     { name: "Shadow Council", faction: "The Olradin League", triggerComponent: "Policies", type: "optional_swap" },
     { name: "Auberon Elyrin", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "optional_swap" },
-    { name: "A Tale of Legends", faction: "The Beserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" }
+    { name: "Ygegnad The Thunder - Honorary Skald", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" }
   ],
 
   // Mechs
@@ -152,7 +152,7 @@ export const undraftableComponents = {
     { name: "Exemplar", faction: "The Olradin League", triggerComponent: "Policies", type: "optional_swap" },
     { name: "Autofabricator", faction: "Roh'Dhna Mechatronics", triggerComponent: "Recycled Materials", type: "optional_swap" },
     { name: "The Collector", faction: "The Vaden Banking Clans", triggerComponent: "Acula Network", type: "optional_swap" },
-    { name: "Skald", faction: "The Beserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" }
+    { name: "Skald", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" }
   ],
 
   // Flagships
@@ -160,7 +160,7 @@ export const undraftableComponents = {
     //Base + Pok
     { name: "Hil Colish", faction: "The Ghosts of Creuss", triggerComponent: "any component w/ delta WH", type: "optional_swap" },
     //DS
-    { name: "Hulgade's Hammer", faction: "The Beserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
+    { name: "Hulgade's Hammer", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
     { name: "All Mother", faction: "The Ghoti Wayfarers", triggerComponent: "Ghoti Starting Fleet", type: "draftable_and_swap" }
   ],
 
