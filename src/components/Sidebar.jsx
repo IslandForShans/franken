@@ -236,12 +236,29 @@ export default function Sidebar({
                                       {component.description}
                                     </div>
                                   )}
-                                  <div className="flex gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
-                                    {component.cost !== undefined && <span>Cost: {component.cost}</span>}
-                                    {component.combat && <span>Combat: {component.combat}</span>}
-                                    {component.move !== undefined && <span>Move: {component.move}</span>}
-                                    {component.capacity !== undefined && <span>Capacity: {component.capacity}</span>}
-                                  </div>
+                                  
+                                  {/* Check for variants (different stats by location) */}
+                                  {component.variants && component.variants.length > 0 ? (
+                                    <div className="space-y-1">
+                                      {component.variants.map((variant, idx) => (
+                                        <div key={idx} className="flex items-center gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
+                                          <span className="font-semibold text-blue-600">{variant.location}:</span>
+                                          {component.cost !== undefined && idx === 0 && <span>Cost: {component.cost}</span>}
+                                          <span>Combat: {variant.combat}</span>
+                                          {variant.move !== undefined && <span>Move: {variant.move}</span>}
+                                          {variant.capacity !== undefined && <span>Capacity: {variant.capacity}</span>}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    /* Standard single stat line */
+                                    <div className="flex gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
+                                      {component.cost !== undefined && <span>Cost: {component.cost}</span>}
+                                      {component.combat && <span>Combat: {component.combat}</span>}
+                                      {component.move !== undefined && <span>Move: {component.move}</span>}
+                                      {component.capacity !== undefined && <span>Capacity: {component.capacity}</span>}
+                                    </div>
+                                  )}
                                 </div>
                               )}
                               

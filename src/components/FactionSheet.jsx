@@ -149,8 +149,115 @@ export default function FactionSheet({
                           <div className="text-xs text-blue-600 break-words">{item.faction}</div>
                         )}
                         
-                        {/* Unit card format for flagships, mechs, and unit techs */}
-                        {isUnit && (
+                        {/* Tech card format - single tech or tech package */}
+                        {(category === 'faction_techs' || category === 'starting_techs') && (
+                          <div className="mt-2">
+                            {/* Check if this is a tech package (multiple techs) */}
+                            {item.techs && item.techs.length > 0 ? (
+                              <div className="space-y-2">
+                                {item.choose_count && (
+                                  <div className="text-[11px] font-semibold text-orange-600 mb-1 pb-1 border-b border-orange-200">
+                                    {item.note || `Choose ${item.choose_count} of the following:`}
+                                  </div>
+                                )}
+                                {item.techs.map((tech, techIdx) => (
+                                  <div key={techIdx} className="pb-2 border-b last:border-b-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <span className="font-semibold text-gray-800 text-xs">{tech.name}</span>
+                                      {tech.tech_type && (
+                                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                                          tech.tech_type === 'Blue' ? 'bg-blue-500 text-white' :
+                                          tech.tech_type === 'Red' ? 'bg-red-500 text-white' :
+                                          tech.tech_type === 'Green' ? 'bg-green-500 text-white' :
+                                          tech.tech_type === 'Yellow' ? 'bg-yellow-500 text-white' :
+                                          'bg-gray-500 text-white'
+                                        }`}>
+                                          {tech.tech_type}
+                                        </span>
+                                      )}
+                                    </div>
+                                    {tech.description && (
+                                      <div className="text-gray-700 italic text-[11px] leading-tight">
+                                        {isExpanded ? tech.description : (
+                                          <span className="line-clamp-2">{tech.description}</span>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              /* Single tech display */
+                              <>
+                                <div className="flex items-center gap-2 mb-1">
+                                  {item.tech_type && (
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                                      item.tech_type === 'Blue' ? 'bg-blue-500 text-white' :
+                                      item.tech_type === 'Red' ? 'bg-red-500 text-white' :
+                                      item.tech_type === 'Green' ? 'bg-green-500 text-white' :
+                                      item.tech_type === 'Yellow' ? 'bg-yellow-500 text-white' :
+                                      'bg-gray-500 text-white'
+                                    }`}>
+                                      {item.tech_type}
+                                    </span>
+                                  )}
+                                  {item.prerequisites && item.prerequisites.length > 0 && (
+                                    <div className="flex gap-1 items-center">
+                                      <span className="text-gray-600 text-[10px]">Req:</span>
+                                      {item.prerequisites.map((prereq, idx) => (
+                                        <span key={idx} className={`w-3 h-3 rounded-full ${
+                                          prereq === 'Blue' ? 'bg-blue-500' :
+                                          prereq === 'Red' ? 'bg-red-500' :
+                                          prereq === 'Green' ? 'bg-green-500' :
+                                          prereq === 'Yellow' ? 'bg-yellow-500' :
+                                          'bg-gray-500'
+                                        }`} title={prereq}></span>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                {/* For unit upgrade techs */}
+                                {item.combat && (
+                                  <>
+                                    {item.abilities && item.abilities.length > 0 && (
+                                      <div className="text-xs font-semibold text-purple-700 mb-1">
+                                        {item.abilities.join(', ')}
+                                      </div>
+                                    )}
+                                    
+                                    {item.description && (
+                                      <div className="text-xs text-gray-700 mb-2 italic leading-tight">
+                                        {isExpanded ? item.description : (
+                                          <span className="line-clamp-2">{item.description}</span>
+                                        )}
+                                      </div>
+                                    )}
+                                    
+                                    <div className="flex gap-2 text-[10px] font-mono bg-gray-200 p-1.5 rounded border border-gray-300">
+                                      {item.cost !== undefined && <span className="font-semibold">Cost: {item.cost}</span>}
+                                      <span className="font-semibold">Combat: {item.combat}</span>
+                                      {item.move !== undefined && <span className="font-semibold">Move: {item.move}</span>}
+                                      {item.capacity !== undefined && <span className="font-semibold">Capacity: {item.capacity}</span>}
+                                    </div>
+                                  </>
+                                )}
+                                
+                                {/* For non-unit techs */}
+                                {!item.combat && item.description && (
+                                  <div className="text-xs text-gray-700 italic leading-tight">
+                                    {isExpanded ? item.description : (
+                                      <span className="line-clamp-2">{item.description}</span>
+                                    )}
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Unit card format for flagships and mechs */}
+                        {(category === 'flagship' || category === 'mech') && item.combat && (
                           <div className="mt-2">
                             {/* Abilities as keywords */}
                             {item.abilities && item.abilities.length > 0 && (
@@ -168,8 +275,21 @@ export default function FactionSheet({
                               </div>
                             )}
                             
-                            {/* Stats bar */}
-                            {item.combat && (
+                            {/* Check for variants (different stats by location) */}
+                            {item.variants && item.variants.length > 0 ? (
+                              <div className="space-y-1">
+                                {item.variants.map((variant, idx) => (
+                                  <div key={idx} className="flex items-center gap-2 text-[10px] font-mono bg-gray-200 p-1.5 rounded border border-gray-300">
+                                    <span className="font-semibold text-blue-600">{variant.location}:</span>
+                                    {item.cost !== undefined && idx === 0 && <span className="font-semibold">Cost: {item.cost}</span>}
+                                    <span className="font-semibold">Combat: {variant.combat}</span>
+                                    {variant.move !== undefined && <span className="font-semibold">Move: {variant.move}</span>}
+                                    {variant.capacity !== undefined && <span className="font-semibold">Capacity: {variant.capacity}</span>}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              /* Standard single stat line */
                               <div className="flex gap-2 text-[10px] font-mono bg-gray-200 p-1.5 rounded border border-gray-300">
                                 {item.cost !== undefined && <span className="font-semibold">Cost: {item.cost}</span>}
                                 <span className="font-semibold">Combat: {item.combat}</span>
@@ -181,7 +301,7 @@ export default function FactionSheet({
                         )}
                         
                         {/* Regular description for non-unit, non-tech components */}
-                        {!(category === 'flagship' || category === 'mech' || category === 'faction_techs') && item.description && !isExpanded && (
+                        {!(category === 'flagship' || category === 'mech' || category === 'faction_techs' || category === 'starting_techs') && item.description && !isExpanded && (
                           <div className="text-xs text-gray-600 truncate mt-1">
                             {item.description}
                           </div>

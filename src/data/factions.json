@@ -1673,12 +1673,16 @@
       "faction_techs": [
         {
           "id": "mentak_so",
-          "name": "Salvage Operations (YY)",
+          "name": "Salvage Operations",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
           "description": "After you win or lose a space combat, gain 1 trade good; if you won the combat, you may also produce 1 ship in that system of any ship type that was destroyed during the combat"
         },
         {
           "id": "mentak_mc",
-          "name": "Mirror Computing (YYY)",
+          "name": "Mirror Computing",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow", "Yellow"],
           "description": "When you spend trade goods, each trade good is worth 2 resources or influence instead of 1"
         }
       ],
@@ -1714,21 +1718,38 @@
         {
           "id": "mentak_fs",
           "name": "Fourth Moon",
-          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DMAAGE. Other players' ships in this system cannot use sustain damage."
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "Other players' ships in this system cannot use sustain damage."
         }
       ],
       "mech": [
         {
           "id": "mentak_mech",
           "name": "Moll Terminus",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. Other players' ground forces on this planet cannot use SUSTAIN DAMAGE."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "Other players' ground forces on this planet cannot use SUSTAIN DAMAGE."
         }
       ],
       "starting_techs": [
         {
           "id": "mentak_starting_tech",
           "name": "Mentak Starting Tech",
-          "description": "Sarween Tools, Plasma Scoring"
+          "tech": [
+            {
+              "name": "Sarween Tools",
+              "tech_type": "Yellow"
+            },
+            {
+              "name": "Plasma Scoring",
+              "tech_type": "Red"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -1776,18 +1797,26 @@
       "faction_techs": [
         {
           "id": "naalu_ng",
-          "name": "Neuroglaive (GGG)",
+          "name": "Neuroglaive",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow", "Yellow"],
           "description": "After another player activates a system that contains 1 or more of oyur ships, that player removes 1 token from their fleet pool and returns it to their reinforcements."
         },
         {
           "id": "naalu_hcf1",
           "name": "Hybrid Crystal Fighter I",
-          "description": "Cost 1(x2), Combat 8"
+          "cost": "1(x2)",
+          "combat": 8
         },
         {
           "id": "naalu_hcf2",
-          "name": "Hybrid Crystal Fighter II (GB)",
-          "description": "Cost 1(x2), Combat 7, Move 2. This unit may move without being transported. Each fighter in excess of your ships' capacity counts as 1/2 of a ship against your fleet pool."
+          "name": "Hybrid Crystal Fighter II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Green", "Blue"],
+          "cost": "1(x2)",
+          "combat": 7,
+          "move": 2,
+          "description": "This unit may move without being transported. Each fighter in excess of your ships' capacity counts as 1/2 of a ship against your fleet pool."
         }
       ],
       "agents": [
@@ -1822,21 +1851,38 @@
         {
           "id": "naalu_fs",
           "name": "Matriarch",
-          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 6. SUSTAIN DAMAGE. During an invasion in this system, you may commit fighters to planets as if they were ground forces. When combat ends, return those units to the space area."
+          "cost": 8,
+          "combat": "9(x2)",
+          "move": 1,
+          "capacity": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "During an invasion in this system, you may commit fighters to planets as if they were ground forces. When combat ends, return those units to the space area."
         }
       ],
       "mech": [
         {
           "id": "naalu_mech",
           "name": "Iconoclast Ω",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. Other players cannot use ANTI-FIGHTER BARRAGE against your units in this system."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "Other players cannot use ANTI-FIGHTER BARRAGE against your units in this system."
         }
       ],
       "starting_techs": [
         {
           "id": "naalu_starting_tech",
           "name": "Naalu Starting Tech",
-          "description": "Neural Motivator, Sarween Tools"
+          "tech": [
+            {
+              "name": "Neural Motivator",
+              "tech_type": "Green"
+            },
+            {
+              "name": "Sarween Tools",
+              "tech_type": "Yellow"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -1889,12 +1935,16 @@
       "faction_techs": [
         {
           "id": "nra_supercharge",
-          "name": "Supercharge (R)",
+          "name": "Supercharge",
+          "tech_type": "Red",
+          "prerequisites": ["Red"],
           "description": "At the start of a combat round, you may exhaust this card to apply +1 to the result of each of your unit's combat rolls during this combat round."
         },
         {
           "id": "nra_pfa",
-          "name": "Pre-Fab Arcologies (GGG)",
+          "name": "Pre-Fab Arcologies",
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green", "Green"],
           "description": "After you explore a planet, ready that planet."
         }
       ],
@@ -1930,21 +1980,47 @@
         {
           "id": "nra_fs",
           "name": "Visz el Vir",
-          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 4. SUSTAIN DAMAGE. Your mechs in this system roll 1 additional die during combat."
+          "cost": 8,
+          "combat": "9(x2)",
+          "move": 1,
+          "capacity": 4,
+          "abilities": ["Sustain Damage"],
+          "description": "Your mechs in this system roll 1 additional die during combat."
         }
       ],
       "mech": [
         {
           "id": "nra_mech",
           "name": "Eidolon | Z-Grav Eidolon",
-          "description": "Cost 2, Combat 6(x2). SUSTAIN DAMAGE. If this unit is in the space area of the active system at the start of a space combat, flip this card. (This card begins the game with this side face up) | Cost 2, Combat 8(x2). If this unit is in the space area of the active system, it is also a ship. At the end of a space battle in the active system, flip this card. (This card begins the game with this side face down)"
+          "cost": 2,
+          "abilities": ["Sustain Damage"],
+          "variants": [
+            {
+              "location": "Ground",
+              "combat": "6(x2)"
+            },
+            {
+              "location": "Space",
+              "combat": "8(x2)"
+            }
+          ],
+          "description": "If this unit is in the space area of the active system at the start of a space combat, flip this card. (This card begins the game with this side face up) | If this unit is in the space area of the active system, it is also a ship. At the end of a space battle in the active system, flip this card. (This card begins the game with this side face down)"
         }
       ],
       "starting_techs": [
         {
           "id": "nra_starting_tech",
           "name": "Naaz-Rokha Alliance Starting Tech",
-          "description": "Psychoarchaeology, AI Development Algorithm"
+          "tech": [
+            {
+              "name": "Psychoarchaeology",
+              "tech_type": "Green"
+            },
+            {
+              "name": "AI Development Algorithm",
+              "tech_type": "Red"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -2043,21 +2119,34 @@
         {
           "id": "nekro_fs",
           "name": "The Alastor",
-          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. At the start of a space combat, choose any number of your ground forces in this system to participate in combat as if they were ships."
+          "cost": 8,
+          "combat": "9(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "At the start of a space combat, choose any number of your ground forces in this system to participate in combat as if they were ships."
         }
       ],
       "mech": [
         {
           "id": "nekro_mech",
           "name": "Mordred",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. During a combat against an opponent who has an 'X' or 'Y' token on 1 or more of their technologies, apply +2 to the result of each of this unit's combat rolls."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "During a combat against an opponent who has an 'X' or 'Y' token on 1 or more of their technologies, apply +2 to the result of each of this unit's combat rolls."
         }
       ],
       "starting_techs": [
         {
           "id": "nekro_starting_tech",
           "name": "Nekro Starting Tech",
-          "description": "Daxcive Animators"
+          "tech": [
+            {
+              "name": "Daxcive Animators",
+              "tech_type": "Green"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -2105,7 +2194,9 @@
       "faction_techs": [
         {
           "id": "nomad_tcs",
-          "name": "Temporal Command Suite (Y)",
+          "name": "Temporal Command Suite",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow"],
           "description": "After any player's agent becomes exhausted, you may exhaust this card to ready that agent; if your ready another player's agent, you may perform a transaction with that player."
         }
       ],
@@ -2151,26 +2242,46 @@
         {
           "id": "nomad_fs1",
           "name": "Memoria I",
-          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 8(x3). You may treat this unit as if it were adjacent to systems that contain one or more of your mechs."
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage", "Anti-Fighter Barrage 8(x3)"],
+          "description": "You may treat this unit as if it were adjacent to systems that contain one or more of your mechs."
         },
         {
           "id": "nomad_fs2",
-          "name": "Memoria II (GBY)",
-          "description": "Cost 8, Combat 5(x2), Move 2, Capacity 6. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 5(x3). You may treat this unit as if it were adjacent to systems that contain one or more of your mechs."
+          "name": "Memoria II",
+          "tech_type": "Unit Upgrade",
+          "prerequisites": ["Green", "Blue", "Yellow"],
+          "cost": 8,
+          "combat": "5(x2)",
+          "move": 2,
+          "capacity": 6,
+          "abilities": ["Sustain Damage", "Anti-Fighter Barrage 5(x3)"],
+          "description": "You may treat this unit as if it were adjacent to systems that contain one or more of your mechs."
         }
       ],
       "mech": [
         {
           "id": "nomad_mech",
           "name": "Quantum Manipulator",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. While this unit is in a space area during combat, you may use its SUSTAIN DAMAGE ability to cancel a hit that is produced against your ships in this system."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "While this unit is in a space area during combat, you may use its SUSTAIN DAMAGE ability to cancel a hit that is produced against your ships in this system."
         }
       ],
       "starting_techs": [
         {
           "id": "nomad_starting_tech",
           "name": "Nomad Starting Tech",
-          "description": "Sling Relay"
+          "tech": [
+            {
+              "name": "Sling Relay",
+              "tech_type": "Blue"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -2213,18 +2324,31 @@
       "faction_techs": [
         {
           "id": "sardakk_vpw",
-          "name": "Valkyrie Particle Weave (RR)",
+          "name": "Valkyrie Particle Weave",
+          "tech_type": "Red",
+          "prerequisites": ["Red", "Red"],
           "description": "After making combat rolls during a round of ground combat, if your opponent produced 1 or more hits, you produce 1 additional hit"
         },
         {
           "id": "sardakk_e1",
           "name": "Exotrireme I",
-          "description": "Cost 4, Combat 5, Move 1, Capacity 1. SUSTAIN DAMAGE, BOMBARDMENT 4(x2)."
+          "cost": 4,
+          "combat": 5,
+          "move": 1,
+          "capacity": 1,
+          "abilities": ["Sustain Damage", "Bombardment 4(x2)"]
         },
         {
           "id": "sardakk_e2",
-          "name": "Exotrireme II (BBY)",
-          "description": "Cost 4, Combat 5, Move 2, Capacity 1. SUSTAIN DAMAGE, BOMBARDMENT 4(x2). This unit cannot be destroyed by 'Direct Hit' action cards. After a round of space combat, you may ddestroy this unit to destroy up to 2 ships in this system."
+          "name": "Exotrireme II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Blue", "Blue", "Yellow"],
+          "cost": 4,
+          "combat": 5,
+          "move": 2,
+          "capacity": 1,
+          "abilities": ["Sustain Damage", "Bombardment 4(x2)"],
+          "description": "This unit cannot be destroyed by 'Direct Hit' action cards. After a round of space combat, you may ddestroy this unit to destroy up to 2 ships in this system."
         }
       ],
       "agents": [
@@ -2259,14 +2383,22 @@
         {
           "id": "sardakk_fs",
           "name": "C'Morran N'orr",
-          "description": "Cost 8, Combat 6(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. Apply +1 to the result of each of your other ship's combat rolls in this system."
+          "cost": 8,
+          "combat": "6(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "Apply +1 to the result of each of your other ship's combat rolls in this system."
         }
       ],
       "mech": [
         {
           "id": "sardakk_mech",
           "name": "Valkyrie Exoskeleton",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. Afer this unit uses its SUSTAIN DAMAGE ability during Ground Combat, it produces 1 hit against your opponent's ground forces on this planet."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "Afer this unit uses its SUSTAIN DAMAGE ability during Ground Combat, it produces 1 hit against your opponent's ground forces on this planet."
         }
       ],
       "starting_techs": [
@@ -2332,22 +2464,37 @@
         {
           "id": "titans_se1",
           "name": "Saturn Engine I",
-          "description": "Cost 2, Combat 7, Move 2, Capacity 1."
+          "cost": 2,
+          "combat": 7,
+          "move": 2,
+          "capacity": 1
         },
         {
           "id": "titans_se2",
-          "name": "Saturn Engine II (GYR)",
-          "description": "Cost 2, Combat 6, Move 3, Capacity 2. SUSTAIN DAMAGE."
+          "name": "Saturn Engine II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Green", "Yellow", "Red"],
+          "cost": 2,
+          "combat": 6,
+          "move": 3,
+          "capacity": 2,
+          "abilities": ["Sustain Damage"]
         },
         {
           "id": "titans_ht1",
           "name": "Hel-Titan I",
-          "description": "Combat 7. PLANETARY SHIELD, SPACE CANNON 6, SUSTAIN DAMAGE, PRODUCTION 1. This unit is treated as both a structure and a ground force. It cannot be transported."
+          "combat": 7,
+          "abilities": ["Planetary Shield", "Space Cannon 6", "Sustain Damage", "PRODUCTION 1"],
+          "description": "This unit is treated as both a structure and a ground force. It cannot be transported."
         },
         {
           "id": "titans_ht2",
-          "name": "Hel-Titan II (YR)",
-          "description": "Combat 6. PLANETARY SHIELD, SPACE CANNON 5, SUSTAIN DAMAGE, PRODUCTION 1. This unit is treated as both a structure and a ground force. It cannot be transported. You may use this unit's SPACE CANNON against ships that are adjaent to this unit's system."
+          "name": "Hel-Titan II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Yellow", "Red"],
+          "combat": 6,
+          "abilities": ["Planetary Shield", "Space Cannon 5", "Sustain Damage", "PRODUCTION 1"],
+          "description": "This unit is treated as both a structure and a ground force. It cannot be transported. You may use this unit's SPACE CANNON against ships that are adjaent to this unit's system."
         }
       ],
       "agents": [
@@ -2382,21 +2529,38 @@
         {
           "id": "titans_fs",
           "name": "Ouranos",
-          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. DEPLOY: After you activate a system that contains 1 or more of your PDS, you may replace 1 of those PDS with this unit."
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "DEPLOY: After you activate a system that contains 1 or more of your PDS, you may replace 1 of those PDS with this unit."
         }
       ],
       "mech": [
         {
           "id": "titans_mech",
           "name": "Hecatoncheires",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. When you would place a PDS on a planet, you may place 1 mech and 1 infantry on that planet instead."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "When you would place a PDS on a planet, you may place 1 mech and 1 infantry on that planet instead."
         }
       ],
       "starting_techs": [
         {
           "id": "titans_starting_tech",
           "name": "Titans Starting Tech",
-          "description": "Antimass Deflectors, Scanlink Drone Network"
+          "tech": [
+            {
+              "name": "Antimass Deflectors",
+              "tech_type": "Blue"
+            },
+            {
+              "name": "Scanlink Drone Network",
+              "tech_type": "Yellow"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -2449,12 +2613,16 @@
       "faction_techs": [
         {
           "id": "jolnar_eres",
-          "name": "E-Res Siphons (YY)",
+          "name": "E-Res Siphons",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
           "description": "After another player activates a system that contains 1 or more of your ships, gain 4 trade goods."
         },
         {
           "id": "jolnar_scc",
-          "name": "Spatial Conduit Cylinder (BB)",
+          "name": "Spatial Conduit Cylinder",
+          "tech_type": "Blue",
+          "prerequisites": ["Blue", "Blue"],
           "description": "You may exhaust this card after you activate a system that contains 1 or more of your units; that system is adjacent to all other systems that contain 1 or more of your units during this activation."
         }
       ],
@@ -2490,21 +2658,46 @@
         {
           "id": "jolnar_fs",
           "name": "J.N.S. Hylarim",
-          "description": "Cost 8, Combat 6(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. When making a combat roll for this ship, each result of 9 or 10, before applying modifiers, produces 2 additional hits."
+          "cost": 8,
+          "combat": "6(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "When making a combat roll for this ship, each result of 9 or 10, before applying modifiers, produces 2 additional hits."
         }
       ],
       "mech": [
         {
           "id": "jolnar_mech",
           "name": "Shield Paling",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. Your infantry on this planet are not affected by your FRAGILE faction ability."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "Your infantry on this planet are not affected by your FRAGILE faction ability."
         }
       ],
       "starting_techs": [
         {
           "id": "jolnar_starting_tech",
           "name": "Jol-Nar Starting Tech",
-          "description": "Neural Motivator, Antimass Deflectors, Sarween Tools, Plasma Scoring"
+          "tech": [
+            {
+              "name": "Neural Motivator",
+              "tech_type": "Green"
+            },
+            {
+              "name": "Antimass Deflectors",
+              "tech_type": "Blue"
+            },
+            {
+              "name": "Sarween Tools",
+              "tech_type": "Yellow"
+            },
+            {
+              "name": "Plasma Scoring",
+              "tech_type": "Red"
+            }
+          ]
         }
       ],
       "starting_fleet": [
