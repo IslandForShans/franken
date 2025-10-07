@@ -2755,17 +2755,23 @@
       "faction_techs": [
         {
           "id": "cabal_vortex",
-          "name": "Vortex (R)",
+          "name": "Vortex",
+          "tech_type": "Red",
+          "prerequisites": ["Red"],
           "description": "ACTION: Exhaust this card to choose another player's non-structure unit in a system that is adjacent to 1 or more of your space docks. Capture 1 unit of that type from that player's reinforcements"
         },
         {
           "id": "cabal_dt1",
           "name": "Dimensional Tear I",
+          "abilities": ["PRODUCTION 5"],
           "description": "PRODUCTION 5. This system is a gravity rift; your ships do not roll for this gravity rift. Place a dimensional tear token beneath this unit as a reminder. Up to 6 fighters in this system do not count against your ships' capacity."
         },
         {
           "id": "cabal_dt2",
-          "name": "Dimensional Tear II (YY)",
+          "name": "Dimensional Tear II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Yellow", "Yellow"],
+          "abilities": ["PRODUCTION 7"],
           "description": "PRODUCTION 7. This system is a gravity rift; your ships do not roll for this gravity rift. Place a dimensional tear token beneath this unit as a reminder. Up to 12 fighters in this system do not count against your ships' capacity."
         }
       ],
@@ -2801,21 +2807,34 @@
         {
           "id": "cabal_fs",
           "name": "The Terror Between",
-          "description": "Cost 8, Combat 5(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, BOMBARDMENT 5. Capture all non-structure units that are destroyed in this system, including your own."
+          "cost": 8,
+          "combat": "5(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage", "Bombardment 5"],
+          "description": "Capture all non-structure units that are destroyed in this system, including your own."
         }
       ],
       "mech": [
         {
           "id": "cabal_mech",
           "name": "Reanimator",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. When your infantry on this planet are destroyed, place them on your faction sheet; those units are captured."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "When your infantry on this planet are destroyed, place them on your faction sheet; those units are captured."
         }
       ],
       "starting_techs": [
         {
           "id": "cabal_starting_tech",
           "name": "Cabal Starting Tech",
-          "description": "Self Assembly Routines"
+          "tech": [
+            {
+              "name": "Self-Assembly Routines",
+              "tech_type": "Red"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -2863,12 +2882,16 @@
       "faction_techs": [
         {
           "id": "winnu_lgf",
-          "name": "Lazax Gate Folding (BB)",
+          "name": "Lazax Gate Folding",
+          "tech_type": "Blue",
+          "prerequisites": ["Blue", "Blue"],
           "description": "During your tactical actions, if you do not control Mecatol Rex, treat its system as if it contains both an alpha and beta wormhole. ACTION: If you control Mecatol Rex, exhaust this card to place 1 infantry from your reinforcements on Mecatol Rex."
         },
         {
           "id": "winnu_htp",
-          "name": "Hegemonic Trade Policy (YY)",
+          "name": "Hegemonic Trade Policy",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
           "description": "Exhaust this card when 1 or more of your units use PRODUCTION; swap the resource and influence values of 1 planet you control during that use of Production."
         }
       ],
@@ -2904,14 +2927,22 @@
         {
           "id": "winnu_fs",
           "name": "Salai Sai Corian",
-          "description": "Cost 8, Combat 7, Move 1, Capacity 3. SUSTAIN DAMAGE. When this unit makes a combat roll, it rolls a number of dice equal to the number of your opponent's non-fighter ships in this system."
+          "cost": 8,
+          "combat": 7,
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "When this unit makes a combat roll, it rolls a number of dice equal to the number of your opponent's non-fighter ships in this system."
         }
       ],
       "mech": [
         {
           "id": "winnu_mech",
           "name": "Reclaimer",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. After you resolve a tactical action where you gained control of this planet, you may place 1 PDS or 1 Space Dock from your reinforcements on this planet."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "After you resolve a tactical action where you gained control of this planet, you may place 1 PDS or 1 Space Dock from your reinforcements on this planet."
         }
       ],
       "starting_techs": [
@@ -2966,12 +2997,16 @@
       "faction_techs": [
         {
           "id": "xxcha_nf",
-          "name": "Nullification Field (YY)",
+          "name": "Nullification Field",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
           "description": "After another player activates a system that contains 1 or more of your ships, you may exhaust this card and spend 1 token from your strategy pool; immediately end that player's turn."
         },
         {
           "id": "xxcha_it",
-          "name": "Instinct Training (G)",
+          "name": "Instinct Training",
+          "tech_type": "Green",
+          "prerequisites": ["Green"],
           "description": "You may exhaust this card and spend 1 token from your strategy pool when another player plays an action card; cancel that action card."
         }
       ],
@@ -3007,21 +3042,34 @@
         {
           "id": "xxcha_fs",
           "name": "Loncara Ssodu",
-          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, SPACE CANNON 5(x3). You may use this unit's SPACE CANNON against ships that are in adjacent systems."
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage", "Space Cannon 5(x3)"],
+          "description": "You may use this unit's SPACE CANNON against ships that are in adjacent systems."
         }
       ],
       "mech": [
         {
           "id": "xxcha_mech",
           "name": "Indomitus",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE, SPACE CANNON 8. You may use this unit's Space Cannon ability against ships that are in adjacent systems."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage", "Space Cannon 8"],
+          "description": "You may use this unit's Space Cannon ability against ships that are in adjacent systems."
         }
       ],
       "starting_techs": [
         {
           "id": "xxcha_starting_tech",
           "name": "Xxcha Starting Tech",
-          "description": "Graviton Laser System"
+          "tech": [
+            {
+              "name": "Graviton Laser System",
+              "tech_type": "Yellow"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -3074,12 +3122,16 @@
       "faction_techs": [
         {
           "id": "yin_ic",
-          "name": "Impulse Core (YY)",
+          "name": "Impulse Core",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
           "description": "At the sart of a space combat, you may destroy 1 of your cruisers or destroyers in the active system to produce 1 hit against your opponent's ships; that hit must be assigned by your opponent to 1 of their non-fighter ships, if able."
         },
         {
           "id": "yin_ys",
-          "name": "Yin Spinner Ω (GG)",
+          "name": "Yin Spinner Ω",
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green"],
           "description": "After you produce units, place up to 2 infantry from your reinforcements on any planet you control or in any space area that contains 1 or more of your ships."
         }
       ],
@@ -3115,21 +3167,34 @@
         {
           "id": "yin_fs",
           "name": "Van Hauge",
-          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 3. SUSTAIN DAMAGE. When this ship is destroyed, destroy all ships in this system."
+          "cost": 8,
+          "combat": "9(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "When this ship is destroyed, destroy all ships in this system."
         }
       ],
       "mech": [
         {
           "id": "yin_mech",
           "name": "Moyin's Ashes",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: When you use your INDOCTRINATION faction ability, you may spend 1 additional influence to replace your opponent's unit with 1 mech instead of 1 infantry."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "DEPLOY: When you use your INDOCTRINATION faction ability, you may spend 1 additional influence to replace your opponent's unit with 1 mech instead of 1 infantry."
         }
       ],
       "starting_techs": [
         {
           "id": "yin_starting_tech",
           "name": "Yin Starting Tech",
-          "description": "Sarween Tools"
+          "tech": [
+            {
+              "name": "Sarween Tools",
+              "tech_type": "Yellow"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -3182,12 +3247,16 @@
       "faction_techs": [
         {
           "id": "yssaril_tp",
-          "name": "Transparasteel Plating (G)",
+          "name": "Transparasteel Plating",
+          "tech_type": "Green",
+          "prerequisites": ["Green"],
           "description": "During your turn of the action phase, players that have passed cannot play action cards."
         },
         {
           "id": "yssaril_mi",
-          "name": "Mageon Implants (GGG)",
+          "name": "Mageon Implants",
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green", "Green"],
           "description": "ACTION: Exhaust this card to look at another player's hand of action cards. Choose 1 of those cards and add it to your hand."
         }
       ],
@@ -3223,21 +3292,34 @@
         {
           "id": "yssaril_fs",
           "name": "Y'sia Y'ssrila",
-          "description": "Cost 8, Combat 5(x2), Move 2, Capacity 3. SUSTAIN DAMAGE. This ship can move through systems that contain other player's ships."
+          "cost": 8,
+          "combat": "5(x2)",
+          "move": 2,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "This ship can move through systems that contain other player's ships."
         }
       ],
       "mech": [
         {
           "id": "yssaril_mech",
           "name": "Blackshade Infiltrator",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. After you use your STALL TACTICS faction ability, you may place 1 mech on a planet you control."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "After you use your STALL TACTICS faction ability, you may place 1 mech on a planet you control."
         }
       ],
       "starting_techs": [
         {
           "id": "yssaril_starting_tech",
           "name": "Yssaril Starting Tech",
-          "description": "Neural Motivator"
+          "tech": [
+            {
+              "name": "Neural Motivator",
+              "tech_type": "Green"
+            }
+          ]
         }
       ],
       "starting_fleet": [

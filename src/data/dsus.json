@@ -25,12 +25,16 @@
       "faction_techs": [
         {
           "id": "augurs_psychographics",
-          "name": "Psychographics (GGG)",
+          "name": "Psychographics",
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green", "Green"],
           "description": "During the status phase, you may score 1 additional public objective instead of a secret objective."
         },
         {
           "id": "augurs_sdp",
-          "name": "Sentient Datapool (YY)",
+          "name": "Sentient Datapool",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
           "description": "At the start of the status phase, you may spend 3 trade goods to research 1 technology."
         }
       ],
@@ -66,21 +70,38 @@
         {
           "id": "augurs_fs",
           "name": "Nemsys",
-          "description": "Cost 8, Combat 5, Move 1, Capacity 3. SUSTAIN DAMAGE. When this unit makes a combat roll, it rolls 1 additional die for each secret objective you have scored."
+          "cost": 8,
+          "combat": 5,
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "When this unit makes a combat roll, it rolls 1 additional die for each secret objective you have scored."
         }
       ],
       "mech": [
         {
           "id": "augurs_mech",
           "name": "Iledrith",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: After researching a technology, you may place 1 mech on a legendary planet, or a planet that has a technology specialty, that you control."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "DEPLOY: After researching a technology, you may place 1 mech on a legendary planet, or a planet that has a technology specialty, that you control."
         }
       ],
       "starting_techs": [
         {
           "id": "augurs_starting_tech",
           "name": "Augurs Starting Tech",
-          "description": "Scanlink Drone Nertwork, AI Development Algorithm"
+          "tech": [
+            {
+              "name": "Scanlink Drone Network",
+              "tech_type": "Yellow"
+            },
+            {
+              "name": "AI Development Algorithm",
+              "tech_type": "Red"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -141,12 +162,16 @@
       "faction_techs": [
         {
           "id": "bentor_bn",
-          "name": "Broker Network (G)",
+          "name": "Broker Network",
+          "tech_type": "Green",
+          "prerequisites": ["Green"],
           "description": "Each planet you control that has a technology specialty or an attachment gains the PRODUCTION 1 ability as if it were a unit."
         },
         {
           "id": "bentor_mr",
-          "name": "Merged Replicators (YY)",
+          "name": "Merged Replicators",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
           "description": "When 1 or more of your units use PRODUCTION, you may exhaust this card to swap 1 of those unit's PRODUCTION with another on the game board, or apply +2 to the total PRODUCTION value of those units."
         }
       ],
@@ -182,21 +207,43 @@
         {
           "id": "bentor_fs",
           "name": "Wayfinder",
-          "description": "Cost 8, Combat 9(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 9(x2), SPACE CANNON 9, BOMBARDMENT 9. Apply +1 to the results of this ship's combat and ability rolls for each Fragment token on your faction sheet."
+          "cost": 8,
+          "combat": "9(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage", "Anti-Fighter Barrage 9(x2)", "Space Cannon 9", "Bombardment 9"],
+          "description": "Apply +1 to the results of this ship's combat and ability rolls for each Fragment token on your faction sheet."
         }
       ],
       "mech": [
         {
           "id": "bentor_mech",
           "name": "Auctioneer",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: When you place a fragment token on your faction sheet, you may place 1 mech on a planet you control."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "DEPLOY: When you place a fragment token on your faction sheet, you may place 1 mech on a planet you control."
         }
       ],
       "starting_techs": [
         {
           "id": "bentor_starting_tech",
           "name": "Bentor Starting Tech",
-          "description": "Chose two of the following: Dark Energy Tap, Scanlink Drone Network, Psychoarchaeology"
+          "choose_count": 2,
+          "tech": [
+            {
+              "name": "Dark Energy Tap",
+              "tech_type": "Green"
+            },
+            {
+              "name": "Scanlink Drone Network",
+              "tech_type": "Yellow"
+            },
+            {
+              "name": "Psychoarchaeology",
+              "tech_type": "Green"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -254,18 +301,30 @@
       "faction_techs": [
         {
           "id": "berserkers_zs",
-          "name": "Zhrgar Stimulants (G)",
+          "name": "Zhrgar Stimulants",
+          "tech_type": "Green",
+          "prerequisites": ["Green"],
           "description": "Once per action, after a player produces 1 or more hits during a round of combat in a system that contains a Glory token, gain 1 trade good. After a player rolls combat dice, you may exhaust this card to allow that player to reroll any number of those dice."
         },
         {
           "id": "berserkers_sd1",
           "name": "Star Dragon I",
-          "description": "Cost 3, Combat 8, Move 1, Capacity 4. This unit may ignore the movement effects of non-supernova anomalies."
+          "cost": 3,
+          "combat": 8,
+          "move": 1,
+          "capacity": 4,
+          "description": "This unit may ignore the movement effects of non-supernova anomalies."
         },
         {
           "id": "berserkers_sd2",
-          "name": "Star Dragon II (BB)",
-          "description": "Cost 3, Combat 7, Move 2, Capacity 6. This unit may ignore the movement effects of anomalies."
+          "name": "Star Dragon II",
+          "tech_type": "Unit Upgrade",
+          "prerequisites": ["Blue", "Blue"],
+          "cost": 3,
+          "combat": 7,
+          "move": 2,
+          "capacity": 6,
+          "description": "This unit may ignore the movement effects of anomalies."
         }
       ],
       "agents": [
@@ -300,14 +359,22 @@
         {
           "id": "berserkers_fs",
           "name": "Hulgade's Hammer",
-          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 6. SUSTAIN DAMAGE. After the first round of a combat in this system, place up to 2 of your captured units in this system or on that planet."
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "After the first round of a combat in this system, place up to 2 of your captured units in this system or on that planet."
         }
       ],
       "mech": [
         {
           "id": "berserkers_mech",
           "name": "Skald",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. When you pass, place 1 infantry from your reinforcements on this planet if there is a Glory token in or adjacent to this system."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "When you pass, place 1 infantry from your reinforcements on this planet if there is a Glory token in or adjacent to this system."
         }
       ],
       "starting_techs": [
@@ -367,18 +434,24 @@
       "faction_techs": [
         {
           "id": "celdauri_emp",
-          "name": "Emergency Mobilization Protocols (RR)",
+          "name": "Emergency Mobilization Protocols",
+          "tech_type": "Red",
+          "prerequisites": ["Red", "Red"],
           "description": "At the end of your turn, you may exhaust this card and spend 1 token from your strategy pool to remove a command token from a system that contains 1 or more of your space docks."
         },
         {
           "id": "celdauri_tp1",
           "name": "Trade Port I",
-          "description": "ANTI-FIGHTER BARRAGE 6(x2), PRODUCTION X+2 (X is the resource or influence value of the planet). This unit's PRODUCTION value is equal to 2 more than the resource or influence value of this planet. Up to 3 fighters in this system do not count against your ships' capacity."
+          "abilities": ["Anti-Fighter Barrage 6(x2)", "PRODUCTION X+2"],
+          "description": "This unit's PRODUCTION value is equal to 2 more than the resource or influence value of this planet. Up to 3 fighters in this system do not count against your ships' capacity."
         },
         {
           "id": "celdauri_tp2",
-          "name": "Trade Port II (YY)",
-          "description": "ANTI-FIGHTER BARRAGE 6(x2), PRODUCTION X+4 (X is the resource or influence value of the planet). This unit's PRODUCTION value is equal to 4 more than the resource or influence value of this planet. Up to 3 fighters in this system do not count against your ships' capacity. This unit may use its ANTI-FIGHTER BARRAGE during each round of space combat."
+          "name": "Trade Port II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Yellow", "Yellow"],
+          "abilities": ["Anti-Fighter Barrage 6(x2)", "PRODUCTION X+4"],
+          "description": "This unit's PRODUCTION value is equal to 4 more than the resource or influence value of this planet. Up to 3 fighters in this system do not count against your ships' capacity. This unit may use its ANTI-FIGHTER BARRAGE during each round of space combat."
         }
       ],
       "agents": [
@@ -413,21 +486,43 @@
         {
           "id": "celdauri_fs",
           "name": "Supremacy",
-          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 6. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 6(x2). You may use the PRODUCTION ability of other player's space docks in this system to produce ships."
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 6,
+          "abilities": ["Sustain Damage", "Anti-Fighter Barrage 6(x2)"],
+          "description": "You may use the PRODUCTION ability of other player's space docks in this system to produce ships."
         }
       ],
       "mech": [
         {
           "id": "celdauri_mech",
           "name": "Minuteman",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. DEPLOY: After another player activates a system, you may spend 1 trade good or 1 commodity to place 1 mech on a planet in that system that contains 1 of your space docks."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "DEPLOY: After another player activates a system, you may spend 1 trade good or 1 commodity to place 1 mech on a planet in that system that contains 1 of your space docks."
         }
       ],
       "starting_techs": [
         {
           "id": "celdauri_starting_tech",
           "name": "Celdauri Starting Tech",
-          "description": "Choose two of the following: Antimass Deflectors, Sarween Tools, Plasma Scoring"
+          "choose_count": 2,
+          "tech": [
+            {
+              "name": "Antimass Deflectors",
+              "tech_type": "Blue"
+            },
+            {
+              "name": "Sarween Tools",
+              "tech_type": "Yellow"
+            },
+            {
+              "name": "Plasma Scoring",
+              "tech_type": "Red"
+            }
+          ]
         }
       ],
       "starting_fleet": [
@@ -485,18 +580,32 @@
       "faction_techs": [
         {
           "id": "cheiran_bp",
-          "name": "Brood Pod (RR)",
+          "name": "Brood Pod",
+          "tech_type": "Red",
+          "prerequisites": ["Red", "Red"],
           "description": "After another player activates a system that contains 1 or more of your structures, you may exhaust this card to produce 1 ship in the active system. For each of your structures in the active system, you may remove that unit from the game board to reduce the cost of the produced ship by 3."
         },
         {
           "id": "cheiran_ch1",
           "name": "Chitin Hulk I",
-          "description": "Cost 4, Combat 5, Move 1, Capacity 1. SUSTAIN DAMAGE, BOMBARDMENT 5. When this unit is destroyed, you may place 1 fighter from your reinforcements in this system's space area."
+          "cost": 4,
+          "combat": 5,
+          "move": 1,
+          "capacity": 1,
+          "abilities": ["Sustain Damage", "Bombardment 5"],
+          "description": "When this unit is destroyed, you may place 1 fighter from your reinforcements in this system's space area."
         },
         {
           "id": "cheiran_ch2",
-          "name": "Chitin Hulk II (BBY)",
-          "description": "Cost 4, Combat 5, Move 2, Capacity 1. SUSTAIN DAMAGE, BOMBARDMENT 5. This unit cannot be destroyed by 'Direct Hit' action cards. When this unit is destroyed, you may place 1 fighter or 1 destroyer from your reinforcements in this system's space area."
+          "name": "Chitin Hulk II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Blue", "Blue", "Yellow"],
+          "cost": 4,
+          "combat": 5,
+          "move": 2,
+          "capacity": 1,
+          "abilities": ["Sustain Damage", "Bombardment 5"],
+          "description": "This unit cannot be destroyed by 'Direct Hit' action cards. When this unit is destroyed, you may place 1 fighter or 1 destroyer from your reinforcements in this system's space area."
         }
       ],
       "agents": [
@@ -531,21 +640,39 @@
         {
           "id": "cheiran_fs",
           "name": "Lithodax",
-          "description": "Cost 8, Combat 7(x2), Move 1, Capacity 3. SUSTAIN DAMAGE, ANTI-FIGHTER BARRAGE 7(x2). When this unit makes a combat or ability roll, it rolls 1 additional die if this system is adjacent to or contains 1 of your structures."
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage", "Anti-Fighter Barrage 7(x2)"],
+          "description": "When this unit makes a combat or ability roll, it rolls 1 additional die if this system is adjacent to or contains 1 of your structures."
         }
       ],
       "mech": [
         {
           "id": "cheiran_mech",
           "name": "Nauplius",
-          "description": "Cost 2, Combat 6. SUSTAIN DAMAGE. When this unit is destroyed, you may place 1 infantry from your reinforcements on this planet."
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "When this unit is destroyed, you may place 1 infantry from your reinforcements on this planet."
         }
       ],
       "starting_techs": [
         {
           "id": "cheiran_starting_tech",
           "name": "Cheiran Starting Tech",
-          "description": "Choose one of the following: Magen Defense Grid, Self-Assembly Routines"
+          "choose_count": 1,
+          "tech": [
+            {
+              "name": "Magen Defense Grid",
+              "tech_type": "Red"
+            },
+            {
+              "name": "Self-Assembly Routines",
+              "tech_type": "Red"
+            }
+          ]
         }
       ],
       "starting_fleet": [
