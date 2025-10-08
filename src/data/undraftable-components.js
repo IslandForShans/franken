@@ -113,7 +113,7 @@ export const undraftableComponents = {
     { name: "IL Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
     //DS
     { name: "Designer TckVsk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
-    { name: "Jarl Vel & Jarl Jotrun", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
+    { name: "Jarl Vel & Jarl Jotrun - Raid Leaders", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
     { name: "Dhume Tathu", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
     { name: "Vera Khage", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "optional_swap" },
     { name: "C.M.O. Ranc - Marketing Guru", faction: "The Bentor Conglomerate", triggerComponent: "C.O.O. Mgur - Deft Tradesperson", type: "optional_swap" },
@@ -126,8 +126,8 @@ export const undraftableComponents = {
     { name: "Dimensional Anchor", faction: "The Vuil'Raith Cabal", triggerComponent: "Dimensional Tear II", type: "optional_swap" },
     //DS
     { name: "Demi-Queen Mdcksssk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
-    { name: "Raze Order", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
-    { name: "Destiny Drive", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
+    { name: "Korela - The Lady", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
+    { name: "Kantrus - The Lord", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
     { name: "Atropha - Weaver", faction: "The Augurs of Ilyxum", triggerComponent: "Oracle AI", type: "optional_swap" },
     { name: "Khaz-Rin Li", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
     { name: "Singularity Cradle", faction: "The Nivyn Star Kings", triggerComponent: "Voidflare Warden II", type: "optional_swap" },

@@ -712,96 +712,141 @@
       "name": "The Dih-Mohn Flotilla",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "dih-mohn_cf",
+          "name": "Capital Fleet",
+          "description": "Destroyers count as 1/2 of a ship against oyur fleet pool."
+        },
+        {
+          "id": "dih-mohn_me",
+          "name": "Migrant Explorers",
+          "description": "After you explore a frontier token in any system, you may explore a planet you control that is adjacent to that system."
+        },
+        {
+          "id": "dih-mohn_flotilla",
+          "name": "Flotilla",
+          "description": "You cannot have more infantry than non-fighter ships in the space area of a system."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_ip",
+          "name": "Impressment Programs",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
+          "description": "When you explore a planet, you may produce 1 ship in that planet's system. ACTION: Exhaust this card and 1 planet you control to explore that planet."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_a1",
+          "name": "Aegis I",
+          "cost": 4,
+          "combat": 5,
+          "move": 1,
+          "capacity": 1,
+          "abilities": ["Sustain Damage", "Bombardment 5"],
+          "description": "When another ship in this system would be destroyed during combat, you may have this ship become damaged instead."
+        },
+        {
+          "id": "dih-mohn_a2",
+          "name": "Aegis II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Blue", "Blue", "Yellow"],
+          "cost": 4,
+          "combat": 4,
+          "move": 2,
+          "capacity": 1,
+          "abilities": ["Sustain Damage", "Bombardment 5"],
+          "description": "When another ship in this system would be destroyed by a game effect, you may have this ship become damaged instead."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_agent",
+          "name": "Jgin Faru - Chancellor of Immigration",
+          "description": "When a player commits 1 or more units to a planet during invasion: You may exhaust this card to allow that player to place 1 infantry from their reinforcements on that planet."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_commander",
+          "name": "Clona Bathru - Founder of Bathru Robotics",
+          "description": "UNLOCK: Research a ship unit upgrade technology. This car satisfies a red tehcnology prerequisite. At the start of a space combat in a system that contains 3 or more different types of your non-fighter ships, produce 1 hit against your opponent's ships."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_hero",
+          "name": "Verrisus Ypru - Former Admiral of the Unrelenting Battlegroup",
+          "description": "DEFENSE MATRIX OVERLOAD - VOLATILE EMP BURST. After the 'Roll Dice' step of space combat: You may purhe this card. If you do, all ships in the active system become damaged; during this round of space combat your ships cannot be destroyed."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_pn",
+          "name": "Combat Drills",
+          "description": "When 1 of your ships would be destroyed: Instead of destroying that ship, place this card face up in your play area. Return this card to the Dih-Mohn player at the start of the status phase."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_fs",
+          "name": "Maximus",
+          "cost": 8,
+          "combat": "5(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "After this unit moves into the active system, you may produce up to 2 units that have a combined cost of 4 or less in that system."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_mech",
+          "name": "Repairitor",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "At the start of a combat in this system you may repair 1 unit you control that is participating in that combat."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_starting_tech",
+          "name": "Dih-Mohn Starting Tech",
+          "tech": [
+            {
+              "name": "Dark Energy Tap",
+              "tech_type": "Blue"
+            },
+            {
+              "name": "Scanlink Drone Network",
+              "tech_type": "Yellow"
+            }
+          ]
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "dih-mohn_starting_fleet",
+          "name": "Dih-Mohn Starting Fleet",
+          "description": "2 Dreadnoughts, 2 Destroyers, 2 Fighters, 2 Infantry, 1 Mech, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "di-mohn_comms",
+          "name": "Commodities", 
+          "description": "2"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "dih-mohn_hs",
+          "name": "Dih-Mohn Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Abyssus",
+              "resource": 4,
+              "influence": 2
             }
           ]
         }
@@ -811,96 +856,127 @@
       "name": "The Edyn Mandate",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "edyn_grace",
+          "name": "Grace",
+          "description": "Once per action phase, after you resolve the primary ability of a strategy card, you may resolve the secondary ability of 1 readied or unchosen strategy card with a lower printed initiative number than that strategy card."
+        },
+        {
+          "id": "edyn_decree",
+          "name": "Decree",
+          "description": "You may prevent ships from moving through anomalies that contain your ground forces."
+        },
+        {
+          "id": "edyn_radiance",
+          "name": "Radiance",
+          "description": "After an agenda is revealed, you may predict aloud the outcome of that agenda. If your prediction is correct, place 1 command token from another player's reinforcements in a Sigil."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_ua",
+          "name": "Unity Algorithm",
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green", "Green"],
+          "description": "Once per agenda phase, after an agenda is revealed, you may predict aloud an outcome of that agenda. If your prediction is correct, you may score 1 public objective if you fulfill its requirements; each other player who voted for that outcome draws 1 secret objective."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_eth",
+          "name": "Encrypted Trade Hub",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
+          "description": "You may exhaust this card to allow a player to exchange 1 of their relocs or agendas as part of a transaction. You always vote last during the agenda phase. When an outcome you voted for or predicted is resolved, each player who voted for that outcome gains 1 commodity."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_agent",
+          "name": "Allant - Elder Voice",
+          "description": "After a player passes: You may exhaust this card to choose 1 player; that player may perform up to 1 action. Then, look at the top card of the agenda deck; you may discard that agenda card."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_commander",
+          "name": "Kadryn - Highest Grace",
+          "description": "UNLOCK: Have 1 or more laws in play. When any game effect would allow you to score a public objective, you may instead draw 1 secret objective."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_hero",
+          "name": "Midir - Living Will",
+          "description": "GOLDEN ORDER - PEACE ETERNAL. ACTION: For each Sigil on the game board, draw 1 agenda. Reveal and resolve each agenda in any order as if you had cast 1 vote for an outcome of your choice. Other players cannot resolve abilities during this action. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_pn",
+          "name": "Edyn Rider",
+          "description": "After an agenda is revealed: You cannot vote on this agenda. Predict aloud the outcome of this agenda. If your prediction is correct, place 1 command token from another player's reinforcements in a system that contains your units. Then, return this card to the Edyn player,"
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_fs",
+          "name": "Kaliburn",
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "Apply +1 to the results of this unit's combat rolls for each law in play."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_mech",
+          "name": "Rune Bearer",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "This system is a 'Sigil' anomaly. Place a Sigil token beneath this unit as a reminder. Game effects cannot prevent you from using this ability."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_starting_tech",
+          "name": "Edyn Starting Tech",
+          "description": "Choose any 3 technologies that have different colors and no prerequisites."
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "edyn_starting_fleet",
+          "name": "Edyn Starting Fleet",
+          "description": "1 Carrier, 2 Destroyers, 4 Fighters, 3 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "edyn_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "edyn_hs",
+          "name": "Edyn Home System",
           "planets": [
             {
-              "name": "",
+              "name": "Edyn",
+              "resource": 3,
+              "influence": 3
+            },
+            {
+              "name": "Ekko",
               "resource": 0,
-              "influence": 0
+              "influence": 1
+            },
+            {
+              "name": "Okke",
+              "resource": 0,
+              "influence": 1
             }
           ]
         }
@@ -910,96 +986,144 @@
       "name": "The Florzen Profiteers",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "florzen_merc",
+          "name": "Mercenaries",
+          "description": "At the start of a space combat, you may remove up to 2 fighters you control in a system adjacent to the active system. Then, choose 1 player participating in that combat; that player places the same number of fighters from their reinforcements in the active system."
+        },
+        {
+          "id": "florzen_dl",
+          "name": "Data Leak",
+          "description": "When you would gain a relic, you may draw 1 additional card; choose 1 to gain and return the rest to the relic deck. The, shuffle the relic deck."
+        },
+        {
+          "id": "florzen_sm",
+          "name": "Shadow Markets",
+          "description": "When you explore a planet, you may treat that planet as if it had the same trat as another planet you control."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "florzen_bp",
+          "name": "Blackmail Programs",
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green"],
+          "description": "When a player would perform a strategic actionm you may exhaust this car dand spend 1 token from your strategy pool to end that player's turn; the strategic action is not resolved and the strategy card is not exhausted."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "florzen_c1",
+          "name": "Corsair I",
+          "cost": "1(x2)",
+          "combat": 9,
+          "move": 1,
+          "abilities": ["Anti-Fighter Barrage 9"],
+          "description": "This unit may move without being transported. Fighters in excess of your ships' capacity count against your fleet pool."
+        },
+        {
+          "id": "florzen_c2",
+          "name": "Corsair II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Green", "Blue"],
+          "cost": "1(x2)",
+          "combat": 8,
+          "move": 3,
+          "abilities": ["Anti-Fighter Barrage 8"],
+          "description": "This unit may move without being transported. Fighters in excess of your ships' capacity count against your fleet pool."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "florzen_agent",
+          "name": "Sal Gavda - Black Market Dealer",
+          "description": "At the start of a player's turn: You may exhaust this card to allow that player to remove an attachment from a non-home planet they control and attach it to a non-home planet they control other than Mecatol Rex adjacent to that planet's system."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "florzen_commander",
+          "name": "Quaxdol Junitas - The Unseen Hand",
+          "description": "UNLOCK: Have the outcome you voted for or predicted on an agenda resolved. After the second agenda is revealed during the agenda phase: You may ready 1 planet you control; explore that planet, if able."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "florzen_hero",
+          "name": "Banua Gowen - Administrator of Minds",
+          "description": "SLEEPER CELLS - SHADY ACQUISITIONS. ACTION: Place 2 fighters from your reinforcements in each system that contains 1 or more planets you control and no other player's ships. Then, you may remove 1 attachment from any planet in a system hat contains 1 or more of your ships and attach it to 1 planet in your home system. Then, purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "flrozen_pn",
+          "name": "Underground Market",
+          "description": "When you would gain a relic: You may draw 1 additional card; choose 1 to gain and return the rest to the relic deck. Then, shuffle the relic deck. Then, return this card to the Florzen player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "florzen_fs",
+          "name": "Man O' War",
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 5,
+          "abilities": ["Sustain Damage"],
+          "description": "Other players cannot play action cards during a space combat in this system."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "florzen_mech",
+          "name": "Privateer",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "You may spend influence as resources to produce this unit."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "florzen_starting_tech",
+          "name": "Florzen Starting Tech",
+          "tech": [
+            {
+              "name": "Scanlink Drone Network",
+              "tech_type": "Yellow"
+            },
+            {
+              "name": "Neural Motivator",
+              "tech_type": "Green"
+            }
+          ]
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "florzen_starting_fleet",
+          "name": "Florzen Starting Fleet",
+          "description": "2 Carriers, 4 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "florzen_comms",
+          "name": "Commodities", 
+          "description": "4"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "florzen_hs",
+          "name": "Florzen Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Delmor",
+              "resource": 2,
+              "influence": 1
+            },
+            {
+              "name": "Kyd",
+              "resource": 1,
+              "influence": 2
             }
           ]
         }
@@ -1009,96 +1133,132 @@
       "name": "The Free Systems Compact",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "fsc_rttc",
+          "name": "Rally to the Cause",
+          "description": "Once per action, after you produce 1 or more ships in your home system, you may produce up to 2 ships in a system that contains a cultural, hazardous, or industrial planet and does not contain a legendary planet or other players' units."
+        },
+        {
+          "id": "fsc_diplomats",
+          "name": "Diplomats",
+          "description": "Once per action, you may exhaust 1 uncontrolled planet's planet card that is on the game board to spend its resources or influence."
+        },
+        {
+          "id": "fsc_fp",
+          "name": "Free People",
+          "description": "During setup, for each non-home planet other than Mecatol Rex on the game board, place that planet's planet card face up on the game board."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_en",
+          "name": "Envoy Network",
+          "tech_type": "Green",
+          "prerequisites": ["Green"],
+          "description": "At the start of the agenda phase, you may choose and exhaust 1 cultural, 1 hazardous, and 1 industrial planet. When you cast 1 or more votes, if you exhaust at least 1 cultural, 1 hazardous, and 1 industrial planet to cast votes, you may cast 4 additional votes."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_cst",
+          "name": "Covert Strike Teams",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
+          "description": "At the start of a ground combat, you may roll 1 die for each of up to 2 of your ground forces on that planet. For each result equal to or greater than that unit's combat value, produce 1 hit; your opponent must assign it to 1 of their units on that planet."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_agent",
+          "name": "Cordo Haved - Friendly Diplomat",
+          "description": "While ready, this card has the text ability of each legendary planet ability card any player controls, even if that card is exhausted. You may allow another player to use this card's ability."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_commander",
+          "name": "President Cyhn - Crisis Leader",
+          "description": "UNLOCK: Each non-legendary planet on the game board is controlled. After you gain control of a non-home planet during a tactical action: if you have 1 or more ships in the active system, you may produce 1 ship in that system."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_hero",
+          "name": "Count Otto P'may - Inspiring Rhetorician",
+          "description": "HEART OF REBELLION - FREEDOM OR DEATH. ACTION: Ready a non-home planet other than Mecatol Rex that you control, remove all units on that planet and attach this card to it. Units cannot be committed to, produced on, or placed on this planet."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_pn",
+          "name": "Broadcast Teams",
+          "description": "When you gain control of a planet during a tactical action: If the active system does not contain another player's ships you may produce up to 2 ships in that system. Then, return this card to the Free Systems player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_fs",
+          "name": "Vox",
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "When this unit makes a combat roll, it rolls 1 additional die for each planet in this system of any single trait."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_mech",
+          "name": "Liberator",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "DEPLOY: After you use your RALLY TO THE CAUSE faction ability in any system, you may spend 1 trade good to place 1 mech on a planet you control adjacent to that system."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_starting_tech",
+          "name": "Free Systems Compact Starting Tech",
+          "tech": [
+            {
+              "name": "Psychoarchaeology",
+              "tech_type": "Green"
+            }
+          ]
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "fsc_starting_fleet",
+          "name": "Free Systems Compact Starting Fleet",
+          "description": "1 Carrier, 2 Cruisers, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "fsc_comms",
+          "name": "Commodities", 
+          "description": "4"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "fsc_hs",
+          "name": "Free Systems Compact Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Idyn",
+              "resource": 1,
               "influence": 0
+            },
+            {
+              "name": "Kroll",
+              "resource": 1,
+              "influence": 1
+            },
+            {
+              "name": "Cyrra",
+              "resource": 0,
+              "influence": 1
             }
           ]
         }
@@ -1108,96 +1268,153 @@
       "name": "The Ghemina Raiders",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "ghemina_tlatl",
+          "name": "The Lady & The Lord",
+          "description": "During setup, place 1 additional flagship in your reinforcements and the additional Ghemina Hero next to your faction sheet. This additional flagship has the abilities and attributes listed on the Lord flagship card. You have 2 Heroes."
+        },
+        {
+          "id": "ghemina_rot",
+          "name": "Rule of Two",
+          "description": "During a round of combat in a system that contains exactly 2 of your non-fighter ships, if those ships have the same unit type, apply +2 to the result of each of those unit's combat rolls."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_wsi",
+          "name": "War Song Implants",
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green", "Green"],
+          "description": "After you win a combat, you may ready 1 planet you control."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_ct1",
+          "name": "Combat Transport I",
+          "cost": 3,
+          "combat": 9,
+          "move": 2,
+          "capacity": 4
+        },
+        {
+          "id": "ghemina_ct2",
+          "name": "Combat Transport II",
+          "tech_type":"Unit Upgrade",
+          "prerequisites": ["Blue", "Blue"],
+          "cost": 3,
+          "combat": 9,
+          "move": 2,
+          "capacity": 6,
+          "description": "You may reroll 1 of your unit's combat dice during each round of ground combat on a planet in this system that contains 2 or fewer of your infantry."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_agent",
+          "name": "Skarvald & Torvar - Raid Heralds",
+          "description": "When the active player produces 1 or more hits during a round of combat: You may exhaust this card to allow that player to produce 1 additional hit."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_commander",
+          "name": "Jarl Vel & Jarl Jotrun - Raid Leaders",
+          "description": "UNLOCK: Have 2 flagships on the game board. After you win a combat in a system that contains no planets or on a planet that contains a structure, you may gain 1 trade good."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_hero1",
+          "name": "Korela - The Lady",
+          "description": "RAZE ORDER - FEAR AND ASH. ACTION: Purge this card to destroy all units on a non-home planet other than Mecatol Rex that is adjacen to a system that contains 1 of your flagships."
+        },
+        {
+          "id": "ghemina_hero2",
+          "name": "Kantrus - The Lord",
+          "description": "DESTINY DRIVE - ALLEGED BIRTHRIGHT. ACTION: Purge this card to choose 1 non-home planet other than Mecatol Rex that does not contain another player's units and is adjacent to a system that contains 1 or more of your flagships; gain control of that planet. Then, ready that planet."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_pn",
+          "name": "Raid Leaders",
+          "description": "After you activate a system: Choose 1 non-fighter ship you control; during this action, that unit gains BOMBARDMENT 5(x2) and a capacity of 2. Return this card to the Ghemina player at the end of this action."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_fs1",
+          "name": "The Lady",
+          "cost": 6,
+          "combat": "7(x2)",
+          "move": 2,
+          "capacity": 3,
+          "abilities": ["Sustain Damage", "Bombardment 5(x4)"],
+          "description": "When a structure you do not control in this system is destroyed, gain 1 trade good."
+        },
+        {
+          "id": "ghemina_fs2",
+          "name": "The Lord",
+          "cost": 6,
+          "combat": "7(x2)",
+          "move": 2,
+          "capacity": 7,
+          "abilities": ["Sustain Damage"],
+          "description": "After a player explores a planet in this system, place 1 infantry from their reinforcements on that planet."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_mech",
+          "name": "Jotun",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "After you win a ground combat on this planet, if this planet contains exactly 1 other mech, explore this planet."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_starting_tech",
+          "name": "Ghemina Starting Tech",
+          "tech": [
+            {
+              "name": "Dark Energy Tap",
+              "tech_type": "Blue"
+            },
+            {
+              "name": "Psychoarchaeology",
+              "tech_type": "Green"
+            }
+          ]
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "ghemina_starting_fleet",
+          "name": "Ghemina Starting Fleet",
+          "description": "2 Carriers, 1 Destroyer, 3 Fighters, 3 Infantry, 2 Space Docks"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "ghemina_comms",
+          "name": "Commodities", 
+          "description": "2"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "ghemina_hs",
+          "name": "Ghemina Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Drah",
+              "resource": 1,
+              "influence": 2
+            },
+            {
+              "name": "Trykk",
+              "resource": 2,
+              "influence": 1
             }
           ]
         }
