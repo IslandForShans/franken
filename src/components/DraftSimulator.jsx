@@ -7,11 +7,12 @@ import DraftSummary from "./DraftSummary.jsx";
 import FirebaseMultiplayerPanel from "./FirebaseMultiplayerPanel.jsx";
 import { shuffleArray } from "../utils/shuffle.js";
 import factionsJSONRaw from "../data/factions.json";
+import { processFactionData } from "../utils/dataProcessor.js";
 import { isComponentUndraftable, getSwapOptions, getExtraComponents } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
 import { multiplayerService } from "../services/firebaseMultiplayer.js";
-import { processFactionData } from "../utils/dataProcessor.js";
 
+// Process faction data to add icon paths
 const factionsJSON = processFactionData(factionsJSONRaw);
 
 // Updated limits system
@@ -142,23 +143,23 @@ export default function DraftSimulator() {
   // Component filtering with ban system
   const getFilteredComponents = (category) => {
     return [
-    ...(factionsJSON.factions
-      .filter(f => !bannedFactions.has(f.name))
-      .flatMap(f => (f[category] || [])
+      ...(factionsJSON.factions
+        .filter(f => !bannedFactions.has(f.name))
+        .flatMap(f => (f[category] || [])
+          .filter(comp => !bannedComponents.has(comp.id || comp.name))
+          .filter(comp => {
+            const undraftable = isComponentUndraftable(comp.name, f.name);
+            return !undraftable;
+          })
+          .map(item => ({ ...item, faction: f.name }))
+        )
+      ),
+      ...(factionsJSON.tiles[category] || [])
         .filter(comp => !bannedComponents.has(comp.id || comp.name))
         .filter(comp => {
-          const undraftable = isComponentUndraftable(comp.name, f.name, draftPhase);
+          const undraftable = isComponentUndraftable(comp.name);
           return !undraftable;
         })
-        .map(item => ({ ...item, faction: f.name }))
-      )
-    ),
-    ...(factionsJSON.tiles[category] || [])
-      .filter(comp => !bannedComponents.has(comp.id || comp.name))
-      .filter(comp => {
-        const undraftable = isComponentUndraftable(comp.name, null, draftPhase);
-        return !undraftable;
-      })
     ];
   };
 
@@ -167,7 +168,7 @@ export default function DraftSimulator() {
     
     categories.forEach(category => {
       const allComponents = getFilteredComponents(category);
-      const bagSize = Math.min(draftLimits[category], allComponents.length);
+      const bagSize = draftLimits[category]; // Each bag gets draft limit amount
       
       let distributionPool = [];
       if (playerCount * bagSize <= allComponents.length) {
@@ -250,10 +251,25 @@ export default function DraftSimulator() {
       return playerBags || {};
     } else if (draftVariant === "rotisserie") {
       return rotisseriePool;
-    } else if (draftStarted && playerBags[currentPlayer]) {
-      return playerBags[currentPlayer];
+    } else if (draftStarted && playerBags.length > 0) {
+      // Return the current player's bag (bags rotate, not components)
+      return playerBags[currentPlayer] || {};
     }
     return {};
+  };
+
+  const canPlayerDraftFromBag = (playerIdx, bagIdx) => {
+    const bag = playerBags[bagIdx];
+    const progress = playerProgress[playerIdx];
+    
+    // Check if any category in the bag has components the player can still draft
+    return categories.some(cat => {
+      const availableInBag = bag[cat]?.length || 0;
+      const playerPicked = progress[cat] || 0;
+      const limit = draftLimits[cat];
+      
+      return availableInBag > 0 && playerPicked < limit;
+    });
   };
 
   const handlePick = (category, component) => {
@@ -315,11 +331,13 @@ export default function DraftSimulator() {
             return pool;
         });
         } else {
+        // Remove component from the current bag only
         setPlayerBags(prev => {
             const nb = [...prev];
-            nb[currentPlayer] = { ...nb[currentPlayer] };
+            const currentBagIdx = currentPlayer; // Each player looks at their own indexed bag
+            nb[currentBagIdx] = { ...nb[currentBagIdx] };
             const compId = component.id || component.name;
-            nb[currentPlayer][category] = nb[currentPlayer][category].filter(c => (c.id || c.name) !== compId);
+            nb[currentBagIdx][category] = nb[currentBagIdx][category].filter(c => (c.id || c.name) !== compId);
             return nb;
         });
         }
@@ -340,22 +358,55 @@ export default function DraftSimulator() {
 
     setTimeout(() => {
         const nextPlayer = (currentPlayer + 1) % playerCount;
+        
+        // Check if the next player can draft from their bag
+        if (draftVariant !== "rotisserie") {
+            const nextBagIdx = nextPlayer;
+            
+            // Auto-pass if player cannot draft from their bag
+            if (!canPlayerDraftFromBag(nextPlayer, nextBagIdx)) {
+                console.log(`Player ${nextPlayer + 1} auto-passing bag ${nextBagIdx} - nothing to draft`);
+                // Skip this player's turn
+                setCurrentPlayer(nextPlayer);
+                setIsPickingPhase(true);
+                setPicksThisRound(0);
+                
+                // Check if we completed a round
+                if (nextPlayer === 0) {
+                    setRound(r => r + 1);
+                    // Rotate bags
+                    setPlayerBags(prev => {
+                        if (prev.length <= 1) return prev;
+                        const rotated = [...prev];
+                        const last = rotated.pop();
+                        rotated.unshift(last);
+                        return rotated;
+                    });
+                }
+                
+                // Recursively check next player
+                handleSubmitPicks();
+                return;
+            }
+        }
+        
         setCurrentPlayer(nextPlayer);
         setIsPickingPhase(true);
         setPicksThisRound(0);
     
         if (nextPlayer === 0) {
-        setRound(r => r + 1);
-        if (draftVariant !== "rotisserie") {
-            setPlayerBags(prev => {
-            if (prev.length <= 1) return prev;
-            const rotated = [...prev];
-            const last = rotated.pop();
-            rotated.unshift(last);
-            return rotated;
-            });
+            setRound(r => r + 1);
+            if (draftVariant !== "rotisserie") {
+                // Rotate bags - bags stay intact, just shift positions
+                setPlayerBags(prev => {
+                    if (prev.length <= 1) return prev;
+                    const rotated = [...prev];
+                    const last = rotated.pop();
+                    rotated.unshift(last);
+                    return rotated;
+                });
+            }
         }
-      }
 
         checkDraftCompletion();
     }, 300);
