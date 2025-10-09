@@ -90,7 +90,7 @@
         {
           "id": "arborec_starting_tech",
           "name": "Arborec Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Magen Defense Grid",
               "tech_type": "Red"
@@ -226,7 +226,7 @@
           "name": "Argent Starting Tech",
           "choose_count": 2,
           "note": "Choose two of the following:",
-          "tech": [
+          "techs": [
             {
               "name": "Neural Motivator",
               "tech_type": "Green"
@@ -364,7 +364,7 @@
         {
           "id": "barony_starting_tech",
           "name": "Barony Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Antimass Deflectors",
               "tech_type": "Blue"
@@ -501,7 +501,7 @@
         {
           "id": "saar_starting_tech",
           "name": "Saar Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Antimass Deflectors",
               "tech_type": "Blue"
@@ -808,7 +808,7 @@
         {
           "id": "muaat_starting_tech",
           "name": "Muaat Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Plasma Scoring",
               "tech_type": "Red"
@@ -933,7 +933,7 @@
         {
           "id": "hacan_starting_techs",
           "name": "Hacan Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Antimass Deflectors",
               "tech_type": "Blue"
@@ -1077,7 +1077,7 @@
         {
           "id": "emp_starting_tech",
           "name": "Empyrean Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Dark Energy Tap",
               "tech_type": "Blue"
@@ -1214,7 +1214,7 @@
         {
           "id": "sol_starting_tech",
           "name": "Sol Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Antimass Deflectors",
               "tech_type": "Blue"
@@ -1343,7 +1343,7 @@
         {
           "id": "ghosts_starting_tech",
           "name": "Ghost Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Gravity Drive",
               "tech_type": "Blue"
@@ -1478,7 +1478,7 @@
         {
           "id": "l1_starting_tech",
           "name": "L1Z1X Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Neural Motivator",
               "tech_type": "Green"
@@ -1616,7 +1616,7 @@
         {
           "id": "mahact_starting_tech",
           "name": "Mahact Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Bio Stims",
               "tech_type": "Green"
@@ -1740,7 +1740,7 @@
         {
           "id": "mentak_starting_tech",
           "name": "Mentak Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Sarween Tools",
               "tech_type": "Yellow"
@@ -1873,7 +1873,7 @@
         {
           "id": "naalu_starting_tech",
           "name": "Naalu Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Neural Motivator",
               "tech_type": "Green"
@@ -2011,7 +2011,7 @@
         {
           "id": "nra_starting_tech",
           "name": "Naaz-Rokha Alliance Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Psychoarchaeology",
               "tech_type": "Green"
@@ -2141,7 +2141,7 @@
         {
           "id": "nekro_starting_tech",
           "name": "Nekro Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Daxcive Animators",
               "tech_type": "Green"
@@ -2276,7 +2276,7 @@
         {
           "id": "nomad_starting_tech",
           "name": "Nomad Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Sling Relay",
               "tech_type": "Blue"
@@ -2551,7 +2551,7 @@
         {
           "id": "titans_starting_tech",
           "name": "Titans Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Antimass Deflectors",
               "tech_type": "Blue"
@@ -2680,7 +2680,7 @@
         {
           "id": "jolnar_starting_tech",
           "name": "Jol-Nar Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Neural Motivator",
               "tech_type": "Green"
@@ -2829,7 +2829,7 @@
         {
           "id": "cabal_starting_tech",
           "name": "Cabal Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Self-Assembly Routines",
               "tech_type": "Red"
@@ -3064,7 +3064,7 @@
         {
           "id": "xxcha_starting_tech",
           "name": "Xxcha Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Graviton Laser System",
               "tech_type": "Yellow"
@@ -3189,7 +3189,7 @@
         {
           "id": "yin_starting_tech",
           "name": "Yin Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Sarween Tools",
               "tech_type": "Yellow"
@@ -3314,7 +3314,7 @@
         {
           "id": "yssaril_starting_tech",
           "name": "Yssaril Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Neural Motivator",
               "tech_type": "Green"

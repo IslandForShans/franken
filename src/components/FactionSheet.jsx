@@ -51,7 +51,6 @@ export default function FactionSheet({
   const handleRemove = (category, index) => {
     const component = drafted[category][index];
     
-    // Check if removing this component would trigger adds (only during reduction)
     if (showReductionHelper) {
       const extraComponents = getExtraComponents(component.name, component.faction);
       if (extraComponents.length > 0) {
@@ -62,7 +61,6 @@ export default function FactionSheet({
       }
     }
     
-    // Call the parent's onRemove function
     console.log("Removing component:", category, index, component.name);
     onRemove(category, index);
   };
@@ -146,13 +144,15 @@ export default function FactionSheet({
                         </div>
                         
                         {item.faction && (
-                          <div className="text-xs text-blue-600 break-words">{item.faction}</div>
+                          <div className="flex items-center gap-1 text-xs text-blue-600 break-words">
+                            {item.icon && <img src={item.icon} alt={item.faction} className="w-4 h-4" />}
+                            {item.faction}
+                          </div>
                         )}
                         
                         {/* Tech card format - single tech or tech package */}
                         {(category === 'faction_techs' || category === 'starting_techs') && (
                           <div className="mt-2">
-                            {/* Check if this is a tech package (multiple techs) */}
                             {item.techs && item.techs.length > 0 ? (
                               <div className="space-y-2">
                                 {item.choose_count && (
@@ -164,16 +164,8 @@ export default function FactionSheet({
                                   <div key={techIdx} className="pb-2 border-b last:border-b-0">
                                     <div className="flex items-center gap-2 mb-1">
                                       <span className="font-semibold text-gray-800 text-xs">{tech.name}</span>
-                                      {tech.tech_type && (
-                                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                                          tech.tech_type === 'Blue' ? 'bg-blue-500 text-white' :
-                                          tech.tech_type === 'Red' ? 'bg-red-500 text-white' :
-                                          tech.tech_type === 'Green' ? 'bg-green-500 text-white' :
-                                          tech.tech_type === 'Yellow' ? 'bg-yellow-500 text-white' :
-                                          'bg-gray-500 text-white'
-                                        }`}>
-                                          {tech.tech_type}
-                                        </span>
+                                      {tech.tech_type_icon && (
+                                        <img src={tech.tech_type_icon} alt={tech.tech_type} className="w-4 h-4" title={tech.tech_type} />
                                       )}
                                     </div>
                                     {tech.description && (
@@ -187,37 +179,21 @@ export default function FactionSheet({
                                 ))}
                               </div>
                             ) : (
-                              /* Single tech display */
                               <>
                                 <div className="flex items-center gap-2 mb-1">
-                                  {item.tech_type && (
-                                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                                      item.tech_type === 'Blue' ? 'bg-blue-500 text-white' :
-                                      item.tech_type === 'Red' ? 'bg-red-500 text-white' :
-                                      item.tech_type === 'Green' ? 'bg-green-500 text-white' :
-                                      item.tech_type === 'Yellow' ? 'bg-yellow-500 text-white' :
-                                      'bg-gray-500 text-white'
-                                    }`}>
-                                      {item.tech_type}
-                                    </span>
+                                  {item.tech_type_icon && (
+                                    <img src={item.tech_type_icon} alt={item.tech_type} className="w-4 h-4" title={item.tech_type} />
                                   )}
-                                  {item.prerequisites && item.prerequisites.length > 0 && (
+                                  {item.prerequisite_icons && item.prerequisite_icons.length > 0 && (
                                     <div className="flex gap-1 items-center">
                                       <span className="text-gray-600 text-[10px]">Req:</span>
-                                      {item.prerequisites.map((prereq, idx) => (
-                                        <span key={idx} className={`w-3 h-3 rounded-full ${
-                                          prereq === 'Blue' ? 'bg-blue-500' :
-                                          prereq === 'Red' ? 'bg-red-500' :
-                                          prereq === 'Green' ? 'bg-green-500' :
-                                          prereq === 'Yellow' ? 'bg-yellow-500' :
-                                          'bg-gray-500'
-                                        }`} title={prereq}></span>
+                                      {item.prerequisite_icons.map((icon, idx) => (
+                                        <img key={idx} src={icon} alt="Prerequisite" className="w-3 h-3" />
                                       ))}
                                     </div>
                                   )}
                                 </div>
                                 
-                                {/* For unit upgrade techs */}
                                 {item.combat && (
                                   <>
                                     {item.abilities && item.abilities.length > 0 && (
@@ -243,7 +219,6 @@ export default function FactionSheet({
                                   </>
                                 )}
                                 
-                                {/* For non-unit techs */}
                                 {!item.combat && item.description && (
                                   <div className="text-xs text-gray-700 italic leading-tight">
                                     {isExpanded ? item.description : (
@@ -259,14 +234,12 @@ export default function FactionSheet({
                         {/* Unit card format for flagships and mechs */}
                         {(category === 'flagship' || category === 'mech') && item.combat && (
                           <div className="mt-2">
-                            {/* Abilities as keywords */}
                             {item.abilities && item.abilities.length > 0 && (
                               <div className="text-xs font-semibold text-purple-700 mb-1">
                                 {item.abilities.join(', ')}
                               </div>
                             )}
                             
-                            {/* Text ability description */}
                             {item.description && (
                               <div className="text-xs text-gray-700 mb-2 italic leading-tight">
                                 {isExpanded ? item.description : (
@@ -275,13 +248,12 @@ export default function FactionSheet({
                               </div>
                             )}
                             
-                            {/* Check for variants (different stats by location) */}
                             {item.variants && item.variants.length > 0 ? (
                               <div className="space-y-1">
-                                {item.variants.map((variant, idx) => (
-                                  <div key={idx} className="flex items-center gap-2 text-[10px] font-mono bg-gray-200 p-1.5 rounded border border-gray-300">
+                                {item.variants.map((variant, vIdx) => (
+                                  <div key={vIdx} className="flex items-center gap-2 text-[10px] font-mono bg-gray-200 p-1.5 rounded border border-gray-300">
                                     <span className="font-semibold text-blue-600">{variant.location}:</span>
-                                    {item.cost !== undefined && idx === 0 && <span className="font-semibold">Cost: {item.cost}</span>}
+                                    {item.cost !== undefined && vIdx === 0 && <span className="font-semibold">Cost: {item.cost}</span>}
                                     <span className="font-semibold">Combat: {variant.combat}</span>
                                     {variant.move !== undefined && <span className="font-semibold">Move: {variant.move}</span>}
                                     {variant.capacity !== undefined && <span className="font-semibold">Capacity: {variant.capacity}</span>}
@@ -289,7 +261,6 @@ export default function FactionSheet({
                                 ))}
                               </div>
                             ) : (
-                              /* Standard single stat line */
                               <div className="flex gap-2 text-[10px] font-mono bg-gray-200 p-1.5 rounded border border-gray-300">
                                 {item.cost !== undefined && <span className="font-semibold">Cost: {item.cost}</span>}
                                 <span className="font-semibold">Combat: {item.combat}</span>
@@ -325,36 +296,51 @@ export default function FactionSheet({
                             {item.planets?.map((p, idx) => (
                               <div key={p.name + idx} className="mb-2 p-1 bg-gray-100 rounded">
                                 <div className="font-semibold text-sm text-green-700 break-words">{p.name}</div>
-                                <div className="text-xs">
-                                  Resources: {p.resource || 0} • Influence: {p.influence || 0}
+                                <div className="flex items-center gap-1 text-xs">
+                                  <span>{p.resource}</span>
+                                  {p.resource_icon && <img src={p.resource_icon} alt="Resources" className="w-3 h-3" />}
+                                  <span>/</span>
+                                  <span>{p.influence}</span>
+                                  {p.influence_icon && <img src={p.influence_icon} alt="Influence" className="w-3 h-3" />}
                                 </div>
-                                {p.traits && p.traits.length > 0 && (
-                                  <div className="text-xs text-purple-600 break-words">
-                                    Traits: {p.traits.join(", ")}
+                                {p.trait_icons && p.trait_icons.length > 0 && (
+                                  <div className="flex items-center gap-1 text-xs text-purple-600 break-words">
+                                    <span>Traits:</span>
+                                    {p.trait_icons.map((icon, tIdx) => (
+                                      <img key={tIdx} src={icon} alt="Trait" className="w-3 h-3" title={p.traits[tIdx]} />
+                                    ))}
                                   </div>
                                 )}
-                                {p.technology_specialty && p.technology_specialty.length > 0 && (
-                                  <div className="text-xs text-orange-600 break-words">
-                                    Tech: {p.technology_specialty.join(", ")}
+                                {p.tech_specialty_icons && p.tech_specialty_icons.length > 0 && (
+                                  <div className="flex items-center gap-1 text-xs text-orange-600 break-words">
+                                    <span>Tech:</span>
+                                    {p.tech_specialty_icons.map((icon, tIdx) => (
+                                      <img key={tIdx} src={icon} alt="Tech" className="w-3 h-3" />
+                                    ))}
                                   </div>
                                 )}
-                                {p.legendary_ability && (
-                                  <div className="text-xs text-yellow-700 font-medium break-words">
-                                    Legendary: {p.legendary_ability}
+                                {p.legendary_icon && (
+                                  <div className="flex items-center gap-1 text-xs text-yellow-700 font-medium break-words">
+                                    <img src={p.legendary_icon} alt="Legendary" className="w-3 h-3" />
+                                    <span>Legendary: {p.legendary_ability}</span>
                                   </div>
                                 )}
                               </div>
                             ))}
                             
-                            {item.wormhole && (
-                              <div className="text-xs text-purple-700 font-medium">
-                                Wormhole: {item.wormhole}
+                            {item.wormhole_icon && (
+                              <div className="flex items-center gap-1 text-xs text-purple-700 font-medium">
+                                <span>Wormhole:</span>
+                                <img src={item.wormhole_icon} alt={item.wormhole} className="w-4 h-4" />
                               </div>
                             )}
                             
-                            {item.anomalies && item.anomalies.length > 0 && (
-                              <div className="text-xs text-red-700 font-medium">
-                                Anomalies: {item.anomalies.join(", ")}
+                            {item.anomaly_icons && item.anomaly_icons.length > 0 && (
+                              <div className="flex items-center gap-1 text-xs text-red-700 font-medium">
+                                <span>Anomalies:</span>
+                                {item.anomaly_icons.map((icon, aIdx) => (
+                                  <img key={aIdx} src={icon} alt="Anomaly" className="w-4 h-4" />
+                                ))}
                               </div>
                             )}
                           </div>
@@ -392,7 +378,6 @@ export default function FactionSheet({
 
                       {/* Action buttons */}
                       <div className="flex flex-col gap-1 flex-shrink-0">
-                        {/* Swap button - only show during reduction if swap available */}
                         {showReductionHelper && swapOption && !item.isSwap && (
                           <button
                             onClick={(e) => { 
@@ -405,7 +390,6 @@ export default function FactionSheet({
                           </button>
                         )}
 
-                        {/* Remove button */}
                         {(showReductionHelper || !isCurrentPlayer) && (
                           <button
                             onClick={(e) => { 

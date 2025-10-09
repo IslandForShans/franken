@@ -6,10 +6,13 @@ import DraftSettingsPanel from "./DraftSettingsPanel.jsx";
 import DraftSummary from "./DraftSummary.jsx";
 import FirebaseMultiplayerPanel from "./FirebaseMultiplayerPanel.jsx";
 import { shuffleArray } from "../utils/shuffle.js";
-import factionsJSON from "../data/factions.json";
+import factionsJSONRaw from "../data/factions.json";
 import { isComponentUndraftable, getSwapOptions, getExtraComponents } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
 import { multiplayerService } from "../services/firebaseMultiplayer.js";
+import { processFactionData } from "../utils/dataProcessor.js";
+
+const factionsJSON = processFactionData(factionsJSONRaw);
 
 // Updated limits system
 const baseFactionLimits = {

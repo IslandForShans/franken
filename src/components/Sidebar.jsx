@@ -96,7 +96,6 @@ export default function Sidebar({
                       
                       {components
                         .sort((a, b) => {
-                          // Sort by faction first, then by name
                           const factionSort = (a.faction || "").localeCompare(b.faction || "");
                           if (factionSort !== 0) return factionSort;
                           return (a.name || "").localeCompare(b.name || "");
@@ -121,13 +120,15 @@ export default function Sidebar({
                               <div className="font-medium text-gray-900">{component.name}</div>
                               
                               {component.faction && (
-                                <div className="text-xs text-blue-600 font-medium">{component.faction}</div>
+                                <div className="flex items-center gap-1 text-xs text-blue-600 font-medium mt-0.5">
+                                  {component.icon && <img src={component.icon} alt={component.faction} className="w-4 h-4" />}
+                                  {component.faction}
+                                </div>
                               )}
                               
                               {/* Tech card format - single tech or tech package */}
                               {(cat === 'faction_techs' || cat === 'starting_techs') && (
                                 <div className="text-xs mt-2 border-t pt-2">
-                                  {/* Check if this is a tech package (multiple techs) */}
                                   {component.techs && component.techs.length > 0 ? (
                                     <div className="space-y-2">
                                       {component.choose_count && (
@@ -139,16 +140,8 @@ export default function Sidebar({
                                         <div key={techIdx} className="pb-2 border-b last:border-b-0">
                                           <div className="flex items-center gap-2 mb-1">
                                             <span className="font-semibold text-gray-800">{tech.name}</span>
-                                            {tech.tech_type && (
-                                              <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                                                tech.tech_type === 'Blue' ? 'bg-blue-500 text-white' :
-                                                tech.tech_type === 'Red' ? 'bg-red-500 text-white' :
-                                                tech.tech_type === 'Green' ? 'bg-green-500 text-white' :
-                                                tech.tech_type === 'Yellow' ? 'bg-yellow-500 text-white' :
-                                                'bg-gray-500 text-white'
-                                              }`}>
-                                                {tech.tech_type}
-                                              </span>
+                                            {tech.tech_type_icon && (
+                                              <img src={tech.tech_type_icon} alt={tech.tech_type} className="w-4 h-4" title={tech.tech_type} />
                                             )}
                                           </div>
                                           {tech.description && (
@@ -160,37 +153,21 @@ export default function Sidebar({
                                       ))}
                                     </div>
                                   ) : (
-                                    /* Single tech display */
                                     <>
                                       <div className="flex items-center gap-2 mb-1">
-                                        {component.tech_type && (
-                                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                                            component.tech_type === 'Blue' ? 'bg-blue-500 text-white' :
-                                            component.tech_type === 'Red' ? 'bg-red-500 text-white' :
-                                            component.tech_type === 'Green' ? 'bg-green-500 text-white' :
-                                            component.tech_type === 'Yellow' ? 'bg-yellow-500 text-white' :
-                                            'bg-gray-500 text-white'
-                                          }`}>
-                                            {component.tech_type}
-                                          </span>
+                                        {component.tech_type_icon && (
+                                          <img src={component.tech_type_icon} alt={component.tech_type} className="w-4 h-4" title={component.tech_type} />
                                         )}
-                                        {component.prerequisites && component.prerequisites.length > 0 && (
+                                        {component.prerequisite_icons && component.prerequisite_icons.length > 0 && (
                                           <div className="flex gap-1 items-center">
                                             <span className="text-gray-600 text-[10px]">Req:</span>
-                                            {component.prerequisites.map((prereq, idx) => (
-                                              <span key={idx} className={`w-3 h-3 rounded-full ${
-                                                prereq === 'Blue' ? 'bg-blue-500' :
-                                                prereq === 'Red' ? 'bg-red-500' :
-                                                prereq === 'Green' ? 'bg-green-500' :
-                                                prereq === 'Yellow' ? 'bg-yellow-500' :
-                                                'bg-gray-500'
-                                              }`} title={prereq}></span>
+                                            {component.prerequisite_icons.map((icon, idx) => (
+                                              <img key={idx} src={icon} alt="Prerequisite" className="w-3 h-3" />
                                             ))}
                                           </div>
                                         )}
                                       </div>
                                       
-                                      {/* For unit upgrade techs */}
                                       {component.combat && (
                                         <>
                                           {component.abilities && component.abilities.length > 0 && (
@@ -212,7 +189,6 @@ export default function Sidebar({
                                         </>
                                       )}
                                       
-                                      {/* For non-unit techs */}
                                       {!component.combat && component.description && (
                                         <div className="text-gray-700 italic">
                                           {component.description}
@@ -237,13 +213,12 @@ export default function Sidebar({
                                     </div>
                                   )}
                                   
-                                  {/* Check for variants (different stats by location) */}
                                   {component.variants && component.variants.length > 0 ? (
                                     <div className="space-y-1">
-                                      {component.variants.map((variant, idx) => (
-                                        <div key={idx} className="flex items-center gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
+                                      {component.variants.map((variant, vIdx) => (
+                                        <div key={vIdx} className="flex items-center gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
                                           <span className="font-semibold text-blue-600">{variant.location}:</span>
-                                          {component.cost !== undefined && idx === 0 && <span>Cost: {component.cost}</span>}
+                                          {component.cost !== undefined && vIdx === 0 && <span>Cost: {component.cost}</span>}
                                           <span>Combat: {variant.combat}</span>
                                           {variant.move !== undefined && <span>Move: {variant.move}</span>}
                                           {variant.capacity !== undefined && <span>Capacity: {variant.capacity}</span>}
@@ -251,7 +226,6 @@ export default function Sidebar({
                                       ))}
                                     </div>
                                   ) : (
-                                    /* Standard single stat line */
                                     <div className="flex gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
                                       {component.cost !== undefined && <span>Cost: {component.cost}</span>}
                                       {component.combat && <span>Combat: {component.combat}</span>}
@@ -278,22 +252,33 @@ export default function Sidebar({
                                   {component.planets.map((planet, pIdx) => (
                                     <div key={pIdx} className="text-xs mb-1">
                                       <div className="font-semibold text-green-700">{planet.name}</div>
-                                      <div className="text-gray-700">
-                                        {planet.resource}R / {planet.influence}I
+                                      <div className="flex items-center gap-1 text-gray-700">
+                                        <span>{planet.resource}</span>
+                                        {planet.resource_icon && <img src={planet.resource_icon} alt="Resources" className="w-3 h-3" />}
+                                        <span>/</span>
+                                        <span>{planet.influence}</span>
+                                        {planet.influence_icon && <img src={planet.influence_icon} alt="Influence" className="w-3 h-3" />}
                                       </div>
-                                      {planet.traits && planet.traits.length > 0 && (
-                                        <div className="text-purple-600">
-                                          {planet.traits.join(", ")}
+                                      {planet.trait_icons && planet.trait_icons.length > 0 && (
+                                        <div className="flex items-center gap-1 text-purple-600">
+                                          <span>Traits:</span>
+                                          {planet.trait_icons.map((icon, tIdx) => (
+                                            <img key={tIdx} src={icon} alt="Trait" className="w-4 h-4" title={planet.traits[tIdx]} />
+                                          ))}
                                         </div>
                                       )}
-                                      {planet.technology_specialty && planet.technology_specialty.length > 0 && (
-                                        <div className="text-orange-600">
-                                          Tech: {planet.technology_specialty.join(", ")}
+                                      {planet.tech_specialty_icons && planet.tech_specialty_icons.length > 0 && (
+                                        <div className="flex items-center gap-1 text-orange-600">
+                                          <span>Tech:</span>
+                                          {planet.tech_specialty_icons.map((icon, tIdx) => (
+                                            <img key={tIdx} src={icon} alt="Tech" className="w-3 h-3" />
+                                          ))}
                                         </div>
                                       )}
-                                      {planet.legendary_ability && (
-                                        <div className="text-yellow-700 font-medium">
-                                          Legendary: {planet.legendary_ability}
+                                      {planet.legendary_icon && (
+                                        <div className="flex items-center gap-1 text-yellow-700 font-medium">
+                                          <img src={planet.legendary_icon} alt="Legendary" className="w-3 h-3" />
+                                          <span>Legendary: {planet.legendary_ability}</span>
                                         </div>
                                       )}
                                     </div>
@@ -301,15 +286,19 @@ export default function Sidebar({
                                 </div>
                               )}
                               
-                              {component.anomalies && component.anomalies.length > 0 && (
-                                <div className="text-xs text-red-600 mt-1 font-medium">
-                                  Anomalies: {component.anomalies.join(", ")}
+                              {component.anomaly_icons && component.anomaly_icons.length > 0 && (
+                                <div className="flex items-center gap-1 text-xs text-red-600 mt-1 font-medium">
+                                  <span>Anomalies:</span>
+                                  {component.anomaly_icons.map((icon, aIdx) => (
+                                    <img key={aIdx} src={icon} alt="Anomaly" className="w-4 h-4" />
+                                  ))}
                                 </div>
                               )}
                               
-                              {component.wormhole && (
-                                <div className="text-xs text-purple-600 mt-1 font-medium">
-                                  Wormhole: {component.wormhole}
+                              {component.wormhole_icon && (
+                                <div className="flex items-center gap-1 text-xs text-purple-600 mt-1 font-medium">
+                                  <span>Wormhole:</span>
+                                  <img src={component.wormhole_icon} alt={component.wormhole} className="w-4 h-4" />
                                 </div>
                               )}
 

@@ -92,7 +92,7 @@
         {
           "id": "augurs_starting_tech",
           "name": "Augurs Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Scanlink Drone Network",
               "tech_type": "Yellow"
@@ -230,7 +230,7 @@
           "id": "bentor_starting_tech",
           "name": "Bentor Starting Tech",
           "choose_count": 2,
-          "tech": [
+          "techs": [
             {
               "name": "Dark Energy Tap",
               "tech_type": "Green"
@@ -509,7 +509,7 @@
           "id": "celdauri_starting_tech",
           "name": "Celdauri Starting Tech",
           "choose_count": 2,
-          "tech": [
+          "techs": [
             {
               "name": "Antimass Deflectors",
               "tech_type": "Blue"
@@ -663,7 +663,7 @@
           "id": "cheiran_starting_tech",
           "name": "Cheiran Starting Tech",
           "choose_count": 1,
-          "tech": [
+          "techs": [
             {
               "name": "Magen Defense Grid",
               "tech_type": "Red"
@@ -812,7 +812,7 @@
         {
           "id": "dih-mohn_starting_tech",
           "name": "Dih-Mohn Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Dark Energy Tap",
               "tech_type": "Blue"
@@ -1084,7 +1084,7 @@
         {
           "id": "florzen_starting_tech",
           "name": "Florzen Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Scanlink Drone Network",
               "tech_type": "Yellow"
@@ -1218,7 +1218,7 @@
         {
           "id": "fsc_starting_tech",
           "name": "Free Systems Compact Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Psychoarchaeology",
               "tech_type": "Green"
@@ -1375,7 +1375,7 @@
         {
           "id": "ghemina_starting_tech",
           "name": "Ghemina Starting Tech",
-          "tech": [
+          "techs": [
             {
               "name": "Dark Energy Tap",
               "tech_type": "Blue"
