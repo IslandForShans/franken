@@ -1,8 +1,336 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles for the TI4 Franken Draft app */
+:root {
+  /* Primary Colors */
+  --ti-black: #0a0a0a;
+  --ti-dark-blue: #0d1b2a;
+  --ti-space-blue: #1b263b;
+  --ti-navy: #415a77;
+  
+  /* Accent Colors */
+  --ti-gold: #d4a574;
+  --ti-bright-gold: #e0b589;
+  --ti-copper: #c17c4a;
+  
+  /* Tech Colors */
+  --ti-tech-blue: #4a90e2;
+  --ti-tech-red: #e74c3c;
+  --ti-tech-green: #2ecc71;
+  --ti-tech-yellow: #f39c12;
+  
+  /* UI Elements */
+  --ti-border: #4a5568;
+  --ti-border-light: #6b7280;
+  --ti-highlight: #fbbf24;
+  --ti-text-primary: #000000;
+  --ti-text-secondary: #000000;
+  --ti-text-muted: #94a3b8;
+  
+  /* Resource/Influence */
+  --ti-resource: #d97706;
+  --ti-influence: #3b82f6;
+}
+
+/* Font System */
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background-color: var(--ti-dark-blue);
+  color: var(--ti-text-primary);
+}
+
+/* Headers - Use Cinzel for that imperial feel */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  color: var(--ti-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+
+/* Component Names/Titles - Use Orbitron for sci-fi tech feel */
+.component-name,
+.tech-name,
+.faction-name {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* Body Text */
+.description,
+.ability-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Stats/Numbers */
+.stats,
+.combat-value {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* Component Cards */
+.ti-card {
+  background: linear-gradient(135deg, var(--ti-space-blue) 0%, var(--ti-dark-blue) 100%);
+  border: 2px solid var(--ti-gold);
+  border-radius: 8px;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(212, 165, 116, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.ti-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--ti-bright-gold) 50%, 
+    transparent);
+}
+
+/* Hover effect */
+.ti-card:hover {
+  border-color: var(--ti-bright-gold);
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(212, 165, 116, 0.4);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Unit Cards */
+.ti-unit-card {
+  background: linear-gradient(to bottom, 
+    rgba(13, 27, 42, 0.95) 0%,
+    rgba(27, 38, 59, 0.95) 100%);
+  border: 2px solid var(--ti-copper);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+/* Tech Cards */
+.ti-tech-card {
+  background: radial-gradient(circle at top left, 
+    rgba(74, 144, 226, 0.15) 0%,
+    rgba(13, 27, 42, 0.95) 50%);
+  border-left: 4px solid var(--ti-tech-blue);
+}
+
+/* Ability Cards */
+.ti-ability-card {
+  background: linear-gradient(135deg,
+    rgba(212, 165, 116, 0.1) 0%,
+    rgba(13, 27, 42, 0.95) 100%);
+  border: 1px solid var(--ti-gold);
+  border-left: 3px solid var(--ti-gold);
+}
+
+/* Primary Button */
+.ti-button {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 10px 24px;
+  background: linear-gradient(to bottom, var(--ti-gold), var(--ti-copper));
+  color: var(--ti-black);
+  border: 2px solid var(--ti-bright-gold);
+  border-radius: 4px;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ti-button:hover {
+  background: linear-gradient(to bottom, var(--ti-bright-gold), var(--ti-gold));
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(212, 165, 116, 0.5);
+  transform: translateY(-1px);
+}
+
+.ti-button:active {
+  transform: translateY(0);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Secondary Button */
+.ti-button-secondary {
+  background: transparent;
+  color: var(--ti-gold);
+  border: 2px solid var(--ti-gold);
+}
+
+.ti-button-secondary:hover {
+  background: rgba(212, 165, 116, 0.1);
+  border-color: var(--ti-bright-gold);
+  color: var(--ti-bright-gold);
+}
+
+/* Danger Button */
+.ti-button-danger {
+  background: linear-gradient(to bottom, #e74c3c, #c0392b);
+  border-color: #e74c3c;
+}
+
+/* Combat/Stats Display */
+.ti-stat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--ti-border);
+  border-radius: 4px;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--ti-text-primary);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.ti-stat-badge.combat {
+  border-color: var(--ti-tech-red);
+  color: #ff6b6b;
+}
+
+.ti-stat-badge.resource {
+  border-color: var(--ti-resource);
+  color: #fbbf24;
+}
+
+.ti-stat-badge.influence {
+  border-color: var(--ti-influence);
+  color: #60a5fa;
+}
+
+/* Tech Color Badges */
+.ti-tech-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.ti-tech-badge.blue {
+  background: linear-gradient(to right, #4a90e2, #2171c7);
+  color: white;
+  border: 1px solid #6badff;
+}
+
+.ti-tech-badge.red {
+  background: linear-gradient(to right, #e74c3c, #c0392b);
+  color: white;
+  border: 1px solid #ff6b6b;
+}
+
+.ti-tech-badge.green {
+  background: linear-gradient(to right, #2ecc71, #27ae60);
+  color: white;
+  border: 1px solid #55dd88;
+}
+
+.ti-tech-badge.yellow {
+  background: linear-gradient(to right, #f39c12, #e67e22);
+  color: white;
+  border: 1px solid #ffb84d;
+}
+
+/* Main App Background */
+body {
+  background: 
+    radial-gradient(ellipse at top, rgba(74, 144, 226, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom, rgba(212, 165, 116, 0.05) 0%, transparent 50%),
+    linear-gradient(to bottom, #0a0a0a 0%, #0d1b2a 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Space Stars Effect (Optional) */
+.space-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, white, transparent),
+    radial-gradient(2px 2px at 60px 70px, white, transparent),
+    radial-gradient(1px 1px at 50px 50px, white, transparent),
+    radial-gradient(1px 1px at 130px 80px, white, transparent),
+    radial-gradient(2px 2px at 90px 10px, white, transparent);
+  background-size: 200px 200px;
+  background-repeat: repeat;
+  opacity: 0.3;
+  z-index: -1;
+}
+
+/* Section Dividers */
+.ti-divider {
+  height: 2px;
+  background: linear-gradient(to right,
+    transparent,
+    var(--ti-gold) 20%,
+    var(--ti-gold) 80%,
+    transparent);
+  margin: 24px 0;
+  position: relative;
+}
+
+.ti-divider::before,
+.ti-divider::after {
+  content: '◆';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ti-gold);
+  font-size: 12px;
+}
+
+.ti-divider::before { left: 0; }
+.ti-divider::after { right: 0; }
+
+/* Hexagonal Borders (like on game tiles) */
+.ti-hex-border {
+  position: relative;
+  clip-path: polygon(
+    30% 0%, 70% 0%,
+    100% 30%, 100% 70%,
+    70% 100%, 30% 100%,
+    0% 70%, 0% 30%
+  );
+}
+
+/* Custom styles for the TI4 Franken Draft app
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -17,7 +345,7 @@ code {
     monospace;
 }
 
-/* Scrollbar styling */
+/* Scrollbar styling 
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -34,16 +362,16 @@ code {
   @apply bg-gray-400;
 }
 
-/* Drag and drop feedback */
+/* Drag and drop feedback 
 .drag-over {
   @apply border-2 border-blue-400 bg-blue-50;
 }
 
-/* Animation for component cards */
+/* Animation for component cards 
 .component-card {
   transition: all 0.2s ease-in-out;
 }
 
 .component-card:hover {
   transform: translateY(-2px);
-}
+}*/

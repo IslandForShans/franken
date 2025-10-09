@@ -1,6 +1,6 @@
 // This file processes raw JSON data and adds icon paths automatically
 
-export const ICON_PATH = "/icons/"; // Global constant for icon path
+export const ICON_PATH = "./icons/"; // Global constant for icon path
 
 // Icon mappings
 export const ICON_MAP = {
