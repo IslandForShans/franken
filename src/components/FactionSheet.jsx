@@ -129,14 +129,14 @@ export default function FactionSheet({
                 return (
                   <div
                     key={id + index}
-                    className={`border rounded p-2 relative cursor-pointer hover:shadow ${
+                    className={`border rounded p-2 relative cursor-pointer hover:shadow overflow-hidden ${
                       item.isSwap ? "bg-blue-50 border-blue-300" : 
                       item.isExtra ? "bg-green-50 border-green-300" : "bg-gray-50"
                     }`}
                     onClick={() => setExpandedId(isExpanded ? null : id)}
                   >
                     <div className="flex justify-between gap-2">
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 overflow-hidden">
                         <div className="font-semibold break-words">
                           {item.name}
                           {item.isSwap && <span className="text-blue-600 text-xs ml-2">[SWAPPED]</span>}
@@ -303,12 +303,9 @@ export default function FactionSheet({
                                   <span>{p.influence}</span>
                                   {p.influence_icon && <img src={p.influence_icon} alt="Influence" className="w-3 h-3" />}
                                 </div>
-                                {p.trait_icons && p.trait_icons.length > 0 && (
-                                  <div className="flex items-center gap-1 text-xs text-purple-600 break-words">
-                                    <span>Traits:</span>
-                                    {p.trait_icons.map((icon, tIdx) => (
-                                      <img key={tIdx} src={icon} alt="Trait" className="w-3 h-3" title={p.traits[tIdx]} />
-                                    ))}
+                                {p.traits && p.traits.length > 0 && (
+                                  <div className="text-xs text-purple-600 break-words">
+                                    Traits: {p.traits.join(", ")}
                                   </div>
                                 )}
                                 {p.tech_specialty_icons && p.tech_specialty_icons.length > 0 && (

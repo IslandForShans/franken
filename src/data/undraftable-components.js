@@ -110,7 +110,7 @@ export const undraftableComponents = {
   
   commanders: [
     //Base + PoK
-    { name: "IL Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
+    { name: "Il Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
     //DS
     { name: "Designer TckVsk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
     { name: "Jarl Vel & Jarl Jotrun - Raid Leaders", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
@@ -123,7 +123,7 @@ export const undraftableComponents = {
 
   heroes: [
     //Base + PoK
-    { name: "Dimensional Anchor", faction: "The Vuil'Raith Cabal", triggerComponent: "Dimensional Tear II", type: "optional_swap" },
+    { name: "It Feeds On Carrion", faction: "The Vuil'Raith Cabal", triggerComponent: "Dimensional Tear II", type: "optional_swap" },
     //DS
     { name: "Demi-Queen Mdcksssk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
     { name: "Korela - The Lady", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },

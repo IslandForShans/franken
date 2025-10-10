@@ -164,17 +164,24 @@ export default function DraftSimulator() {
   };
 
   const createBagsWithUniqueDistribution = () => {
+    // FIXED: Create exactly playerCount bags, not more
     const bags = Array.from({ length: playerCount }, () => ({}));
+    
+    console.log(`Creating ${playerCount} bags for ${playerCount} players`);
     
     categories.forEach(category => {
       const allComponents = getFilteredComponents(category);
-      const bagSize = draftLimits[category]; // Each bag gets draft limit amount
+      const bagSize = draftLimits[category];
       
       let distributionPool = [];
-      if (playerCount * bagSize <= allComponents.length) {
+      const totalNeeded = playerCount * bagSize;
+      
+      if (totalNeeded <= allComponents.length) {
+        // Enough unique components
         distributionPool = shuffleArray([...allComponents]);
       } else {
-        const timesToRepeat = Math.ceil((playerCount * bagSize) / allComponents.length);
+        // Need to duplicate components
+        const timesToRepeat = Math.ceil(totalNeeded / allComponents.length);
         for (let i = 0; i < timesToRepeat; i++) {
           distributionPool = distributionPool.concat(
             allComponents.map(comp => ({ ...comp, copyIndex: i }))
@@ -183,6 +190,7 @@ export default function DraftSimulator() {
         distributionPool = shuffleArray(distributionPool);
       }
       
+      // Distribute components to exactly playerCount bags
       let componentIndex = 0;
       for (let playerIdx = 0; playerIdx < playerCount; playerIdx++) {
         bags[playerIdx][category] = [];
@@ -193,6 +201,7 @@ export default function DraftSimulator() {
       }
     });
     
+    console.log(`Created bags:`, bags.length);
     return bags;
   };
 
@@ -234,6 +243,45 @@ export default function DraftSimulator() {
     setDraftStarted(true);
     setPendingPicks([]);
     setIsPickingPhase(true);
+    
+    // FIXED: Check initial player for auto-pass
+    setTimeout(() => {
+        checkAndAdvanceIfNeeded(emptyFactions, Array.from({ length: playerCount }, () => {
+            const p = {};
+            categories.forEach(cat => { p[cat] = 0; });
+            return p;
+        }), 0);
+    }, 100);
+  };
+
+  const checkAndAdvanceIfNeeded = (currentFactions, currentProgress, playerIdx) => {
+    if (draftVariant === "rotisserie") return;
+    
+    const bag = playerBags[playerIdx];
+    const progress = currentProgress[playerIdx];
+    
+    if (!bag) return;
+    
+    let canPick = false;
+    categories.forEach(cat => {
+        const inBag = bag[cat]?.length || 0;
+        const alreadyPicked = progress[cat] || 0;
+        const limit = draftLimits[cat];
+        
+        if (inBag > 0 && alreadyPicked < limit) {
+            canPick = true;
+        }
+    });
+    
+    if (!canPick) {
+        console.log(`Player ${playerIdx + 1} auto-passing on initialization - nothing to draft`);
+        const nextPlayer = (playerIdx + 1) % playerCount;
+        setCurrentPlayer(nextPlayer);
+        
+        if (nextPlayer !== 0) {
+            checkAndAdvanceIfNeeded(currentFactions, currentProgress, nextPlayer);
+        }
+    }
   };
 
   const startDraftSolo = () => {
@@ -259,6 +307,8 @@ export default function DraftSimulator() {
   };
 
   const canPlayerDraftFromBag = (playerIdx, bagIdx) => {
+    if (!playerBags[bagIdx]) return false;
+    
     const bag = playerBags[bagIdx];
     const progress = playerProgress[playerIdx];
     
@@ -272,17 +322,61 @@ export default function DraftSimulator() {
     });
   };
 
+  const getMaxPicksForRound = () => {
+    const baseNeeded = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
+    
+    if (draftVariant === "rotisserie") return 1;
+    
+    // Calculate actual available picks for this player from this bag
+    const currentBag = playerBags[currentPlayer];
+    const progress = playerProgress[currentPlayer];
+    
+    if (!currentBag) return 0;
+    
+    let availablePicks = 0;
+    categories.forEach(cat => {
+      const inBag = currentBag[cat]?.length || 0;
+      const alreadyPicked = progress[cat] || 0;
+      const limit = draftLimits[cat];
+      const canPickInCategory = Math.min(inBag, limit - alreadyPicked);
+      
+      if (canPickInCategory > 0) {
+        availablePicks++;
+      }
+    });
+    
+    // Return minimum of base needed or available picks
+    return Math.min(baseNeeded, availablePicks);
+  };
+
+  const shouldAutoPass = (playerIdx) => {
+    // Check if player should auto-pass because they can't pick anything
+    if (draftVariant === "rotisserie") return false;
+    
+    const maxPicks = getMaxPicksForRound();
+    return maxPicks === 0;
+  };
+
   const handlePick = (category, component) => {
     if (!category || !component || !draftStarted || draftPhase !== "draft" || !isPickingPhase) return;
 
     const currentProgress = playerProgress[currentPlayer][category] || 0;
     const pendingCountInCategory = pendingPicks.filter(p => p.category === category).length;
   
+    // FIXED: Check against draft limit, not allowing over-picking
     if (currentProgress + pendingCountInCategory >= draftLimits[category]) {
-        alert(`Cannot pick more ${category}. Limit: ${draftLimits[category]}`);
+        alert(`Cannot pick more ${category.replace('_', ' ')}. Limit: ${draftLimits[category]}`);
         return;
     }
 
+    // FIXED: Check against max picks for this round
+    const maxPicks = getMaxPicksForRound();
+    if (pendingPicks.length >= maxPicks) {
+        alert(`You can only pick ${maxPicks} component${maxPicks !== 1 ? 's' : ''} this round.`);
+        return;
+    }
+
+    // FIXED: Only allow one pick per category per round
     if (pendingCountInCategory >= 1) {
         alert(`You can only pick one ${category.replace('_', ' ')} per round.`);
         return;
@@ -303,15 +397,22 @@ export default function DraftSimulator() {
   };
 
   const handleSubmitPicks = () => {
+    const maxPicks = getMaxPicksForRound();
+    
     if (draftVariant === "rotisserie") {
         if (pendingPicks.length !== 1) {
         alert("You must pick exactly 1 component in Rotisserie mode.");
         return;
         }
     } else {
-        const neededPicks = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
-        if (pendingPicks.length < neededPicks) {
-        alert(`You must pick ${neededPicks} components this round. Currently: ${pendingPicks.length}`);
+        // FIXED: Must pick max picks unless unable to
+        if (pendingPicks.length < maxPicks) {
+        alert(`You must pick ${maxPicks} component${maxPicks !== 1 ? 's' : ''} this round. Currently: ${pendingPicks.length}`);
+        return;
+        }
+        
+        if (pendingPicks.length > maxPicks) {
+        alert(`You can only pick up to ${maxPicks} components this round.`);
         return;
         }
     }
@@ -334,7 +435,7 @@ export default function DraftSimulator() {
         // Remove component from the current bag only
         setPlayerBags(prev => {
             const nb = [...prev];
-            const currentBagIdx = currentPlayer; // Each player looks at their own indexed bag
+            const currentBagIdx = currentPlayer;
             nb[currentBagIdx] = { ...nb[currentBagIdx] };
             const compId = component.id || component.name;
             nb[currentBagIdx][category] = nb[currentBagIdx][category].filter(c => (c.id || c.name) !== compId);
@@ -356,48 +457,27 @@ export default function DraftSimulator() {
     setPendingPicks([]);
     setIsPickingPhase(false);
 
+    advanceToNextPlayer(fc, pg);
+  };
+
+  const advanceToNextPlayer = (updatedFactions, updatedProgress) => {
     setTimeout(() => {
-        const nextPlayer = (currentPlayer + 1) % playerCount;
+        let nextPlayer = (currentPlayer + 1) % playerCount;
+        let attempts = 0;
+        const maxAttempts = playerCount;
         
-        // Check if the next player can draft from their bag
-        if (draftVariant !== "rotisserie") {
-            const nextBagIdx = nextPlayer;
+        // Keep advancing until we find a player who can draft or we've checked everyone
+        while (attempts < maxAttempts) {
+            // Update state for next player
+            setFactions(updatedFactions);
+            setPlayerProgress(updatedProgress);
             
-            // Auto-pass if player cannot draft from their bag
-            if (!canPlayerDraftFromBag(nextPlayer, nextBagIdx)) {
-                console.log(`Player ${nextPlayer + 1} auto-passing bag ${nextBagIdx} - nothing to draft`);
-                // Skip this player's turn
-                setCurrentPlayer(nextPlayer);
-                setIsPickingPhase(true);
-                setPicksThisRound(0);
-                
-                // Check if we completed a round
-                if (nextPlayer === 0) {
-                    setRound(r => r + 1);
-                    // Rotate bags
-                    setPlayerBags(prev => {
-                        if (prev.length <= 1) return prev;
-                        const rotated = [...prev];
-                        const last = rotated.pop();
-                        rotated.unshift(last);
-                        return rotated;
-                    });
-                }
-                
-                // Recursively check next player
-                handleSubmitPicks();
-                return;
-            }
-        }
-        
-        setCurrentPlayer(nextPlayer);
-        setIsPickingPhase(true);
-        setPicksThisRound(0);
-    
-        if (nextPlayer === 0) {
-            setRound(r => r + 1);
-            if (draftVariant !== "rotisserie") {
-                // Rotate bags - bags stay intact, just shift positions
+            // Check if we've completed a round (back to player 0)
+            const completedRound = nextPlayer === 0;
+            
+            if (completedRound && draftVariant !== "rotisserie") {
+                setRound(r => r + 1);
+                // Rotate bags
                 setPlayerBags(prev => {
                     if (prev.length <= 1) return prev;
                     const rotated = [...prev];
@@ -406,8 +486,46 @@ export default function DraftSimulator() {
                     return rotated;
                 });
             }
+            
+            setCurrentPlayer(nextPlayer);
+            
+            // Check if this player can draft from their bag
+            if (draftVariant !== "rotisserie") {
+                // Calculate what this player can pick from their bag
+                const nextBag = completedRound && playerBags.length > 1 
+                    ? [...playerBags.slice(1), playerBags[0]][nextPlayer] // Account for rotation
+                    : playerBags[nextPlayer];
+                    
+                const nextProgress = updatedProgress[nextPlayer];
+                
+                let canPick = false;
+                categories.forEach(cat => {
+                    const inBag = nextBag?.[cat]?.length || 0;
+                    const alreadyPicked = nextProgress[cat] || 0;
+                    const limit = draftLimits[cat];
+                    
+                    if (inBag > 0 && alreadyPicked < limit) {
+                        canPick = true;
+                    }
+                });
+                
+                if (!canPick) {
+                    console.log(`Player ${nextPlayer + 1} auto-passing - nothing they can draft from their bag`);
+                    nextPlayer = (nextPlayer + 1) % playerCount;
+                    attempts++;
+                    continue;
+                }
+            }
+            
+            // This player can draft, set them as current
+            setIsPickingPhase(true);
+            setPicksThisRound(0);
+            checkDraftCompletion();
+            return;
         }
-
+        
+        // If we get here, no one can draft - move to reduction
+        console.log("No players can draft from their bags - moving to reduction phase");
         checkDraftCompletion();
     }, 300);
   };
@@ -586,17 +704,35 @@ export default function DraftSimulator() {
         );
     }
 
-    const neededPicks = draftVariant === "rotisserie" ? 1 : 
-                      (round === 1 ? firstRoundPickCount : subsequentRoundPickCount);
+    const maxPicks = getMaxPicksForRound();
+    
+    // FIXED: Check if player should auto-pass and trigger advancement
+    if (maxPicks === 0 && draftVariant !== "rotisserie") {
+        // Trigger auto-advance
+        setTimeout(() => {
+            advanceToNextPlayer(factions, playerProgress);
+        }, 500);
+        
+        return (
+        <div className="mb-4 p-3 bg-yellow-100 rounded">
+            <h3 className="font-bold">Player {currentPlayer + 1}'s Turn - Round {round}</h3>
+            <div className="text-sm text-orange-600">
+            Auto-passing: No available picks from this bag (all categories at limit)
+            </div>
+            <div className="text-xs text-gray-600">Bag {currentPlayer} of {playerBags.length} bags</div>
+        </div>
+        );
+    }
   
     return (
         <div className="mb-4 p-3 bg-blue-100 rounded">
         <h3 className="font-bold">Player {currentPlayer + 1}'s Turn - Round {round}</h3>
         <div className="text-sm">
-            Pending picks: {pendingPicks.length} / {neededPicks}
+            Pending picks: {pendingPicks.length} / {maxPicks} (must pick {maxPicks})
             {draftVariant === "rotisserie" && " (One pick per turn)"}
         </div>
         <div className="text-sm">Variant: {draftVariant}</div>
+        <div className="text-xs text-gray-600">Bag {currentPlayer} of {playerBags.length} bags</div>
       
         {pendingPicks.length > 0 && (
             <div className="mt-2">
@@ -619,10 +755,10 @@ export default function DraftSimulator() {
         {isPickingPhase && (
             <button
             onClick={handleSubmitPicks}
-            disabled={pendingPicks.length < neededPicks}
+            disabled={pendingPicks.length < maxPicks}
             className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-            Submit Picks ({pendingPicks.length}/{neededPicks})
+            Submit Picks ({pendingPicks.length}/{maxPicks})
             </button>
         )}
       

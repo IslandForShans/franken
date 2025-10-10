@@ -1698,97 +1698,124 @@
           "description": "At the start of a space combat while you are the defender, you may spend influence equal to the cost value of 1 of your opponent's ships in the active system to place 1 unit of that type from your reinforcements in that system."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_ip",
+          "name": "Illusory Prescence",
+          "description": "During the agenda phase, after another player casts votes, you may exhaust up to 2 planets you control; that player casts an additional number of votes equal to 1 more than the combined influence values of those planets."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_fp",
+          "name": "Fractal Plating",
+          "tech_type": "Red",
+          "prerequisites": ["Red", "Red"],
+          "description": "After a unit you control in a system is destroyed, you may exhaust this card to place 1 unit of that type from your reinforcements in the space area of a system adjacent to that system that contains 1 or more of your ships."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_fg",
+          "name": "Fabrication Grid",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
+          "description": "Each system that contains 1 or more of your ships and no planets gains PRODUCTION 2 as if it were a unit you control."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_agent",
+          "name": "Walik - Dull Green",
+          "description": "When a player produces 1 or mroe units in a system: You may exhaust this card to allow that player to place 1 of the produced units in the space area of an adjacent system that does not contain another player's ships."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_commander",
+          "name": "Komat - Vibrant Blue",
+          "description": "UNLOCK: Have ships in 3 or more system not adjacent to or including your home system. At the start of a space combat while you are not the active player: Choose 1 of your non-fighter ships in the active system to gain SUSTAIN DAMAGE until the end of combat."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_hero",
+          "name": "Bayan - Deep Magenta",
+          "description": "WEAVELINK REPLICATOR - TWO BY TWO. ACTION: Purge this card to choose 1 ship you control in each system; for each of those units, you may place 1 unit of that type from your reinforcements in the space area of that unit's system, if able."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_pn",
+          "name": "Secrets of the Weave",
+          "description": "At the start of a space combat while you are the defender: You may spend influence equal to the cost value of 1 of your opponent's ships in the active system to place 1 unit of that type from your reinforcements in that system. Then, return this card to the Mortheus player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_fs",
+          "name": "Particle Sieve",
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "After you activate this system, if it does not contain any planrts, you may place 1 frontier token in this system."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_mech",
+          "name": "Duuban",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "When a player commits 1 or more units to a planet oyu control adjacent to this system, you may swap this unit with 1 of your infantry on that planet."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_starting_tech",
+          "name": "Glimmer Starting Tech",
+          "techs": [
+            {
+              "name": "Dark Energy Tap",
+              "tech_type": "Blue"
+            },
+            {
+              "name": "Sarween Tools",
+              "tech_type": "Yellow"
+            }
+          ]
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "glimmer_starting_fleet",
+          "name": "Glimmer Starting Fleet",
+          "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 2 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "glimmer_comms",
+          "name": "Commodities", 
+          "description": "3"
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "glimmer_hs",
+          "name": "Glimmer Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Biaheo",
+              "resource": 3,
               "influence": 0
+            },
+            {
+              "name": "Empero",
+              "resource": 0,
+              "influence": 3
             }
-          ]
+          ],
+          "anomalies": ["Nebula"]
         }
       ]
     },
