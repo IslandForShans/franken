@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import FactionSheet from "./FactionSheet.jsx";
-import factionsJSON from "../data/factions.json";
-import { calculateOptimalResources } from "../utils/resourceCalculator.js";
+import factionsJSONRaw from "../data/factions.json";
+import { processFactionData } from "../utils/dataProcessor.js";
+
+// Process faction data for icons
+const factionsJSON = processFactionData(factionsJSONRaw);
 
 const baseFactionLimits = {
   blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
@@ -135,6 +138,191 @@ export default function TheorycraftingApp() {
     linkElement.click();
   };
 
+  const renderComponentCard = (component, cat, idx, isDisabled, alreadySelected) => {
+    const isUnit = (cat === 'flagship' || cat === 'mech');
+    const isTech = (cat === 'faction_techs' || cat === 'starting_techs');
+    
+    return (
+      <div
+        key={component.id || component.name || idx}
+        className={`p-2 mb-1 rounded border cursor-pointer transition-colors text-sm ${
+          isDisabled 
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+            : "bg-gray-50 hover:bg-blue-50 hover:border-blue-300"
+        }`}
+        onClick={() => {
+          if (!isDisabled) {
+            handleAddComponent(cat, component);
+          }
+        }}
+      >
+        <div className="font-medium">{component.name}</div>
+        
+        {component.faction && (
+          <div className="flex items-center gap-1 text-xs text-blue-600 mt-0.5">
+            {component.icon && <img src={component.icon} alt={component.faction} className="w-4 h-4" />}
+            {component.faction}
+          </div>
+        )}
+        
+        {/* Tech card format */}
+        {isTech && (
+          <div className="text-xs mt-2">
+            {component.techs && component.techs.length > 0 ? (
+              <div className="space-y-2">
+                {component.choose_count && (
+                  <div className="text-[11px] font-semibold text-orange-600 mb-1 pb-1 border-b border-orange-200">
+                    {component.note || `Choose ${component.choose_count} of the following:`}
+                  </div>
+                )}
+                {component.techs.map((tech, techIdx) => (
+                  <div key={techIdx} className="pb-2 border-b last:border-b-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-gray-800">{tech.name}</span>
+                      {tech.tech_type_icon && (
+                        <img src={tech.tech_type_icon} alt={tech.tech_type} className="w-4 h-4" title={tech.tech_type} />
+                      )}
+                    </div>
+                    {tech.description && (
+                      <div className="text-gray-700 italic text-[11px]">
+                        {tech.description}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 mb-1">
+                  {component.tech_type_icon && (
+                    <img src={component.tech_type_icon} alt={component.tech_type} className="w-4 h-4" title={component.tech_type} />
+                  )}
+                  {component.prerequisite_icons && component.prerequisite_icons.length > 0 && (
+                    <div className="flex gap-1 items-center">
+                      <span className="text-gray-600 text-[10px]">Req:</span>
+                      {component.prerequisite_icons.map((icon, idx) => (
+                        <img key={idx} src={icon} alt="Prerequisite" className="w-3 h-3" />
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {component.combat && (
+                  <>
+                    {component.abilities && component.abilities.length > 0 && (
+                      <div className="font-semibold text-purple-700 mb-1">
+                        {component.abilities.join(', ')}
+                      </div>
+                    )}
+                    {component.description && (
+                      <div className="text-gray-700 mb-1 italic line-clamp-2">
+                        {component.description}
+                      </div>
+                    )}
+                    <div className="flex gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
+                      {component.cost !== undefined && <span>Cost: {component.cost}</span>}
+                      <span>Combat: {component.combat}</span>
+                      {component.move !== undefined && <span>Move: {component.move}</span>}
+                      {component.capacity !== undefined && <span>Capacity: {component.capacity}</span>}
+                    </div>
+                  </>
+                )}
+                
+                {!component.combat && component.description && (
+                  <div className="text-gray-700 italic line-clamp-2">
+                    {component.description}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+        
+        {/* Unit card format */}
+        {isUnit && component.combat && (
+          <div className="text-xs mt-2">
+            {component.abilities && component.abilities.length > 0 && (
+              <div className="font-semibold text-purple-700 mb-1">
+                {component.abilities.join(', ')}
+              </div>
+            )}
+            {component.description && (
+              <div className="text-gray-700 mb-1 italic line-clamp-2">
+                {component.description}
+              </div>
+            )}
+            
+            {component.variants && component.variants.length > 0 ? (
+              <div className="space-y-1">
+                {component.variants.map((variant, vIdx) => (
+                  <div key={vIdx} className="flex items-center gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
+                    <span className="font-semibold text-blue-600">{variant.location}:</span>
+                    {component.cost !== undefined && vIdx === 0 && <span>Cost: {component.cost}</span>}
+                    <span>Combat: {variant.combat}</span>
+                    {variant.move !== undefined && <span>Move: {variant.move}</span>}
+                    {variant.capacity !== undefined && <span>Capacity: {variant.capacity}</span>}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex gap-2 text-gray-800 font-mono text-[10px] bg-gray-100 p-1 rounded">
+                {component.cost !== undefined && <span>Cost: {component.cost}</span>}
+                <span>Combat: {component.combat}</span>
+                {component.move !== undefined && <span>Move: {component.move}</span>}
+                {component.capacity !== undefined && <span>Capacity: {component.capacity}</span>}
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* Regular description for non-units, non-techs */}
+        {!isUnit && !isTech && component.description && (
+          <div className="text-xs text-gray-600 line-clamp-2 mt-1">
+            {component.description}
+          </div>
+        )}
+        
+        {/* Tile information */}
+        {component.planets && component.planets.length > 0 && (
+          <div className="mt-1 border-t pt-1">
+            {component.planets.map((planet, pIdx) => (
+              <div key={pIdx} className="text-xs mb-1">
+                <div className="font-semibold text-green-700">{planet.name}</div>
+                <div className="flex items-center gap-1 text-gray-700">
+                  <span>{planet.resource}</span>
+                  {planet.resource_icon && <img src={planet.resource_icon} alt="Resources" className="w-3 h-3" />}
+                  <span>/</span>
+                  <span>{planet.influence}</span>
+                  {planet.influence_icon && <img src={planet.influence_icon} alt="Influence" className="w-3 h-3" />}
+                </div>
+                {planet.trait_icons && planet.trait_icons.length > 0 && (
+                  <div className="flex items-center gap-1 text-purple-600">
+                    <span>Traits:</span>
+                    {planet.trait_icons.map((icon, tIdx) => (
+                      <img key={tIdx} src={icon} alt="Trait" className="w-4 h-4" title={planet.traits?.[tIdx]} />
+                    ))}
+                  </div>
+                )}
+                {planet.legendary_icon && (
+                  <div className="flex items-center gap-1 text-yellow-700 font-medium">
+                    <img src={planet.legendary_icon} alt="Legendary" className="w-3 h-3" />
+                    <span>Legendary</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {alreadySelected && (
+          <div className="text-xs text-green-600 font-medium mt-1">
+            ✓ Selected
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="h-screen w-screen bg-gray-200">
       <div className="h-full flex bg-white rounded-lg shadow m-4">
@@ -246,36 +434,7 @@ export default function TheorycraftingApp() {
                             );
                             const isDisabled = !canAdd || alreadySelected;
                             
-                            return (
-                              <div
-                                key={component.id || component.name || idx}
-                                className={`p-2 mb-1 rounded border cursor-pointer transition-colors text-sm ${
-                                  isDisabled 
-                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
-                                    : "bg-gray-50 hover:bg-blue-50 hover:border-blue-300"
-                                }`}
-                                onClick={() => {
-                                  if (!isDisabled) {
-                                    handleAddComponent(cat, component);
-                                  }
-                                }}
-                              >
-                                <div className="font-medium">{component.name}</div>
-                                {component.faction && (
-                                  <div className="text-xs text-blue-600">{component.faction}</div>
-                                )}
-                                {component.description && (
-                                  <div className="text-xs text-gray-600 line-clamp-2 mt-1">
-                                    {component.description}
-                                  </div>
-                                )}
-                                {alreadySelected && (
-                                  <div className="text-xs text-green-600 font-medium mt-1">
-                                    ✓ Selected
-                                  </div>
-                                )}
-                              </div>
-                            );
+                            return renderComponentCard(component, cat, idx, isDisabled, alreadySelected);
                           })}
                         </div>
                       )}
