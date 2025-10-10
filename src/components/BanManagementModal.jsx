@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import factionsJSON from "../data/factions.json";
+import factionsJSONRaw from "../data/factions.json";
+import { processFactionData } from "../utils/dataProcessor.js";
+
+// Process faction data for icons
+const factionsJSON = processFactionData(factionsJSONRaw);
 
 export default function BanManagementModal({
   isOpen,
@@ -47,7 +51,7 @@ export default function BanManagementModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[80vh] flex flex-col">
+      <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-bold">Ban Management</h3>
           <button 
@@ -59,26 +63,28 @@ export default function BanManagementModal({
           </button>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 flex-1 overflow-hidden">
-          {/* Faction Bans */}
-          <div className="border rounded p-4 flex flex-col">
-            <h4 className="font-semibold mb-3">Banned Factions ({bannedFactions.size})</h4>
-            <div className="flex-1 overflow-y-auto space-y-2">
+        <div className="grid md:grid-cols-2 gap-6 flex-1 min-h-0">
+          {/* Faction Bans - FIXED: Added proper flex and overflow */}
+          <div className="border rounded p-4 flex flex-col min-h-0">
+            <h4 className="font-semibold mb-3 flex-shrink-0">
+              Banned Factions ({bannedFactions.size})
+            </h4>
+            <div className="flex-1 overflow-y-auto min-h-0 space-y-2">
               {factionsJSON.factions.map(faction => {
                 const isBanned = bannedFactions.has(faction.name);
                 return (
                   <div 
                     key={faction.name}
-                    className="flex items-center hover:bg-gray-100 p-1 rounded cursor-pointer"
+                    className="flex items-center hover:bg-gray-100 p-2 rounded cursor-pointer flex-shrink-0"
                     onClick={() => onBanFaction(faction.name)}
                   >
                     <input 
                       type="checkbox" 
                       checked={isBanned}
                       onChange={() => {}}
-                      className="mr-3 pointer-events-none"
+                      className="mr-3 pointer-events-none flex-shrink-0"
                     />
-                    <span className={isBanned ? "line-through text-gray-500" : ""}>
+                    <span className={`${isBanned ? "line-through text-gray-500" : ""} text-sm`}>
                       {faction.name}
                     </span>
                   </div>
@@ -87,20 +93,22 @@ export default function BanManagementModal({
             </div>
           </div>
 
-          {/* Component Bans */}
-          <div className="border rounded p-4 flex flex-col">
-            <h4 className="font-semibold mb-3">Component Bans ({bannedComponents.size})</h4>
+          {/* Component Bans - FIXED: Added proper flex and overflow */}
+          <div className="border rounded p-4 flex flex-col min-h-0">
+            <h4 className="font-semibold mb-3 flex-shrink-0">
+              Component Bans ({bannedComponents.size})
+            </h4>
             
             <input 
               type="text" 
               placeholder="Search components to ban..."
               value={componentSearchTerm}
               onChange={(e) => setComponentSearchTerm(e.target.value)}
-              className="w-full border p-2 rounded mb-3"
+              className="w-full border p-2 rounded mb-3 flex-shrink-0"
             />
             
             {componentSearchTerm && (
-              <div className="max-h-32 overflow-y-auto border rounded p-2 mb-3 bg-gray-50">
+              <div className="max-h-40 overflow-y-auto border rounded p-2 mb-3 bg-gray-50 flex-shrink-0">
                 {filteredComponents.slice(0, 20).map((comp, idx) => (
                   <div 
                     key={`${comp.name}-${comp.faction}-${idx}`}
@@ -127,12 +135,14 @@ export default function BanManagementModal({
               </div>
             )}
 
-            <div className="text-sm text-gray-600 mb-2 font-medium">Currently Banned:</div>
-            <div className="flex-1 overflow-y-auto text-sm space-y-1">
+            <div className="text-sm text-gray-600 mb-2 font-medium flex-shrink-0">
+              Currently Banned:
+            </div>
+            <div className="flex-1 overflow-y-auto min-h-0 text-sm space-y-1">
               {Array.from(bannedComponents).map(compId => (
                 <div 
                   key={compId} 
-                  className="flex justify-between items-center bg-red-50 p-2 rounded"
+                  className="flex justify-between items-center bg-red-50 p-2 rounded flex-shrink-0"
                 >
                   <span className="truncate flex-1">{compId}</span>
                   <button 
@@ -151,7 +161,7 @@ export default function BanManagementModal({
           </div>
         </div>
 
-        <div className="mt-4 flex justify-between">
+        <div className="mt-4 flex justify-between flex-shrink-0">
           <button 
             type="button"
             onClick={() => {
