@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getSwapOptions, getExtraComponents } from "../data/undraftable-components.js";
+import { getSwapOptions, getExtraComponents, getSwapOptionsForTrigger } from "../data/undraftable-components.js";
 
 export default function FactionSheet({
   drafted = {},
@@ -13,11 +13,14 @@ export default function FactionSheet({
   playerIndex = null
 }) {
   const [expandedId, setExpandedId] = useState(null);
+  const [swapModalOpen, setSwapModalOpen] = useState(false);
+  const [swapOptions, setSwapOptions] = useState([]);
+  const [swapTarget, setSwapTarget] = useState(null);
   
   const categories = [
     "abilities", "faction_techs", "agents", "commanders", "heroes",
     "promissory", "flagship", "mech", "starting_techs", "starting_fleet",
-    "commodity_values", "blue_tiles", "red_tiles"
+    "commodity_values", "blue_tiles", "red_tiles", "home_systems"
   ];
 
   const getId = (item) => item?.id ?? item?.name ?? JSON.stringify(item);
@@ -67,11 +70,24 @@ export default function FactionSheet({
 
   const handleSwap = (category, index) => {
     const component = drafted[category][index];
-    const swapOption = getSwapOptions(component.name, component.faction);
     
-    if (swapOption && onSwapComponent && playerIndex !== null) {
-      onSwapComponent(playerIndex, category, index, swapOption);
+    // Check for swap options triggered by THIS component
+    const availableSwaps = getSwapOptionsForTrigger(component.name, component.faction);
+    
+    if (availableSwaps.length > 0) {
+      setSwapOptions(availableSwaps);
+      setSwapTarget({ category, index, component });
+      setSwapModalOpen(true);
     }
+  };
+
+  const confirmSwap = (swapOption) => {
+    if (swapTarget && onSwapComponent && playerIndex !== null) {
+      onSwapComponent(playerIndex, swapOption.category, 0, swapOption, swapTarget.component);
+    }
+    setSwapModalOpen(false);
+    setSwapOptions([]);
+    setSwapTarget(null);
   };
 
   return (
@@ -125,6 +141,9 @@ export default function FactionSheet({
                 const isUnit = (category === 'flagship' || category === 'mech');
                 const swapOption = getSwapOptions(item.name, item.faction);
                 const extraComponents = getExtraComponents(item.name, item.faction);
+                
+                // FIXED: Check if THIS component triggers any swaps
+                const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
                 
                 return (
                   <div
@@ -417,6 +436,56 @@ export default function FactionSheet({
           </div>
         );
       })}
+      
+      {/* Swap Modal */}
+      {swapModalOpen && swapTarget && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <h3 className="text-xl font-bold mb-4">Swap Options for {swapTarget.component.name}</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              This component allows you to swap in the following options:
+            </p>
+            
+            <div className="space-y-3">
+              {swapOptions.map((option, idx) => (
+                <div key={idx} className="border rounded p-4 bg-gray-50">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <div className="font-bold text-lg">{option.name}</div>
+                      <div className="text-sm text-gray-600">{option.category.replace('_', ' ')}</div>
+                    </div>
+                    <button
+                      onClick={() => confirmSwap(option)}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      Swap
+                    </button>
+                  </div>
+                  <div className="text-sm text-gray-700">
+                    <strong>Faction:</strong> {option.faction}
+                  </div>
+                  <div className="text-sm text-gray-700 mt-2">
+                    This will add {option.name} to your {option.category.replace('_', ' ')} category.
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => {
+                  setSwapModalOpen(false);
+                  setSwapOptions([]);
+                  setSwapTarget(null);
+                }}
+                className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

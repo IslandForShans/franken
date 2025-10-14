@@ -19,13 +19,13 @@ const factionsJSON = processFactionData(factionsJSONRaw);
 const baseFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 3, faction_techs: 2, agents: 1,
   commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
-  commodity_values: 1, flagship: 1, mech: 1
+  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1
 };
 
 const powerFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 4, faction_techs: 3, agents: 2,
   commanders: 2, heroes: 2, promissory: 1, starting_techs: 1, starting_fleet: 1,
-  commodity_values: 1, flagship: 1, mech: 1
+  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1
 };
 
 const defaultDraftLimits = Object.fromEntries(
@@ -538,39 +538,120 @@ export default function DraftSimulator() {
     );
 
     if (allPlayersComplete) {
+      // Move to reduction phase WITHOUT adding extras
+      console.log("Draft complete - moving to reduction phase");
       setDraftPhase("reduction");
     }
+  };
+
+  const addAllExtraComponents = (currentFactions) => {
+    const updatedFactions = currentFactions.map((faction, playerIdx) => {
+      const newFaction = { ...faction };
+      
+      // Check each category for components that trigger extras
+      categories.forEach(category => {
+        const components = faction[category] || [];
+        
+        components.forEach(component => {
+          const extraComponents = getExtraComponents(component.name, component.faction);
+          
+          if (extraComponents.length > 0) {
+            console.log(`Adding extra components for ${component.name}:`, extraComponents.map(e => e.name));
+            
+            extraComponents.forEach(extra => {
+              // Determine target category for the extra component
+              let targetCategory = category;
+              
+              const categoryMap = {
+                "Artuno the Betrayer": "agents",
+                "The Thundarian": "agents", 
+                "Awaken": "abilities",
+                "Coalescence": "abilities",
+                "Devour": "abilities",
+                "Dark Pact": "promissory",
+                "Ghoti Home System": "home_systems"
+              };
+
+              if (categoryMap[extra.name]) {
+                targetCategory = categoryMap[extra.name];
+              }
+
+              const extraComponent = {
+                id: extra.name.toLowerCase().replace(/\s+/g, '_'),
+                name: extra.name,
+                faction: extra.faction,
+                description: `Gained from ${component.name}`,
+                isExtra: true,
+                triggerComponent: component.name
+              };
+
+              if (!newFaction[targetCategory]) {
+                newFaction[targetCategory] = [];
+              }
+              
+              // Check if not already added
+              const alreadyAdded = newFaction[targetCategory].some(
+                item => item.name === extra.name && item.isExtra
+              );
+              
+              if (!alreadyAdded) {
+                newFaction[targetCategory] = [...newFaction[targetCategory], extraComponent];
+                
+                // Add to draft history
+                setDraftHistory(prev => [...prev, {
+                  playerIndex: playerIdx,
+                  category: targetCategory,
+                  item: extraComponent,
+                  round: "AUTO-ADD",
+                  componentId: extraComponent.id,
+                  action: `Added ${extraComponent.name} from ${component.name}`
+                }]);
+              }
+            });
+          }
+        });
+      });
+      
+      return newFaction;
+    });
+    
+    return updatedFactions;
   };
 
   const getCurrentFactionLimits = () => {
     return draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
   };
 
-  const handleSwap = (playerIndex, category, componentIndex, swapOption) => {
+  const handleSwap = (playerIndex, swapCategory, componentIndex, swapOption, triggerComponent) => {
     if (!swapOption) return;
 
     const fc = [...factions];
-    const originalComponent = fc[playerIndex][category][componentIndex];
     
+    // Create the swap component
     const swapComponent = {
       id: swapOption.name.toLowerCase().replace(/\s+/g, '_'),
       name: swapOption.name,
       faction: swapOption.faction,
-      description: `Swapped from ${originalComponent.name}`,
+      description: `Swapped from ${triggerComponent.name}`,
       isSwap: true,
-      originalComponent: originalComponent.name
+      originalComponent: triggerComponent.name,
+      triggerComponent: triggerComponent.name
     };
 
-    fc[playerIndex][category][componentIndex] = swapComponent;
+    // Add to the appropriate category
+    if (!fc[playerIndex][swapCategory]) {
+      fc[playerIndex][swapCategory] = [];
+    }
+    fc[playerIndex][swapCategory].push(swapComponent);
     setFactions(fc);
 
     setDraftHistory(prev => [...prev, {
       playerIndex,
-      category,
+      category: swapCategory,
       item: swapComponent,
       round: "SWAP",
       componentId: swapComponent.id,
-      action: `Swapped ${originalComponent.name} for ${swapComponent.name}`
+      action: `Swapped for ${swapComponent.name} (triggered by ${triggerComponent.name})`
     }]);
   };
 
@@ -623,11 +704,7 @@ export default function DraftSimulator() {
   const handleReduction = (playerIndex, category, componentIndex) => {
     const component = factions[playerIndex][category][componentIndex];
     
-    const extraComponents = getExtraComponents(component.name, component.faction);
-    if (extraComponents.length > 0) {
-      handleAddExtraComponent(playerIndex, category, component);
-    }
-
+    // Remove the component
     const fc = [...factions];
     fc[playerIndex][category].splice(componentIndex, 1);
     setFactions(fc);
@@ -638,6 +715,10 @@ export default function DraftSimulator() {
     );
 
     if (allPlayersReduced) {
+      // FIXED: Add extra components AFTER reduction is complete
+      console.log("Reduction complete - adding extra components");
+      const factionsWithExtras = addAllExtraComponents(fc);
+      setFactions(factionsWithExtras);
       setDraftPhase("complete");
     }
   };

@@ -112,7 +112,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "arborec_hs",
           "name": "Arborec Home System",
@@ -256,7 +256,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "argent_hs",
           "name": "Argent Home System",
@@ -390,7 +390,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "barony_hs",
           "name": "Barony Home System",
@@ -523,7 +523,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "saar_hs",
           "name": "Saar Home System",
@@ -658,7 +658,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "keleres_hs_argent",
           "name": "Keleres - Argent Home System",
@@ -830,7 +830,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "muaat_hs",
           "name": "Muaat Home System",
@@ -959,7 +959,7 @@
           "description": "6"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "hacan_home_system",
           "name": "Hacan Home System",
@@ -1099,7 +1099,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "emp_hs",
           "name": "The Empyrean Home System",
@@ -1240,7 +1240,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "sol_hs",
           "name": "Sol Home System",
@@ -1365,7 +1365,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "ghosts_hs",
           "name": "Ghosts Home System",
@@ -1504,7 +1504,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "l1_hs",
           "name": "L1Z1X Home System",
@@ -1642,7 +1642,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "mahact_hs",
           "name": "Mahact Home System",
@@ -1766,7 +1766,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "mentak_hs",
           "name": "Mentak Home System",
@@ -1899,7 +1899,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "naalu_hs",
           "name": "Naalu Home System",
@@ -2037,7 +2037,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "nra_hs",
           "name": "Naaz-Rokha Alliance Home System",
@@ -2163,7 +2163,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "nekro_hs",
           "name": "Nekro Home System",
@@ -2298,7 +2298,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "nomad_hs",
           "name": "Nomad Home System",
@@ -2422,7 +2422,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "sardakk_hs",
           "name": "Sardakk Home System",
@@ -2577,7 +2577,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "titans_hs",
           "name": "Titans Home System",
@@ -2714,7 +2714,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "jolnar_hs",
           "name": "Jol-Nar Home System",
@@ -2851,7 +2851,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "cabal_hs",
           "name": "Cabal Home System",
@@ -2966,7 +2966,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "winnu_hs",
           "name": "Winnu Home System",
@@ -3086,7 +3086,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "xxcha_hs",
           "name": "Xxcha Home System",
@@ -3211,7 +3211,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "yin_hs",
           "name": "Yin Home System",
@@ -3336,7 +3336,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "yssaril_hs",
           "name": "Yssaril Home System",

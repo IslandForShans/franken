@@ -61,7 +61,7 @@ export const undraftableComponents = {
     { name: "Desperados", faction: "The Nokar Sellships", triggerComponent: "Hired Guns", type: "gain_extra" }
   ],
 
-  // Home systems with optional swaps
+ // Home systems with optional swaps
   home_systems: [
     //Base + PoK
     { name: "Creuss Gate", faction: "The Ghosts of Creuss", triggerComponent: "Slipstream", type: "optional_swap" },
@@ -71,7 +71,7 @@ export const undraftableComponents = {
     { name: "Ghoti Home System", faction: "The Ghoti Wayfarers", triggerComponent: "Mobile Command", type: "gain_extra" }
   ],
 
-  // Promissory notes
+ // Promissory notes
   promissory: [
     //Base + PoK
     { name: "Gift of Prescience", faction: "The Naalu Collective", triggerComponent: "Telepathic", type: "optional_swap" },
@@ -110,7 +110,8 @@ export const undraftableComponents = {
   
   commanders: [
     //Base + PoK
-    { name: "Il Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
+    { name: "IL Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
+    { name: "That Which Molds Flesh", faction: "The Vuil'Raith Cabal", triggerComponent: "Dimensional Tear II", type: "optional_swap" },
     //DS
     { name: "Designer TckVsk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
     { name: "Jarl Vel & Jarl Jotrun - Raid Leaders", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
@@ -220,29 +221,43 @@ export const undraftableComponents = {
   ]
 };
 
-export const isComponentUndraftable = (componentName, faction = null, phase = "draft") => {
+export const isComponentUndraftable = (componentName, faction = null) => {
   for (const category of Object.values(undraftableComponents)) {
     const found = category.find(comp => 
       comp.name === componentName && 
       (faction ? comp.faction === faction : true)
     );
-    if (found) {
-      // Allow draftable_and_swap types during draft phase
-      if (found.type === "draftable_and_swap" && phase === "draft") {
-        return null;
-      }
-      return found;
-    }
+    if (found) return found;
   }
   return null;
 };
 
 export const getSwapOptions = (componentName, faction) => {
-  const undraftable = isComponentUndraftable(componentName, faction, "reduction");
-  if (undraftable && (undraftable.type === "optional_swap" || undraftable.type === "draftable_and_swap")) {
+  const undraftable = isComponentUndraftable(componentName, faction);
+  if (undraftable && undraftable.type === "optional_swap") {
     return undraftable;
   }
   return null;
+};
+
+// Get swap options based on what component triggers the swap
+export const getSwapOptionsForTrigger = (triggerComponentName, faction) => {
+  const swapOptions = [];
+  
+  for (const [category, components] of Object.entries(undraftableComponents)) {
+    components.forEach(comp => {
+      if (comp.triggerComponent === triggerComponentName && 
+          comp.faction === faction && 
+          comp.type === "optional_swap") {
+        swapOptions.push({
+          ...comp,
+          category: category
+        });
+      }
+    });
+  }
+  
+  return swapOptions;
 };
 
 export const getExtraComponents = (componentName, faction) => {
