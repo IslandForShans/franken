@@ -51,6 +51,35 @@ export default function FactionSheet({
     return { items, limit, excess, needsReduction: excess > 0 };
   };
 
+  // Check if any drafted component triggers swaps for this category
+  const getAvailableSwapsForCategory = (category) => {
+    const swaps = [];
+    
+    // Check ALL categories for components that might trigger swaps into THIS category
+    categories.forEach(cat => {
+      const items = drafted[cat] || [];
+      items.forEach(item => {
+        const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
+        
+        if (triggeredSwaps.length > 0) {
+          console.log(`Component "${item.name}" from ${item.faction} triggers swaps:`, triggeredSwaps);
+        }
+        
+        triggeredSwaps.forEach(swap => {
+          if (swap.category === category) {
+            console.log(`Adding swap option "${swap.name}" for category "${category}"`);
+            swaps.push({
+              ...swap,
+              triggerComponent: item
+            });
+          }
+        });
+      });
+    });
+    
+    return swaps;
+  };
+
   const handleRemove = (category, index) => {
     const component = drafted[category][index];
     
@@ -107,6 +136,7 @@ export default function FactionSheet({
       {categories.map((category) => {
         const status = getCategoryStatus(category);
         const categoryBgColor = showReductionHelper && status.needsReduction ? "bg-red-50 border-red-300" : "bg-white";
+        const availableSwaps = showReductionHelper ? getAvailableSwapsForCategory(category) : [];
 
         return (
           <div
@@ -126,6 +156,41 @@ export default function FactionSheet({
                 </span>
               </div>
             </div>
+
+            {/* Show available swaps for this category */}
+            {showReductionHelper && availableSwaps.length > 0 && (
+              <div className="mb-3 p-3 bg-blue-50 border border-blue-300 rounded">
+                <div className="font-semibold text-blue-800 mb-2">
+                  Swap Options Available for {formatCategoryName(category)}:
+                </div>
+                {availableSwaps.map((swap, idx) => (
+                  <div key={idx} className="mb-2 p-2 bg-white rounded border">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="font-medium">{swap.name}</div>
+                        <div className="text-xs text-gray-600">
+                          Triggered by: {swap.triggerComponent.name}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setSwapOptions([swap]);
+                          setSwapTarget({ 
+                            category, 
+                            index: 0, 
+                            component: swap.triggerComponent 
+                          });
+                          setSwapModalOpen(true);
+                        }}
+                        className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 whitespace-nowrap"
+                      >
+                        Add Swap
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {status.items.length === 0 && (
               <div className="text-sm text-gray-500 italic p-4 border-2 border-dashed border-gray-300 rounded">
