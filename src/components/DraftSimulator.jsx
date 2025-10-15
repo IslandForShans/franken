@@ -7,6 +7,7 @@ import DraftSummary from "./DraftSummary.jsx";
 import FirebaseMultiplayerPanel from "./FirebaseMultiplayerPanel.jsx";
 import { shuffleArray } from "../utils/shuffle.js";
 import factionsJSONRaw from "../data/factions.json";
+import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData } from "../utils/dataProcessor.js";
 import { isComponentUndraftable, getSwapOptions, getExtraComponents } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
@@ -14,6 +15,7 @@ import { multiplayerService } from "../services/firebaseMultiplayer.js";
 
 // Process faction data to add icon paths
 const factionsJSON = processFactionData(factionsJSONRaw);
+const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
 
 // Updated limits system
 const baseFactionLimits = {
@@ -70,7 +72,26 @@ export default function DraftSimulator() {
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
   const [showBanModal, setShowBanModal] = useState(false);
 
-  const categories = Object.keys(baseFactionLimits);
+  // Expansion toggles
+  const [expansionsEnabled, setExpansionsEnabled] = useState({
+    pok: true, // Prophecy of Kings (Mechs, Agents, Commanders, Heroes)
+  });
+
+  // Get active categories based on enabled expansions
+  const getActiveCategories = () => {
+    const baseCategories = ['abilities', 'faction_techs', 'promissory', 'flagship', 'starting_techs', 'starting_fleet', 'commodity_values', 'blue_tiles', 'red_tiles', 'home_systems'];
+    const pokCategories = ['agents', 'commanders', 'heroes', 'mech'];
+    
+    let activeCategories = [...baseCategories];
+    
+    if (expansionsEnabled.pok) {
+      activeCategories = [...activeCategories, ...pokCategories];
+    }
+    
+    return activeCategories;
+  };
+
+  const categories = getActiveCategories();
 
   // Sync draft state to Firebase when changes occur
   const syncToFirebase = useRef(null);
@@ -101,12 +122,22 @@ export default function DraftSimulator() {
 
   // Update limits when variant changes
   useEffect(() => {
-    if (draftVariant === "rotisserie") {
-      setDraftLimits(draftVariant === "power" ? powerFactionLimits : baseFactionLimits);
-    } else {
-      setDraftLimits(draftVariant === "power" ? powerDraftLimits : defaultDraftLimits);
-    }
-  }, [draftVariant]);
+    const activeCats = getActiveCategories();
+    const baseLimits = draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
+    const draftBaseLimits = draftVariant === "power" ? powerDraftLimits : defaultDraftLimits;
+    
+    // Filter limits to only include active categories
+    const filteredLimits = {};
+    activeCats.forEach(cat => {
+      if (draftVariant === "rotisserie") {
+        filteredLimits[cat] = baseLimits[cat];
+      } else {
+        filteredLimits[cat] = draftBaseLimits[cat];
+      }
+    });
+    
+    setDraftLimits(filteredLimits);
+  }, [draftVariant, expansionsEnabled]);
 
   // Expose end draft function to multiplayer panel
   useEffect(() => {
@@ -146,33 +177,60 @@ export default function DraftSimulator() {
 
   // Component filtering with ban system
   const getFilteredComponents = (category) => {
-    return [
-      ...(factionsJSON.factions
-        .filter(f => !bannedFactions.has(f.name))
-        .flatMap(f => (f[category] || [])
-          .filter(comp => !bannedComponents.has(comp.id || comp.name))
-          .filter(comp => {
-            const undraftable = isComponentUndraftable(comp.name, f.name);
-            return !undraftable;
-          })
-          .map(item => ({ ...item, faction: f.name }))
-        )
-      ),
-      ...(factionsJSON.tiles[category] || [])
+    // Base game factions
+    const baseFactions = factionsJSON.factions
+      .filter(f => !bannedFactions.has(f.name))
+      .flatMap(f => (f[category] || [])
         .filter(comp => !bannedComponents.has(comp.id || comp.name))
         .filter(comp => {
-          const undraftable = isComponentUndraftable(comp.name);
+          const undraftable = isComponentUndraftable(comp.name, f.name);
           return !undraftable;
         })
-    ];
+        .map(item => ({ ...item, faction: f.name }))
+      );
+
+    // DS factions (if enabled)
+    const dsFactions = expansionsEnabled.ds && discordantStarsJSON?.factions
+      ? discordantStarsJSON.factions
+          .filter(f => !bannedFactions.has(f.name))
+          .flatMap(f => (f[category] || [])
+            .filter(comp => !bannedComponents.has(comp.id || comp.name))
+            .filter(comp => {
+              const undraftable = isComponentUndraftable(comp.name, f.name);
+              return !undraftable;
+            })
+            .map(item => ({ ...item, faction: f.name }))
+          )
+      : [];
+
+    // Base tiles
+    const baseTiles = (factionsJSON.tiles[category] || [])
+      .filter(comp => !bannedComponents.has(comp.id || comp.name))
+      .filter(comp => {
+        const undraftable = isComponentUndraftable(comp.name);
+        return !undraftable;
+      });
+
+    // US tiles (if enabled)
+    const usTiles = expansionsEnabled.us && discordantStarsJSON?.tiles?.[category]
+      ? (discordantStarsJSON.tiles[category] || [])
+          .filter(comp => !bannedComponents.has(comp.id || comp.name))
+          .filter(comp => {
+            const undraftable = isComponentUndraftable(comp.name);
+            return !undraftable;
+          })
+      : [];
+
+    return [...baseFactions, ...dsFactions, ...baseTiles, ...usTiles];
   };
 
   const createBagsWithUniqueDistribution = () => {
     const bags = Array.from({ length: playerCount }, () => ({}));
+    const activeCats = getActiveCategories();
     
     console.log(`Creating ${playerCount} bags for ${playerCount} players`);
     
-    categories.forEach(category => {
+    activeCats.forEach(category => {
       const allComponents = getFilteredComponents(category);
       const bagSize = draftLimits[category];
       
@@ -207,24 +265,25 @@ export default function DraftSimulator() {
 
   const initializeDraft = (settings) => {
     const { variant, playerCount, players } = settings;
+    const activeCats = getActiveCategories();
 
     const emptyFactions = Array.from({ length: playerCount }, (_, i) => {
         const playerName = players?.[i]?.name || `Player ${i + 1}`;
         const f = { name: playerName };
-        categories.forEach(cat => { f[cat] = []; });
+        activeCats.forEach(cat => { f[cat] = []; });
         return f;
     });
     setFactions(emptyFactions);
 
     setPlayerProgress(Array.from({ length: playerCount }, () => {
         const p = {};
-        categories.forEach(cat => { p[cat] = 0; });
+        activeCats.forEach(cat => { p[cat] = 0; });
         return p;
     }));
 
     if (variant === "rotisserie") {
         const pool = {};
-        categories.forEach(cat => {
+        activeCats.forEach(cat => {
         pool[cat] = getFilteredComponents(cat);
         });
         setRotisseriePool(pool);
@@ -247,7 +306,7 @@ export default function DraftSimulator() {
     setTimeout(() => {
         checkAndAdvanceIfNeeded(emptyFactions, Array.from({ length: playerCount }, () => {
             const p = {};
-            categories.forEach(cat => { p[cat] = 0; });
+            activeCats.forEach(cat => { p[cat] = 0; });
             return p;
         }), 0);
     }, 100);
@@ -261,8 +320,9 @@ export default function DraftSimulator() {
     
     if (!bag) return;
     
+    const activeCats = getActiveCategories();
     let canPick = false;
-    categories.forEach(cat => {
+    activeCats.forEach(cat => {
         const inBag = bag[cat]?.length || 0;
         const alreadyPicked = progress[cat] || 0;
         const limit = draftLimits[cat];
@@ -314,8 +374,9 @@ export default function DraftSimulator() {
     
     if (!currentBag) return 0;
     
+    const activeCats = getActiveCategories();
     let availablePicks = 0;
-    categories.forEach(cat => {
+    activeCats.forEach(cat => {
       const inBag = currentBag[cat]?.length || 0;
       const alreadyPicked = progress[cat] || 0;
       const limit = draftLimits[cat];
@@ -433,6 +494,8 @@ export default function DraftSimulator() {
         let attempts = 0;
         const maxAttempts = playerCount;
         
+        const activeCats = getActiveCategories();
+        
         while (attempts < maxAttempts) {
             setFactions(updatedFactions);
             setPlayerProgress(updatedProgress);
@@ -460,7 +523,7 @@ export default function DraftSimulator() {
                 const nextProgress = updatedProgress[nextPlayer];
                 
                 let canPick = false;
-                categories.forEach(cat => {
+                activeCats.forEach(cat => {
                     const inBag = nextBag?.[cat]?.length || 0;
                     const alreadyPicked = nextProgress[cat] || 0;
                     const limit = draftLimits[cat];
@@ -492,8 +555,9 @@ export default function DraftSimulator() {
   const checkDraftCompletion = () => {
     if (draftVariant === "rotisserie") return;
 
+    const activeCats = getActiveCategories();
     const allPlayersComplete = factions.every(faction => 
-      categories.every(cat => (faction[cat]?.length || 0) >= draftLimits[cat])
+      activeCats.every(cat => (faction[cat]?.length || 0) >= draftLimits[cat])
     );
 
     if (allPlayersComplete) {
@@ -503,10 +567,11 @@ export default function DraftSimulator() {
   };
 
   const addAllExtraComponents = (currentFactions) => {
+    const activeCats = getActiveCategories();
     const updatedFactions = currentFactions.map((faction, playerIdx) => {
       const newFaction = { ...faction };
       
-      categories.forEach(category => {
+      activeCats.forEach(category => {
         const components = faction[category] || [];
         
         components.forEach(component => {
@@ -615,8 +680,9 @@ export default function DraftSimulator() {
     setFactions(fc);
 
     const factionLimits = getCurrentFactionLimits();
+    const activeCats = getActiveCategories();
     const allPlayersReduced = fc.every(faction => 
-      categories.every(cat => (faction[cat]?.length || 0) <= factionLimits[cat])
+      activeCats.every(cat => (faction[cat]?.length || 0) <= factionLimits[cat])
     );
 
     if (allPlayersReduced) {
@@ -756,7 +822,7 @@ export default function DraftSimulator() {
     <div className="h-full p-4 bg-gray-200">
       <div className="h-full flex bg-white rounded-lg shadow">
         <Sidebar
-          categories={categories}
+          categories={getActiveCategories()}
           onSelectCategory={setSelectedCategory}
           playerProgress={multiplayerEnabled ? {} : (playerProgress[currentPlayer] || {})}
           draftLimits={draftPhase === "reduction" ? getCurrentFactionLimits() : draftLimits}
@@ -811,18 +877,63 @@ export default function DraftSimulator() {
             {!settingsCollapsed && (
               <>
                 {!multiplayerEnabled && !draftStarted && (
-                  <DraftSettingsPanel
-                    playerCount={playerCount}
-                    setPlayerCount={setPlayerCount}
-                    draftVariant={draftVariant}
-                    setDraftVariant={setDraftVariant}
-                    draftLimits={draftLimits}
-                    setDraftLimits={setDraftLimits}
-                    firstRoundPickCount={firstRoundPickCount}
-                    setFirstRoundPickCount={setFirstRoundPickCount}
-                    subsequentRoundPickCount={subsequentRoundPickCount}
-                    setSubsequentRoundPickCount={setSubsequentRoundPickCount}
-                  />
+                  <>
+                    <div className="mb-4 p-3 bg-gray-100 rounded border">
+                      <h3 className="font-bold mb-2">Expansions</h3>
+                      
+                      <label className="flex items-center cursor-pointer mb-2">
+                        <input
+                          type="checkbox"
+                          checked={expansionsEnabled.pok}
+                          onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, pok: e.target.checked }))}
+                          className="mr-2"
+                        />
+                        <span className="font-medium">Prophecy of Kings</span>
+                      </label>
+                      <div className="text-xs text-gray-600 ml-6 mb-3">
+                        Enables: Agents, Commanders, Heroes, Mechs
+                      </div>
+
+                      <label className="flex items-center cursor-pointer mb-2">
+                        <input
+                          type="checkbox"
+                          checked={expansionsEnabled.ds}
+                          onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, ds: e.target.checked }))}
+                          className="mr-2"
+                        />
+                        <span className="font-medium">Discordant Stars (DS)</span>
+                      </label>
+                      <div className="text-xs text-gray-600 ml-6 mb-3">
+                        Adds: 30 new factions with all components
+                      </div>
+
+                      <label className="flex items-center cursor-pointer mb-2">
+                        <input
+                          type="checkbox"
+                          checked={expansionsEnabled.us}
+                          onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, us: e.target.checked }))}
+                          className="mr-2"
+                        />
+                        <span className="font-medium">Uncharted Space (US)</span>
+                      </label>
+                      <div className="text-xs text-gray-600 ml-6">
+                        Adds: Additional system tiles
+                      </div>
+                    </div>
+
+                    <DraftSettingsPanel
+                      playerCount={playerCount}
+                      setPlayerCount={setPlayerCount}
+                      draftVariant={draftVariant}
+                      setDraftVariant={setDraftVariant}
+                      draftLimits={draftLimits}
+                      setDraftLimits={setDraftLimits}
+                      firstRoundPickCount={firstRoundPickCount}
+                      setFirstRoundPickCount={setFirstRoundPickCount}
+                      subsequentRoundPickCount={subsequentRoundPickCount}
+                      setSubsequentRoundPickCount={setSubsequentRoundPickCount}
+                    />
+                  </>
                 )}
 
                 {multiplayerEnabled && (

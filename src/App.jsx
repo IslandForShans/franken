@@ -1,9 +1,16 @@
 import React, { useState } from "react";
+import MainPage from "./components/MainPage.jsx";
 import DraftSimulator from "./components/DraftSimulator.jsx";
 import TheorycraftingApp from "./components/TheorycraftingApp.jsx";
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState("draft");
+  const [currentPage, setCurrentPage] = useState("home");
+
+  const handleNavigate = (path) => {
+    if (path === '/draft') setCurrentPage('draft');
+    else if (path === '/theorycrafting') setCurrentPage('theory');
+    else setCurrentPage('home');
+  };
 
   return (
     <div className="h-screen w-screen bg-gray-200">
@@ -38,6 +45,7 @@ export default function App() {
 
       {/* Page Content */}
       <div className="h-[calc(100vh-80px)]">
+        {currentPage === 'home' && <MainPage onNavigate={handleNavigate} />}
         {currentPage === "draft" && <DraftSimulator />}
         {currentPage === "theory" && <TheorycraftingApp />}
       </div>
