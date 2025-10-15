@@ -441,7 +441,8 @@
         {
           "id": "saar_ff2",
           "name": "Floating Factory II",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
+          "prerequisites": ["Yellow", "Yellow"],
           "move": 2,
           "capacity": 5,
           "abilities": ["PRODUCTION 7"],
@@ -1798,8 +1799,8 @@
         {
           "id": "naalu_ng",
           "name": "Neuroglaive",
-          "tech_type": "Yellow",
-          "prerequisites": ["Yellow", "Yellow", "Yellow"],
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green", "Green"],
           "description": "After another player activates a system that contains 1 or more of oyur ships, that player removes 1 token from their fleet pool and returns it to their reinforcements."
         },
         {
@@ -2792,7 +2793,7 @@
       "heroes": [
         {
           "id": "cabal_hero",
-          "name": "It Feeds on Carrion",
+          "name": "It Feeds On Carrion",
           "description": "DIMENSIONAL ANCHOR. ACTION: Each other player rolls a die for each of their non-fighter ships that are in or adjacent to a asystem that contains a dimensional tear; on a 1-3, capture that unit. If this causes a player's ground forces or fighters to be removed, also capture those units."
         }
       ],

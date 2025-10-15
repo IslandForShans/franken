@@ -110,7 +110,7 @@ export const undraftableComponents = {
   
   commanders: [
     //Base + PoK
-    { name: "IL Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
+    { name: "Il Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
     { name: "That Which Molds Flesh", faction: "The Vuil'Raith Cabal", triggerComponent: "Dimensional Tear II", type: "optional_swap" },
     //DS
     { name: "Designer TckVsk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },

@@ -34,49 +34,74 @@ export default function DraftSummary({ factions }) {
           <div key={i} className="mb-4 border-b pb-2">
             <h3 className="font-semibold text-lg">{f.name}</h3>
 
-            {/* Resource/Influence Summary */}
-            <div className="ml-2 mb-3 p-3 bg-blue-50 rounded">
-              <strong className="text-lg">Resource/Influence Summary:</strong>
-              <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <div className="font-medium">Total Available:</div>
-                  <div>{resourceCalc.totalResource} Resources</div>
-                  <div>{resourceCalc.totalInfluence} Influence</div>
+            {/* Resource/Influence Summary - TI4 Style */}
+            <div className="ml-2 mb-3 p-4 bg-gray-900 rounded text-white font-mono">
+              <strong className="text-base block mb-3 font-sans">Resource/Influence Summary:</strong>
+              
+              {/* Total Row */}
+              <div className="flex justify-center items-center gap-8 mb-2 text-2xl font-bold">
+                <div className="text-center">
+                  <div className="text-yellow-400">{resourceCalc.totalResource}</div>
+                  <div className="text-xs text-gray-400 font-sans">Total R</div>
                 </div>
-                <div>
-                  <div className="font-medium text-green-700">Optimal Assignment:</div>
-                  <div className="text-lg font-bold text-green-700">
-                    {resourceCalc.optimal}/{resourceCalc.optimal}
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    +{resourceCalc.leftoverResource + resourceCalc.leftoverInfluence} flex 
-                    ({resourceCalc.leftoverResource}R or {resourceCalc.leftoverInfluence}I)
-                  </div>
+                <div className="text-center">
+                  <div className="text-blue-400">{resourceCalc.totalInfluence}</div>
+                  <div className="text-xs text-gray-400 font-sans">Total I</div>
+                </div>
+              </div>
+
+              {/* Optimal Row */}
+              <div className="flex justify-center items-center gap-8 mb-2 text-xl">
+                <div className="text-center">
+                  <div className="text-yellow-300">{resourceCalc.optimalResource}</div>
+                  <div className="text-xs text-gray-400 font-sans">Optimal R</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-blue-300">{resourceCalc.optimalInfluence}</div>
+                  <div className="text-xs text-gray-400 font-sans">Optimal I</div>
+                </div>
+              </div>
+
+              {/* Flex Row */}
+              <div className="flex justify-center items-center text-lg">
+                <div className="text-center">
+                  <div className="text-green-400">{resourceCalc.flexValue}</div>
+                  <div className="text-xs text-gray-400 font-sans">Flex (R or I)</div>
                 </div>
               </div>
 
               {/* Show planet assignments */}
               {resourceCalc.assignment.length > 0 && (
-                <div className="mt-3 border-t pt-2">
-                  <div className="font-medium text-xs mb-1">Recommended Planet Usage:</div>
-                  <div className="grid grid-cols-2 gap-1 text-xs">
+                <div className="mt-4 pt-3 border-t border-gray-700">
+                  <div className="font-sans font-medium text-xs mb-2 text-gray-300">Planet Assignments:</div>
+                  <div className="grid grid-cols-3 gap-2 text-xs font-sans">
                     <div>
-                      <div className="font-semibold text-blue-700">For Resources:</div>
+                      <div className="font-semibold text-yellow-400 mb-1">For Resources:</div>
                       {resourceCalc.assignment
                         .filter(a => a.usedFor === 'resource')
                         .map((a, idx) => (
-                          <div key={idx}>
+                          <div key={idx} className="text-gray-300">
                             {a.planet.name} ({a.planet.resource}R)
                           </div>
                         ))}
                     </div>
                     <div>
-                      <div className="font-semibold text-purple-700">For Influence:</div>
+                      <div className="font-semibold text-blue-400 mb-1">For Influence:</div>
                       {resourceCalc.assignment
                         .filter(a => a.usedFor === 'influence')
                         .map((a, idx) => (
-                          <div key={idx}>
+                          <div key={idx} className="text-gray-300">
                             {a.planet.name} ({a.planet.influence}I)
+                          </div>
+                        ))}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-green-400 mb-1">Flex Planets:</div>
+                      {resourceCalc.assignment
+                        .filter(a => a.usedFor === 'flex')
+                        .map((a, idx) => (
+                          <div key={idx} className="text-gray-300">
+                            {a.planet.name} ({a.planet.resource}/{a.planet.influence})
                           </div>
                         ))}
                     </div>
