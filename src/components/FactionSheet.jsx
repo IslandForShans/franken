@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './UnifiedStyles.css';
 import { getSwapOptions, getExtraComponents, getSwapOptionsForTrigger } from "../data/undraftable-components.js";
 
 export default function FactionSheet({
@@ -104,231 +105,6 @@ export default function FactionSheet({
     setSwapTarget(null);
   };
 
-  const renderUnitStats = (item) => {
-    if (!item.combat) return null;
-
-    return (
-      <div className="flex gap-2 mt-2">
-        {item.cost !== undefined && (
-          <div className="flex flex-col items-center bg-yellow-900 rounded-full w-12 h-12 justify-center border-2 border-yellow-600">
-            <div className="text-[10px] text-yellow-300 font-bold">COST</div>
-            <div className="text-lg font-bold text-white">{item.cost}</div>
-          </div>
-        )}
-        <div className="flex flex-col items-center bg-red-900 rounded-full w-12 h-12 justify-center border-2 border-red-600">
-          <div className="text-[10px] text-red-300 font-bold">COMBAT</div>
-          <div className="text-lg font-bold text-white">{item.combat}</div>
-        </div>
-        {item.move !== undefined && (
-          <div className="flex flex-col items-center bg-blue-900 rounded-full w-12 h-12 justify-center border-2 border-blue-600">
-            <div className="text-[10px] text-blue-300 font-bold">MOVE</div>
-            <div className="text-lg font-bold text-white">{item.move}</div>
-          </div>
-        )}
-        {item.capacity !== undefined && (
-          <div className="flex flex-col items-center bg-green-900 rounded-full w-12 h-12 justify-center border-2 border-green-600">
-            <div className="text-[10px] text-green-300 font-bold">CAPACITY</div>
-            <div className="text-lg font-bold text-white">{item.capacity}</div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  const renderComponent = (item, category, index) => {
-    const id = getId(item);
-    const isExpanded = expandedId === id;
-    const swapOption = getSwapOptions(item.name, item.faction);
-    const extraComponents = getExtraComponents(item.name, item.faction);
-    const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
-
-    return (
-      <div
-        key={id + index}
-        className={`relative mb-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
-          item.isSwap ? "bg-gradient-to-br from-blue-900 to-blue-800 border-blue-500" : 
-          item.isExtra ? "bg-gradient-to-br from-green-900 to-green-800 border-green-500" : 
-          "bg-gradient-to-br from-gray-800 to-gray-900 border-gray-600"
-        } hover:border-yellow-500 hover:shadow-lg hover:shadow-yellow-500/50`}
-        onClick={() => setExpandedId(isExpanded ? null : id)}
-      >
-        {/* Header */}
-        <div className="flex justify-between items-start mb-2">
-          <div className="flex-1">
-            <div className="text-yellow-400 font-bold text-lg tracking-wide">
-              {item.name?.toUpperCase()}
-            </div>
-            {item.faction && (
-              <div className="flex items-center gap-2 mt-1">
-                {item.icon && <img src={item.icon} alt={item.faction} className="w-5 h-5" />}
-                <span className="text-blue-300 text-sm">{item.faction}</span>
-              </div>
-            )}
-            {item.isSwap && <span className="text-blue-400 text-xs">[SWAPPED]</span>}
-            {item.isExtra && <span className="text-green-400 text-xs">[EXTRA]</span>}
-          </div>
-
-          {/* Action buttons */}
-          <div className="flex gap-2 flex-shrink-0 ml-2">
-            {showReductionHelper && swapOption && !item.isSwap && (
-              <button
-                onClick={(e) => { 
-                  e.stopPropagation(); 
-                  handleSwap(category, index);
-                }}
-                className="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded hover:bg-blue-500 border border-blue-400"
-              >
-                SWAP
-              </button>
-            )}
-            {(showReductionHelper || !isCurrentPlayer) && (
-              <button
-                onClick={(e) => { 
-                  e.stopPropagation(); 
-                  handleRemove(category, index); 
-                }}
-                className={`px-3 py-1 text-xs font-bold rounded border ${
-                  showReductionHelper && getCategoryStatus(category).needsReduction 
-                    ? "bg-red-600 text-white hover:bg-red-500 border-red-400" 
-                    : "bg-gray-700 text-red-400 hover:bg-gray-600 border-gray-500"
-                }`}
-              >
-                REMOVE
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Unit stats for flagships/mechs/starting_fleet */}
-        {(category === 'flagship' || category === 'mech' || category === 'starting_fleet') && item.combat && renderUnitStats(item)}
-
-        {/* Abilities */}
-        {item.abilities && item.abilities.length > 0 && (
-          <div className="mt-2">
-            <div className="flex flex-wrap gap-1">
-              {item.abilities.map((ability, idx) => (
-                <span key={idx} className="bg-purple-900 text-purple-200 px-2 py-1 rounded text-xs font-semibold border border-purple-600">
-                  {ability}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Description */}
-        {item.description && (
-          <div className={`mt-3 text-gray-300 text-sm italic border-t border-gray-700 pt-2 ${
-            !isExpanded && "line-clamp-2"
-          }`}>
-            {item.description}
-          </div>
-        )}
-
-        {/* Tech information */}
-        {(category === 'faction_techs' || category === 'starting_techs') && item.techs && (
-          <div className="mt-3 space-y-2 border-t border-gray-700 pt-2">
-            {item.choose_count && (
-              <div className="text-orange-400 text-xs font-bold bg-orange-900/30 p-2 rounded border border-orange-700">
-                {item.note || `Choose ${item.choose_count} of the following:`}
-              </div>
-            )}
-            {item.techs.map((tech, techIdx) => (
-              <div key={techIdx} className="bg-gray-800/50 p-2 rounded border border-gray-700">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-cyan-400 font-semibold text-sm">{tech.name}</span>
-                  {tech.tech_type_icon && (
-                    <img src={tech.tech_type_icon} alt={tech.tech_type} className="w-5 h-5" />
-                  )}
-                </div>
-                {tech.description && (
-                  <div className="text-gray-400 text-xs italic">{tech.description}</div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Single tech card */}
-        {(category === 'faction_techs' || category === 'starting_techs') && !item.techs && item.tech_type_icon && (
-          <div className="mt-2 flex items-center gap-2">
-            <img src={item.tech_type_icon} alt={item.tech_type} className="w-6 h-6" />
-            {item.prerequisite_icons && item.prerequisite_icons.length > 0 && (
-              <div className="flex gap-1 items-center">
-                <span className="text-gray-400 text-xs">Requirements:</span>
-                {item.prerequisite_icons.map((icon, idx) => (
-                  <img key={idx} src={icon} alt="Prerequisite" className="w-4 h-4" />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Tile planets */}
-        {(category === 'blue_tiles' || category === 'red_tiles') && item.planets && (
-          <div className="mt-3 space-y-2 border-t border-gray-700 pt-2">
-            {item.planets.map((planet, pIdx) => (
-              <div key={pIdx} className="bg-gradient-to-r from-green-900/30 to-transparent p-2 rounded border-l-4 border-green-600">
-                <div className="text-green-400 font-bold">{planet.name}</div>
-                <div className="flex items-center gap-2 text-sm mt-1">
-                  <span className="text-yellow-300">{planet.resource}R</span>
-                  <span className="text-gray-500">/</span>
-                  <span className="text-blue-300">{planet.influence}I</span>
-                </div>
-                {planet.traits && planet.traits.length > 0 && (
-                  <div className="text-purple-400 text-xs mt-1">
-                    Traits: {planet.traits.join(", ")}
-                  </div>
-                )}
-                {planet.technology_specialty && planet.technology_specialty.length > 0 && (
-                  <div className="text-orange-400 text-xs mt-1">
-                    Tech Specialty: {planet.technology_specialty.join(", ")}
-                  </div>
-                )}
-                {planet.legendary_ability && (
-                  <div className="text-yellow-400 text-xs mt-1 font-semibold">
-                    ⭐ Legendary: {planet.legendary_ability}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Commodity value display */}
-        {category === 'commodity_values' && item.value !== undefined && (
-          <div className="mt-2 flex items-center justify-center">
-            <div className="bg-yellow-900 rounded-lg px-6 py-3 border-2 border-yellow-600">
-              <div className="text-yellow-300 text-xs font-bold">COMMODITIES</div>
-              <div className="text-4xl font-bold text-white text-center">{item.value}</div>
-            </div>
-          </div>
-        )}
-
-        {/* Swap/Extra warnings */}
-        {isExpanded && showReductionHelper && (
-          <div className="mt-3 pt-3 border-t border-gray-700 space-y-2">
-            {swapOption && (
-              <div className="bg-blue-900/30 border border-blue-600 rounded p-2 text-sm">
-                <div className="text-blue-400 font-bold">SWAP AVAILABLE:</div>
-                <div className="text-blue-300">{swapOption.name}</div>
-              </div>
-            )}
-            {extraComponents.length > 0 && (
-              <div className="bg-green-900/30 border border-green-600 rounded p-2 text-sm">
-                <div className="text-green-400 font-bold">WILL ADD IF KEPT:</div>
-                <ul className="text-green-300 text-xs ml-4 list-disc">
-                  {extraComponents.map((extra, idx) => (
-                    <li key={idx}>{extra.name}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const categories = [
     { key: 'abilities', col: 1 },
     { key: 'faction_techs', col: 1 },
@@ -348,30 +124,118 @@ export default function FactionSheet({
 
   const getColumnCategories = (col) => categories.filter(c => c.col === col);
 
+
+
+
+  // renderComponent helper function structure:
+  const renderComponent = (item, category, index) => {
+    const id = getId(item);
+    const isExpanded = expandedId === id;
+    const swapOption = getSwapOptions(item.name, item.faction);
+    const extraComponents = getExtraComponents(item.name, item.faction);
+    const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
+
+    return (
+      <div
+        key={id + index}
+        className={`faction-component ${
+          item.isSwap ? 'faction-component-swap' : 
+          item.isExtra ? 'faction-component-extra' : ''
+        }`}
+        onClick={() => setExpandedId(isExpanded ? null : id)}
+      >
+        {/* Header */}
+        <div className="faction-component-header">
+          <div style={{flex: 1}}>
+            <div className="faction-component-name">
+              {item.name?.toUpperCase()}
+            </div>
+            {item.faction && (
+              <div className="faction-component-faction">
+                {item.icon && <img src={item.icon} alt={item.faction} style={{width: '1.25rem', height: '1.25rem'}} />}
+                <span>{item.faction}</span>
+              </div>
+            )}
+            {item.isSwap && <span className="text-xs" style={{color: '#93c5fd'}}>[SWAPPED]</span>}
+            {item.isExtra && <span className="text-xs" style={{color: '#6ee7b7'}}>[EXTRA]</span>}
+          </div>
+
+          {/* Action buttons */}
+          <div className="faction-component-actions">
+            {showReductionHelper && swapOption && !item.isSwap && (
+              <button
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  handleSwap(category, index);
+                }}
+                className="btn btn-primary btn-sm"
+              >
+                SWAP
+              </button>
+            )}
+            <button
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                handleRemove(category, index);
+              }}
+              className="btn btn-danger btn-sm"
+            >
+              REMOVE
+            </button>
+          </div>
+        </div>
+
+        {/* Expanded details */}
+        {isExpanded && (
+          <div className="faction-component-details">
+            {extraComponents.length > 0 && (
+              <div className="faction-component-extra-list">
+                <div className="faction-component-extra-title">EXTRA COMPONENTS:</div>
+                {extraComponents.map((extra, idx) => (
+                  <div key={idx} className="faction-component-extra-item">
+                    {extra.name} ({extra.category})
+                  </div>
+                ))}
+              </div>
+            )}
+            {triggeredSwaps.length > 0 && (
+              <div className="faction-component-swap-list">
+                <div className="faction-component-swap-title">SWAP OPTIONS:</div>
+                {triggeredSwaps.map((swap, idx) => (
+                  <div key={idx} className="faction-component-swap-item">
+                    {swap.name} ({swap.category})
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className={`rounded-lg p-6 ${
-      isCurrentPlayer ? "bg-gradient-to-br from-blue-950 to-gray-900 border-4 border-blue-500" : "bg-gradient-to-br from-gray-900 to-black border-2 border-gray-700"
-    }`}>
+    <div className={`faction-sheet ${isCurrentPlayer ? 'faction-sheet-current' : ''}`}>
       {/* Title */}
-      <div className="mb-6 text-center border-b-2 border-yellow-600 pb-4">
-        <h2 className="text-3xl font-bold text-yellow-400 tracking-widest uppercase">
+      <div className="card-header">
+        <h2 className="faction-sheet-title">
           {title}
         </h2>
       </div>
 
       {showReductionHelper && (
-        <div className="mb-6 p-4 bg-orange-900/50 border-2 border-orange-600 rounded-lg">
-          <div className="font-bold text-orange-400 text-lg">⚠️ REDUCTION PHASE</div>
-          <div className="text-orange-300 text-sm mt-1">
+        <div className="reduction-helper">
+          <div className="reduction-helper-title">⚠️ REDUCTION PHASE</div>
+          <div className="reduction-helper-text">
             Remove excess components to meet faction limits. Red categories need reduction.
           </div>
         </div>
       )}
 
       {/* Three column layout */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="faction-category-grid">
         {[1, 2, 3].map(col => (
-          <div key={col} className="space-y-4">
+          <div key={col} style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
             {getColumnCategories(col).map(({ key: category }) => {
               const status = getCategoryStatus(category);
               const availableSwaps = showReductionHelper ? getAvailableSwapsForCategory(category) : [];
@@ -379,20 +243,14 @@ export default function FactionSheet({
               return (
                 <div
                   key={category}
-                  className={`rounded-lg border-2 p-3 ${
-                    showReductionHelper && status.needsReduction 
-                      ? "bg-red-950/50 border-red-600" 
-                      : "bg-gray-800/50 border-gray-600"
-                  }`}
+                  className={`faction-category ${status.needsReduction ? 'faction-category-needs-reduction' : ''}`}
                 >
                   {/* Category header */}
-                  <div className="mb-3 pb-2 border-b-2 border-yellow-700">
-                    <h3 className="text-yellow-400 font-bold text-sm tracking-wide">
+                  <div className="faction-category-header">
+                    <h3 className="faction-category-title">
                       {formatCategoryName(category)}
                     </h3>
-                    <div className={`text-xs mt-1 ${
-                      status.needsReduction ? "text-red-400 font-bold" : "text-gray-400"
-                    }`}>
+                    <div className={`faction-category-count ${status.needsReduction ? 'faction-category-count-over' : ''}`}>
                       {status.items.length}/{status.limit}
                       {status.needsReduction && ` (Remove ${status.excess})`}
                     </div>
@@ -400,14 +258,14 @@ export default function FactionSheet({
 
                   {/* Available swaps */}
                   {showReductionHelper && availableSwaps.length > 0 && (
-                    <div className="mb-3 p-2 bg-blue-900/30 border border-blue-600 rounded">
-                      <div className="text-blue-400 font-bold text-xs mb-2">SWAPS AVAILABLE:</div>
+                    <div className="available-swaps">
+                      <div className="available-swaps-title">SWAPS AVAILABLE:</div>
                       {availableSwaps.map((swap, idx) => (
-                        <div key={idx} className="mb-2 p-2 bg-gray-900 rounded border border-blue-500">
-                          <div className="flex justify-between items-start gap-2">
-                            <div className="flex-1 min-w-0">
-                              <div className="text-white text-xs font-semibold">{swap.name}</div>
-                              <div className="text-gray-400 text-[10px]">
+                        <div key={idx} className="available-swap-item">
+                          <div className="available-swap-header">
+                            <div className="available-swap-info">
+                              <div className="available-swap-name">{swap.name}</div>
+                              <div className="available-swap-trigger">
                                 From: {swap.triggerComponent.name}
                               </div>
                             </div>
@@ -417,7 +275,8 @@ export default function FactionSheet({
                                   onSwapComponent(playerIndex, swap.category, 0, swap, swap.triggerComponent);
                                 }
                               }}
-                              className="px-2 py-1 bg-blue-600 text-white text-[10px] font-bold rounded hover:bg-blue-500 whitespace-nowrap flex-shrink-0"
+                              className="btn btn-primary btn-sm"
+                              style={{flexShrink: 0}}
                             >
                               ADD
                             </button>
@@ -429,7 +288,7 @@ export default function FactionSheet({
 
                   {/* Components */}
                   {status.items.length === 0 ? (
-                    <div className="text-gray-500 text-sm italic text-center py-4 border-2 border-dashed border-gray-700 rounded">
+                    <div className="empty-state">
                       No {formatCategoryName(category).toLowerCase()} selected
                     </div>
                   ) : (
@@ -444,24 +303,24 @@ export default function FactionSheet({
 
       {/* Swap Modal */}
       {swapModalOpen && swapTarget && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-gray-900 to-black rounded-lg p-6 max-w-3xl w-full max-h-[80vh] overflow-y-auto border-4 border-yellow-600">
-            <h3 className="text-2xl font-bold text-yellow-400 mb-4 tracking-wide">
+        <div className="swap-modal-overlay">
+          <div className="swap-modal-content">
+            <h3 className="swap-modal-title">
               SWAP OPTIONS FOR {swapTarget.component.name?.toUpperCase()}
             </h3>
             
-            <div className="space-y-3">
+            <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
               {swapOptions.map((option, idx) => (
-                <div key={idx} className="bg-gray-800 border-2 border-blue-600 rounded-lg p-4">
-                  <div className="flex justify-between items-start mb-3">
+                <div key={idx} className="swap-option">
+                  <div className="swap-option-header">
                     <div>
-                      <div className="text-xl font-bold text-blue-400">{option.name}</div>
-                      <div className="text-sm text-gray-400">{option.category.replace('_', ' ')}</div>
-                      <div className="text-sm text-cyan-400 mt-1">{option.faction}</div>
+                      <div className="swap-option-name">{option.name}</div>
+                      <div className="swap-option-category">{option.category.replace('_', ' ')}</div>
+                      <div className="swap-option-faction">{option.faction}</div>
                     </div>
                     <button
                       onClick={() => confirmSwap(option)}
-                      className="px-6 py-3 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 border-2 border-blue-400"
+                      className="btn btn-primary"
                     >
                       SWAP
                     </button>
@@ -470,14 +329,14 @@ export default function FactionSheet({
               ))}
             </div>
             
-            <div className="mt-6 flex justify-end">
+            <div className="swap-modal-footer">
               <button
                 onClick={() => {
                   setSwapModalOpen(false);
                   setSwapOptions([]);
                   setSwapTarget(null);
                 }}
-                className="px-6 py-3 bg-gray-700 text-white font-bold rounded hover:bg-gray-600 border-2 border-gray-500"
+                className="btn btn-secondary"
               >
                 CANCEL
               </button>
@@ -487,4 +346,36 @@ export default function FactionSheet({
       )}
     </div>
   );
+
+// renderUnitStats helper function:
+const renderUnitStats = (item) => {
+  if (!item.combat) return null;
+
+  return (
+    <div className="unit-stats">
+      {item.cost !== undefined && (
+        <div className="unit-stat unit-stat-cost">
+          <div className="unit-stat-label">COST</div>
+          <div className="unit-stat-value">{item.cost}</div>
+        </div>
+      )}
+      <div className="unit-stat unit-stat-combat">
+        <div className="unit-stat-label">COMBAT</div>
+        <div className="unit-stat-value">{item.combat}</div>
+      </div>
+      {item.move !== undefined && (
+        <div className="unit-stat unit-stat-move">
+          <div className="unit-stat-label">MOVE</div>
+          <div className="unit-stat-value">{item.move}</div>
+        </div>
+      )}
+      {item.capacity !== undefined && (
+        <div className="unit-stat unit-stat-capacity">
+          <div className="unit-stat-label">CAPACITY</div>
+          <div className="unit-stat-value">{item.capacity}</div>
+        </div>
+      )}
+    </div>
+  );
+};
 }

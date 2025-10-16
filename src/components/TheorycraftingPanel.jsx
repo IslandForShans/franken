@@ -19,8 +19,8 @@ export default function TheorycraftingPanel({ factionsData, draftLimits }) {
   };
 
   return (
-    <div>
-      <select value={selectedFaction} onChange={e=>setSelectedFaction(e.target.value)} className="border p-1 mb-2">
+    <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen rounded-xl shadow-lg border border-gray-700 p-4">
+      <select value={selectedFaction} onChange={e=>setSelectedFaction(e.target.value)} className="input mb-2">
         <option value="">Select Faction</option>
         {factionsData.map(f => <option key={f.name} value={f.name}>{f.name}</option>)}
       </select>
@@ -42,7 +42,7 @@ export default function TheorycraftingPanel({ factionsData, draftLimits }) {
                 {activeComponents[cat] && activeComponents[cat].map((item, idx)=>(
                   <div key={idx} className="border p-1 rounded mb-1 flex justify-between">
                     <span>{item.name}</span>
-                    <button onClick={()=>handleRemove(cat, idx)} className="text-red-500">✕</button>
+                    <button onClick={()=>handleRemove(cat, idx)} style={{color: '#dc2626'}}>✕</button>
                   </div>
                 ))}
               </div>

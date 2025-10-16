@@ -980,29 +980,29 @@ export default function DraftSimulator({ onNavigate }) {
                 )}
 
                 {multiplayerEnabled && (
-                    <FirebaseMultiplayerPanel
-                        draftSettings={{
-                            variant: draftVariant,
-                            playerCount: playerCount,
-                            draftLimits: draftLimits,
-                            firstRoundPickCount: firstRoundPickCount,
-                            subsequentRoundPickCount: subsequentRoundPickCount
-                        }}
-                        onDraftStart={(lobbyData) => {
+                  <FirebaseMultiplayerPanel
+                    draftSettings={{
+                      variant: draftVariant,
+                      playerCount: playerCount,
+                      draftLimits: draftLimits,
+                      firstRoundPickCount: firstRoundPickCount,
+                      subsequentRoundPickCount: subsequentRoundPickCount
+                    }}
+                    onDraftStart={(lobbyData) => {
                             console.log("Draft starting with lobby data:", lobbyData);
 
-                            const players = Object.values(lobbyData.players || {}).sort(
-                                (a, b) => a.joinedAt - b.joinedAt
-                            );
+                      const players = Object.values(lobbyData.players || {}).sort(
+                        (a, b) => a.joinedAt - b.joinedAt
+                      );
 
-                            initializeDraft({
-                                ...lobbyData.settings,
-                                playerCount: players.length,
-                                players,
-                            });
-                        }}
-                        onDraftStateSync={handleDraftStateSync}
-                    />
+                      initializeDraft({
+                        ...lobbyData.settings,
+                        playerCount: players.length,
+                        players,
+                      });
+                    }}
+                    onDraftStateSync={handleDraftStateSync}
+                  />
                 )}
 
                 {renderCurrentPlayerInfo()}
@@ -1032,7 +1032,7 @@ export default function DraftSimulator({ onNavigate }) {
                 >
                   Cancel Draft
                 </button>
-              </div>
+          </div>
             )}
           </div>
 

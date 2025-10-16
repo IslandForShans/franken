@@ -3,61 +3,62 @@ import { calculateOptimalResources } from "../utils/resourceCalculator.js";
 
 export default function DraftSummary({ factions }) {
   return (
-    <div className="border p-4 rounded shadow bg-gray-50">
-      <h2 className="text-xl font-bold mb-2">Draft Summary</h2>
-      {factions.map((f, i) => {
-        const blueTiles = f.blue_tiles || [];
-        const redTiles = f.red_tiles || [];
-        const allTiles = [...blueTiles, ...redTiles];
-        
-        // Collect all planets from all tiles
-        const allPlanets = [];
-        allTiles.forEach(tile => {
-          if (tile.planets) {
-            tile.planets.forEach(p => {
-              allPlanets.push({
-                name: p.name,
-                resource: p.resource || 0,
-                influence: p.influence || 0,
-                traits: p.traits || [],
-                technology_specialty: p.technology_specialty || [],
-                legendary_ability: p.legendary_ability
+    <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white rounded-xl shadow-lg p-6 border border-gray-700">
+      <h2 className="text-2xl font-bold mb-6 text-yellow-400">Draft Summary</h2>
+      <div className="space-y-8">
+        {factions.map((f, i) => {
+          const blueTiles = f.blue_tiles || [];
+          const redTiles = f.red_tiles || [];
+          const allTiles = [...blueTiles, ...redTiles];
+
+          // Collect all planets from all tiles
+          const allPlanets = [];
+          allTiles.forEach(tile => {
+            if (tile.planets) {
+              tile.planets.forEach(p => {
+                allPlanets.push({
+                  name: p.name,
+                  resource: p.resource || 0,
+                  influence: p.influence || 0,
+                  traits: p.traits || [],
+                  technology_specialty: p.technology_specialty || [],
+                  legendary_ability: p.legendary_ability
+                });
               });
-            });
-          }
-        });
+            }
+          });
 
-        // Calculate optimal resource assignment
-        const resourceCalc = calculateOptimalResources(allPlanets);
+          // Calculate optimal resource assignment
+          const resourceCalc = calculateOptimalResources(allPlanets);
 
-        return (
-          <div key={i} className="mb-4 border-b pb-2">
-            <h3 className="font-semibold text-lg">{f.name}</h3>
+          return (
+            <div key={i} className="bg-gray-800 rounded-xl p-4 border border-gray-700 shadow mb-4">
+              <h3 className="font-bold text-xl mb-2 text-blue-400">{f.name}</h3>
 
-            {/* Resource/Influence Summary - TI4 Style */}
-            <div className="ml-2 mb-3 p-4 bg-gray-900 rounded text-white font-mono">
-              <strong className="text-base block mb-3 font-sans">Resource/Influence Summary:</strong>
-              
-              {/* Total Row */}
-              <div className="flex justify-center items-center gap-8 mb-2 text-2xl font-bold">
-                <div className="text-center">
-                  <div className="text-yellow-400">{resourceCalc.totalResource}</div>
-                  <div className="text-xs text-gray-400 font-sans">Total R</div>
+              {/* Resource/Influence Summary - TI4 Style */}
+              <div className="mb-3 p-4 bg-gray-900 rounded-lg text-white font-mono">
+                <strong className="text-base block mb-3 font-sans text-yellow-300">Resource/Influence Summary:</strong>
+
+                {/* Total Row */}
+                <div className="flex justify-center items-center gap-8 mb-2 text-2xl font-bold">
+                  <div className="text-center">
+                    <div className="text-yellow-400">{resourceCalc.totalResource}</div>
+                    <div className="text-xs text-gray-400 font-sans">Total R</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-blue-400">{resourceCalc.totalInfluence}</div>
+                    <div className="text-xs text-gray-400 font-sans">Total I</div>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-blue-400">{resourceCalc.totalInfluence}</div>
-                  <div className="text-xs text-gray-400 font-sans">Total I</div>
-                </div>
-              </div>
 
-              {/* Optimal Row */}
-              <div className="flex justify-center items-center gap-8 mb-2 text-xl">
-                <div className="text-center">
-                  <div className="text-yellow-300">{resourceCalc.optimalResource}</div>
-                  <div className="text-xs text-gray-400 font-sans">Optimal R</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-blue-300">{resourceCalc.optimalInfluence}</div>
+                {/* Optimal Row */}
+                <div className="flex justify-center items-center gap-8 mb-2 text-xl">
+                  <div className="text-center">
+                    <div className="text-yellow-300">{resourceCalc.optimalResource}</div>
+                    <div className="text-xs text-gray-400 font-sans">Optimal R</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-blue-300">{resourceCalc.optimalInfluence}</div>
                   <div className="text-xs text-gray-400 font-sans">Optimal I</div>
                 </div>
               </div>
@@ -174,7 +175,8 @@ export default function DraftSummary({ factions }) {
             })}
           </div>
         );
-      })}
+      })
+    }</div>
     </div>
   );
 }

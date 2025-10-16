@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import factionsJSONRaw from "../data/factions.json";
 import { processFactionData } from "../utils/dataProcessor.js";
+import './UnifiedStyles.css';
 
-// Process faction data for icons
 const factionsJSON = processFactionData(factionsJSONRaw);
 
 export default function BanManagementModal({
@@ -50,41 +50,41 @@ export default function BanManagementModal({
     : [];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] flex flex-col">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold">Ban Management</h3>
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h3 className="modal-title">Ban Management</h3>
           <button 
             type="button"
             onClick={onClose}
-            className="px-3 py-1 text-sm bg-gray-400 text-white rounded hover:bg-gray-500"
+            className="btn btn-secondary btn-sm"
           >
             Close
           </button>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 flex-1 min-h-0">
-          {/* Faction Bans - FIXED: Added proper flex and overflow */}
-          <div className="border rounded p-4 flex flex-col min-h-0">
-            <h4 className="font-semibold mb-3 flex-shrink-0">
+        <div className="ban-modal-grid modal-body">
+          {/* Faction Bans */}
+          <div className="ban-section">
+            <h4 className="ban-section-header">
               Banned Factions ({bannedFactions.size})
             </h4>
-            <div className="flex-1 overflow-y-auto min-h-0 space-y-2">
+            <div className="ban-list">
               {factionsJSON.factions.map(faction => {
                 const isBanned = bannedFactions.has(faction.name);
                 return (
                   <div 
                     key={faction.name}
-                    className="flex items-center hover:bg-gray-100 p-2 rounded cursor-pointer flex-shrink-0"
+                    className="ban-item"
                     onClick={() => onBanFaction(faction.name)}
                   >
                     <input 
                       type="checkbox" 
                       checked={isBanned}
                       onChange={() => {}}
-                      className="mr-3 pointer-events-none flex-shrink-0"
+                      className="checkbox"
                     />
-                    <span className={`${isBanned ? "line-through text-gray-500" : ""} text-sm`}>
+                    <span className={isBanned ? "ban-item-checked text-sm" : "text-sm"}>
                       {faction.name}
                     </span>
                   </div>
@@ -93,9 +93,9 @@ export default function BanManagementModal({
             </div>
           </div>
 
-          {/* Component Bans - FIXED: Added proper flex and overflow */}
-          <div className="border rounded p-4 flex flex-col min-h-0">
-            <h4 className="font-semibold mb-3 flex-shrink-0">
+          {/* Component Bans */}
+          <div className="ban-section">
+            <h4 className="ban-section-header">
               Component Bans ({bannedComponents.size})
             </h4>
             
@@ -104,15 +104,17 @@ export default function BanManagementModal({
               placeholder="Search components to ban..."
               value={componentSearchTerm}
               onChange={(e) => setComponentSearchTerm(e.target.value)}
-              className="w-full border p-2 rounded mb-3 flex-shrink-0"
+              className="search-input mb-3"
+              style={{flexShrink: 0}}
             />
             
             {componentSearchTerm && (
-              <div className="max-h-40 overflow-y-auto border rounded p-2 mb-3 bg-gray-50 flex-shrink-0">
+              <div style={{maxHeight: '10rem', overflowY: 'auto', border: '1px solid #d1d5db', borderRadius: '0.25rem', padding: '0.5rem', marginBottom: '0.75rem', background: '#1f2937', flexShrink: 0}}>
                 {filteredComponents.slice(0, 20).map((comp, idx) => (
                   <div 
                     key={`${comp.name}-${comp.faction}-${idx}`}
-                    className="flex justify-between items-center py-1 hover:bg-gray-100 px-2 rounded"
+                    style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.25rem 0'}}
+                    className="ban-item-component"
                   >
                     <span className="text-sm truncate">{comp.displayName}</span>
                     <button 
@@ -121,61 +123,62 @@ export default function BanManagementModal({
                         onBanComponent(comp.id || comp.name);
                         setComponentSearchTerm("");
                       }}
-                      className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 ml-2 flex-shrink-0"
+                      className="btn btn-danger btn-sm"
+                      style={{marginLeft: '0.5rem', flexShrink: 0}}
                     >
                       Ban
                     </button>
                   </div>
                 ))}
                 {filteredComponents.length > 20 && (
-                  <div className="text-xs text-gray-500 p-2">
+                  <div className="text-xs" style={{color: '#6b7280', padding: '0.5rem'}}>
                     Showing first 20 results. Refine search for more.
                   </div>
                 )}
               </div>
             )}
 
-            <div className="text-sm text-gray-600 mb-2 font-medium flex-shrink-0">
+            <div className="text-sm font-medium mb-2" style={{color: '#4b5563', flexShrink: 0}}>
               Currently Banned:
             </div>
-            <div className="flex-1 overflow-y-auto min-h-0 text-sm space-y-1">
+            <div className="ban-list text-sm">
               {Array.from(bannedComponents).map(compId => (
                 <div 
                   key={compId} 
-                  className="flex justify-between items-center bg-red-50 p-2 rounded flex-shrink-0"
+                  style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fee2e2', padding: '0.5rem', borderRadius: '0.25rem', marginBottom: '0.25rem', flexShrink: 0}}
                 >
-                  <span className="truncate flex-1">{compId}</span>
+                  <span className="truncate" style={{flex: 1}}>{compId}</span>
                   <button 
                     type="button"
                     onClick={() => onBanComponent(compId)}
-                    className="text-red-600 hover:underline ml-2 text-xs flex-shrink-0"
+                    style={{color: '#dc2626', marginLeft: '0.5rem', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.75rem', textDecoration: 'underline', flexShrink: 0}}
                   >
                     Unban
                   </button>
                 </div>
               ))}
               {bannedComponents.size === 0 && (
-                <div className="text-gray-500 italic">No components banned</div>
+                <div className="empty-state">No components banned</div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="mt-4 flex justify-between flex-shrink-0">
+        <div className="modal-footer">
           <button 
             type="button"
             onClick={() => {
               Array.from(bannedFactions).forEach(f => onBanFaction(f));
               Array.from(bannedComponents).forEach(c => onBanComponent(c));
             }}
-            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+            className="btn btn-warning"
           >
             Clear All Bans
           </button>
           <button 
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="btn btn-primary"
           >
             Done
           </button>
