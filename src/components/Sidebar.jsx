@@ -36,7 +36,7 @@ export default function Sidebar({
   return (
     <div className="w-80 border-r bg-gray-100 flex flex-col h-full">
       <div className="p-3 border-b bg-gray-200">
-        <h2 className="font-bold text-lg">Draft Categories</h2>
+        <h2 className="text-xl font-bold text-yellow-400">Draft Categories</h2>
         <div className="text-sm text-gray-600 mt-1">
           Click categories to view available components
         </div>
@@ -126,7 +126,7 @@ export default function Sidebar({
                                 </div>
                               )}
                               
-                              {/* Tech card format - single tech or tech package */}
+                              {/* Tech card format - single tech or tech package }
                               {(cat === 'faction_techs' || cat === 'starting_techs') && (
                                 <div className="text-xs mt-2 border-t pt-2">
                                   {component.techs && component.techs.length > 0 ? (

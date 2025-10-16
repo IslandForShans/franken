@@ -9,7 +9,7 @@ export default function MainPage({ onNavigate }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden">
+    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden overflow-y-auto">
       {/* Navigation Header */}
       <nav className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,23 +19,6 @@ export default function MainPage({ onNavigate }) {
                 TI4 Franken Draft
               </h1>
             </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex space-x-4">
-              <button
-                onClick={() => handleNavigation('/draft')}
-                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 transition-colors font-semibold"
-              >
-                Draft Simulator
-              </button>
-              <button
-                onClick={() => handleNavigation('/theorycrafting')}
-                className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 transition-colors font-semibold"
-              >
-                Faction Builder
-              </button>
-            </div>
-
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

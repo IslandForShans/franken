@@ -38,7 +38,7 @@ const powerDraftLimits = Object.fromEntries(
   Object.entries(powerFactionLimits).map(([key, value]) => [key, value + 1])
 );
 
-export default function DraftSimulator() {
+export default function DraftSimulator({ onNavigate }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [playerCount, setPlayerCount] = useState(4);
   const [factions, setFactions] = useState([]);
@@ -71,6 +71,7 @@ export default function DraftSimulator() {
   // UI state
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
   const [showBanModal, setShowBanModal] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Expansion toggles
   const [expansionsEnabled, setExpansionsEnabled] = useState({
@@ -720,35 +721,35 @@ export default function DraftSimulator() {
   const renderCurrentPlayerInfo = () => {
     if (draftPhase === "reduction") {
         return (
-        <div className="mb-4 p-3 bg-orange-100 rounded">
-            <h3 className="font-bold">Reduction Phase</h3>
-            <div className="text-sm">Remove excess components to meet faction limits</div>
+        <div className="p-3 bg-orange-900/30 rounded-lg border border-orange-600">
+            <h3 className="font-bold text-orange-400 text-sm">Reduction Phase</h3>
+            <div className="text-xs text-orange-300">Remove excess components to meet faction limits</div>
         </div>
         );
     }
 
     if (draftPhase === "complete") {
         return (
-        <div className="mb-4 p-3 bg-green-100 rounded">
-            <h3 className="font-bold">Draft Complete!</h3>
-            <div className="text-sm">All factions finalized</div>
+        <div className="p-3 bg-green-900/30 rounded-lg border border-green-600">
+            <h3 className="font-bold text-green-400 text-sm">Draft Complete!</h3>
+            <div className="text-xs text-green-300">All factions finalized</div>
         </div>
         );
     }
 
     if (!draftStarted) {
         return (
-        <div className="mb-4 p-3 bg-yellow-100 rounded">
-            <h3 className="font-bold">Configure settings and click "Start Draft" to begin</h3>
+        <div className="p-3 bg-yellow-900/30 rounded-lg border border-yellow-600">
+            <h3 className="font-bold text-yellow-400 text-sm">Configure settings and click "Start Draft" to begin</h3>
         </div>
         );
     }
 
     if (multiplayerEnabled) {
         return (
-        <div className="mb-4 p-3 bg-blue-100 rounded">
-            <h3 className="font-bold">Multiplayer Draft - Round {round}</h3>
-            <div className="text-sm">Selected picks: {selectedPicks.length}</div>
+        <div className="p-3 bg-blue-900/30 rounded-lg border border-blue-600">
+            <h3 className="font-bold text-blue-400 text-sm">Multiplayer Draft - Round {round}</h3>
+            <div className="text-xs text-blue-300">Selected picks: {selectedPicks.length}</div>
         </div>
         );
     }
@@ -761,34 +762,34 @@ export default function DraftSimulator() {
         }, 500);
         
         return (
-        <div className="mb-4 p-3 bg-yellow-100 rounded">
-            <h3 className="font-bold">Player {currentPlayer + 1}'s Turn - Round {round}</h3>
-            <div className="text-sm text-orange-600">
+        <div className="p-3 bg-yellow-900/30 rounded-lg border border-yellow-600">
+            <h3 className="font-bold text-yellow-400 text-sm">Player {currentPlayer + 1}'s Turn - Round {round}</h3>
+            <div className="text-xs text-orange-400">
             Auto-passing: No available picks from this bag (all categories at limit)
             </div>
-            <div className="text-xs text-gray-600">Bag {currentPlayer} of {playerBags.length} bags</div>
+            <div className="text-xs text-gray-400">Bag {currentPlayer} of {playerBags.length} bags</div>
         </div>
         );
     }
   
     return (
-        <div className="mb-4 p-3 bg-blue-100 rounded">
-        <h3 className="font-bold">Player {currentPlayer + 1}'s Turn - Round {round}</h3>
-        <div className="text-sm">
+        <div className="p-3 bg-blue-900/30 rounded-lg border border-blue-600">
+        <h3 className="font-bold text-blue-400 text-sm">Player {currentPlayer + 1}'s Turn - Round {round}</h3>
+        <div className="text-xs text-blue-300">
             Pending picks: {pendingPicks.length} / {maxPicks} (must pick {maxPicks})
             {draftVariant === "rotisserie" && " (One pick per turn)"}
         </div>
-        <div className="text-sm">Variant: {draftVariant}</div>
-        <div className="text-xs text-gray-600">Bag {currentPlayer} of {playerBags.length} bags</div>
+        <div className="text-xs text-blue-300">Variant: {draftVariant}</div>
+        <div className="text-xs text-gray-400">Bag {currentPlayer} of {playerBags.length} bags</div>
       
         {pendingPicks.length > 0 && (
             <div className="mt-2">
-            <div className="text-xs font-semibold mb-1">Your pending picks:</div>
+            <div className="text-xs font-semibold mb-1 text-blue-300">Your pending picks:</div>
             <div className="flex flex-wrap gap-1">
                 {pendingPicks.map((pick, idx) => (
                 <span 
                     key={idx}
-                    className="bg-blue-200 px-2 py-1 rounded text-xs cursor-pointer hover:bg-red-200"
+                    className="bg-blue-800 px-2 py-1 rounded text-xs cursor-pointer hover:bg-red-800 text-white transition-colors"
                     onClick={() => handleRemovePendingPick(pick.category, pick.component.id || pick.component.name)}
                     title="Click to remove"
                 >
@@ -803,14 +804,14 @@ export default function DraftSimulator() {
             <button
             onClick={handleSubmitPicks}
             disabled={pendingPicks.length < maxPicks}
-            className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="mt-2 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg disabled:bg-gray-600 disabled:cursor-not-allowed text-sm font-semibold transition-colors"
             >
             Submit Picks ({pendingPicks.length}/{maxPicks})
             </button>
         )}
       
         {!isPickingPhase && (
-            <div className="mt-2 text-sm text-gray-600">
+            <div className="mt-2 text-xs text-gray-400">
             Picks submitted. Moving to next player...
             </div>
         )}
@@ -819,67 +820,109 @@ export default function DraftSimulator() {
   };
 
   return (
-    <div className="h-full p-4 bg-gray-200">
-      <div className="h-full flex bg-white rounded-lg shadow">
-        <Sidebar
-          categories={getActiveCategories()}
-          onSelectCategory={setSelectedCategory}
-          playerProgress={multiplayerEnabled ? {} : (playerProgress[currentPlayer] || {})}
-          draftLimits={draftPhase === "reduction" ? getCurrentFactionLimits() : draftLimits}
-          selectedCategory={selectedCategory}
-          availableComponents={getAvailableComponents()}
-          onComponentClick={handlePick}
-          isMultiplayer={multiplayerEnabled}
-          draftVariant={draftVariant}
-        />
+    <div className="h-full bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <div className="h-full flex">
+        {/* Collapsible Sidebar */}
+        {!sidebarCollapsed && (
+          <Sidebar
+            categories={getActiveCategories()}
+            onSelectCategory={setSelectedCategory}
+            playerProgress={multiplayerEnabled ? {} : (playerProgress[currentPlayer] || {})}
+            draftLimits={draftPhase === "reduction" ? getCurrentFactionLimits() : draftLimits}
+            selectedCategory={selectedCategory}
+            availableComponents={getAvailableComponents()}
+            onComponentClick={handlePick}
+            isMultiplayer={multiplayerEnabled}
+            draftVariant={draftVariant}
+          />
+        )}
 
         <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="p-4 border-b bg-gray-50">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Franken Draft Simulator</h2>
-              <div className="flex space-x-2">
-                <button onClick={() => setShowBanModal(true)} className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"> 
-                Manage Bans
-                </button>
-
-                <BanManagementModal isOpen={showBanModal} onClose={() => setShowBanModal(false)} bannedFactions={bannedFactions} bannedComponents={bannedComponents} onBanFaction={handleBanFaction} onBanComponent={handleBanComponent} categories={categories} />
-                {!multiplayerEnabled && !draftStarted && (
-                  <button 
-                    className="px-3 py-1 rounded bg-green-500 text-white hover:bg-green-600" 
-                    onClick={startDraftSolo}
-                  >
-                    Start Draft
-                  </button>
-                )}
-                <button 
-                  className="px-3 py-1 rounded bg-purple-500 text-white hover:bg-purple-600" 
-                  onClick={() => setShowSummary(s => !s)}
-                >
-                  {showSummary ? "Hide" : "Show"} Summary
-                </button>
-                <button 
-                  className={`px-3 py-1 rounded ${multiplayerEnabled ? "bg-red-500 text-white hover:bg-red-600" : "bg-gray-200 hover:bg-gray-300"}`} 
-                  onClick={() => setMultiplayerEnabled(me => !me)}
-                >
-                  {multiplayerEnabled ? "Disable Multiplayer" : "Enable Multiplayer"}
-                </button>
-                {draftStarted && (
+          {/* Compact Header */}
+          <div className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
+            <div className="px-4 py-2">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  {onNavigate && (
+                    <button
+                      onClick={() => onNavigate('/')}
+                      className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+                    >
+                      ← Home
+                    </button>
+                  )}
                   <button
-                    onClick={() => setSettingsCollapsed(!settingsCollapsed)}
-                    className="px-3 py-1 rounded bg-gray-500 text-white hover:bg-gray-600"
+                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
                   >
-                    {settingsCollapsed ? "Show" : "Hide"} Info
+                    {sidebarCollapsed ? '→ Show' : '← Hide'} Sidebar
                   </button>
-                )}
+                  <h2 className="text-xl font-bold text-yellow-400">Franken Draft</h2>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => setShowBanModal(true)} 
+                    className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-semibold transition-colors"
+                  > 
+                    Manage Bans
+                  </button>
+
+                  <BanManagementModal 
+                    isOpen={showBanModal} 
+                    onClose={() => setShowBanModal(false)} 
+                    bannedFactions={bannedFactions} 
+                    bannedComponents={bannedComponents} 
+                    onBanFaction={handleBanFaction} 
+                    onBanComponent={handleBanComponent} 
+                    categories={getActiveCategories()} 
+                  />
+                  
+                  {!multiplayerEnabled && !draftStarted && (
+                    <button 
+                      className="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors" 
+                      onClick={startDraftSolo}
+                    >
+                      Start Draft
+                    </button>
+                  )}
+                  
+                  <button 
+                    className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-colors" 
+                    onClick={() => setShowSummary(s => !s)}
+                  >
+                    {showSummary ? "Hide" : "Show"} Summary
+                  </button>
+                  
+                  <button 
+                    className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                      multiplayerEnabled 
+                        ? "bg-red-600 hover:bg-red-500 text-white" 
+                        : "bg-gray-700 hover:bg-gray-600 text-white"
+                    }`} 
+                    onClick={() => setMultiplayerEnabled(me => !me)}
+                  >
+                    {multiplayerEnabled ? "Disable" : "Enable"} Multiplayer
+                  </button>
+                  
+                  {draftStarted && (
+                    <button
+                      onClick={() => setSettingsCollapsed(!settingsCollapsed)}
+                      className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+                    >
+                      {settingsCollapsed ? "Show" : "Hide"} Info
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
             {!settingsCollapsed && (
-              <>
+              <div className="px-4 py-2 bg-gray-800/50">
                 {!multiplayerEnabled && !draftStarted && (
                   <>
-                    <div className="mb-4 p-3 bg-gray-100 rounded border">
-                      <h3 className="font-bold mb-2">Expansions</h3>
+                    <div className="mb-3 p-3 bg-gray-900/50 rounded-lg border border-gray-700">
+                      <h3 className="font-bold mb-2 text-yellow-400 text-sm">Expansions</h3>
                       
                       <label className="flex items-center cursor-pointer mb-2">
                         <input
@@ -888,9 +931,9 @@ export default function DraftSimulator() {
                           onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, pok: e.target.checked }))}
                           className="mr-2"
                         />
-                        <span className="font-medium">Prophecy of Kings</span>
+                        <span className="font-medium text-white text-sm">Prophecy of Kings</span>
                       </label>
-                      <div className="text-xs text-gray-600 ml-6 mb-3">
+                      <div className="text-xs text-gray-400 ml-6 mb-2">
                         Enables: Agents, Commanders, Heroes, Mechs
                       </div>
 
@@ -901,9 +944,9 @@ export default function DraftSimulator() {
                           onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, ds: e.target.checked }))}
                           className="mr-2"
                         />
-                        <span className="font-medium">Discordant Stars (DS)</span>
+                        <span className="font-medium text-white text-sm">Discordant Stars (DS)</span>
                       </label>
-                      <div className="text-xs text-gray-600 ml-6 mb-3">
+                      <div className="text-xs text-gray-400 ml-6 mb-2">
                         Adds: 30 new factions with all components
                       </div>
 
@@ -914,9 +957,9 @@ export default function DraftSimulator() {
                           onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, us: e.target.checked }))}
                           className="mr-2"
                         />
-                        <span className="font-medium">Uncharted Space (US)</span>
+                        <span className="font-medium text-white text-sm">Uncharted Space (US)</span>
                       </label>
-                      <div className="text-xs text-gray-600 ml-6">
+                      <div className="text-xs text-gray-400 ml-6">
                         Adds: Additional system tiles
                       </div>
                     </div>
@@ -963,35 +1006,37 @@ export default function DraftSimulator() {
                 )}
 
                 {renderCurrentPlayerInfo()}
-              </>
+              </div>
             )}
 
             {draftStarted && (
-              <button 
-                onClick={() => {
-                  if (confirm("Are you sure you want to cancel the draft? All progress will be lost.")) {
-                    setDraftStarted(false);
-                    setDraftPhase("draft");
-                    setFactions([]);
-                    setPlayerBags([]);
-                    setPlayerProgress([]);
-                    setRotisseriePool({});
-                    setDraftHistory([]);
-                    setCurrentPlayer(0);
-                    setRound(1);
-                    setPicksThisRound(0);
-                    setPendingPicks([]);
-                    setIsPickingPhase(true);
-                  }
-                }}
-                className="mt-2 px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700"
-              >
-                Cancel Draft
-              </button>
+              <div className="px-4 py-2 bg-gray-800/30">
+                <button 
+                  onClick={() => {
+                    if (confirm("Are you sure you want to cancel the draft? All progress will be lost.")) {
+                      setDraftStarted(false);
+                      setDraftPhase("draft");
+                      setFactions([]);
+                      setPlayerBags([]);
+                      setPlayerProgress([]);
+                      setRotisseriePool({});
+                      setDraftHistory([]);
+                      setCurrentPlayer(0);
+                      setRound(1);
+                      setPicksThisRound(0);
+                      setPendingPicks([]);
+                      setIsPickingPhase(true);
+                    }
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-semibold transition-colors"
+                >
+                  Cancel Draft
+                </button>
+              </div>
             )}
           </div>
 
-          <div className="flex-1 overflow-auto p-4 space-y-4">
+          <div className="flex-1 overflow-auto p-4 space-y-4 bg-gradient-to-b from-gray-900 to-gray-800">
             {draftPhase === "draft" && !multiplayerEnabled && draftStarted ? (
               <FactionSheet
                 drafted={factions[currentPlayer] || {}}
