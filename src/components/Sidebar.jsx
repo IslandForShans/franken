@@ -255,6 +255,8 @@ export default function Sidebar({
                           })
                           .map((component, idx) => {
                             const isDisabled = !canPick || (draftVariant === "rotisserie" && !canPick);
+                            const isTile = !!(component.planets || component.anomalies || component.wormhole);
+                            const isUnit = !!(component.cost !== undefined && component.combat);
                             
                             return (
                               <div
@@ -277,14 +279,36 @@ export default function Sidebar({
                                   </div>
                                 )}
 
-                                {component.description && (
+                                {/* Unit stats */}
+                                {isUnit && (
+                                  <div className="text-xs mt-1 flex gap-2" style={{color: isDisabled ? '#9ca3af' : '#fff'}}>
+                                    {component.cost !== undefined && <span>Cost: {component.cost}</span>}
+                                    <span>Combat: {component.combat}</span>
+                                    {component.move !== undefined && <span>Move: {component.move}</span>}
+                                    {component.capacity !== undefined && <span>Cap: {component.capacity}</span>}
+                                  </div>
+                                )}
+
+                                {/* Tile info */}
+                                {isTile && component.planets && (
+                                  <div className="text-xs mt-1" style={{color: isDisabled ? '#9ca3af' : '#6ee7b7'}}>
+                                    {component.planets.map(p => (
+                                      <div key={p.name}>
+                                        {p.name}: {p.resource}R/{p.influence}I
+                                        {p.traits && p.traits.length > 0 && ` [${p.traits.join(', ')}]`}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+
+                                {component.description && !isTile && (
                                   <div className="text-xs line-clamp-2 mt-1" style={{color: isDisabled ? '#6b7280' : '#fff'}}>
                                     {component.description.length > 100 
                                       ? component.description.substring(0, 100) + "..." 
                                       : component.description}
                                   </div>
                                 )}
-
+                                
                                 {isDisabled && (
                                   <div className="text-xs font-medium mt-1" style={{color: '#dc2626'}}>
                                     Cannot pick (limit reached)
@@ -304,3 +328,4 @@ export default function Sidebar({
       </div>
   );
 }
+
