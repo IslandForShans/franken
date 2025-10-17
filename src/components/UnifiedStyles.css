@@ -905,8 +905,9 @@ body {
   .sidebar {
     position: static;
     transform: translateX(0) !important;
-    height: auto;
+    height: 100vh;
     width: 280px;
+    overflow-y: auto;
   }
 
   .sidebar-toggle-button {
@@ -1939,6 +1940,13 @@ body {
   .resource-assignment-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Main content scrolling */
+.main-content-area {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - var(--header-height, 56px));
 }
 
 /* Make DraftSettingsPanel compact on narrow screens */
