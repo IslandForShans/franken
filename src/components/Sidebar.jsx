@@ -112,7 +112,7 @@ export default function Sidebar({
                               }
                             }}
                           >
-                            <div className="font-medium" style={{color: isDisabled ? '#9ca3af' : '#000000ff'}}>{component.name}</div>
+                            <div className="font-medium" style={{color: isDisabled ? '#9ca3af' : '#fcd34d'}}>{component.name}</div>
                             
                             {component.faction && (
                               <div className="flex items-center gap-1 text-xs font-medium mt-1" style={{color: isDisabled ? '#9ca3af' : '#276afaff'}}>

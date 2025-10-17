@@ -1,6 +1,6 @@
 /* Unified Styles for TI4 Franken Draft */
 
-:root {
+/*:root {
   --bg-primary: #111827;
   --bg-secondary: #1f2937;
   --bg-tertiary: #374151;
@@ -25,6 +25,35 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --transition-fast: 150ms;
+  --transition-normal: 300ms;
+}*/
+
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #1a1f2e;
+  --bg-tertiary: #2a3240;
+  --bg-black: #000000;
+  --text-primary: #ffffff;
+  --text-secondary: #e5e7eb;
+  --text-tertiary: #d1d5db;
+  --accent-yellow: #fcd34d;
+  --accent-yellow-dark: #fbbf24;
+  --accent-blue: #60a5fa;
+  --accent-blue-dark: #3b82f6;
+  --accent-green: #34d399;
+  --accent-green-dark: #10b981;
+  --accent-purple: #a78bfa;
+  --accent-purple-dark: #8b5cf6;
+  --accent-red: #f87171;
+  --accent-red-dark: #ef4444;
+  --accent-orange: #fb923c;
+  --border-color: #4b5563;
+  --border-color-light: #6b7280;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5);
   --transition-fast: 150ms;
   --transition-normal: 300ms;
 }
@@ -674,12 +703,12 @@ body {
   border: none;
   cursor: pointer;
   transition: background var(--transition-fast);
-  color: var(--text-primary);
+  color: var(--accent-yellow);
 }
 
 .sidebar-category-button:hover {
   background: var(--bg-tertiary);
-  color: var(--bg-black);
+  color: var(--accent-yellow);
 }
 
 .sidebar-category-button-expanded {
