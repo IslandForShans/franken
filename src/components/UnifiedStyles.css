@@ -658,7 +658,7 @@ body {
   padding-top: 0.5rem;
 }
 
-/* Sidebar */
+/* Sidebar
 .sidebar {
   width: 20rem;
   border-right: 1px solid var(--border-color);
@@ -666,6 +666,158 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+}*/
+
+.sidebar {
+  /* Desktop: sidebar is part of the normal layout and visible by default */
+  position: relative;
+  top: auto;
+  left: auto;
+  height: auto;
+  width: 320px;
+  min-width: 240px;
+  background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary));
+  color: white;
+  padding: 1rem;
+  overflow-y: auto;
+  transform: none;
+  transition: none;
+  z-index: 1;
+}
+
+.sidebar.open {
+  transform: none;
+}
+
+.sidebar-toggle-button {
+  /* Inline by default so it sits with header controls */
+  position: relative;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  padding: 0.45rem 0.7rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Mobile / small-screen sidebar behavior */
+@media (max-width: 767px) {
+  /* Make sidebar off-canvas so main content is visible by default when collapsed */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    /* Position top at the bottom of the header so sidebar does not sit under it */
+    top: var(--header-height, 56px);
+    /* Make the sidebar fill the remaining viewport under the header */
+    height: calc(100vh - var(--header-height, 56px));
+    bottom: auto;
+    /* Fullscreen width on mobile when opened */
+    width: 100%;
+    max-width: none;
+    background: rgba(17, 24, 39, 0.99);
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal, 300ms) ease;
+    z-index: 9999; /* above everything */
+    overflow-y: auto;
+    box-shadow: none;
+  }
+
+  /* When open, slide in */
+  .sidebar.open {
+    transform: translateX(0%);
+  }
+
+  /* Ensure the sidebar-toggle-button is inline with header and doesn't overlay Home */
+  .sidebar-toggle-button {
+    position: relative;
+    z-index: 220;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+
+  /* Make top-level content (the rest of the app) visible and not pushed off screen */
+  .flex-1 {
+    min-width: 0; /* allow children to shrink properly */
+  }
+
+  /* Ensure the header and its controls sit above the off-canvas sidebar toggle */
+  /* Make header sticky and ensure it sits above the mobile sidebar */
+  .app-header {
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(6px);
+    /* must be higher than .sidebar (9999) so header remains on top */
+    z-index: 10001;
+  }
+
+  /* Header content should wrap so buttons don't get clipped on very small widths */
+  .app-header .px-4 > .flex {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .app-header .px-4 > .flex .justify-between {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .app-header .px-4 .flex .justify-between .flex.items-center.gap-3 {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .app-header .px-4 .flex .justify-between .flex.items-center.gap-2 {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  /* Ensure toggle accepts clicks */
+  .sidebar-toggle-button {
+    pointer-events: auto;
+  }
+ 
+
+  /* Make the main content area scrollable so settings/draft content doesn't get cut off */
+  .flex-1.overflow-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Respect mobile safe area (bottom navigation/home bar) so content can be scrolled above it */
+  :root {
+    --safe-bottom: env(safe-area-inset-bottom, 16px);
+  }
+
+  .flex-1.overflow-auto {
+    padding-bottom: calc(var(--safe-bottom) + 1rem);
+    scroll-padding-bottom: calc(var(--safe-bottom) + 1rem);
+  }
+
+  /* Give the settings panel and other bottom content extra breathing room on mobile */
+  .settings-panel,
+  .draft-summary,
+  .draft-history {
+    margin-bottom: calc(var(--safe-bottom) + 1rem);
+  }
+
+  /* Reduce padding in header so controls fit on small screens */
+  .px-4 { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
+  /* Settings panel: prevent overflow and make grid single column */
+  .settings-panel {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .sidebar-header {
@@ -746,6 +898,20 @@ body {
   color: #9ca3af;
   cursor: not-allowed;
   border-color: #e5e7eb;
+}
+
+/* Desktop behavior */
+@media (min-width: 768px) {
+  .sidebar {
+    position: static;
+    transform: translateX(0) !important;
+    height: auto;
+    width: 280px;
+  }
+
+  .sidebar-toggle-button {
+    display: none;
+  }
 }
 
 /* FirebaseMultiplayerPanel */
@@ -1772,5 +1938,60 @@ body {
 
   .resource-assignment-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Make DraftSettingsPanel compact on narrow screens */
+@media (max-width: 767px) {
+  .settings-panel {
+    padding: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .settings-row {
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Auto-fit compact columns so settings appear side-by-side when possible */
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  /* Lay out each label as a horizontal row: text on left, input on right */
+  .settings-grid .settings-label,
+  .settings-row .settings-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    /* allow label text to wrap so long names don't overlap neighboring inputs */
+    white-space: normal;
+    /* allow the label to shrink inside the grid column */
+    min-width: 0;
+    /* allow long words to break so the layout stays intact */
+    overflow-wrap: anywhere;
+  }
+
+  .settings-grid .settings-label input,
+  .settings-grid .settings-label select,
+  .settings-row .settings-label input,
+  .settings-row .settings-label select {
+    width: 3.2rem;
+    flex: 0 0 auto;
+  }
+
+  /* If the label text is wrapped inside a span, make sure it can take remaining space
+     and shrink correctly. This covers cases where labels are structured like:
+     <label class="settings-label"><span>Long name</span><input/></label> */
+  .settings-grid .settings-label span,
+  .settings-row .settings-label span {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-right: 0.5rem;
   }
 }

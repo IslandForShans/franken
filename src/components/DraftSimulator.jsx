@@ -66,12 +66,12 @@ export default function DraftSimulator({ onNavigate }) {
   // Multiplayer state
   const [multiplayerEnabled, setMultiplayerEnabled] = useState(false);
   const [selectedPicks, setSelectedPicks] = useState([]);
-  const [draftedComponents, setDraftedComponents] = useState({});
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth < 768);
 
   // UI state
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
   const [showBanModal, setShowBanModal] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const headerRef = useRef(null);
 
   // Expansion toggles
   const [expansionsEnabled, setExpansionsEnabled] = useState({
@@ -120,6 +120,23 @@ export default function DraftSimulator({ onNavigate }) {
       }, 1000);
     }
   }, [multiplayerEnabled, draftStarted, factions, draftHistory, currentPlayer, round, draftPhase]);
+
+  // Measure header height and set CSS variable so mobile sidebar can sit below it
+  useEffect(() => {
+    const setHeaderHeightVar = () => {
+      try {
+        const el = headerRef.current;
+        const h = el ? Math.ceil(el.getBoundingClientRect().height) : 56;
+        document.documentElement.style.setProperty('--header-height', `${h}px`);
+      } catch (e) {
+        document.documentElement.style.setProperty('--header-height', `56px`);
+      }
+    };
+
+    setHeaderHeightVar();
+    window.addEventListener('resize', setHeaderHeightVar);
+    return () => window.removeEventListener('resize', setHeaderHeightVar);
+  }, [settingsCollapsed]);
 
   // Update limits when variant changes
   useEffect(() => {
@@ -820,29 +837,37 @@ export default function DraftSimulator({ onNavigate }) {
   };
 
   return (
-    <div className="h-full bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-      <div className="h-full flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <div className="flex">
         {/* Collapsible Sidebar */}
-        {!sidebarCollapsed && (
-          <Sidebar
-            categories={getActiveCategories()}
-            onSelectCategory={setSelectedCategory}
-            playerProgress={multiplayerEnabled ? {} : (playerProgress[currentPlayer] || {})}
-            draftLimits={draftPhase === "reduction" ? getCurrentFactionLimits() : draftLimits}
-            selectedCategory={selectedCategory}
-            availableComponents={getAvailableComponents()}
-            onComponentClick={handlePick}
-            isMultiplayer={multiplayerEnabled}
-            draftVariant={draftVariant}
-          />
-        )}
+        <Sidebar
+          isOpen={!sidebarCollapsed}
+          categories={getActiveCategories()}
+          onSelectCategory={setSelectedCategory}
+          playerProgress={multiplayerEnabled ? {} : (playerProgress[currentPlayer] || {})}
+          draftLimits={draftPhase === "reduction" ? getCurrentFactionLimits() : draftLimits}
+          selectedCategory={selectedCategory}
+          availableComponents={getAvailableComponents()}
+          onComponentClick={handlePick}
+          isMultiplayer={multiplayerEnabled}
+          draftVariant={draftVariant}
+        />
 
-        <div className="flex-1 flex flex-col overflow-hidden">
+  <div className="flex-1 flex flex-col">
           {/* Compact Header */}
-          <div className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
+          <div ref={headerRef} className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg app-header">
             <div className="px-4 py-2">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
+                  {/* Inline sidebar toggle placed to the left of Home so it does not overlay */}
+                  <button
+                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    className={`sidebar-toggle-button px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors`}
+                    aria-label={sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'}
+                  >
+                    {sidebarCollapsed ? '☰' : '✕'}
+                  </button>
+
                   {onNavigate && (
                     <button
                       onClick={() => onNavigate('/')}
@@ -851,12 +876,7 @@ export default function DraftSimulator({ onNavigate }) {
                       ← Home
                     </button>
                   )}
-                  <button
-                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
-                  >
-                    {sidebarCollapsed ? '→ Show' : '← Hide'} Sidebar
-                  </button>
+
                   <h2 className="text-xl font-bold text-yellow-400">Franken Draft</h2>
                 </div>
                 
@@ -917,8 +937,13 @@ export default function DraftSimulator({ onNavigate }) {
               </div>
             </div>
 
+            {/* settings moved into main scrollable area to avoid header overflow on mobile */}
+          </div>
+
+          <div className="flex-1 p-4 space-y-4 bg-gradient-to-b from-gray-900 to-gray-800">
+            {/* Settings and lobby controls live inside the scrollable area so they don't block the header */}
             {!settingsCollapsed && (
-              <div className="px-4 py-2 bg-gray-800/50">
+              <div>
                 {!multiplayerEnabled && !draftStarted && (
                   <>
                     <div className="mb-3 p-3 bg-gray-900/50 rounded-lg border border-gray-700">
@@ -1008,35 +1033,6 @@ export default function DraftSimulator({ onNavigate }) {
                 {renderCurrentPlayerInfo()}
               </div>
             )}
-
-            {draftStarted && (
-              <div className="px-4 py-2 bg-gray-800/30">
-                <button 
-                  onClick={() => {
-                    if (confirm("Are you sure you want to cancel the draft? All progress will be lost.")) {
-                      setDraftStarted(false);
-                      setDraftPhase("draft");
-                      setFactions([]);
-                      setPlayerBags([]);
-                      setPlayerProgress([]);
-                      setRotisseriePool({});
-                      setDraftHistory([]);
-                      setCurrentPlayer(0);
-                      setRound(1);
-                      setPicksThisRound(0);
-                      setPendingPicks([]);
-                      setIsPickingPhase(true);
-                    }
-                  }}
-                  className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-semibold transition-colors"
-                >
-                  Cancel Draft
-                </button>
-          </div>
-            )}
-          </div>
-
-          <div className="flex-1 overflow-auto p-4 space-y-4 bg-gradient-to-b from-gray-900 to-gray-800">
             {draftPhase === "draft" && !multiplayerEnabled && draftStarted ? (
               <FactionSheet
                 drafted={factions[currentPlayer] || {}}
