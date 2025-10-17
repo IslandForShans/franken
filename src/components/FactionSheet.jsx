@@ -134,6 +134,8 @@ export default function FactionSheet({
     const swapOption = getSwapOptions(item.name, item.faction);
     const extraComponents = getExtraComponents(item.name, item.faction);
     const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
+    const isUnit = (category === 'flagship' || category === 'mech' || category === 'starting_fleet');
+    const isTech = (category === 'faction_techs' || category === 'starting_techs');
 
     return (
       <div
@@ -158,6 +160,23 @@ export default function FactionSheet({
             )}
             {item.isSwap && <span className="text-xs" style={{color: '#93c5fd'}}>[SWAPPED]</span>}
             {item.isExtra && <span className="text-xs" style={{color: '#6ee7b7'}}>[EXTRA]</span>}
+            
+            {/* Unit stats - always show */}
+            {isUnit && item.combat && (
+              <div className="text-xs mt-2 flex gap-2" style={{color: '#fff'}}>
+                {item.cost !== undefined && <span className="font-semibold">Cost: {item.cost}</span>}
+                <span className="font-semibold">Combat: {item.combat}</span>
+                {item.move !== undefined && <span className="font-semibold">Move: {item.move}</span>}
+                {item.capacity !== undefined && <span className="font-semibold">Capacity: {item.capacity}</span>}
+              </div>
+            )}
+            
+            {/* Unit abilities - always show */}
+            {isUnit && item.abilities && item.abilities.length > 0 && (
+              <div className="text-xs mt-1" style={{color: '#c084fc'}}>
+                <span className="font-semibold">Abilities:</span> {item.abilities.join(', ')}
+              </div>
+            )}
           </div>
 
           {/* Action buttons */}
@@ -184,6 +203,13 @@ export default function FactionSheet({
             </button>
           </div>
         </div>
+
+        {/* Description - always show for non-units or if expanded */}
+        {item.description && (!isUnit || isExpanded) && (
+          <div className="faction-component-description">
+            {item.description}
+          </div>
+        )}
 
         {/* Expanded details */}
         {isExpanded && (
@@ -378,4 +404,5 @@ const renderUnitStats = (item) => {
     </div>
   );
 };
+
 }
