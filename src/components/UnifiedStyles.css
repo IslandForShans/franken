@@ -460,7 +460,11 @@ body {
   border-radius: 0.5rem;
   box-shadow: var(--shadow-md);
   background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary));
-  max-height: 12rem;
+  /* Show the title and at least a couple of history rows without scrolling, but
+     allow scrolling for long history lists. Use min-height for visible area and
+     a reasonable max-height to prevent it from taking too much screen on mobile. */
+  min-height: 4.5rem; /* title + ~2 items */
+  max-height: 14rem;
   overflow-y: auto;
 }
 
@@ -724,9 +728,34 @@ body {
     box-shadow: none;
   }
 
+  /* Backdrop shown behind the sidebar on mobile when open */
+  .sidebar-backdrop {
+    position: fixed;
+    left: 0;
+    top: var(--header-height, 56px);
+    width: 100%;
+    height: calc(100vh - var(--header-height, 56px));
+    background: rgba(0,0,0,0.45);
+    z-index: 9998; /* below sidebar (9999) but above content */
+    backdrop-filter: blur(2px);
+  }
+
   /* When open, slide in */
   .sidebar.open {
     transform: translateX(0%);
+  }
+
+  /* Mobile header: place the title above the controls so it doesn't get in the way */
+  .app-header .px-4 .flex .items-center.gap-3 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .app-header .px-4 .flex .items-center.gap-3 h2,
+  .app-header .px-4 .flex .items-center.gap-3 h1 {
+    margin: 0;
+    line-height: 1.1;
   }
 
   /* Ensure the sidebar-toggle-button is inline with header and doesn't overlay Home */
@@ -754,26 +783,33 @@ body {
     z-index: 10001;
   }
 
-  /* Header content should wrap so buttons don't get clipped on very small widths */
+  /* Keep header controls (toggle, home, title) on a single row where possible. */
   .app-header .px-4 > .flex {
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.5rem;
-  }
-
-  .app-header .px-4 > .flex .justify-between {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .app-header .px-4 .flex .justify-between .flex.items-center.gap-3 {
-    flex-wrap: wrap;
     align-items: center;
   }
 
-  .app-header .px-4 .flex .justify-between .flex.items-center.gap-2 {
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  .app-header .px-4 > .flex .justify-between {
+    flex-direction: row;
     gap: 0.5rem;
+    align-items: center;
+  }
+
+  .app-header .px-4 .flex .justify-between .flex.items-center.gap-3,
+  .app-header .px-4 .flex .justify-between .flex.items-center.gap-2 {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  /* Make the left header group able to shrink and keep the title from wrapping
+     onto the next line in tighter spaces. */
+  .app-header .px-4 .flex .justify-between .flex.items-center.gap-3 {
+    min-width: 0; /* allow shrinking */
+  }
+
+  .app-header h2, .app-header h1 {
+    flex-shrink: 0; /* keep the title on the same row as controls */
   }
 
   /* Ensure toggle accepts clicks */
@@ -784,7 +820,10 @@ body {
 
   /* Make the main content area scrollable so settings/draft content doesn't get cut off */
   .flex-1.overflow-auto {
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
+    /* Limit the height to the viewport minus the header so the container can scroll reliably */
+    max-height: calc(100vh - var(--header-height, 56px));
   }
 
   /* Respect mobile safe area (bottom navigation/home bar) so content can be scrolled above it */
@@ -839,8 +878,10 @@ body {
 }
 
 .sidebar-content {
-  flex: 1;
-  overflow-y: auto;
+  /* Make the entire .sidebar the single scroll container so header and load/export
+     areas scroll together with the component list. Avoid internal overflow so
+     the experience is consistent across desktop and mobile. */
+  box-sizing: border-box;
 }
 
 .sidebar-category {

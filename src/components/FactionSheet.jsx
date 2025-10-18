@@ -11,7 +11,8 @@ export default function FactionSheet({
   title = "Your Drafted Faction",
   isCurrentPlayer = false,
   showReductionHelper = false,
-  playerIndex = null
+  playerIndex = null,
+  hiddenCategories = [] // optional array of category keys to hide
 }) {
   const [expandedId, setExpandedId] = useState(null);
   const [swapModalOpen, setSwapModalOpen] = useState(false);
@@ -105,7 +106,7 @@ export default function FactionSheet({
     setSwapTarget(null);
   };
 
-  const categories = [
+  let categories = [
     { key: 'abilities', col: 1 },
     { key: 'faction_techs', col: 1 },
     { key: 'agents', col: 2 },
@@ -121,6 +122,11 @@ export default function FactionSheet({
     { key: 'red_tiles', col: 1 },
     { key: 'home_systems', col: 1 }
   ];
+
+  // Remove any categories the parent explicitly asked to hide (Theorycrafting will use this)
+  if (Array.isArray(hiddenCategories) && hiddenCategories.length > 0) {
+    categories = categories.filter(c => !hiddenCategories.includes(c.key));
+  }
 
   const getColumnCategories = (col) => categories.filter(c => c.col === col);
 

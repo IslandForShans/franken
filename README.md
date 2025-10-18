@@ -33,9 +33,8 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Make expansion content able to be separated.
 - Add Thunders Edge stuff once Luminous works out how to implement into franken (~month after release)
 - Make draft actually start with local multiayer
-- Finish mobile functionality
-- Find out why cancel draft button disappeared
-- Figure out why scrolling isn't working
+- Make Home System show tile attributes in Sidebars and Faction Sheets
+- Add option to export list of commands to copy paste to create franken faction in Discord Async Bot
 
 ## Eventual Non-Franken features to add
 

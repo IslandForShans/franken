@@ -66,7 +66,8 @@ export default function DraftSimulator({ onNavigate }) {
   // Multiplayer state
   const [multiplayerEnabled, setMultiplayerEnabled] = useState(false);
   const [selectedPicks, setSelectedPicks] = useState([]);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth < 768);
+  // Start with the sidebar closed by default for a cleaner initial view
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   // UI state
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
@@ -369,6 +370,22 @@ export default function DraftSimulator({ onNavigate }) {
         firstRoundPickCount,
         subsequentRoundPickCount,
     });
+  };
+
+  const cancelDraft = () => {
+    // Reset draft-related state to initial defaults
+    setDraftStarted(false);
+    setDraftHistory([]);
+    setPlayerBags([]);
+    setPlayerProgress([]);
+    setFactions([]);
+    setCurrentPlayer(0);
+    setRound(1);
+    setPicksThisRound(0);
+    setDraftPhase('draft');
+    setPendingPicks([]);
+    setIsPickingPhase(true);
+    setShowSummary(false);
   };
 
   const getAvailableComponents = () => {
@@ -838,7 +855,7 @@ export default function DraftSimulator({ onNavigate }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-      <div className="flex">
+  <div className="flex h-screen">
         {/* Collapsible Sidebar */}
         <Sidebar
           isOpen={!sidebarCollapsed}
@@ -853,34 +870,44 @@ export default function DraftSimulator({ onNavigate }) {
           draftVariant={draftVariant}
         />
 
+        {/* Backdrop: shown on mobile when sidebar is open; clicking closes sidebar */}
+        {!sidebarCollapsed && (
+          <div
+            className="sidebar-backdrop"
+            role="button"
+            aria-label="Close sidebar"
+            onClick={() => setSidebarCollapsed(true)}
+          />
+        )}
+
   <div className="flex-1 flex flex-col">
           {/* Compact Header */}
           <div ref={headerRef} className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg app-header">
             <div className="px-4 py-2">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  {/* Inline sidebar toggle placed to the left of Home so it does not overlay */}
-                  <button
-                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    className={`sidebar-toggle-button px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors`}
-                    aria-label={sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'}
-                  >
-                    {sidebarCollapsed ? '☰' : '✕'}
-                  </button>
-
-                  {onNavigate && (
+                {/* Title on its own line so it sits above all controls (helps on mobile) */}
+                <h2 className="text-xl font-bold text-yellow-400">Franken Draft</h2>
+                <div className="flex justify-between items-center mt-2">
+                  <div className="flex items-center gap-3">
+                    {/* Inline sidebar toggle placed to the left of Home so it does not overlay */}
                     <button
-                      onClick={() => onNavigate('/')}
-                      className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+                      onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                      className={`sidebar-toggle-button px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors`}
+                      aria-label={sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'}
                     >
-                      ← Home
+                      {sidebarCollapsed ? '☰' : '✕'}
                     </button>
-                  )}
 
-                  <h2 className="text-xl font-bold text-yellow-400">Franken Draft</h2>
-                </div>
-                
-                <div className="flex items-center gap-2">
+                    {onNavigate && (
+                      <button
+                        onClick={() => onNavigate('/')}
+                        className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+                      >
+                        ← Home
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
                   <button 
                     onClick={() => setShowBanModal(true)} 
                     className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-semibold transition-colors"
@@ -933,6 +960,15 @@ export default function DraftSimulator({ onNavigate }) {
                       {settingsCollapsed ? "Show" : "Hide"} Info
                     </button>
                   )}
+                  {/* Cancel Draft (visible during a local draft) */}
+                  {draftStarted && !multiplayerEnabled && (
+                    <button
+                      onClick={cancelDraft}
+                      className="px-3 py-1.5 rounded-lg bg-red-700 hover:bg-red-600 text-white text-sm font-semibold transition-colors"
+                    >
+                      Cancel Draft
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -940,7 +976,7 @@ export default function DraftSimulator({ onNavigate }) {
             {/* settings moved into main scrollable area to avoid header overflow on mobile */}
           </div>
 
-          <div className="flex-1 p-4 space-y-4 bg-gradient-to-b from-gray-900 to-gray-800">
+          <div className="flex-1 overflow-auto p-4 space-y-4 bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col">
             {/* Settings and lobby controls live inside the scrollable area so they don't block the header */}
             {!settingsCollapsed && (
               <div>

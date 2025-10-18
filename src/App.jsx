@@ -19,7 +19,8 @@ function App() {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden">
+    // Allow the page to scroll; specific sub-containers manage their own overflow
+    <div className="h-screen w-screen overflow-auto">
       {currentPage === 'home' && <MainPage onNavigate={handleNavigate} />}
       {currentPage === 'draft' && <DraftSimulator onNavigate={handleNavigate} />}
       {currentPage === 'theorycrafting' && <TheorycraftingApp onNavigate={handleNavigate} />}

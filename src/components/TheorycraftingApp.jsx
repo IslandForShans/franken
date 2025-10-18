@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import FactionSheet from "./FactionSheet.jsx";
 import factionsJSONRaw from "../data/factions.json";
 import { processFactionData } from "../utils/dataProcessor.js";
@@ -9,13 +9,13 @@ const factionsJSON = processFactionData(factionsJSONRaw);
 const baseFactionLimits = {
   blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
   commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
-  commodity_values: 1, flagship: 1, mech: 1
+  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1
 };
 
 const powerFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 5, faction_techs: 4, agents: 3,
   commanders: 3, heroes: 3, promissory: 2, starting_techs: 2, starting_fleet: 2,
-  commodity_values: 2, flagship: 1, mech: 1
+  commodity_values: 2, flagship: 1, mech: 1, home_systems: 1
 };
 
 export default function TheorycraftingApp({ onNavigate }) {
@@ -34,14 +34,35 @@ export default function TheorycraftingApp({ onNavigate }) {
     starting_fleet: [],
     commodity_values: [],
     blue_tiles: [],
-    red_tiles: []
+    red_tiles: [],
+    home_systems: []
   });
   const [draftLimits, setDraftLimits] = useState(baseFactionLimits);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [powerMode, setPowerMode] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // Start closed by default so mobile/desktop see main content first
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const headerRef = useRef(null);
 
-  const categories = Object.keys(baseFactionLimits);
+  // Measure header height and set CSS variable so mobile sidebar can sit below it
+  useEffect(() => {
+    const setHeaderHeightVar = () => {
+      try {
+        const el = headerRef.current;
+        const h = el ? Math.ceil(el.getBoundingClientRect().height) : 56;
+        document.documentElement.style.setProperty('--header-height', `${h}px`);
+      } catch (e) {
+        document.documentElement.style.setProperty('--header-height', `56px`);
+      }
+    };
+
+    setHeaderHeightVar();
+    window.addEventListener('resize', setHeaderHeightVar);
+    return () => window.removeEventListener('resize', setHeaderHeightVar);
+  }, []);
+
+  // For theorycrafting, exclude tile categories (handled differently here)
+  const categories = Object.keys(baseFactionLimits).filter(c => c !== 'blue_tiles' && c !== 'red_tiles');
 
   const getAllComponents = (category) => {
     const allComponents = [
@@ -87,7 +108,9 @@ export default function TheorycraftingApp({ onNavigate }) {
         starting_fleet: faction.starting_fleet || [],
         commodity_values: faction.commodity_values || [],
         blue_tiles: [],
-        red_tiles: []
+        red_tiles: [],
+        // If the base faction has home_systems, include them when loading
+        home_systems: faction.home_systems ? [...faction.home_systems] : []
       };
       setCustomFaction(loadedFaction);
     }
@@ -108,7 +131,8 @@ export default function TheorycraftingApp({ onNavigate }) {
       starting_fleet: [],
       commodity_values: [],
       blue_tiles: [],
-      red_tiles: []
+      red_tiles: [],
+      home_systems: []
     });
   };
 
@@ -329,10 +353,20 @@ export default function TheorycraftingApp({ onNavigate }) {
       <div className="h-full flex">
         {/* Collapsible Sidebar */}
         {!sidebarCollapsed && (
-          <div className="w-80 border-r border-gray-700 bg-gray-900 flex flex-col">
+          <div className={`sidebar ${!sidebarCollapsed ? 'open' : ''} w-80 border-r border-gray-700 bg-gray-900 flex flex-col`}>
             <div className="p-4 border-b border-gray-700 bg-gray-900/95">
-              <h1 className="text-xl font-bold mb-4 text-yellow-400">TI4 Faction Builder</h1>
-              
+              {/* mobile close button */}
+              <button
+                className="sidebar-close-button"
+                aria-label="Close sidebar"
+                onClick={() => setSidebarCollapsed(true)}
+              >
+                ✕
+              </button>
+
+              {/* Title above controls so it doesn't sit between left and right buttons on small screens */}
+              <h1 className="text-xl font-bold mb-2 text-yellow-400">TI4 Faction Builder</h1>
+
               <div className="space-y-2 mb-4">
                 <select 
                   value={selectedFaction} 
@@ -393,7 +427,7 @@ export default function TheorycraftingApp({ onNavigate }) {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            <div>
               {categories.map(cat => {
                 const isExpanded = expandedCategory === cat;
                 const components = getAllComponents(cat);
@@ -449,10 +483,20 @@ export default function TheorycraftingApp({ onNavigate }) {
           </div>
         )}
 
+        {/* Backdrop for mobile when sidebar open */}
+        {!sidebarCollapsed && (
+          <div
+            className="sidebar-backdrop"
+            role="button"
+            aria-label="Close sidebar"
+            onClick={() => setSidebarCollapsed(true)}
+          />
+        )}
+
         {/* Main Content */}
         <div className="flex-1 overflow-hidden flex flex-col">
           {/* Compact Header */}
-          <div className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
+          <div ref={headerRef} className="app-header bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
             <div className="px-4 py-2 flex justify-between items-center">
               <div className="flex items-center gap-3">
                 {onNavigate && (
@@ -481,6 +525,7 @@ export default function TheorycraftingApp({ onNavigate }) {
               onRemove={handleRemoveComponent}
               draftLimits={draftLimits}
               title={`${customFaction.name} ${powerMode ? "(Power Mode)" : "(Standard)"}`}
+              hiddenCategories={["blue_tiles", "red_tiles"]}
             />
           </div>
         </div>
