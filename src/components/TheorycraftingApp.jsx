@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import FactionSheet from "./FactionSheet.jsx";
 import factionsJSONRaw from "../data/factions.json";
+import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData } from "../utils/dataProcessor.js";
 
 // Process faction data for icons
 const factionsJSON = processFactionData(factionsJSONRaw);
+const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
 
 const baseFactionLimits = {
   blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
@@ -40,28 +42,9 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [draftLimits, setDraftLimits] = useState(baseFactionLimits);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [powerMode, setPowerMode] = useState(false);
-  // Start closed by default so mobile/desktop see main content first
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const headerRef = useRef(null);
 
-  // Measure header height and set CSS variable so mobile sidebar can sit below it
-  useEffect(() => {
-    const setHeaderHeightVar = () => {
-      try {
-        const el = headerRef.current;
-        const h = el ? Math.ceil(el.getBoundingClientRect().height) : 56;
-        document.documentElement.style.setProperty('--header-height', `${h}px`);
-      } catch (e) {
-        document.documentElement.style.setProperty('--header-height', `56px`);
-      }
-    };
-
-    setHeaderHeightVar();
-    window.addEventListener('resize', setHeaderHeightVar);
-    return () => window.removeEventListener('resize', setHeaderHeightVar);
-  }, []);
-
-  // For theorycrafting, exclude tile categories (handled differently here)
   const categories = Object.keys(baseFactionLimits).filter(c => c !== 'blue_tiles' && c !== 'red_tiles');
 
   const getAllComponents = (category) => {
@@ -109,7 +92,6 @@ export default function TheorycraftingApp({ onNavigate }) {
         commodity_values: faction.commodity_values || [],
         blue_tiles: [],
         red_tiles: [],
-        // If the base faction has home_systems, include them when loading
         home_systems: faction.home_systems ? [...faction.home_systems] : []
       };
       setCustomFaction(loadedFaction);
@@ -163,6 +145,81 @@ export default function TheorycraftingApp({ onNavigate }) {
     linkElement.click();
   };
 
+  const exportForAsync = () => {
+    const formatCategoryNameForExport = (category) => {
+      const names = {
+        abilities: "Faction Abilities",
+        faction_techs: "Faction Technologies",
+        agents: "Agents",
+        commanders: "Commanders",
+        heroes: "Heroes",
+        promissory: "Promissory Notes",
+        flagship: "Flagship",
+        mech: "Mech",
+        starting_techs: "Starting Technologies",
+        starting_fleet: "Starting Fleet",
+        commodity_values: "Commodities",
+        blue_tiles: "Blue Tiles",
+        red_tiles: "Red Tiles",
+        home_systems: "Home System"
+      };
+      return names[category] || category.toUpperCase().replace(/_/g, " ");
+    };
+
+    let output = `${customFaction.name}\n`;
+    output += `Mode: ${powerMode ? "Power" : "Standard"}\n`;
+    output += `Created: ${new Date().toLocaleDateString()}\n`;
+    output += `${"=".repeat(50)}\n\n`;
+
+    const allCategories = Object.keys(baseFactionLimits);
+    
+    allCategories.forEach(category => {
+      const components = customFaction[category] || [];
+      if (components.length === 0) return;
+
+      output += `${formatCategoryNameForExport(category)}:\n`;
+      output += `${"-".repeat(formatCategoryNameForExport(category).length + 1)}\n`;
+      
+      components.forEach((component, idx) => {
+        const num = `${idx + 1}.`.padEnd(4);
+        if (component.faction) {
+          output += `${num}${component.name} (${component.faction})\n`;
+        } else {
+          output += `${num}${component.name}\n`;
+        }
+      });
+      
+      output += `\n`;
+    });
+
+    // Create and download text file
+    const blob = new Blob([output], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${customFaction.name.replace(/\s+/g, '_')}_async.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  useEffect(() => {
+    const setHeaderHeightVar = () => {
+      try {
+        const el = headerRef.current;
+        const h = el ? Math.ceil(el.getBoundingClientRect().height) : 56;
+        document.documentElement.style.setProperty('--header-height', `${h}px`);
+      } catch (e) {
+        document.documentElement.style.setProperty('--header-height', `56px`);
+      }
+    };
+
+    setHeaderHeightVar();
+    window.addEventListener('resize', setHeaderHeightVar);
+    return () => window.removeEventListener('resize', setHeaderHeightVar);
+  }, []);
+
   const renderComponentCard = (component, cat, idx, isDisabled, alreadySelected) => {
     const isUnit = (cat === 'flagship' || cat === 'mech');
     const isTech = (cat === 'faction_techs' || cat === 'starting_techs');
@@ -190,7 +247,6 @@ export default function TheorycraftingApp({ onNavigate }) {
           </div>
         )}
         
-        {/* Tech card format */}
         {isTech && (
           <div className="text-xs mt-2">
             {component.techs && component.techs.length > 0 ? (
@@ -263,7 +319,6 @@ export default function TheorycraftingApp({ onNavigate }) {
           </div>
         )}
         
-        {/* Unit card format */}
         {isUnit && component.combat && (
           <div className="text-xs mt-2">
             {component.abilities && component.abilities.length > 0 && (
@@ -300,14 +355,12 @@ export default function TheorycraftingApp({ onNavigate }) {
           </div>
         )}
         
-        {/* Regular description for non-units, non-techs */}
         {!isUnit && !isTech && component.description && (
           <div className="text-xs text-gray-400 line-clamp-2 mt-1">
             {component.description}
           </div>
         )}
         
-        {/* Tile information */}
         {component.planets && component.planets.length > 0 && (
           <div className="mt-1 border-t border-gray-700 pt-1">
             {component.planets.map((planet, pIdx) => (
@@ -351,11 +404,9 @@ export default function TheorycraftingApp({ onNavigate }) {
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="h-full flex">
-        {/* Collapsible Sidebar */}
         {!sidebarCollapsed && (
           <div className={`sidebar ${!sidebarCollapsed ? 'open' : ''} w-80 border-r border-gray-700 bg-gray-900 flex flex-col`}>
             <div className="p-4 border-b border-gray-700 bg-gray-900/95">
-              {/* mobile close button */}
               <button
                 className="sidebar-close-button"
                 aria-label="Close sidebar"
@@ -364,7 +415,6 @@ export default function TheorycraftingApp({ onNavigate }) {
                 ✕
               </button>
 
-              {/* Title above controls so it doesn't sit between left and right buttons on small screens */}
               <h1 className="text-xl font-bold mb-2 text-yellow-400">TI4 Faction Builder</h1>
 
               <div className="space-y-2 mb-4">
@@ -419,15 +469,23 @@ export default function TheorycraftingApp({ onNavigate }) {
                 </div>
               </div>
 
-              <button 
-                onClick={exportFaction}
-                className="w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-500 mb-4 font-semibold transition-colors"
-              >
-                Export Faction
-              </button>
+              <div className="space-y-2 mb-4">
+                <button 
+                  onClick={exportFaction}
+                  className="w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-500 font-semibold transition-colors"
+                >
+                  Export Faction (JSON)
+                </button>
+                <button 
+                  onClick={exportForAsync}
+                  className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 font-semibold transition-colors"
+                >
+                  Export for Async
+                </button>
+              </div>
             </div>
 
-            <div>
+            <div className="flex-1 overflow-y-auto">
               {categories.map(cat => {
                 const isExpanded = expandedCategory === cat;
                 const components = getAllComponents(cat);
@@ -483,7 +541,6 @@ export default function TheorycraftingApp({ onNavigate }) {
           </div>
         )}
 
-        {/* Backdrop for mobile when sidebar open */}
         {!sidebarCollapsed && (
           <div
             className="sidebar-backdrop"
@@ -493,9 +550,7 @@ export default function TheorycraftingApp({ onNavigate }) {
           />
         )}
 
-        {/* Main Content */}
         <div className="flex-1 overflow-hidden flex flex-col">
-          {/* Compact Header */}
           <div ref={headerRef} className="app-header bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
             <div className="px-4 py-2 flex justify-between items-center">
               <div className="flex items-center gap-3">
@@ -518,7 +573,6 @@ export default function TheorycraftingApp({ onNavigate }) {
             </div>
           </div>
 
-          {/* Faction Sheet */}
           <div className="flex-1 overflow-auto p-4 bg-gradient-to-b from-gray-900 to-gray-800">
             <FactionSheet
               drafted={customFaction}
