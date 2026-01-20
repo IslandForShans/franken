@@ -977,141 +977,222 @@ export default function DraftSimulator({ onNavigate }) {
           </div>
 
           <div className="flex-1 overflow-auto p-4 space-y-4 bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col">
-            {/* Settings and lobby controls live inside the scrollable area so they don't block the header */}
-            {!settingsCollapsed && (
-              <div>
-                {!multiplayerEnabled && !draftStarted && (
-                  <>
-                    <div className="mb-3 p-3 bg-gray-900/50 rounded-lg border border-gray-700">
-                      <h3 className="font-bold mb-2 text-yellow-400 text-sm">Expansions</h3>
-                      
-                      <label className="flex items-center cursor-pointer mb-2">
-                        <input
-                          type="checkbox"
-                          checked={expansionsEnabled.pok}
-                          onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, pok: e.target.checked }))}
-                          className="mr-2"
-                        />
-                        <span className="font-medium text-white text-sm">Prophecy of Kings</span>
-                      </label>
-                      <div className="text-xs text-gray-400 ml-6 mb-2">
-                        Enables: Agents, Commanders, Heroes, Mechs
-                      </div>
-
-                      <label className="flex items-center cursor-pointer mb-2">
-                        <input
-                          type="checkbox"
-                          checked={expansionsEnabled.ds}
-                          onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, ds: e.target.checked }))}
-                          className="mr-2"
-                        />
-                        <span className="font-medium text-white text-sm">Discordant Stars (DS)</span>
-                      </label>
-                      <div className="text-xs text-gray-400 ml-6 mb-2">
-                        Adds: 30 new factions with all components
-                      </div>
-
-                      <label className="flex items-center cursor-pointer mb-2">
-                        <input
-                          type="checkbox"
-                          checked={expansionsEnabled.us}
-                          onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, us: e.target.checked }))}
-                          className="mr-2"
-                        />
-                        <span className="font-medium text-white text-sm">Uncharted Space (US)</span>
-                      </label>
-                      <div className="text-xs text-gray-400 ml-6">
-                        Adds: Additional system tiles
-                      </div>
-                    </div>
-
-                    <DraftSettingsPanel
-                      playerCount={playerCount}
-                      setPlayerCount={setPlayerCount}
-                      draftVariant={draftVariant}
-                      setDraftVariant={setDraftVariant}
-                      draftLimits={draftLimits}
-                      setDraftLimits={setDraftLimits}
-                      firstRoundPickCount={firstRoundPickCount}
-                      setFirstRoundPickCount={setFirstRoundPickCount}
-                      subsequentRoundPickCount={subsequentRoundPickCount}
-                      setSubsequentRoundPickCount={setSubsequentRoundPickCount}
-                    />
-                  </>
-                )}
-
-                {multiplayerEnabled && (
-                  <FirebaseMultiplayerPanel
-                    draftSettings={{
-                      variant: draftVariant,
-                      playerCount: playerCount,
-                      draftLimits: draftLimits,
-                      firstRoundPickCount: firstRoundPickCount,
-                      subsequentRoundPickCount: subsequentRoundPickCount
-                    }}
-                    onDraftStart={(lobbyData) => {
-                            console.log("Draft starting with lobby data:", lobbyData);
-
-                      const players = Object.values(lobbyData.players || {}).sort(
-                        (a, b) => a.joinedAt - b.joinedAt
-                      );
-
-                      initializeDraft({
-                        ...lobbyData.settings,
-                        playerCount: players.length,
-                        players,
-                      });
-                    }}
-                    onDraftStateSync={handleDraftStateSync}
-                  />
-                )}
-
-                {renderCurrentPlayerInfo()}
-              </div>
-            )}
-            {draftPhase === "draft" && !multiplayerEnabled && draftStarted ? (
-              <FactionSheet
-                drafted={factions[currentPlayer] || {}}
-                onRemove={() => {}}
-                draftLimits={draftLimits}
-                title={`Player ${currentPlayer + 1}'s Draft`}
-                isCurrentPlayer={true}
+  {/* Settings and lobby controls */}
+  {!settingsCollapsed && (
+    <div>
+      {!multiplayerEnabled && !draftStarted && (
+        <>
+          <div className="mb-3 p-3 bg-gray-900/50 rounded-lg border border-gray-700">
+            <h3 className="font-bold mb-2 text-yellow-400 text-sm">Expansions</h3>
+            
+            <label className="flex items-center cursor-pointer mb-2">
+              <input
+                type="checkbox"
+                checked={expansionsEnabled.pok}
+                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, pok: e.target.checked }))}
+                className="mr-2"
               />
-            ) : draftPhase === "reduction" && !multiplayerEnabled ? (
-              factions.map((f, i) => (
-                <FactionSheet
-                  key={i}
-                  drafted={f}
-                  onRemove={(cat, idx) => handleReduction(i, cat, idx)}
-                  onSwapComponent={(playerIdx, category, componentIdx, swapOption) => handleSwap(playerIdx, category, componentIdx, swapOption)}
-                  draftLimits={getCurrentFactionLimits()}
-                  title={`Player ${i + 1} - Remove Excess Components`}
-                  showReductionHelper={true}
-                  playerIndex={i}
-                />
-              ))
-            ) : multiplayerEnabled ? (
-              <FactionSheet
-                drafted={draftedComponents}
-                onRemove={() => {}}
-                draftLimits={draftLimits}
-                title="Your Multiplayer Draft"
-              />
-            ) : (
-              factions.map((f, i) => (
-                <FactionSheet
-                  key={i}
-                  drafted={f}
-                  onRemove={() => {}}
-                  draftLimits={getCurrentFactionLimits()}
-                  title={f.name}
-                />
-              ))
-            )}
+              <span className="font-medium text-white text-sm">Prophecy of Kings</span>
+            </label>
+            <div className="text-xs text-gray-400 ml-6 mb-2">
+              Enables: Agents, Commanders, Heroes, Mechs
+            </div>
 
-            <DraftHistory history={draftHistory} />
-            {showSummary && <DraftSummary factions={factions} />}
+            <label className="flex items-center cursor-pointer mb-2">
+              <input
+                type="checkbox"
+                checked={expansionsEnabled.ds}
+                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, ds: e.target.checked }))}
+                className="mr-2"
+              />
+              <span className="font-medium text-white text-sm">Discordant Stars (DS)</span>
+            </label>
+            <div className="text-xs text-gray-400 ml-6 mb-2">
+              Adds: 30 new factions with all components
+            </div>
+
+            <label className="flex items-center cursor-pointer mb-2">
+              <input
+                type="checkbox"
+                checked={expansionsEnabled.us}
+                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, us: e.target.checked }))}
+                className="mr-2"
+              />
+              <span className="font-medium text-white text-sm">Uncharted Space (US)</span>
+            </label>
+            <div className="text-xs text-gray-400 ml-6">
+              Adds: Additional system tiles
+            </div>
           </div>
+
+          <DraftSettingsPanel
+            playerCount={playerCount}
+            setPlayerCount={setPlayerCount}
+            draftVariant={draftVariant}
+            setDraftVariant={setDraftVariant}
+            draftLimits={draftLimits}
+            setDraftLimits={setDraftLimits}
+            firstRoundPickCount={firstRoundPickCount}
+            setFirstRoundPickCount={setFirstRoundPickCount}
+            subsequentRoundPickCount={subsequentRoundPickCount}
+            setSubsequentRoundPickCount={setSubsequentRoundPickCount}
+          />
+        </>
+      )}
+
+      {multiplayerEnabled && (
+        <FirebaseMultiplayerPanel
+          draftSettings={{
+            variant: draftVariant,
+            playerCount: playerCount,
+            draftLimits: draftLimits,
+            firstRoundPickCount: firstRoundPickCount,
+            subsequentRoundPickCount: subsequentRoundPickCount
+          }}
+          onDraftStart={(lobbyData) => {
+            console.log("Draft starting with lobby data:", lobbyData);
+
+            const players = Object.values(lobbyData.players || {}).sort(
+              (a, b) => a.joinedAt - b.joinedAt
+            );
+
+            initializeDraft({
+              ...lobbyData.settings,
+              playerCount: players.length,
+              players,
+            });
+          }}
+          onDraftStateSync={handleDraftStateSync}
+        />
+      )}
+
+      {renderCurrentPlayerInfo()}
+    </div>
+  )}
+
+  {/* MAIN CONTENT RENDERING - FIXED TO HANDLE COMPLETE STATE */}
+  {draftPhase === "draft" && !multiplayerEnabled && draftStarted ? (
+    <FactionSheet
+      drafted={factions[currentPlayer] || {}}
+      onRemove={() => {}}
+      draftLimits={draftLimits}
+      title={`Player ${currentPlayer + 1}'s Draft`}
+      isCurrentPlayer={true}
+    />
+  ) : draftPhase === "reduction" && !multiplayerEnabled ? (
+    factions.map((f, i) => (
+      <FactionSheet
+        key={i}
+        drafted={f}
+        onRemove={(cat, idx) => handleReduction(i, cat, idx)}
+        onSwapComponent={(playerIdx, category, componentIdx, swapOption, triggerComponent) => 
+          handleSwap(playerIdx, category, componentIdx, swapOption, triggerComponent)
+        }
+        draftLimits={getCurrentFactionLimits()}
+        title={`Player ${i + 1} - Remove Excess Components`}
+        showReductionHelper={true}
+        playerIndex={i}
+      />
+    ))
+  ) : draftPhase === "complete" && !multiplayerEnabled ? (
+    // ========== FIXED: RENDER COMPLETED FACTIONS ==========
+    <>
+      <div className="mb-4 p-6 bg-gradient-to-r from-green-900/40 to-blue-900/40 rounded-xl border-2 border-green-500 shadow-xl">
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-4xl">🎉</span>
+          <h3 className="font-bold text-green-400 text-2xl">Draft Complete!</h3>
+        </div>
+        <p className="text-green-300 mb-4">
+          All factions have been finalized with extra components added. Review your custom factions below.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => setShowSummary(true)}
+            className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
+          >
+            📊 View Summary
+          </button>
+          <button
+            onClick={() => {
+              const dataStr = JSON.stringify({
+                factions,
+                draftHistory,
+                settings: {
+                  variant: draftVariant,
+                  playerCount,
+                  draftLimits,
+                  firstRoundPickCount,
+                  subsequentRoundPickCount,
+                  expansionsEnabled
+                },
+                completedAt: new Date().toISOString()
+              }, null, 2);
+              const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+              const linkElement = document.createElement('a');
+              linkElement.setAttribute('href', dataUri);
+              linkElement.setAttribute('download', `ti4_draft_${Date.now()}.json`);
+              linkElement.click();
+            }}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
+          >
+            💾 Export Draft
+          </button>
+          <button
+            onClick={() => {
+              if (confirm('Start a new draft? This will clear the current draft.')) {
+                cancelDraft();
+              }
+            }}
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
+          >
+            🔄 New Draft
+          </button>
+        </div>
+      </div>
+      
+      {/* Show all completed factions */}
+      {factions.map((f, i) => (
+        <FactionSheet
+          key={i}
+          drafted={f}
+          onRemove={() => {}}
+          draftLimits={getCurrentFactionLimits()}
+          title={`${f.name} - Final Faction`}
+          playerIndex={i}
+        />
+      ))}
+    </>
+  ) : multiplayerEnabled ? (
+    <FactionSheet
+      drafted={factions[multiplayerService.playerId] || {}}
+      onRemove={() => {}}
+      draftLimits={draftLimits}
+      title="Your Multiplayer Draft"
+    />
+  ) : (
+    // Show all factions when not in an active draft
+    factions.length > 0 ? (
+      factions.map((f, i) => (
+        <FactionSheet
+          key={i}
+          drafted={f}
+          onRemove={() => {}}
+          draftLimits={getCurrentFactionLimits()}
+          title={f.name}
+        />
+      ))
+    ) : (
+      <div className="p-8 bg-gray-900/50 rounded-lg border border-gray-700 text-center">
+        <p className="text-gray-400 text-lg">
+          Configure your settings and click "Start Draft" to begin
+        </p>
+      </div>
+    )
+  )}
+
+  <DraftHistory history={draftHistory} />
+  {showSummary && <DraftSummary factions={factions} />}
+</div>
         </div>
       </div>
     </div>

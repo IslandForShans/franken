@@ -1,4 +1,4 @@
-// Import the functions you need from the SDKs you need
+// src/services/firebaseMultiplayer.js - FIXED VERSION
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase, ref, set, get, onValue, remove, update, push } from "firebase/database";
@@ -11,9 +11,72 @@ const analytics = getAnalytics(app);
 const database = getDatabase(app);
 const auth = getAuth(app);
 
+// Storage Manager to handle localStorage gracefully
+class StorageManager {
+  constructor() {
+    this.inMemoryStorage = new Map();
+    this.storageAvailable = this.checkStorageAvailable();
+  }
+
+  checkStorageAvailable() {
+    try {
+      const test = '__storage_test__';
+      localStorage.setItem(test, test);
+      localStorage.removeItem(test);
+      return true;
+    } catch(e) {
+      console.warn('localStorage not available, using in-memory storage');
+      return false;
+    }
+  }
+
+  setItem(key, value) {
+    if (this.storageAvailable) {
+      try {
+        localStorage.setItem(key, value);
+      } catch(e) {
+        console.error('localStorage.setItem failed:', e);
+        this.inMemoryStorage.set(key, value);
+      }
+    } else {
+      this.inMemoryStorage.set(key, value);
+    }
+  }
+
+  getItem(key) {
+    if (this.storageAvailable) {
+      try {
+        return localStorage.getItem(key);
+      } catch(e) {
+        console.error('localStorage.getItem failed:', e);
+        return this.inMemoryStorage.get(key) || null;
+      }
+    }
+    return this.inMemoryStorage.get(key) || null;
+  }
+
+  removeItem(key) {
+    if (this.storageAvailable) {
+      try {
+        localStorage.removeItem(key);
+      } catch(e) {
+        console.error('localStorage.removeItem failed:', e);
+      }
+    }
+    this.inMemoryStorage.delete(key);
+  }
+}
+
+const storage = new StorageManager();
+
 export const ensureAuthenticated = async () => {
   if (!auth.currentUser) {
-    await signInAnonymously(auth);
+    try {
+      await signInAnonymously(auth);
+    } catch (error) {
+      console.error('Authentication failed:', error);
+      throw new Error('Failed to authenticate with Firebase');
+    }
   }
 }
 
@@ -22,13 +85,14 @@ export class MultiplayerService {
     this.currentLobbyId = null;
     this.playerId = null;
     this.listeners = [];
+    this.heartbeatInterval = null;
     this.loadStoredSession();
   }
 
-  // Load stored session from localStorage for reconnection
+  // Load stored session from storage for reconnection
   loadStoredSession() {
     try {
-      const stored = localStorage.getItem('ti4_multiplayer_session');
+      const stored = storage.getItem('ti4_multiplayer_session');
       if (stored) {
         const session = JSON.parse(stored);
         // Only restore if session is less than 24 hours old
@@ -41,10 +105,11 @@ export class MultiplayerService {
       }
     } catch (error) {
       console.error('Error loading stored session:', error);
+      this.clearStoredSession();
     }
   }
 
-  // Save session to localStorage for reconnection
+  // Save session to storage for reconnection
   saveSession() {
     try {
       const session = {
@@ -52,7 +117,7 @@ export class MultiplayerService {
         playerId: this.playerId,
         timestamp: Date.now()
       };
-      localStorage.setItem('ti4_multiplayer_session', JSON.stringify(session));
+      storage.setItem('ti4_multiplayer_session', JSON.stringify(session));
     } catch (error) {
       console.error('Error saving session:', error);
     }
@@ -61,7 +126,7 @@ export class MultiplayerService {
   // Clear stored session
   clearStoredSession() {
     try {
-      localStorage.removeItem('ti4_multiplayer_session');
+      storage.removeItem('ti4_multiplayer_session');
     } catch (error) {
       console.error('Error clearing session:', error);
     }
@@ -72,9 +137,8 @@ export class MultiplayerService {
     if (!this.currentLobbyId || !this.playerId) return false;
 
     try {
-    
       await ensureAuthenticated();
-    
+      
       const lobbyRef = ref(database, `lobbies/${this.currentLobbyId}`);
       const snapshot = await get(lobbyRef);
       
@@ -84,6 +148,7 @@ export class MultiplayerService {
       // Check if this player is still in the lobby
       return lobbyData.players && lobbyData.players[this.playerId];
     } catch (error) {
+      console.error('Error checking reconnection:', error);
       return false;
     }
   }
@@ -91,26 +156,25 @@ export class MultiplayerService {
   // Reconnect to existing session
   async reconnect() {
     if (!this.currentLobbyId || !this.playerId) {
-      throw new Error('No session to reconnect to');
+      return { success: false, error: 'No session to reconnect to' };
     }
 
     try {
-    
       await ensureAuthenticated();
-    
+      
       const lobbyRef = ref(database, `lobbies/${this.currentLobbyId}`);
       const snapshot = await get(lobbyRef);
 
       if (!snapshot.exists()) {
         this.clearStoredSession();
-        throw new Error('Lobby no longer exists');
+        return { success: false, error: 'Lobby no longer exists' };
       }
 
       const lobbyData = snapshot.val();
 
       if (!lobbyData.players || !lobbyData.players[this.playerId]) {
         this.clearStoredSession();
-        throw new Error('You are no longer in this lobby');
+        return { success: false, error: 'You are no longer in this lobby' };
       }
 
       // Update last seen timestamp
@@ -119,6 +183,7 @@ export class MultiplayerService {
 
       return { success: true, lobbyData };
     } catch (error) {
+      console.error('Reconnection error:', error);
       return { success: false, error: error.message };
     }
   }
@@ -131,25 +196,25 @@ export class MultiplayerService {
   // Create a new lobby
   async createLobby(lobbyName, password, playerName, draftSettings) {
     try {
-    
       await ensureAuthenticated();
-    
+      
       // Check if lobby name already exists
       const lobbyRef = ref(database, `lobbies/${lobbyName}`);
       const snapshot = await get(lobbyRef);
       
       if (snapshot.exists()) {
-        throw new Error("Lobby name already taken");
+        return { success: false, error: "Lobby name already taken" };
       }
 
       this.playerId = this.generatePlayerId();
       this.currentLobbyId = lobbyName;
       
-      const hashedPassword = await bcrypt.has(password, 10)
+      // FIXED: Changed bcrypt.has to bcrypt.hash
+      const hashedPassword = await bcrypt.hash(password, 10);
 
       const lobbyData = {
         name: lobbyName,
-        password: hashedPassword, // In production, hash this!
+        password: hashedPassword,
         host: this.playerId,
         created: Date.now(),
         status: 'waiting', // waiting, drafting, complete
@@ -179,6 +244,7 @@ export class MultiplayerService {
       this.saveSession();
       return { success: true, lobbyId: lobbyName, playerId: this.playerId };
     } catch (error) {
+      console.error('Error creating lobby:', error);
       return { success: false, error: error.message };
     }
   }
@@ -186,30 +252,26 @@ export class MultiplayerService {
   // Join existing lobby
   async joinLobby(lobbyName, password, playerName) {
     try {
-    
       await ensureAuthenticated();
-    
+      
       const lobbyRef = ref(database, `lobbies/${lobbyName}`);
       const snapshot = await get(lobbyRef);
 
       if (!snapshot.exists()) {
-        throw new Error("Lobby not found");
+        return { success: false, error: "Lobby not found" };
       }
 
       const lobbyData = snapshot.val();
       
+      // FIXED: Use bcrypt.compare for password verification
       const isValid = await bcrypt.compare(password, lobbyData.password);
       if (!isValid) {
-        throw new Error("Incorrect Password");
-      }
-
-      if (lobbyData.password !== password) {
-        throw new Error("Incorrect password");
+        return { success: false, error: "Incorrect password" };
       }
 
       // Allow rejoining if draft is in progress
       if (lobbyData.status === 'complete') {
-        throw new Error("Draft has ended");
+        return { success: false, error: "Draft has ended" };
       }
 
       this.playerId = this.generatePlayerId();
@@ -227,6 +289,7 @@ export class MultiplayerService {
       this.saveSession();
       return { success: true, lobbyId: lobbyName, playerId: this.playerId };
     } catch (error) {
+      console.error('Error joining lobby:', error);
       return { success: false, error: error.message };
     }
   }
@@ -235,9 +298,14 @@ export class MultiplayerService {
   async getLobbyData() {
     if (!this.currentLobbyId) return null;
 
-    const lobbyRef = ref(database, `lobbies/${this.currentLobbyId}`);
-    const snapshot = await get(lobbyRef);
-    return snapshot.exists() ? snapshot.val() : null;
+    try {
+      const lobbyRef = ref(database, `lobbies/${this.currentLobbyId}`);
+      const snapshot = await get(lobbyRef);
+      return snapshot.exists() ? snapshot.val() : null;
+    } catch (error) {
+      console.error('Error getting lobby data:', error);
+      return null;
+    }
   }
 
   // Listen to lobby updates
@@ -248,6 +316,9 @@ export class MultiplayerService {
     const unsubscribe = onValue(lobbyRef, (snapshot) => {
       const data = snapshot.val();
       callback(data); // Pass null if lobby was deleted
+    }, (error) => {
+      console.error('Error listening to lobby updates:', error);
+      callback(null);
     });
 
     this.listeners.push(unsubscribe);
@@ -258,54 +329,70 @@ export class MultiplayerService {
   async setPlayerReady(ready = true) {
     if (!this.currentLobbyId || !this.playerId) return;
 
-    const playerRef = ref(database, `lobbies/${this.currentLobbyId}/players/${this.playerId}/ready`);
-    await set(playerRef, ready);
+    try {
+      const playerRef = ref(database, `lobbies/${this.currentLobbyId}/players/${this.playerId}/ready`);
+      await set(playerRef, ready);
+    } catch (error) {
+      console.error('Error setting player ready state:', error);
+    }
   }
 
   // Start draft (host only)
   async startDraft() {
     if (!this.currentLobbyId) return;
 
-    const updates = {
-      [`lobbies/${this.currentLobbyId}/status`]: 'drafting',
-      [`lobbies/${this.currentLobbyId}/draftState/phase`]: 'draft',
-      [`lobbies/${this.currentLobbyId}/draftState/currentPlayer`]: 0,
-      [`lobbies/${this.currentLobbyId}/draftState/round`]: 1,
-      [`lobbies/${this.currentLobbyId}/draftState/startedAt`]: Date.now()
-    };
+    try {
+      const updates = {
+        [`lobbies/${this.currentLobbyId}/status`]: 'drafting',
+        [`lobbies/${this.currentLobbyId}/draftState/phase`]: 'draft',
+        [`lobbies/${this.currentLobbyId}/draftState/currentPlayer`]: 0,
+        [`lobbies/${this.currentLobbyId}/draftState/round`]: 1,
+        [`lobbies/${this.currentLobbyId}/draftState/startedAt`]: Date.now()
+      };
 
-    await update(ref(database), updates);
+      await update(ref(database), updates);
+    } catch (error) {
+      console.error('Error starting draft:', error);
+    }
   }
 
   // Sync complete draft state to Firebase
   async syncDraftState(draftState) {
     if (!this.currentLobbyId) return;
 
-    const draftStateRef = ref(database, `lobbies/${this.currentLobbyId}/draftState`);
-    await update(draftStateRef, {
-      ...draftState,
-      lastUpdated: Date.now()
-    });
+    try {
+      const draftStateRef = ref(database, `lobbies/${this.currentLobbyId}/draftState`);
+      await update(draftStateRef, {
+        ...draftState,
+        lastUpdated: Date.now()
+      });
+    } catch (error) {
+      console.error('Error syncing draft state:', error);
+    }
   }
 
   // Sync specific draft updates (for real-time updates)
   async updateDraftState(stateUpdates) {
     if (!this.currentLobbyId) return;
 
-    const draftStateRef = ref(database, `lobbies/${this.currentLobbyId}/draftState`);
-    await update(draftStateRef, {
-      ...stateUpdates,
-      lastUpdated: Date.now()
-    });
+    try {
+      const draftStateRef = ref(database, `lobbies/${this.currentLobbyId}/draftState`);
+      await update(draftStateRef, {
+        ...stateUpdates,
+        lastUpdated: Date.now()
+      });
+    } catch (error) {
+      console.error('Error updating draft state:', error);
+    }
   }
 
   // Save completed draft to archive
   async saveCompletedDraft(factions, draftHistory, settings) {
-    if (!this.currentLobbyId) return;
+    if (!this.currentLobbyId) return { success: false, error: 'No active lobby' };
 
     try {
       const lobbyData = await this.getLobbyData();
-      if (!lobbyData) return;
+      if (!lobbyData) return { success: false, error: 'Lobby data not found' };
 
       // Create completed draft object
       const completedDraft = {
@@ -340,19 +427,28 @@ export class MultiplayerService {
 
   // Complete draft and archive it
   async completeDraft(factions, draftHistory, settings) {
-    if (!this.currentLobbyId) return;
+    if (!this.currentLobbyId) return { success: false, error: 'No active lobby' };
 
-    // Save to archive first
-    const saveResult = await this.saveCompletedDraft(factions, draftHistory, settings);
+    try {
+      // Save to archive first
+      const saveResult = await this.saveCompletedDraft(factions, draftHistory, settings);
 
-    // Mark lobby as complete
-    await update(ref(database, `lobbies/${this.currentLobbyId}`), {
-      status: 'complete',
-      completedAt: Date.now(),
-      archivedDraftId: saveResult.draftId
-    });
+      if (!saveResult.success) {
+        return saveResult;
+      }
 
-    return saveResult;
+      // Mark lobby as complete
+      await update(ref(database, `lobbies/${this.currentLobbyId}`), {
+        status: 'complete',
+        completedAt: Date.now(),
+        archivedDraftId: saveResult.draftId
+      });
+
+      return saveResult;
+    } catch (error) {
+      console.error('Error completing draft:', error);
+      return { success: false, error: error.message };
+    }
   }
 
   // Get completed drafts for a player (by searching their name)
@@ -402,19 +498,27 @@ export class MultiplayerService {
   async submitPicks(picks) {
     if (!this.currentLobbyId || !this.playerId) return;
 
-    const picksRef = ref(database, `lobbies/${this.currentLobbyId}/playerPicks/${this.playerId}`);
-    await set(picksRef, {
-      picks,
-      submittedAt: Date.now()
-    });
+    try {
+      const picksRef = ref(database, `lobbies/${this.currentLobbyId}/playerPicks/${this.playerId}`);
+      await set(picksRef, {
+        picks,
+        submittedAt: Date.now()
+      });
+    } catch (error) {
+      console.error('Error submitting picks:', error);
+    }
   }
 
   // Update player's last seen timestamp (for detecting disconnects)
   async updateLastSeen() {
     if (!this.currentLobbyId || !this.playerId) return;
 
-    const playerRef = ref(database, `lobbies/${this.currentLobbyId}/players/${this.playerId}/lastSeen`);
-    await set(playerRef, Date.now());
+    try {
+      const playerRef = ref(database, `lobbies/${this.currentLobbyId}/players/${this.playerId}/lastSeen`);
+      await set(playerRef, Date.now());
+    } catch (error) {
+      console.error('Error updating last seen:', error);
+    }
   }
 
   // Start heartbeat to keep connection alive
@@ -441,126 +545,161 @@ export class MultiplayerService {
   async leaveLobby() {
     if (!this.currentLobbyId || !this.playerId) return;
 
-    this.stopHeartbeat();
+    try {
+      this.stopHeartbeat();
 
-    const lobbyData = await this.getLobbyData();
-    
-    // If host is leaving, transfer host to another player or delete lobby
-    if (lobbyData && lobbyData.host === this.playerId) {
-      const players = Object.keys(lobbyData.players || {}).filter(id => id !== this.playerId);
+      const lobbyData = await this.getLobbyData();
       
-      if (players.length > 0) {
-        // Transfer host to next player
-        const newHost = players[0];
-        await update(ref(database, `lobbies/${this.currentLobbyId}`), {
-          host: newHost
-        });
-        await update(ref(database, `lobbies/${this.currentLobbyId}/players/${newHost}`), {
-          isHost: true
-        });
-      } else {
-        // No players left, delete lobby
-        await this.deleteLobby();
+      // If host is leaving, transfer host to another player or delete lobby
+      if (lobbyData && lobbyData.host === this.playerId) {
+        const players = Object.keys(lobbyData.players || {}).filter(id => id !== this.playerId);
+        
+        if (players.length > 0) {
+          // Transfer host to next player
+          const newHost = players[0];
+          await update(ref(database, `lobbies/${this.currentLobbyId}`), {
+            host: newHost
+          });
+          await update(ref(database, `lobbies/${this.currentLobbyId}/players/${newHost}`), {
+            isHost: true
+          });
+        } else {
+          // No players left, delete lobby
+          await this.deleteLobby();
+          return; // Exit early since lobby is deleted
+        }
       }
+
+      // Remove this player
+      const playerRef = ref(database, `lobbies/${this.currentLobbyId}/players/${this.playerId}`);
+      await remove(playerRef);
+
+      // Clean up listeners
+      this.listeners.forEach(unsubscribe => unsubscribe());
+      this.listeners = [];
+
+      this.clearStoredSession();
+      this.currentLobbyId = null;
+      this.playerId = null;
+    } catch (error) {
+      console.error('Error leaving lobby:', error);
     }
-
-    // Remove this player
-    const playerRef = ref(database, `lobbies/${this.currentLobbyId}/players/${this.playerId}`);
-    await remove(playerRef);
-
-    // Clean up listeners
-    this.listeners.forEach(unsubscribe => unsubscribe());
-    this.listeners = [];
-
-    this.clearStoredSession();
-    this.currentLobbyId = null;
-    this.playerId = null;
   }
 
   // Delete lobby (host only)
   async deleteLobby() {
     if (!this.currentLobbyId) return;
 
-    const lobbyRef = ref(database, `lobbies/${this.currentLobbyId}`);
-    await remove(lobbyRef);
+    try {
+      const lobbyRef = ref(database, `lobbies/${this.currentLobbyId}`);
+      await remove(lobbyRef);
 
-    // Clean up listeners
-    this.listeners.forEach(unsubscribe => unsubscribe());
-    this.listeners = [];
+      // Clean up listeners
+      this.listeners.forEach(unsubscribe => unsubscribe());
+      this.listeners = [];
 
-    this.stopHeartbeat();
-    this.clearStoredSession();
-    this.currentLobbyId = null;
-    this.playerId = null;
+      this.stopHeartbeat();
+      this.clearStoredSession();
+      this.currentLobbyId = null;
+      this.playerId = null;
+    } catch (error) {
+      console.error('Error deleting lobby:', error);
+    }
   }
 
   // Get list of all lobbies (for lobby browser)
   async getPublicLobbies() {
-    const lobbiesRef = ref(database, 'lobbies');
-    const snapshot = await get(lobbiesRef);
-    
-    if (!snapshot.exists()) return [];
-
-    const lobbies = [];
-    snapshot.forEach((child) => {
-      const lobby = child.val();
-      const playerCount = Object.keys(lobby.players || {}).length;
+    try {
+      const lobbiesRef = ref(database, 'lobbies');
+      const snapshot = await get(lobbiesRef);
       
-      lobbies.push({
-        name: lobby.name,
-        playerCount,
-        status: lobby.status,
-        created: lobby.created
-      });
-    });
+      if (!snapshot.exists()) return [];
 
-    return lobbies.filter(l => l.status === 'waiting');
+      const lobbies = [];
+      snapshot.forEach((child) => {
+        const lobby = child.val();
+        const playerCount = Object.keys(lobby.players || {}).length;
+        
+        lobbies.push({
+          name: lobby.name,
+          playerCount,
+          status: lobby.status,
+          created: lobby.created
+        });
+      });
+
+      return lobbies.filter(l => l.status === 'waiting');
+    } catch (error) {
+      console.error('Error getting public lobbies:', error);
+      return [];
+    }
   }
 
   // Clean up old lobbies (utility function - can be called periodically)
   async cleanupOldLobbies(maxAgeHours = 24) {
-    const lobbiesRef = ref(database, 'lobbies');
-    const snapshot = await get(lobbiesRef);
-    
-    if (!snapshot.exists()) return;
-
-    const now = Date.now();
-    const maxAge = maxAgeHours * 60 * 60 * 1000;
-
-    const promises = [];
-    snapshot.forEach((child) => {
-      const lobby = child.val();
-      const age = now - (lobby.created || 0);
+    try {
+      const lobbiesRef = ref(database, 'lobbies');
+      const snapshot = await get(lobbiesRef);
       
-      if (age > maxAge) {
-        promises.push(remove(child.ref));
-      }
-    });
+      if (!snapshot.exists()) return;
 
-    await Promise.all(promises);
+      const now = Date.now();
+      const maxAge = maxAgeHours * 60 * 60 * 1000;
+
+      const promises = [];
+      snapshot.forEach((child) => {
+        const lobby = child.val();
+        const age = now - (lobby.created || 0);
+        
+        if (age > maxAge) {
+          promises.push(remove(child.ref));
+        }
+      });
+
+      await Promise.all(promises);
+    } catch (error) {
+      console.error('Error cleaning up old lobbies:', error);
+    }
   }
 
   // Clean up old completed drafts (to save database space)
   async cleanupOldCompletedDrafts(maxAgeMonths = 3) {
-    const draftsRef = ref(database, 'completedDrafts');
-    const snapshot = await get(draftsRef);
-    
-    if (!snapshot.exists()) return;
-
-    const now = Date.now();
-    const maxAge = maxAgeMonths * 30 * 24 * 60 * 60 * 1000;
-
-    const promises = [];
-    snapshot.forEach((child) => {
-      const draft = child.val();
-      const age = now - (draft.completedAt || 0);
+    try {
+      const draftsRef = ref(database, 'completedDrafts');
+      const snapshot = await get(draftsRef);
       
-      if (age > maxAge) {
-        promises.push(remove(child.ref));
+      if (!snapshot.exists()) return;
+
+      const now = Date.now();
+      const maxAge = maxAgeMonths * 30 * 24 * 60 * 60 * 1000;
+
+      const promises = [];
+      snapshot.forEach((child) => {
+        const draft = child.val();
+        const age = now - (draft.completedAt || 0);
+        
+        if (age > maxAge) {
+          promises.push(remove(child.ref));
+        }
+      });
+
+      await Promise.all(promises);
+    } catch (error) {
+      console.error('Error cleaning up old completed drafts:', error);
+    }
+  }
+
+  // Cleanup method to be called when service is destroyed
+  cleanup() {
+    this.stopHeartbeat();
+    this.listeners.forEach(unsubscribe => {
+      try {
+        unsubscribe();
+      } catch (error) {
+        console.error('Error unsubscribing listener:', error);
       }
     });
-
-    await Promise.all(promises);
+    this.listeners = [];
   }
 }
 
