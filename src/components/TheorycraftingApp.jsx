@@ -179,8 +179,36 @@ export default function TheorycraftingApp({ onNavigate }) {
 
       output += `${formatCategoryNameForExport(category)}:\n`;
       output += `${"-".repeat(formatCategoryNameForExport(category).length + 1)}\n`;
-      
+
       components.forEach((component, idx) => {
+      if (category === "starting_fleet") {
+        components.forEach(entry => {
+          if (entry.description) {
+            output += `- ${entry.description}\n`;
+          }
+        });
+        output += `\n`;
+        return;
+      }
+
+      if (category === "starting_techs") {
+        components.forEach(entry => {
+          if (entry.note) {
+            output += `${entry.note}\n`;
+          }
+
+          if (Array.isArray(entry.techs)) {
+            entry.techs.forEach(tech => {
+              output += `- ${tech.name}\n`;
+            });
+          } else if (entry.name) {
+            output += `- ${entry.name}\n`;
+        }
+        output += `\n`;
+        });
+        return;
+      }
+
         const num = `${idx + 1}.`.padEnd(4);
         if (component.faction) {
           output += `${num}${component.name} (${component.faction})\n`;
