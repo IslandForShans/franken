@@ -532,9 +532,6 @@ export default function DraftSimulator({ onNavigate }) {
         const activeCats = getActiveCategories();
         
         while (attempts < maxAttempts) {
-            setFactions(updatedFactions);
-            setPlayerProgress(updatedProgress);
-            
             const completedRound = nextPlayer === 0;
             
             if (completedRound && draftVariant !== "rotisserie") {
@@ -549,6 +546,8 @@ export default function DraftSimulator({ onNavigate }) {
             }
             
             setCurrentPlayer(nextPlayer);
+            setFactions(updatedFactions);
+            setPlayerProgress(updatedProgress);
             
             if (draftVariant !== "rotisserie") {
                 const nextBag = completedRound && playerBags.length > 1 
@@ -578,29 +577,144 @@ export default function DraftSimulator({ onNavigate }) {
             
             setIsPickingPhase(true);
             setPicksThisRound(0);
-            checkDraftCompletion();
+            
+            // Check if draft is complete with updated factions
+setTimeout(() => {
+    const factionLimits = draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
+    
+    const allPlayersComplete = updatedFactions.every((faction, idx) => {
+        return activeCats.every(cat => {
+            const current = faction[cat]?.length || 0;
+            const limit = draftLimits[cat];
+            return current >= limit;
+        });
+    });
+    
+    if (allPlayersComplete) {
+        console.log("Draft complete - checking if reduction is needed");
+        
+        // Check if ANY player needs reduction
+        const needsReduction = updatedFactions.some((faction, idx) => {
+            return activeCats.some(cat => {
+                const current = faction[cat]?.length || 0;
+                const limit = factionLimits[cat];
+                const isOver = current > limit;
+                if (isOver) {
+                    console.log(`Player ${idx + 1} ${cat}: ${current}/${limit} - needs reduction`);
+                }
+                return isOver;
+            });
+        });
+        
+        if (needsReduction) {
+            console.log("Moving to reduction phase");
+            setDraftPhase("reduction");
+            setIsPickingPhase(false);
+        } else {
+            console.log("No reduction needed - adding extra components and completing");
+            const factionsWithExtras = addAllExtraComponents(updatedFactions);
+            setFactions(factionsWithExtras);
+            setDraftPhase("complete");
+            setIsPickingPhase(false);
+        }
+    }
+}, 100);
+            
             return;
         }
         
-        console.log("No players can draft from their bags - moving to reduction phase");
-        checkDraftCompletion();
+        console.log("No players can draft from their bags - checking completion");
+        
+        // Final check for completion when no one can pick
+        setTimeout(() => {
+            const allPlayersComplete = updatedFactions.every((faction, idx) => {
+                return activeCats.every(cat => {
+                    const current = faction[cat]?.length || 0;
+                    const limit = draftLimits[cat];
+                    return current >= limit;
+                });
+            });
+            
+            if (allPlayersComplete) {
+  const factionLimits = draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
+  
+  console.log("Draft complete - checking if reduction is needed");
+  
+  // Check if ANY player needs reduction
+  const needsReduction = updatedFactions.some((faction, idx) => {
+    return activeCats.some(cat => {
+      const current = faction[cat]?.length || 0;
+      const limit = factionLimits[cat];
+      const isOver = current > limit;
+      if (isOver) {
+        console.log(`Player ${idx + 1} ${cat}: ${current}/${limit} - needs reduction`);
+      }
+      return isOver;
+    });
+  });
+  
+  if (needsReduction) {
+    console.log("Moving to reduction phase");
+    setDraftPhase("reduction");
+    setIsPickingPhase(false);
+  } else {
+    console.log("No reduction needed - skipping to complete");
+    const factionsWithExtras = addAllExtraComponents(updatedFactions);
+    setFactions(factionsWithExtras);
+    setDraftPhase("complete");
+    setIsPickingPhase(false);
+  }
+}
+        }, 100);
     }, 300);
   };
 
   const checkDraftCompletion = () => {
-    if (draftVariant === "rotisserie") return;
+  if (draftVariant === "rotisserie") return;
 
-    const activeCats = getActiveCategories();
-    const allPlayersComplete = factions.every(faction => 
-      activeCats.every(cat => (faction[cat]?.length || 0) >= draftLimits[cat])
-    );
+  const activeCats = getActiveCategories();
+  const factionLimits = draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
+  
+  console.log("Checking draft completion");
+  
+  const allPlayersComplete = factions.every((faction, idx) => {
+    const complete = activeCats.every(cat => {
+      const current = faction[cat]?.length || 0;
+      const limit = draftLimits[cat];
+      return current >= limit;
+    });
+    return complete;
+  });
 
-    if (allPlayersComplete) {
-      console.log("Draft complete - moving to reduction phase");
+  console.log("All players reached draft limits?", allPlayersComplete);
+
+  if (allPlayersComplete) {
+    // Check if ANY player needs reduction
+    const needsReduction = factions.some((faction, idx) => {
+      return activeCats.some(cat => {
+        const current = faction[cat]?.length || 0;
+        const limit = factionLimits[cat];
+        const isOver = current > limit;
+        if (isOver) {
+          console.log(`Player ${idx + 1} ${cat}: ${current}/${limit} - needs reduction`);
+        }
+        return isOver;
+      });
+    });
+    
+    if (needsReduction) {
+      console.log("Moving to reduction phase");
       setDraftPhase("reduction");
+      setIsPickingPhase(false);
+    } else {
+      console.log("No reduction needed - adding extra components and completing");
+      const factionsWithExtras = addAllExtraComponents(factions);
+      setFactions(factionsWithExtras);
+      setDraftPhase("complete");
+      setIsPickingPhase(false);
     }
-  };
-
+  }
+};
   const addAllExtraComponents = (currentFactions) => {
     const activeCats = getActiveCategories();
     const updatedFactions = currentFactions.map((faction, playerIdx) => {
@@ -707,26 +821,47 @@ export default function DraftSimulator({ onNavigate }) {
     }]);
   };
 
-  const handleReduction = (playerIndex, category, componentIndex) => {
-    const component = factions[playerIndex][category][componentIndex];
-    
-    const fc = [...factions];
-    fc[playerIndex][category].splice(componentIndex, 1);
-    setFactions(fc);
+ const handleReduction = (playerIndex, category, componentIndex) => {
+  console.log("=== HANDLE REDUCTION CALLED ===");
+  console.log("Player:", playerIndex, "Category:", category, "Index:", componentIndex);
+  
+  const component = factions[playerIndex][category][componentIndex];
+  console.log("Removing component:", component?.name);
+  
+  const fc = [...factions];
+  fc[playerIndex][category].splice(componentIndex, 1);
+  setFactions(fc);
 
-    const factionLimits = getCurrentFactionLimits();
-    const activeCats = getActiveCategories();
-    const allPlayersReduced = fc.every(faction => 
-      activeCats.every(cat => (faction[cat]?.length || 0) <= factionLimits[cat])
-    );
+  const factionLimits = getCurrentFactionLimits();
+  const activeCats = getActiveCategories();
+  
+  console.log("=== REDUCTION CHECK ===");
+  console.log("Faction Limits:", factionLimits);
+  
+  // Check each player individually to see if they meet the faction limits
+  const allPlayersReduced = fc.every((faction, idx) => {
+    console.log(`\nChecking Player ${idx + 1}:`);
+    const playerComplete = activeCats.every(cat => {
+      const currentCount = faction[cat]?.length || 0;
+      const limit = factionLimits[cat];
+      const isOver = currentCount > limit;
+      console.log(`  ${cat}: ${currentCount}/${limit} ${isOver ? '❌ OVER' : '✓'}`);
+      return currentCount <= limit;
+    });
+    console.log(`  Player ${idx + 1} complete: ${playerComplete}`);
+    return playerComplete;
+  });
 
-    if (allPlayersReduced) {
-      console.log("Reduction complete - adding extra components");
-      const factionsWithExtras = addAllExtraComponents(fc);
-      setFactions(factionsWithExtras);
-      setDraftPhase("complete");
-    }
-  };
+  console.log("\nAll players reduced?", allPlayersReduced);
+
+  if (allPlayersReduced) {
+    console.log("Reduction complete - adding extra components");
+    const factionsWithExtras = addAllExtraComponents(fc);
+    setFactions(factionsWithExtras);
+    setDraftPhase("complete");
+    return;
+  }
+};
 
   const handleBanFaction = (factionName) => {
     setBannedFactions(prev => {
@@ -1070,125 +1205,158 @@ export default function DraftSimulator({ onNavigate }) {
     </div>
   )}
 
-  {/* MAIN CONTENT RENDERING - FIXED TO HANDLE COMPLETE STATE */}
-  {draftPhase === "draft" && !multiplayerEnabled && draftStarted ? (
-    <FactionSheet
-      drafted={factions[currentPlayer] || {}}
-      onRemove={() => {}}
-      draftLimits={draftLimits}
-      title={`Player ${currentPlayer + 1}'s Draft`}
-      isCurrentPlayer={true}
-    />
-  ) : draftPhase === "reduction" && !multiplayerEnabled ? (
-    factions.map((f, i) => (
-      <FactionSheet
-        key={i}
-        drafted={f}
-        onRemove={(cat, idx) => handleReduction(i, cat, idx)}
-        onSwapComponent={(playerIdx, category, componentIdx, swapOption, triggerComponent) => 
-          handleSwap(playerIdx, category, componentIdx, swapOption, triggerComponent)
-        }
-        draftLimits={getCurrentFactionLimits()}
-        title={`Player ${i + 1} - Remove Excess Components`}
-        showReductionHelper={true}
-        playerIndex={i}
-      />
-    ))
-  ) : draftPhase === "complete" && !multiplayerEnabled ? (
-    // ========== FIXED: RENDER COMPLETED FACTIONS ==========
-    <>
-      <div className="mb-4 p-6 bg-gradient-to-r from-green-900/40 to-blue-900/40 rounded-xl border-2 border-green-500 shadow-xl">
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-4xl">🎉</span>
-          <h3 className="font-bold text-green-400 text-2xl">Draft Complete!</h3>
-        </div>
-        <p className="text-green-300 mb-4">
-          All factions have been finalized with extra components added. Review your custom factions below.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <button
-            onClick={() => setShowSummary(true)}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
-          >
-            📊 View Summary
-          </button>
-          <button
-            onClick={() => {
-              const dataStr = JSON.stringify({
-                factions,
-                draftHistory,
-                settings: {
-                  variant: draftVariant,
-                  playerCount,
-                  draftLimits,
-                  firstRoundPickCount,
-                  subsequentRoundPickCount,
-                  expansionsEnabled
-                },
-                completedAt: new Date().toISOString()
-              }, null, 2);
-              const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-              const linkElement = document.createElement('a');
-              linkElement.setAttribute('href', dataUri);
-              linkElement.setAttribute('download', `ti4_draft_${Date.now()}.json`);
-              linkElement.click();
-            }}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
-          >
-            💾 Export Draft
-          </button>
-          <button
-            onClick={() => {
-              if (confirm('Start a new draft? This will clear the current draft.')) {
-                cancelDraft();
-              }
-            }}
-            className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
-          >
-            🔄 New Draft
-          </button>
-        </div>
-      </div>
-      
-      {/* Show all completed factions */}
-      {factions.map((f, i) => (
+  {/* MAIN CONTENT RENDERING - FIXED TO HANDLE ALL PHASES */}
+  {(() => {
+    console.log("Render check:", { 
+      multiplayerEnabled, 
+      draftStarted, 
+      draftPhase,
+      factionsLength: factions.length,
+      currentPlayer 
+    });
+    
+    if (!multiplayerEnabled && draftStarted && draftPhase === "draft") {
+      console.log("Rendering draft phase");
+      return (
         <FactionSheet
-          key={i}
-          drafted={f}
+          drafted={factions[currentPlayer] || {}}
           onRemove={() => {}}
-          draftLimits={getCurrentFactionLimits()}
-          title={`${f.name} - Final Faction`}
-          playerIndex={i}
+          draftLimits={draftLimits}
+          title={`Player ${currentPlayer + 1}'s Draft`}
+          isCurrentPlayer={true}
         />
-      ))}
-    </>
-  ) : multiplayerEnabled ? (
-    <FactionSheet
-      drafted={factions[multiplayerService.playerId] || {}}
-      onRemove={() => {}}
-      draftLimits={draftLimits}
-      title="Your Multiplayer Draft"
-    />
-  ) : (
-    // Show all factions when not in an active draft
-    factions.length > 0 ? (
-      factions.map((f, i) => (
+      );
+    } else if (!multiplayerEnabled && draftStarted && draftPhase === "reduction") {
+      console.log("Rendering reduction phase for", factions.length, "factions");
+      return (
+        <>
+          <div className="mb-4 p-4 bg-orange-900/30 rounded-lg border border-orange-600">
+            <h3 className="font-bold text-orange-400 text-lg mb-2">Reduction Phase</h3>
+            <p className="text-orange-300 text-sm">
+              Remove excess components from each faction to meet the faction limits. Click any component to remove it.
+            </p>
+          </div>
+          {factions.map((f, i) => {
+            console.log(`Rendering faction ${i}:`, f.name);
+            return (
+              <FactionSheet
+                key={i}
+                drafted={f}
+                onRemove={(cat, idx) => handleReduction(i, cat, idx)}
+                onSwapComponent={(playerIdx, category, componentIdx, swapOption, triggerComponent) => 
+                  handleSwap(playerIdx, category, componentIdx, swapOption, triggerComponent)
+                }
+                draftLimits={getCurrentFactionLimits()}
+                title={`Player ${i + 1} - Remove Excess Components`}
+                showReductionHelper={true}
+                playerIndex={i}
+              />
+            );
+          })}
+        </>
+      );
+    } else if (!multiplayerEnabled && draftStarted && draftPhase === "complete") {
+      console.log("Rendering complete phase");
+      return (
+        <>
+          <div className="mb-4 p-6 bg-gradient-to-r from-green-900/40 to-blue-900/40 rounded-xl border-2 border-green-500 shadow-xl">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-4xl">🎉</span>
+              <h3 className="font-bold text-green-400 text-2xl">Draft Complete!</h3>
+            </div>
+            <p className="text-green-300 mb-4">
+              All factions have been finalized with extra components added. Review your custom factions below.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => setShowSummary(true)}
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
+              >
+                📊 View Summary
+              </button>
+              <button
+                onClick={() => {
+                  const dataStr = JSON.stringify({
+                    factions,
+                    draftHistory,
+                    settings: {
+                      variant: draftVariant,
+                      playerCount,
+                      draftLimits,
+                      firstRoundPickCount,
+                      subsequentRoundPickCount,
+                      expansionsEnabled
+                    },
+                    completedAt: new Date().toISOString()
+                  }, null, 2);
+                  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                  const linkElement = document.createElement('a');
+                  linkElement.setAttribute('href', dataUri);
+                  linkElement.setAttribute('download', `ti4_draft_${Date.now()}.json`);
+                  linkElement.click();
+                }}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
+              >
+                💾 Export Draft
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm('Start a new draft? This will clear the current draft.')) {
+                    cancelDraft();
+                  }
+                }}
+                className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
+              >
+                🔄 New Draft
+              </button>
+            </div>
+          </div>
+          
+          {/* Show all completed factions */}
+          {factions.map((f, i) => (
+            <FactionSheet
+              key={i}
+              drafted={f}
+              onRemove={() => {}}
+              draftLimits={getCurrentFactionLimits()}
+              title={`${f.name} - Final Faction`}
+              playerIndex={i}
+            />
+          ))}
+        </>
+      );
+    } else if (multiplayerEnabled) {
+      console.log("Rendering multiplayer");
+      return (
         <FactionSheet
-          key={i}
-          drafted={f}
+          drafted={factions[multiplayerService.playerId] || {}}
           onRemove={() => {}}
-          draftLimits={getCurrentFactionLimits()}
-          title={f.name}
+          draftLimits={draftLimits}
+          title="Your Multiplayer Draft"
         />
-      ))
-    ) : (
-      <div className="p-8 bg-gray-900/50 rounded-lg border border-gray-700 text-center">
-        <p className="text-gray-400 text-lg">
-          Configure your settings and click "Start Draft" to begin
-        </p>
-      </div>
-    )
-  )}
+      );
+    } else {
+      console.log("Rendering default/waiting state");
+      // Show all factions when not in an active draft
+      return factions.length > 0 ? (
+        factions.map((f, i) => (
+          <FactionSheet
+            key={i}
+            drafted={f}
+            onRemove={() => {}}
+            draftLimits={getCurrentFactionLimits()}
+            title={f.name}
+          />
+        ))
+      ) : (
+        <div className="p-8 bg-gray-900/50 rounded-lg border border-gray-700 text-center">
+          <p className="text-gray-400 text-lg">
+            Configure your settings and click "Start Draft" to begin
+          </p>
+        </div>
+      );
+    }
+  })()}
 
   <DraftHistory history={draftHistory} />
   {showSummary && <DraftSummary factions={factions} />}

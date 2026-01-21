@@ -49,26 +49,43 @@ export default function FactionSheet({
   };
 
   const getAvailableSwapsForCategory = (category) => {
-    const swaps = [];
-    const categories = Object.keys(drafted);
+  const swaps = [];
+  const categories = Object.keys(drafted);
+  
+  categories.forEach(cat => {
+    const items = drafted[cat];
     
-    categories.forEach(cat => {
-      const items = drafted[cat] || [];
-      items.forEach(item => {
-        const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
-        triggeredSwaps.forEach(swap => {
-          if (swap.category === category) {
-            swaps.push({
-              ...swap,
-              triggerComponent: item
-            });
-          }
-        });
+    // Safety check: ensure items is an array before iterating
+    if (!items || !Array.isArray(items)) {
+      return; // Skip this category
+    }
+    
+    items.forEach(item => {
+      // Safety check: ensure item has required properties
+      if (!item || !item.name) {
+        return; // Skip this item
+      }
+      
+      const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
+      
+      // Safety check: ensure triggeredSwaps is an array
+      if (!triggeredSwaps || !Array.isArray(triggeredSwaps)) {
+        return; // Skip if no swaps
+      }
+      
+      triggeredSwaps.forEach(swap => {
+        if (swap.category === category) {
+          swaps.push({
+            ...swap,
+            triggerComponent: item
+          });
+        }
       });
     });
-    
-    return swaps;
-  };
+  });
+  
+  return swaps;
+};
 
   const handleRemove = (category, index) => {
     const component = drafted[category][index];
