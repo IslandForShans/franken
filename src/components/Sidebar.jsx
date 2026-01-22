@@ -1,11 +1,12 @@
-/*import React, { useState } from "react";
-import './UnifiedStyles.css';
+import React, { useState, useRef } from "react";
+import { createPortal } from "react-dom";
+import "./UnifiedStyles.css";
 
-export default function Sidebar({ 
-  categories, 
-  onSelectCategory, 
-  playerProgress, 
-  draftLimits, 
+export default function Sidebar({
+  categories,
+  onSelectCategory,
+  playerProgress,
+  draftLimits,
   selectedCategory,
   availableComponents = {},
   onComponentClick,
@@ -14,9 +15,18 @@ export default function Sidebar({
 }) {
   const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
 
-  const formatCategoryName = (category) => {
-    return category.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
-  };
+  // Hover preview state
+  const [hoveredComponent, setHoveredComponent] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+  const hoverTimeoutRef = useRef(null);
+
+  const supportsHover =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(hover: hover)").matches;
+
+  const formatCategoryName = (category) =>
+    category.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
   const handleCategoryClick = (category) => {
     if (expandedCategory === category) {
@@ -34,298 +44,204 @@ export default function Sidebar({
     }
   };
 
+  const clampToViewport = (x, y, width = 300, height = 420) => {
+    const padding = 12;
+    const maxX = window.innerWidth - width - padding;
+    const maxY = window.innerHeight - height - padding;
+
+    return {
+      x: Math.min(x, maxX),
+      y: Math.min(y, maxY)
+    };
+  };
+
   return (
-  <div className="sidebar">
-    <div className="sidebar-header">
-      <h2 className="sidebar-title">Draft Categories</h2>
-      <div className="sidebar-subtitle">
-        Click categories to view available components
-      </div>
-      {draftVariant === "rotisserie" && (
-        <div className="text-xs font-medium mt-1" style={{color: '#f97316'}}>
-          Rotisserie Mode: One pick per turn
+    <div className="sidebar">
+      <div className="sidebar-header">
+        <h2 className="sidebar-title">Draft Categories</h2>
+        <div className="sidebar-subtitle">
+          Click categories to view available components
         </div>
-      )}
-    </div>
-    
-    <div className="sidebar-content">
-      {categories.map(cat => {
-        const progress = playerProgress[cat] || 0;
-        const limit = draftLimits[cat] || 0;
-        const isExpanded = expandedCategory === cat;
-        const components = availableComponents[cat] || [];
-        const canPick = progress < limit;
+      </div>
 
-        return (
-          <div key={cat} className="sidebar-category">
-            <button
-              className={`sidebar-category-button ${isExpanded ? 'sidebar-category-button-expanded' : ''}`}
-              onClick={() => handleCategoryClick(cat)}
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="font-medium">{formatCategoryName(cat)}</div>
-                  <div className="text-sm" style={{color: isExpanded ? '#ffffffff' : '#ffffffff'}}>
-                    {progress}/{limit} selected
-                    {!canPick && <span style={{color: '#dc2626', marginLeft: '0.25rem'}}>(MAX)</span>}
-                  </div>
-                  {components.length > 0 && (
-                    <div className="text-xs" style={{color: isExpanded ? '#2563eb' : '#3b82f6'}}>
-                      {components.length} available
+      <div className="sidebar-content">
+        {categories.map((cat) => {
+          const progress = playerProgress[cat] || 0;
+          const limit = draftLimits[cat] || 0;
+          const isExpanded = expandedCategory === cat;
+          const components = availableComponents[cat] || [];
+          const canPick = progress < limit;
+
+          return (
+            <div key={cat} className="sidebar-category">
+              <button
+                className={`sidebar-category-button ${
+                  isExpanded ? "sidebar-category-button-expanded" : ""
+                }`}
+                onClick={() => handleCategoryClick(cat)}
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <div className="font-medium">
+                      {formatCategoryName(cat)}
                     </div>
-                  )}
-                </div>
-                <div style={{color: isExpanded ? '#374151' : '#9ca3af'}}>
-                  {isExpanded ? "▲" : "▼"}
-                </div>
-              </div>
-            </button>
-
-            {isExpanded && (
-              <div className="sidebar-category-content">
-                {components.length === 0 ? (
-                  <div className="empty-state">
-                    No components available in your {draftVariant === "rotisserie" ? "pool" : "bag"}
+                    <div className="text-sm">
+                      {progress}/{limit} selected
+                    </div>
                   </div>
-                ) : (
+                  <div>{isExpanded ? "▲" : "▼"}</div>
+                </div>
+              </button>
+
+              {isExpanded && (
+                <div className="sidebar-category-content">
                   <div className="p-2">
-                    <div className="text-xs mb-2" style={{color: '#bfc3caff', paddingLeft: '0.25rem'}}>
-                      {draftVariant === "rotisserie" ? "Shared Pool" : "Your Bag"} • Click to pick
-                    </div>
-                    
-                    {components
-                      .sort((a, b) => {
-                        const factionSort = (a.faction || "").localeCompare(b.faction || "");
-                        if (factionSort !== 0) return factionSort;
-                        return (a.name || "").localeCompare(b.name || "");
-                      })
-                      .map((component, idx) => {
-                        const isDisabled = !canPick || (draftVariant === "rotisserie" && !canPick);
-                        
-                        return (
-                          <div
-                            key={component.id || component.name || idx}
-                            className={`sidebar-component-item ${isDisabled ? 'sidebar-component-item-disabled' : ''}`}
-                            onClick={() => {
-                              if (!isDisabled) {
-                                handleComponentClick(cat, component);
-                              }
-                            }}
-                          >
-                            <div className="font-medium" style={{color: isDisabled ? '#9ca3af' : '#fcd34d'}}>{component.name}</div>
-                            
-                            {component.faction && (
-                              <div className="flex items-center gap-1 text-xs font-medium mt-1" style={{color: isDisabled ? '#9ca3af' : '#276afaff'}}>
-                                {component.icon && <img src={component.icon} alt={component.faction} style={{width: '1rem', height: '1rem'}} />}
-                                {component.faction}
-                              </div>
-                            )}
-                            
+                    {components.map((component, idx) => {
+                      const isDisabled = !canPick;
 
-                            {component.description && (
-                              <div className="text-xs line-clamp-2 mt-1" style={{color: isDisabled ? '#6b7280' : '#fff'}}>
-                                {component.description.length > 100 
-                                  ? component.description.substring(0, 100) + "..." 
-                                  : component.description
-                                }
-                              </div>
-                            )}
-                            
-                            {isDisabled && (
-                              <div className="text-xs font-medium mt-1" style={{color: '#dc2626'}}>
-                                Cannot pick (limit reached)
-                              </div>
-                            )}
+                      return (
+                        <div
+                          key={component.id || component.name || idx}
+                          className={`sidebar-component-item ${
+                            isDisabled
+                              ? "sidebar-component-item-disabled"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            !isDisabled &&
+                            handleComponentClick(cat, component)
+                          }
+                          onMouseEnter={(e) => {
+                            if (!supportsHover) return;
+
+                            const rect =
+                              e.currentTarget.getBoundingClientRect();
+                            const pos = clampToViewport(
+                              rect.right + 12,
+                              rect.top
+                            );
+
+                            hoverTimeoutRef.current = setTimeout(() => {
+                              setHoverPosition(pos);
+                              setHoveredComponent({
+                                component,
+                                category: cat
+                              });
+                            }, 150);
+                          }}
+                          onMouseLeave={() => {
+                            if (hoverTimeoutRef.current) {
+                              clearTimeout(hoverTimeoutRef.current);
+                            }
+                            setHoveredComponent(null);
+                          }}
+                        >
+                          <div className="font-medium">
+                            {component.name}
                           </div>
-                        );
-                      })}
+
+                          {cat === "starting_techs" && (
+                            <div className="text-xs mt-1">
+                              {component.note && (
+                                <div>
+                                  <strong>Note:</strong> {component.note}
+                                </div>
+                              )}
+                              {Array.isArray(component.techs) && (
+                                <ul className="list-disc list-inside">
+                                  {component.techs.map((t, i) => (
+                                    <li key={i}>
+                                      {typeof t === "string"
+                                        ? t
+                                        : t.name}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
-                )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* === Hover Preview (Portal) === */}
+      {hoveredComponent &&
+        createPortal(
+          <div
+            style={{
+              position: "fixed",
+              top: hoverPosition.y,
+              left: hoverPosition.x,
+              width: "300px",
+              display: "flex",
+              flexDirection: "column",
+              background: "#0b1220",
+              border: "1px solid var(--border-color)",
+              borderRadius: "0.75rem",
+              padding: "1rem",
+              boxShadow: "0 30px 70px rgba(0,0,0,0.85)",
+              zIndex: 100000,
+              pointerEvents: "none"
+            }}
+          >
+            <div
+              className="font-bold mb-2 uppercase"
+              style={{
+                color: "var(--accent-yellow)",
+                fontSize: "1.1rem",
+                letterSpacing: "0.05em"
+              }}
+            >
+              {hoveredComponent.component.name}
+            </div>
+
+            {hoveredComponent.component.faction && (
+              <div
+                className="text-sm mb-2"
+                style={{ color: "var(--accent-blue)" }}
+              >
+                {hoveredComponent.component.faction}
               </div>
             )}
-          </div>
-        );
-      })}
-    </div>
-  </div>
-);
-}*/
 
-import React, { useState } from "react";
-import './UnifiedStyles.css';
-
-export default function Sidebar({ 
-  categories, 
-  onSelectCategory, 
-  playerProgress, 
-  draftLimits, 
-  selectedCategory,
-  availableComponents = {},
-  onComponentClick,
-  isMultiplayer = false,
-  draftVariant = "franken"
-}) {
-  const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
-
-  const formatCategoryName = (category) => {
-    return category.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
-  };
-
-  const handleCategoryClick = (category) => {
-    if (expandedCategory === category) {
-      setExpandedCategory(null);
-      onSelectCategory(null);
-    } else {
-      setExpandedCategory(category);
-      onSelectCategory(category);
-    }
-  };
-
-  const handleComponentClick = (category, component) => {
-    if (onComponentClick) {
-      onComponentClick(category, component);
-    }
-  };
-
-  return (
-  // Sidebar container — header-level toggle moved to DraftSimulator so this file only renders the panel
-  <div className={`sidebar ${typeof arguments[0].isOpen !== 'undefined' && arguments[0].isOpen ? 'open' : ''}`}>
-        <div className="sidebar-header">
-          <h2 className="sidebar-title">Draft Categories</h2>
-          <div className="sidebar-subtitle">
-            Click categories to view available components
-          </div>
-          {draftVariant === "rotisserie" && (
-            <div className="text-xs font-medium mt-1" style={{color: '#f97316'}}>
-              Rotisserie Mode: One pick per turn
-            </div>
-          )}
-        </div>
-
-        <div className="sidebar-content">
-          {categories.map(cat => {
-            const progress = playerProgress[cat] || 0;
-            const limit = draftLimits[cat] || 0;
-            const isExpanded = expandedCategory === cat;
-            const components = availableComponents[cat] || [];
-            const canPick = progress < limit;
-
-            return (
-              <div key={cat} className="sidebar-category">
-                <button
-                  className={`sidebar-category-button ${isExpanded ? 'sidebar-category-button-expanded' : ''}`}
-                  onClick={() => handleCategoryClick(cat)}
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="font-medium">{formatCategoryName(cat)}</div>
-                      <div className="text-sm" style={{color: '#ffffffff'}}>
-                        {progress}/{limit} selected
-                        {!canPick && <span style={{color: '#dc2626', marginLeft: '0.25rem'}}>(MAX)</span>}
-                      </div>
-                      {components.length > 0 && (
-                        <div className="text-xs" style={{color: isExpanded ? '#2563eb' : '#3b82f6'}}>
-                          {components.length} available
-                        </div>
-                      )}
-                    </div>
-                    <div style={{color: isExpanded ? '#374151' : '#9ca3af'}}>
-                      {isExpanded ? "▲" : "▼"}
-                    </div>
-                  </div>
-                </button>
-
-                {isExpanded && (
-                  <div className="sidebar-category-content">
-                    {components.length === 0 ? (
-                      <div className="empty-state">
-                        No components available in your {draftVariant === "rotisserie" ? "pool" : "bag"}
-                      </div>
-                    ) : (
-                      <div className="p-2">
-                        <div className="text-xs mb-2" style={{color: '#bfc3caff', paddingLeft: '0.25rem'}}>
-                          {draftVariant === "rotisserie" ? "Shared Pool" : "Your Bag"} • Click to pick
-                        </div>
-
-                        {components
-                          .sort((a, b) => {
-                            const factionSort = (a.faction || "").localeCompare(b.faction || "");
-                            if (factionSort !== 0) return factionSort;
-                            return (a.name || "").localeCompare(b.name || "");
-                          })
-                          .map((component, idx) => {
-                            const isDisabled = !canPick || (draftVariant === "rotisserie" && !canPick);
-                            const isTile = !!(component.planets || component.anomalies || component.wormhole);
-                            const isUnit = !!(component.cost !== undefined && component.combat);
-                            
-                            return (
-                              <div
-                                key={component.id || component.name || idx}
-                                className={`sidebar-component-item ${isDisabled ? 'sidebar-component-item-disabled' : ''}`}
-                                onClick={() => {
-                                  if (!isDisabled) {
-                                    handleComponentClick(cat, component);
-                                  }
-                                }}
-                              >
-                                <div className="font-medium" style={{color: isDisabled ? '#9ca3af' : '#fcd34d'}}>
-                                  {component.name}
-                                </div>
-
-                                {component.faction && (
-                                  <div className="flex items-center gap-1 text-xs font-medium mt-1" style={{color: isDisabled ? '#9ca3af' : '#276afaff'}}>
-                                    {component.icon && <img src={component.icon} alt={component.faction} style={{width: '1rem', height: '1rem'}} />}
-                                    {component.faction}
-                                  </div>
-                                )}
-
-                                {/* Unit stats */}
-                                {isUnit && (
-                                  <div className="text-xs mt-1 flex gap-2" style={{color: isDisabled ? '#9ca3af' : '#fff'}}>
-                                    {component.cost !== undefined && <span>Cost: {component.cost}</span>}
-                                    <span>Combat: {component.combat}</span>
-                                    {component.move !== undefined && <span>Move: {component.move}</span>}
-                                    {component.capacity !== undefined && <span>Cap: {component.capacity}</span>}
-                                  </div>
-                                )}
-
-                                {/* Tile info */}
-                                {isTile && component.planets && (
-                                  <div className="text-xs mt-1" style={{color: isDisabled ? '#9ca3af' : '#6ee7b7'}}>
-                                    {component.planets.map(p => (
-                                      <div key={p.name}>
-                                        {p.name}: {p.resource}R/{p.influence}I
-                                        {p.traits && p.traits.length > 0 && ` [${p.traits.join(', ')}]`}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-
-                                {component.description && !isTile && (
-                                  <div className="text-xs line-clamp-2 mt-1" style={{color: isDisabled ? '#6b7280' : '#fff'}}>
-                                    {component.description.length > 100 
-                                      ? component.description.substring(0, 100) + "..." 
-                                      : component.description}
-                                  </div>
-                                )}
-                                
-                                {isDisabled && (
-                                  <div className="text-xs font-medium mt-1" style={{color: '#dc2626'}}>
-                                    Cannot pick (limit reached)
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                      </div>
-                    )}
-                  </div>
-                )}
+            {Array.isArray(hoveredComponent.component.techs) && (
+              <div className="text-sm mb-3">
+                <strong>Techs:</strong>
+                <ul className="list-disc list-inside">
+                  {hoveredComponent.component.techs.map((t, i) => (
+                    <li key={i}>
+                      {typeof t === "string"
+                        ? t
+                        : `${t.name}${
+                            t.tech_type ? ` (${t.tech_type})` : ""
+                          }`}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            );
-          })}
-        </div>
-      </div>
+            )}
+
+            {hoveredComponent.component.description && (
+              <div
+                className="text-sm italic"
+                style={{
+                  color: "var(--text-secondary)",
+                  lineHeight: 1.4
+                }}
+              >
+                {hoveredComponent.component.description}
+              </div>
+            )}
+          </div>,
+          document.body
+        )}
+    </div>
   );
 }
-
