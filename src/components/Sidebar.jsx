@@ -139,27 +139,6 @@ export default function Sidebar({
                           <div className="font-medium">
                             {component.name}
                           </div>
-
-                          {cat === "starting_techs" && (
-                            <div className="text-xs mt-1">
-                              {component.note && (
-                                <div>
-                                  <strong>Note:</strong> {component.note}
-                                </div>
-                              )}
-                              {Array.isArray(component.techs) && (
-                                <ul className="list-disc list-inside">
-                                  {component.techs.map((t, i) => (
-                                    <li key={i}>
-                                      {typeof t === "string"
-                                        ? t
-                                        : t.name}
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-                            </div>
-                          )}
                         </div>
                       );
                     })}
@@ -180,6 +159,8 @@ export default function Sidebar({
               top: hoverPosition.y,
               left: hoverPosition.x,
               width: "300px",
+              maxHeight: "500px",
+              overflowY: "auto",
               display: "flex",
               flexDirection: "column",
               background: "#0b1220",
@@ -211,7 +192,38 @@ export default function Sidebar({
               </div>
             )}
 
-            {Array.isArray(hoveredComponent.component.techs) && (
+            {/* Starting Techs - Special handling */}
+            {hoveredComponent.category === 'starting_techs' && (
+              <div className="text-sm mb-3">
+                {hoveredComponent.component.note && (
+                  <div className="font-semibold mb-2" style={{ color: "var(--accent-yellow)" }}>
+                    {hoveredComponent.component.note}
+                  </div>
+                )}
+                {Array.isArray(hoveredComponent.component.techs) && (
+                  <ul className="space-y-1">
+                    {hoveredComponent.component.techs.map((t, i) => {
+                      const techColorMap = {
+                        'Blue': '#60a5fa',
+                        'Red': '#f87171',
+                        'Green': '#34d399',
+                        'Yellow': '#fcd34d'
+                      };
+                      const techColor = techColorMap[t.tech_type] || '#ffffff';
+                      
+                      return (
+                        <li key={i} style={{ color: techColor }}>
+                          • {typeof t === "string" ? t : t.name}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            )}
+
+            {/* Regular techs array for other categories */}
+            {hoveredComponent.category !== 'starting_techs' && Array.isArray(hoveredComponent.component.techs) && (
               <div className="text-sm mb-3">
                 <strong>Techs:</strong>
                 <ul className="list-disc list-inside">
@@ -228,9 +240,9 @@ export default function Sidebar({
               </div>
             )}
 
-            {hoveredComponent.component.description && (
+            {hoveredComponent.component.description && hoveredComponent.category !== 'starting_techs' && (
               <div
-                className="text-sm italic"
+                className="text-sm italic mb-3"
                 style={{
                   color: "var(--text-secondary)",
                   lineHeight: 1.4
@@ -238,6 +250,108 @@ export default function Sidebar({
               >
                 {hoveredComponent.component.description}
               </div>
+            )}
+
+            {/* Unit Stats for Flagship and Mech */}
+            {(hoveredComponent.category === 'flagship' || hoveredComponent.category === 'mech') && hoveredComponent.component.combat && (
+              <div className="mt-3 pt-3 border-t border-gray-700">
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  {hoveredComponent.component.cost !== undefined && (
+                    <div>
+                      <span className="font-semibold text-yellow-400">Cost:</span>{' '}
+                      <span className="text-white">{hoveredComponent.component.cost}</span>
+                    </div>
+                  )}
+                  <div>
+                    <span className="font-semibold text-red-400">Combat:</span>{' '}
+                    <span className="text-white">{hoveredComponent.component.combat}</span>
+                  </div>
+                  {hoveredComponent.component.move !== undefined && (
+                    <div>
+                      <span className="font-semibold text-blue-400">Move:</span>{' '}
+                      <span className="text-white">{hoveredComponent.component.move}</span>
+                    </div>
+                  )}
+                  {hoveredComponent.component.capacity !== undefined && (
+                    <div>
+                      <span className="font-semibold text-green-400">Capacity:</span>{' '}
+                      <span className="text-white">{hoveredComponent.component.capacity}</span>
+                    </div>
+                  )}
+                </div>
+                {hoveredComponent.component.abilities && hoveredComponent.component.abilities.length > 0 && (
+                  <div className="mt-2">
+                    <span className="font-semibold text-purple-400">Abilities:</span>{' '}
+                    <span className="text-white text-sm">{hoveredComponent.component.abilities.join(', ')}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Tile/Home System Info - Planets */}
+            {(hoveredComponent.category === 'blue_tiles' || 
+              hoveredComponent.category === 'red_tiles' || 
+              hoveredComponent.category === 'home_systems') && 
+              hoveredComponent.component.planets && 
+              hoveredComponent.component.planets.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-gray-700">
+                <div className="font-semibold mb-2 text-sm" style={{ color: "var(--accent-green)" }}>
+                  Planets:
+                </div>
+                {hoveredComponent.component.planets.map((planet, idx) => (
+                  <div key={idx} className="mb-3 pb-3 border-b border-gray-700 last:border-b-0">
+                    <div className="font-semibold text-sm mb-1" style={{ color: "#6ee7b7" }}>
+                      {planet.name}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs mb-1">
+                      <div>
+                        <span className="font-semibold text-yellow-400">Resources:</span>{' '}
+                        <span className="text-white">{planet.resource || 0}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-blue-400">Influence:</span>{' '}
+                        <span className="text-white">{planet.influence || 0}</span>
+                      </div>
+                    </div>
+                    {planet.traits && planet.traits.length > 0 && (
+                      <div className="text-xs mb-1">
+                        <span className="font-semibold text-purple-400">Traits:</span>{' '}
+                        <span className="text-white">{planet.traits.join(', ')}</span>
+                      </div>
+                    )}
+                    {planet.technology_specialty && planet.technology_specialty.length > 0 && (
+                      <div className="text-xs mb-1">
+                        <span className="font-semibold text-orange-400">Tech:</span>{' '}
+                        <span className="text-white">{planet.technology_specialty.join(', ')}</span>
+                      </div>
+                    )}
+                    {planet.legendary_ability && (
+                      <div className="text-xs mt-2 p-2 rounded" style={{ background: "rgba(251, 191, 36, 0.1)", border: "1px solid rgba(251, 191, 36, 0.3)" }}>
+                        <span className="font-semibold" style={{ color: "var(--accent-yellow)" }}>Legendary:</span>{' '}
+                        <span className="text-white italic">{planet.legendary_ability}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Wormhole and Anomalies for tiles */}
+            {(hoveredComponent.category === 'blue_tiles' || hoveredComponent.category === 'red_tiles') && (
+              <>
+                {hoveredComponent.component.wormhole && (
+                  <div className="mt-2 text-xs">
+                    <span className="font-semibold text-purple-400">Wormhole:</span>{' '}
+                    <span className="text-white">{hoveredComponent.component.wormhole}</span>
+                  </div>
+                )}
+                {hoveredComponent.component.anomalies && hoveredComponent.component.anomalies.length > 0 && (
+                  <div className="mt-2 text-xs">
+                    <span className="font-semibold text-red-400">Anomalies:</span>{' '}
+                    <span className="text-white">{hoveredComponent.component.anomalies.join(', ')}</span>
+                  </div>
+                )}
+              </>
             )}
           </div>,
           document.body

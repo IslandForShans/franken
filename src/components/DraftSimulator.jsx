@@ -1275,30 +1275,59 @@ setTimeout(() => {
                 📊 View Summary
               </button>
               <button
-                onClick={() => {
-                  const dataStr = JSON.stringify({
-                    factions,
-                    draftHistory,
-                    settings: {
-                      variant: draftVariant,
-                      playerCount,
-                      draftLimits,
-                      firstRoundPickCount,
-                      subsequentRoundPickCount,
-                      expansionsEnabled
-                    },
-                    completedAt: new Date().toISOString()
-                  }, null, 2);
-                  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                  const linkElement = document.createElement('a');
-                  linkElement.setAttribute('href', dataUri);
-                  linkElement.setAttribute('download', `ti4_draft_${Date.now()}.json`);
-                  linkElement.click();
-                }}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
-              >
-                💾 Export Draft
-              </button>
+  onClick={() => {
+    // Helper to generate readable text
+    const generateDraftText = () => {
+      let text = `=== TI4 Draft Export ===\n`;
+      text += `Exported At: ${new Date().toLocaleString()}\n`;
+      text += `Variant: ${draftVariant}, Players: ${playerCount}\n\n`;
+
+      factions.forEach((faction, idx) => {
+        text += `Player ${idx + 1}: ${faction.name}\n`;
+        text += '--------------------\n';
+
+        // Loop through categories in faction
+        Object.keys(faction).forEach(category => {
+          const comps = faction[category];
+          if (!Array.isArray(comps) || comps.length === 0) return;
+
+          text += `Category: ${category}\n`;
+          comps.forEach(comp => {
+            text += `  - ${comp.name}`;
+            if (comp.description) text += `: ${comp.description}`;
+            const flags = [];
+            if (comp.isExtra) flags.push("Extra");
+            if (comp.isSwap) flags.push("Swap");
+            if (flags.length > 0) text += ` [${flags.join(", ")}]`;
+            text += `\n`;
+          });
+          text += `\n`;
+        });
+
+        text += '\n';
+      });
+
+      return text;
+    };
+
+    const draftText = generateDraftText();
+    const blob = new Blob([draftText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', url);
+    linkElement.setAttribute(
+      'download',
+      `ti4_draft_${new Date().toISOString().slice(0, 10)}.txt`
+    );
+    linkElement.click();
+    URL.revokeObjectURL(url);
+  }}
+  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
+>
+  💾 Export Draft
+</button>
+
               <button
                 onClick={() => {
                   if (confirm('Start a new draft? This will clear the current draft.')) {
