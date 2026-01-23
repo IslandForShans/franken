@@ -2,6 +2,13 @@ import React, { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import "./UnifiedStyles.css";
 
+const TECH_ICONS = {
+  red: "/icons/tech_red.png",
+  blue: "/icons/tech_blue.png",
+  green: "/icons/tech_green.png",
+  yellow: "/icons/tech_yellow.png"
+};
+
 export default function Sidebar({
   categories,
   onSelectCategory,
@@ -97,51 +104,67 @@ export default function Sidebar({
                 <div className="sidebar-category-content">
                   <div className="p-2">
                     {components.map((component, idx) => {
-                      const isDisabled = !canPick;
+  const isDisabled = !canPick;
 
-                      return (
-                        <div
-                          key={component.id || component.name || idx}
-                          className={`sidebar-component-item ${
-                            isDisabled
-                              ? "sidebar-component-item-disabled"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            !isDisabled &&
-                            handleComponentClick(cat, component)
-                          }
-                          onMouseEnter={(e) => {
-                            if (!supportsHover) return;
+  return (
+    <div
+      key={component.id || component.name || idx}
+      className={`sidebar-component-item ${
+        isDisabled ? "sidebar-component-item-disabled" : ""
+      }`}
+      onClick={() => !isDisabled && handleComponentClick(cat, component)}
+      onMouseEnter={(e) => {
+        if (!supportsHover) return;
 
-                            const rect =
-                              e.currentTarget.getBoundingClientRect();
-                            const pos = clampToViewport(
-                              rect.right + 12,
-                              rect.top
-                            );
+        const rect = e.currentTarget.getBoundingClientRect();
+        const pos = clampToViewport(rect.right + 12, rect.top);
 
-                            hoverTimeoutRef.current = setTimeout(() => {
-                              setHoverPosition(pos);
-                              setHoveredComponent({
-                                component,
-                                category: cat
-                              });
-                            }, 150);
-                          }}
-                          onMouseLeave={() => {
-                            if (hoverTimeoutRef.current) {
-                              clearTimeout(hoverTimeoutRef.current);
-                            }
-                            setHoveredComponent(null);
-                          }}
-                        >
-                          <div className="font-medium">
-                            {component.name}
-                          </div>
-                        </div>
-                      );
-                    })}
+        hoverTimeoutRef.current = setTimeout(() => {
+          setHoverPosition(pos);
+          setHoveredComponent({ component, category: cat });
+        }, 150);
+      }}
+      onMouseLeave={() => {
+        if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+        setHoveredComponent(null);
+      }}
+    >
+      <div className="flex items-center gap-2 font-medium">
+        {/* ===== COMPONENT ICON ===== */}
+        {component.icon ? (
+          <img
+  src={component.icon || component.factionIcon}
+  alt={component.name}
+  className="w-5 h-5 rounded-full"
+/>
+        ) : null}
+
+        <span>{component.name}</span>
+
+        {/* ===== FACTION TECH PREREQ ICONS ===== */}
+        {cat === "faction_techs" &&
+          Array.isArray(component.prerequisites) &&
+          component.prerequisites.map((p, i) => {
+            const color = typeof p === "string" ? p : p.tech_type || p.color || "";
+            const key = color.toLowerCase();
+            const icon = TECH_ICONS[key];
+            if (!icon) return null;
+
+            return (
+              <img
+                key={i}
+                src={icon}
+                alt={`${color} tech`}
+                title={`${color} tech`}
+                className="w-4 h-4"
+              />
+            );
+          })}
+      </div>
+    </div>
+  );
+})}
+
                   </div>
                 </div>
               )}

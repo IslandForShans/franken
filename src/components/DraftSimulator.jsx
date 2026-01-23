@@ -196,52 +196,57 @@ export default function DraftSimulator({ onNavigate }) {
 
   // Component filtering with ban system
   const getFilteredComponents = (category) => {
-    // Base game factions
-    const baseFactions = factionsJSON.factions
-      .filter(f => !bannedFactions.has(f.name))
-      .flatMap(f => (f[category] || [])
-        .filter(comp => !bannedComponents.has(comp.id || comp.name))
-        .filter(comp => {
-          const undraftable = isComponentUndraftable(comp.name, f.name);
-          return !undraftable;
-        })
-        .map(item => ({ ...item, faction: f.name }))
-      );
-
-    // DS factions (if enabled)
-    const dsFactions = expansionsEnabled.ds && discordantStarsJSON?.factions
-      ? discordantStarsJSON.factions
-          .filter(f => !bannedFactions.has(f.name))
-          .flatMap(f => (f[category] || [])
-            .filter(comp => !bannedComponents.has(comp.id || comp.name))
-            .filter(comp => {
-              const undraftable = isComponentUndraftable(comp.name, f.name);
-              return !undraftable;
-            })
-            .map(item => ({ ...item, faction: f.name }))
-          )
-      : [];
-
-    // Base tiles
-    const baseTiles = (factionsJSON.tiles[category] || [])
+  // Base game factions
+  const baseFactions = factionsJSON.factions
+    .filter(f => !bannedFactions.has(f.name))
+    .flatMap(f => (f[category] || [])
       .filter(comp => !bannedComponents.has(comp.id || comp.name))
       .filter(comp => {
-        const undraftable = isComponentUndraftable(comp.name);
+        const undraftable = isComponentUndraftable(comp.name, f.name);
         return !undraftable;
-      });
+      })
+      .map(item => ({ ...item, faction: f.name }))
+    );
 
-    // US tiles (if enabled)
-    const usTiles = expansionsEnabled.us && discordantStarsJSON?.tiles?.[category]
-      ? (discordantStarsJSON.tiles[category] || [])
+  // DS factions (if enabled)
+  const dsFactions = expansionsEnabled.ds && discordantStarsJSON?.factions
+    ? discordantStarsJSON.factions
+        .filter(f => !bannedFactions.has(f.name))
+        .flatMap(f => (f[category] || [])
           .filter(comp => !bannedComponents.has(comp.id || comp.name))
           .filter(comp => {
-            const undraftable = isComponentUndraftable(comp.name);
+            const undraftable = isComponentUndraftable(comp.name, f.name);
             return !undraftable;
           })
-      : [];
+          .map(item => ({ ...item, faction: f.name }))
+        )
+    : [];
 
-    return [...baseFactions, ...dsFactions, ...baseTiles, ...usTiles];
-  };
+  // Base tiles
+  const baseTiles = (factionsJSON.tiles[category] || [])
+    .filter(comp => !bannedComponents.has(comp.id || comp.name))
+    .filter(comp => {
+      const undraftable = isComponentUndraftable(comp.name);
+      return !undraftable;
+    });
+
+  // US tiles (if enabled)
+  const usTiles = expansionsEnabled.us && discordantStarsJSON?.tiles?.[category]
+    ? (discordantStarsJSON.tiles[category] || [])
+        .filter(comp => !bannedComponents.has(comp.id || comp.name))
+        .filter(comp => {
+          const undraftable = isComponentUndraftable(comp.name);
+          return !undraftable;
+        })
+    : [];
+
+  // **Option A: add factionIcon to every component**
+  return [...baseFactions, ...dsFactions, ...baseTiles, ...usTiles].map(comp => ({
+    ...comp,
+    factionIcon: factionsJSON.factions.find(f => f.name === comp.faction)?.icon
+  }));
+};
+
 
   const createBagsWithUniqueDistribution = () => {
     const bags = Array.from({ length: playerCount }, () => ({}));

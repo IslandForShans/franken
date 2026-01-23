@@ -163,7 +163,7 @@ export default function DraftSummary({ factions }) {
                   </strong>
                   <ul className="ml-2 text-sm">
                     {items.map((item, idx) => (
-                      <li key={idx} className="text-gray-700">
+                      <li key={idx} className="text-white-700">
                         {item.name}
                         {item.isSwap && <span className="text-blue-600 text-xs ml-1">[Swapped]</span>}
                         {item.isExtra && <span className="text-green-600 text-xs ml-1">[Extra]</span>}

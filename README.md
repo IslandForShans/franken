@@ -31,7 +31,6 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 ## Adding/Fixing soon
 
 ### High Priority
-- Change fonts to make things easier to read
 - Add tech icons
 - Show prerequisites for faction techs
 - Change Async export to automatically create a list of commands to run

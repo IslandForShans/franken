@@ -2,6 +2,7 @@
   "factions": [
     {
       "name": "The Arborec",
+      "icon": "/icons/factions/Arborec.png",
       "abilities": [
         {
           "id": "arborec_mitosis",
