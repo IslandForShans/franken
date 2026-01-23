@@ -205,7 +205,7 @@ export default function DraftSimulator({ onNavigate }) {
         const undraftable = isComponentUndraftable(comp.name, f.name);
         return !undraftable;
       })
-      .map(item => ({ ...item, faction: f.name }))
+      .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
     );
 
   // DS factions (if enabled)
@@ -218,7 +218,7 @@ export default function DraftSimulator({ onNavigate }) {
             const undraftable = isComponentUndraftable(comp.name, f.name);
             return !undraftable;
           })
-          .map(item => ({ ...item, faction: f.name }))
+          .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
         )
     : [];
 

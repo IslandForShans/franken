@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import FactionSheet from "./FactionSheet.jsx";
+import Sidebar from "./Sidebar.jsx";
 import factionsJSONRaw from "../data/factions.json";
 import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData } from "../utils/dataProcessor.js";
@@ -48,12 +49,37 @@ export default function TheorycraftingApp({ onNavigate }) {
   const categories = Object.keys(baseFactionLimits).filter(c => c !== 'blue_tiles' && c !== 'red_tiles');
 
   const getAllComponents = (category) => {
-    const allComponents = [
-      ...(factionsJSON.factions.flatMap(f => (f[category] || []).map(item => ({ ...item, faction: f.name })))),
-      ...(factionsJSON.tiles[category] || [])
-    ];
-    return allComponents.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
-  };
+  const allComponents = [
+    ...(factionsJSON.factions.flatMap(f =>
+      (f[category] || []).map(item => {
+        const isUnitUpgrade = item.tech_type === "Unit Upgrade";
+
+        return {
+          ...item,
+          faction: f.name,
+          factionIcon: f.icon,
+
+          // Make unit upgrades render like units
+          ...(isUnitUpgrade && {
+            unit: true,
+            stats: {
+              cost: item.cost,
+              combat: item.combat,
+              abilities: item.abilities,
+              description: item.description
+            }
+          })
+        };
+      })
+    )),
+    ...(factionsJSON.tiles[category] || [])
+  ];
+
+  return allComponents.sort((a, b) =>
+    (a.name || "").localeCompare(b.name || "")
+  );
+};
+
 
   const handleAddComponent = (category, component) => {
     const currentLimit = powerMode ? powerFactionLimits[category] : baseFactionLimits[category];
@@ -123,10 +149,6 @@ export default function TheorycraftingApp({ onNavigate }) {
     setDraftLimits(powerMode ? baseFactionLimits : powerFactionLimits);
   };
 
-  const formatCategoryName = (category) => {
-    return category.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
-  };
-
   const exportFaction = () => {
     const factionData = {
       ...customFaction,
@@ -180,7 +202,6 @@ export default function TheorycraftingApp({ onNavigate }) {
       output += `${formatCategoryNameForExport(category)}:\n`;
       output += `${"-".repeat(formatCategoryNameForExport(category).length + 1)}\n`;
 
-      components.forEach((component, idx) => {
       if (category === "starting_fleet") {
         components.forEach(entry => {
           if (entry.description) {
@@ -203,12 +224,13 @@ export default function TheorycraftingApp({ onNavigate }) {
             });
           } else if (entry.name) {
             output += `- ${entry.name}\n`;
-        }
-        output += `\n`;
+          }
+          output += `\n`;
         });
         return;
       }
 
+      components.forEach((component, idx) => {
         const num = `${idx + 1}.`.padEnd(4);
         if (component.faction) {
           output += `${num}${component.name} (${component.faction})\n`;
@@ -220,7 +242,6 @@ export default function TheorycraftingApp({ onNavigate }) {
       output += `\n`;
     });
 
-    // Create and download text file
     const blob = new Blob([output], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -230,6 +251,66 @@ export default function TheorycraftingApp({ onNavigate }) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  };
+
+  const exportForAsyncCommands = () => {
+    const categoryCommandMap = {
+      abilities: "/franken ability_add ability:",
+      faction_techs: "/franken faction_tech_add tech:",
+      agents: "/franken leader_add leader:",
+      commanders: "/franken leader_add leader:",
+      heroes: "/franken leader_add leader:",
+      promissory: "/franken pn_add promissory:",
+      flagship: "/franken unit_add unit:",
+      mech: "/franken unit_add unit:"
+    };
+
+    let output = [];
+
+    Object.keys(categoryCommandMap).forEach(category => {
+      (customFaction[category] || []).forEach(component => {
+        output.push(`${categoryCommandMap[category]} ${component.name}`);
+      });
+    });
+
+    const blob = new Blob([output.join("\n")], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${customFaction.name.replace(/\s+/g, '_')}_async_commands.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // --- Helper to enrich faction techs with full unit upgrade info ---
+  const getFactionTechsForSheet = () => {
+    return (customFaction.faction_techs || []).map(ft => {
+      const original = factionsJSON.factions
+        .flatMap(f => f.faction_techs || [])
+        .find(t => t.name === ft.name);
+
+      if (!original) return ft;
+
+      if (original.unit_upgrades) {
+        // Include all relevant unit stats for display
+        const unitStats = [
+          'cost','combat', 'move', 'capacity', 'abilities', 'description'
+        ].reduce((acc, key) => {
+          if (original[key] !== undefined) acc[key] = original[key];
+          return acc;
+        }, {});
+
+        return {
+          ...ft,
+          unit_upgrades: original.unit_upgrades,
+          ...unitStats
+        };
+      }
+
+      return ft;
+    });
   };
 
   useEffect(() => {
@@ -248,192 +329,11 @@ export default function TheorycraftingApp({ onNavigate }) {
     return () => window.removeEventListener('resize', setHeaderHeightVar);
   }, []);
 
-  const renderComponentCard = (component, cat, idx, isDisabled, alreadySelected) => {
-    const isUnit = (cat === 'flagship' || cat === 'mech');
-    const isTech = (cat === 'faction_techs' || cat === 'starting_techs');
-    
-    return (
-      <div
-        key={component.id || component.name || idx}
-        className={`p-2 mb-1 rounded border cursor-pointer transition-colors text-sm ${
-          isDisabled 
-            ? "bg-gray-800 text-gray-500 cursor-not-allowed border-gray-700" 
-            : "bg-gray-800 hover:bg-gray-700 hover:border-blue-500 border-gray-700 text-white"
-        }`}
-        onClick={() => {
-          if (!isDisabled) {
-            handleAddComponent(cat, component);
-          }
-        }}
-      >
-        <div className="font-medium">{component.name}</div>
-        
-        {component.faction && (
-          <div className="flex items-center gap-1 text-xs text-blue-400 mt-0.5">
-            {component.icon && <img src={component.icon} alt={component.faction} className="w-4 h-4" />}
-            {component.faction}
-          </div>
-        )}
-        
-        {isTech && (
-          <div className="text-xs mt-2">
-            {component.techs && component.techs.length > 0 ? (
-              <div className="space-y-2">
-                {component.choose_count && (
-                  <div className="text-[11px] font-semibold text-orange-400 mb-1 pb-1 border-b border-orange-700">
-                    {component.note || `Choose ${component.choose_count} of the following:`}
-                  </div>
-                )}
-                {component.techs.map((tech, techIdx) => (
-                  <div key={techIdx} className="pb-2 border-b last:border-b-0 border-gray-700">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-gray-200">{tech.name}</span>
-                      {tech.tech_type_icon && (
-                        <img src={tech.tech_type_icon} alt={tech.tech_type} className="w-4 h-4" title={tech.tech_type} />
-                      )}
-                    </div>
-                    {tech.description && (
-                      <div className="text-gray-400 italic text-[11px]">
-                        {tech.description}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center gap-2 mb-1">
-                  {component.tech_type_icon && (
-                    <img src={component.tech_type_icon} alt={component.tech_type} className="w-4 h-4" title={component.tech_type} />
-                  )}
-                  {component.prerequisite_icons && component.prerequisite_icons.length > 0 && (
-                    <div className="flex gap-1 items-center">
-                      <span className="text-gray-400 text-[10px]">Req:</span>
-                      {component.prerequisite_icons.map((icon, idx) => (
-                        <img key={idx} src={icon} alt="Prerequisite" className="w-3 h-3" />
-                      ))}
-                    </div>
-                  )}
-                </div>
-                
-                {component.combat && (
-                  <>
-                    {component.abilities && component.abilities.length > 0 && (
-                      <div className="font-semibold text-purple-400 mb-1">
-                        {component.abilities.join(', ')}
-                      </div>
-                    )}
-                    {component.description && (
-                      <div className="text-gray-400 mb-1 italic line-clamp-2">
-                        {component.description}
-                      </div>
-                    )}
-                    <div className="flex gap-2 text-gray-300 font-mono text-[10px] bg-gray-900 p-1 rounded">
-                      {component.cost !== undefined && <span>Cost: {component.cost}</span>}
-                      <span>Combat: {component.combat}</span>
-                      {component.move !== undefined && <span>Move: {component.move}</span>}
-                      {component.capacity !== undefined && <span>Capacity: {component.capacity}</span>}
-                    </div>
-                  </>
-                )}
-                
-                {!component.combat && component.description && (
-                  <div className="text-gray-400 italic line-clamp-2">
-                    {component.description}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        )}
-        
-        {isUnit && component.combat && (
-          <div className="text-xs mt-2">
-            {component.abilities && component.abilities.length > 0 && (
-              <div className="font-semibold text-purple-400 mb-1">
-                {component.abilities.join(', ')}
-              </div>
-            )}
-            {component.description && (
-              <div className="text-gray-400 mb-1 italic line-clamp-2">
-                {component.description}
-              </div>
-            )}
-            
-            {component.variants && component.variants.length > 0 ? (
-              <div className="space-y-1">
-                {component.variants.map((variant, vIdx) => (
-                  <div key={vIdx} className="flex items-center gap-2 text-gray-300 font-mono text-[10px] bg-gray-900 p-1 rounded">
-                    <span className="font-semibold text-blue-400">{variant.location}:</span>
-                    {component.cost !== undefined && vIdx === 0 && <span>Cost: {component.cost}</span>}
-                    <span>Combat: {variant.combat}</span>
-                    {variant.move !== undefined && <span>Move: {variant.move}</span>}
-                    {variant.capacity !== undefined && <span>Capacity: {variant.capacity}</span>}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex gap-2 text-gray-300 font-mono text-[10px] bg-gray-900 p-1 rounded">
-                {component.cost !== undefined && <span>Cost: {component.cost}</span>}
-                <span>Combat: {component.combat}</span>
-                {component.move !== undefined && <span>Move: {component.move}</span>}
-                {component.capacity !== undefined && <span>Capacity: {component.capacity}</span>}
-              </div>
-            )}
-          </div>
-        )}
-        
-        {!isUnit && !isTech && component.description && (
-          <div className="text-xs text-gray-400 line-clamp-2 mt-1">
-            {component.description}
-          </div>
-        )}
-        
-        {component.planets && component.planets.length > 0 && (
-          <div className="mt-1 border-t border-gray-700 pt-1">
-            {component.planets.map((planet, pIdx) => (
-              <div key={pIdx} className="text-xs mb-1">
-                <div className="font-semibold text-green-400">{planet.name}</div>
-                <div className="flex items-center gap-1 text-gray-300">
-                  <span>{planet.resource}</span>
-                  {planet.resource_icon && <img src={planet.resource_icon} alt="Resources" className="w-3 h-3" />}
-                  <span>/</span>
-                  <span>{planet.influence}</span>
-                  {planet.influence_icon && <img src={planet.influence_icon} alt="Influence" className="w-3 h-3" />}
-                </div>
-                {planet.trait_icons && planet.trait_icons.length > 0 && (
-                  <div className="flex items-center gap-1 text-purple-400">
-                    <span>Traits:</span>
-                    {planet.trait_icons.map((icon, tIdx) => (
-                      <img key={tIdx} src={icon} alt="Trait" className="w-4 h-4" title={planet.traits?.[tIdx]} />
-                    ))}
-                  </div>
-                )}
-                {planet.legendary_icon && (
-                  <div className="flex items-center gap-1 text-yellow-400 font-medium">
-                    <img src={planet.legendary_icon} alt="Legendary" className="w-3 h-3" />
-                    <span>Legendary</span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-        
-        {alreadySelected && (
-          <div className="text-xs text-green-400 font-medium mt-1">
-            ✓ Selected
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="h-full flex">
         {!sidebarCollapsed && (
-          <div className={`sidebar ${!sidebarCollapsed ? 'open' : ''} w-80 border-r border-gray-700 bg-gray-900 flex flex-col`}>
+          <div className={`sidebar ${!sidebarCollapsed ? 'open' : ''} w-80 border-r border-gray-700 bg-gray-900 overflow-y-auto`}>
             <div className="p-4 border-b border-gray-700 bg-gray-900/95">
               <button
                 className="sidebar-close-button"
@@ -504,68 +404,59 @@ export default function TheorycraftingApp({ onNavigate }) {
                 >
                   Export Faction (JSON)
                 </button>
+
                 <button 
                   onClick={exportForAsync}
                   className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 font-semibold transition-colors"
+                >
+                  Export as Text
+                </button>
+
+                <button 
+                  onClick={exportForAsyncCommands}
+                  className="w-full px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-500 font-semibold transition-colors"
                 >
                   Export for Async
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
-              {categories.map(cat => {
-                const isExpanded = expandedCategory === cat;
-                const components = getAllComponents(cat);
-                const currentCount = customFaction[cat].length;
-                const limit = draftLimits[cat];
-                const canAdd = currentCount < limit;
+            <Sidebar
+              categories={categories}
+              onSelectCategory={setExpandedCategory}
+              playerProgress={Object.fromEntries(
+                categories.map(cat => [cat, customFaction[cat]?.length || 0])
+              )}
+              draftLimits={draftLimits}
+              selectedCategory={expandedCategory}
+              availableComponents={(() => {
+                const components = {};
+                categories.forEach(cat => {
+                  let all = getAllComponents(cat);
 
-                return (
-                  <div key={cat} className="border-b border-gray-700">
-                    <button
-                      className={`w-full text-left p-3 hover:bg-gray-800 transition-colors ${
-                        isExpanded ? "bg-blue-900 border-l-4 border-blue-500" : ""
-                      }`}
-                      onClick={() => setExpandedCategory(isExpanded ? null : cat)}
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <div className="font-medium text-white">{formatCategoryName(cat)}</div>
-                          <div className="text-sm text-gray-400">
-                            {currentCount}/{limit} selected
-                          </div>
-                        </div>
-                        <div className="text-gray-400">
-                          {isExpanded ? "▲" : "▼"}
-                        </div>
-                      </div>
-                    </button>
+                  // Hide unit-upgrade faction techs that are "I" (show only "II")
+      if (cat === "faction_techs") {
+  all = all.filter(ft => {
+    const name = ft.name || "";
 
-                    {isExpanded && (
-                      <div className="bg-gray-900 border-t border-gray-700 max-h-80 overflow-y-auto">
-                        {components.length === 0 ? (
-                          <div className="p-3 text-sm text-gray-500 italic">
-                            No components available
-                          </div>
-                        ) : (
-                          <div className="p-2">
-                            {components.map((component, idx) => {
-                              const alreadySelected = customFaction[cat].some(
-                                item => (item.id || item.name) === (component.id || component.name)
-                              );
-                              const isDisabled = !canAdd || alreadySelected;
-                              
-                              return renderComponentCard(component, cat, idx, isDisabled, alreadySelected);
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+    // Hide unit upgrades that are "I", allow "II"
+    if (name.includes(" I") && !name.includes(" II")) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+      components[cat] = all;
+    });
+
+    return components;
+              })()}
+              onComponentClick={handleAddComponent}
+              isMultiplayer={false}
+              draftVariant={powerMode ? "power" : "franken"}
+            />
           </div>
         )}
 
@@ -603,7 +494,10 @@ export default function TheorycraftingApp({ onNavigate }) {
 
           <div className="flex-1 overflow-auto p-4 bg-gradient-to-b from-gray-900 to-gray-800">
             <FactionSheet
-              drafted={customFaction}
+              drafted={{
+                ...customFaction,
+                faction_techs: getFactionTechsForSheet()
+              }}
               onRemove={handleRemoveComponent}
               draftLimits={draftLimits}
               title={`${customFaction.name} ${powerMode ? "(Power Mode)" : "(Standard)"}`}

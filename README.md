@@ -31,9 +31,6 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 ## Adding/Fixing soon
 
 ### High Priority
-- Add tech icons
-- Show prerequisites for faction techs
-- Change Async export to automatically create a list of commands to run
 - Change untis to be an array instead of just a description for starting fleets
 - Add Thunders Edge stuff once Luminous works out how to implement into franken (~month after release)
 

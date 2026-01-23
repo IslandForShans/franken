@@ -2,7 +2,6 @@
   "factions": [
     {
       "name": "The Arborec",
-      "icon": "/icons/factions/Arborec.png",
       "abilities": [
         {
           "id": "arborec_mitosis",
@@ -1159,6 +1158,10 @@
           "name": "Advanced Carrier II",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Blue", "Blue"],
+          "cost": 3,
+          "combat": 9,
+          "move": 2,
+          "capacity": 8,
           "abilities": ["Sustain Damage"]
         }
       ],

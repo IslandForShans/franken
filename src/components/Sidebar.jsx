@@ -1,12 +1,13 @@
 import React, { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import "./UnifiedStyles.css";
+import { ICON_MAP } from "../utils/dataProcessor";
 
 const TECH_ICONS = {
-  red: "/icons/tech_red.png",
-  blue: "/icons/tech_blue.png",
-  green: "/icons/tech_green.png",
-  yellow: "/icons/tech_yellow.png"
+  red: ICON_MAP.techColors.Red,
+  blue: ICON_MAP.techColors.Blue,
+  green: ICON_MAP.techColors.Green,
+  yellow: ICON_MAP.techColors.Yellow
 };
 
 export default function Sidebar({
@@ -131,10 +132,10 @@ export default function Sidebar({
     >
       <div className="flex items-center gap-2 font-medium">
         {/* ===== COMPONENT ICON ===== */}
-        {component.icon ? (
+        {component.factionIcon ? (
           <img
-  src={component.icon || component.factionIcon}
-  alt={component.name}
+  src={component.factionIcon}
+  alt={component.faction}
   className="w-5 h-5 rounded-full"
 />
         ) : null}
@@ -276,7 +277,14 @@ export default function Sidebar({
             )}
 
             {/* Unit Stats for Flagship and Mech */}
-            {(hoveredComponent.category === 'flagship' || hoveredComponent.category === 'mech') && hoveredComponent.component.combat && (
+            {(
+  hoveredComponent.component.combat !== undefined ||
+  hoveredComponent.component.move !== undefined ||
+  hoveredComponent.component.capacity !== undefined ||
+  hoveredComponent.component.cost !== undefined ||
+  (Array.isArray(hoveredComponent.component.abilities) &&
+    hoveredComponent.component.abilities.length > 0)
+) && (
               <div className="mt-3 pt-3 border-t border-gray-700">
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   {hoveredComponent.component.cost !== undefined && (
@@ -285,10 +293,13 @@ export default function Sidebar({
                       <span className="text-white">{hoveredComponent.component.cost}</span>
                     </div>
                   )}
-                  <div>
-                    <span className="font-semibold text-red-400">Combat:</span>{' '}
-                    <span className="text-white">{hoveredComponent.component.combat}</span>
-                  </div>
+                  {hoveredComponent.component.combat !== undefined && (
+  <div>
+    <span className="font-semibold text-red-400">Combat:</span>{' '}
+    <span className="text-white">{hoveredComponent.component.combat}</span>
+  </div>
+)}
+
                   {hoveredComponent.component.move !== undefined && (
                     <div>
                       <span className="font-semibold text-blue-400">Move:</span>{' '}
