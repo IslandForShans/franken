@@ -77,17 +77,23 @@ export default function DraftSimulator({ onNavigate }) {
   // Expansion toggles
   const [expansionsEnabled, setExpansionsEnabled] = useState({
     pok: true, // Prophecy of Kings (Mechs, Agents, Commanders, Heroes)
+    te: false
   });
 
   // Get active categories based on enabled expansions
   const getActiveCategories = () => {
     const baseCategories = ['abilities', 'faction_techs', 'promissory', 'flagship', 'starting_techs', 'starting_fleet', 'commodity_values', 'blue_tiles', 'red_tiles', 'home_systems'];
     const pokCategories = ['agents', 'commanders', 'heroes', 'mech'];
+    const teCategories = ['breakthroughs'];
     
     let activeCategories = [...baseCategories];
     
     if (expansionsEnabled.pok) {
       activeCategories = [...activeCategories, ...pokCategories];
+    }
+
+    if (expansionsEnabled.te) {
+      activeCategories = [...activeCategories, ...teCategories];
     }
     
     return activeCategories;
@@ -1135,7 +1141,20 @@ setTimeout(() => {
               <span className="font-medium text-white text-sm">Prophecy of Kings</span>
             </label>
             <div className="text-xs text-gray-400 ml-6 mb-2">
-              Enables: Agents, Commanders, Heroes, Mechs
+              Enables: 7 new factions, Agents, Commanders, Heroes, Mechs, and new tiles.
+            </div>
+
+            <label className="flex items-center cursor-pointer mb-2">
+              <input
+                type="checkbox"
+                checked={expansionsEnabled.te}
+                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, te: e.target.checked }))}
+                className="mr-2"
+              />
+              <span className="font-medium text-white text-sm">Thunder's Edge (does nothing currently)</span>
+            </label>
+            <div className="text-xs text-gray-400 ml-6 mb-2">
+              Enables: 6 New factions, Breakthroughs, and new tiles.
             </div>
 
             <label className="flex items-center cursor-pointer mb-2">
