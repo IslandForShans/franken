@@ -86,7 +86,7 @@ export default function DraftSimulator({ onNavigate }) {
   };
 
   const teExclusions = {
-    factions: ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Firmament", "The Crimson Rebellion"],
+    factions: ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Firmament", "The Crimson Rebellion", "The Obsidian"],
     tiles: ["97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "113", "114", "115", "116", "117"]
   };
 

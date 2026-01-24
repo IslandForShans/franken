@@ -3898,37 +3898,65 @@
       ],
       "mech": [
         {
-          
+          "id": "crimson_mech",
+          "name": "Revenant",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "DEPLOY: During the 'Commit Ground Forces' step of your tactical action in a system that contains an active breach, you may commit 1 mech, even if you have no units in the system."
         }
       ],
       "starting_techs": [
         {
-          
+          "id": "crimson_starting_tech",
+          "name": "Crimson Starting Tech",
+          "note": "Choose 1 red or blue technology with no prerequisites."
         }
       ],
       "starting_fleet": [
         {
-          
+          "id": "crimson_starting_fleet",
+          "name": "Crimson Starting Fleet",
+          "description": "1 Carrier, 2 Destroyers, 3 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          
+          "id": "crimson_comms",
+          "name": "Commodities",
+          "value": 2
         }
       ],
       "home_systems": [
         {
-          
+          "id": "crimson_hs",
+          "name": "Crimson Home System",
+          "planets": [
+            {
+              "name": "Ahk Creuxx",
+              "resource": 4,
+              "influence": 2
+            }
+          ],
+          "wormholes": "Epislon"
         }
       ],
       "breakthrough": [
         {
-          
+          "id": "crimson_bt",
+          "name": "Resonance Generator",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Red"
+            }
+          ],
+          "description": "During your tactical actions, appply +1 to the move value of each of your ships that start in your home system or in a system that contains an active breach. ACTION: Exhaust this card to flip any breach or place an active breach in a non-home system that contains your units."
         }
       ]
     },
     {
-      "name": "",
+      "name": "The Firmament",
       "abilities": [
         {
 
