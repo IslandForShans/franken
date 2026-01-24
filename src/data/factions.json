@@ -3886,7 +3886,14 @@
       ],
       "flagship": [
         {
-          
+          "id": "crimson_fs",
+          "name": "Quietus",
+          "cost": 8,
+          "combat": "5(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "While this unit is in a system that contains an active breach, other players units in systems with active breaches lose all their unit abilities."
         }
       ],
       "mech": [
