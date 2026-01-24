@@ -31,8 +31,7 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 ## Adding/Fixing soon
 
 ### High Priority
-- Separate tiles and the 7 PoK factions when PoK expansion is toggled off.
-- Add Thunders Edge stuff once Luminous works out how to implement into franken. (Logic is out, added skeleton for button, need to figure out how to separate tiles.)
+- Add Thunders Edge stuff once Luminous works out how to implement into franken. (Logic is out, added skeleton for button, just need to add the factions, all bt's, and tiles.)
 
 ### Low Priority
 - Create FrankenDraz mode option

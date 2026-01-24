@@ -12,13 +12,15 @@ const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
 const baseFactionLimits = {
   blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
   commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
-  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1
+  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1,
+  breakthrough: 1 // NEW
 };
 
 const powerFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 5, faction_techs: 4, agents: 3,
   commanders: 3, heroes: 3, promissory: 2, starting_techs: 2, starting_fleet: 2,
-  commodity_values: 2, flagship: 1, mech: 1, home_systems: 1
+  commodity_values: 2, flagship: 1, mech: 1, home_systems: 1,
+  breakthrough: 2 // NEW
 };
 
 export default function TheorycraftingApp({ onNavigate }) {
@@ -38,7 +40,8 @@ export default function TheorycraftingApp({ onNavigate }) {
     commodity_values: [],
     blue_tiles: [],
     red_tiles: [],
-    home_systems: []
+    home_systems: [],
+    breakthrough: [] // NEW
   });
   const [draftLimits, setDraftLimits] = useState(baseFactionLimits);
   const [expandedCategory, setExpandedCategory] = useState(null);
@@ -49,37 +52,36 @@ export default function TheorycraftingApp({ onNavigate }) {
   const categories = Object.keys(baseFactionLimits).filter(c => c !== 'blue_tiles' && c !== 'red_tiles');
 
   const getAllComponents = (category) => {
-  const allComponents = [
-    ...(factionsJSON.factions.flatMap(f =>
-      (f[category] || []).map(item => {
-        const isUnitUpgrade = item.tech_type === "Unit Upgrade";
+    const allComponents = [
+      ...(factionsJSON.factions.flatMap(f =>
+        (f[category] || []).map(item => {
+          const isUnitUpgrade = item.tech_type === "Unit Upgrade";
 
-        return {
-          ...item,
-          faction: f.name,
-          factionIcon: f.icon,
+          return {
+            ...item,
+            faction: f.name,
+            factionIcon: f.icon,
 
-          // Make unit upgrades render like units
-          ...(isUnitUpgrade && {
-            unit: true,
-            stats: {
-              cost: item.cost,
-              combat: item.combat,
-              abilities: item.abilities,
-              description: item.description
-            }
-          })
-        };
-      })
-    )),
-    ...(factionsJSON.tiles[category] || [])
-  ];
+            // Make unit upgrades render like units
+            ...(isUnitUpgrade && {
+              unit: true,
+              stats: {
+                cost: item.cost,
+                combat: item.combat,
+                abilities: item.abilities,
+                description: item.description
+              }
+            })
+          };
+        })
+      )),
+      ...(factionsJSON.tiles[category] || [])
+    ];
 
-  return allComponents.sort((a, b) =>
-    (a.name || "").localeCompare(b.name || "")
-  );
-};
-
+    return allComponents.sort((a, b) =>
+      (a.name || "").localeCompare(b.name || "")
+    );
+  };
 
   const handleAddComponent = (category, component) => {
     const currentLimit = powerMode ? powerFactionLimits[category] : baseFactionLimits[category];
@@ -118,7 +120,8 @@ export default function TheorycraftingApp({ onNavigate }) {
         commodity_values: faction.commodity_values || [],
         blue_tiles: [],
         red_tiles: [],
-        home_systems: faction.home_systems ? [...faction.home_systems] : []
+        home_systems: faction.home_systems ? [...faction.home_systems] : [],
+        breakthrough: faction.breakthrough || [] // NEW
       };
       setCustomFaction(loadedFaction);
     }
@@ -140,7 +143,8 @@ export default function TheorycraftingApp({ onNavigate }) {
       commodity_values: [],
       blue_tiles: [],
       red_tiles: [],
-      home_systems: []
+      home_systems: [],
+      breakthrough: [] // NEW
     });
   };
 
@@ -183,7 +187,8 @@ export default function TheorycraftingApp({ onNavigate }) {
         commodity_values: "Commodities",
         blue_tiles: "Blue Tiles",
         red_tiles: "Red Tiles",
-        home_systems: "Home System"
+        home_systems: "Home System",
+        breakthrough: "Breakthroughs" // NEW
       };
       return names[category] || category.toUpperCase().replace(/_/g, " ");
     };
@@ -262,7 +267,8 @@ export default function TheorycraftingApp({ onNavigate }) {
       heroes: "/franken leader_add leader:",
       promissory: "/franken pn_add promissory:",
       flagship: "/franken unit_add unit:",
-      mech: "/franken unit_add unit:"
+      mech: "/franken unit_add unit:",
+      breakthrough: "/franken breakthrough_add breakthrough:" // NEW
     };
 
     let output = [];
@@ -284,7 +290,6 @@ export default function TheorycraftingApp({ onNavigate }) {
     URL.revokeObjectURL(url);
   };
 
-  // --- Helper to enrich faction techs with full unit upgrade info ---
   const getFactionTechsForSheet = () => {
     return (customFaction.faction_techs || []).map(ft => {
       const original = factionsJSON.factions
@@ -294,7 +299,6 @@ export default function TheorycraftingApp({ onNavigate }) {
       if (!original) return ft;
 
       if (original.unit_upgrades) {
-        // Include all relevant unit stats for display
         const unitStats = [
           'cost','combat', 'move', 'capacity', 'abilities', 'description'
         ].reduce((acc, key) => {
@@ -435,23 +439,20 @@ export default function TheorycraftingApp({ onNavigate }) {
                   let all = getAllComponents(cat);
 
                   // Hide unit-upgrade faction techs that are "I" (show only "II")
-      if (cat === "faction_techs") {
-  all = all.filter(ft => {
-    const name = ft.name || "";
+                  if (cat === "faction_techs") {
+                    all = all.filter(ft => {
+                      const name = ft.name || "";
+                      if (name.includes(" I") && !name.includes(" II")) {
+                        return false;
+                      }
+                      return true;
+                    });
+                  }
 
-    // Hide unit upgrades that are "I", allow "II"
-    if (name.includes(" I") && !name.includes(" II")) {
-      return false;
-    }
+                  components[cat] = all;
+                });
 
-    return true;
-  });
-}
-
-      components[cat] = all;
-    });
-
-    return components;
+                return components;
               })()}
               onComponentClick={handleAddComponent}
               isMultiplayer={false}

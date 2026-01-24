@@ -21,13 +21,13 @@ const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
 const baseFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 3, faction_techs: 2, agents: 1,
   commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
-  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1
+  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1, breakthrough: 1
 };
 
 const powerFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 4, faction_techs: 3, agents: 2,
   commanders: 2, heroes: 2, promissory: 1, starting_techs: 1, starting_fleet: 1,
-  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1
+  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1, breakthrough: 1
 };
 
 const defaultDraftLimits = Object.fromEntries(
@@ -66,7 +66,6 @@ export default function DraftSimulator({ onNavigate }) {
   // Multiplayer state
   const [multiplayerEnabled, setMultiplayerEnabled] = useState(false);
   const [selectedPicks, setSelectedPicks] = useState([]);
-  // Start with the sidebar closed by default for a cleaner initial view
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   // UI state
@@ -76,41 +75,51 @@ export default function DraftSimulator({ onNavigate }) {
 
   // Expansion toggles
   const [expansionsEnabled, setExpansionsEnabled] = useState({
-    pok: true, // Prophecy of Kings (Mechs, Agents, Commanders, Heroes)
+    pok: true,
     te: false
   });
 
-  // Get active categories based on enabled expansions
-  const getActiveCategories = () => {
-    const baseCategories = ['abilities', 'faction_techs', 'promissory', 'flagship', 'starting_techs', 'starting_fleet', 'commodity_values', 'blue_tiles', 'red_tiles', 'home_systems'];
-    const pokCategories = ['agents', 'commanders', 'heroes', 'mech'];
-    const teCategories = ['breakthroughs'];
-    
-    let activeCategories = [...baseCategories];
-    
-    if (expansionsEnabled.pok) {
-      activeCategories = [...activeCategories, ...pokCategories];
-    }
-
-    if (expansionsEnabled.te) {
-      activeCategories = [...activeCategories, ...teCategories];
-    }
-    
-    return activeCategories;
+  // Specific faction and tile exclusions for toggles
+  const pokExclusions = {
+    factions: ["The Nomad", "The Vuil'Raith Cabal", "The Argent Flight", "The Titans of Ul", "The Mahact Gene-Sorcerers", "The Empyrean", "The Naaz-Rokha Alliance"],
+    tiles: ["59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80"]
   };
 
-  const categories = getActiveCategories();
+  const teExclusions = {
+    factions: ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Firmament", "The Crimson Rebellion"],
+    tiles: ["97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "113", "114", "115", "116", "117"]
+  };
 
-  // Sync draft state to Firebase when changes occur
+  const getActiveCategories = () => {
+  const baseCategories = [
+    'abilities', 'faction_techs', 'promissory', 'flagship',
+    'starting_techs', 'starting_fleet', 'commodity_values',
+    'blue_tiles', 'red_tiles', 'home_systems'
+  ];
+  const pokCategories = ['agents', 'commanders', 'heroes', 'mech'];
+  const teCategories = ['breakthrough'];
+
+  let activeCategories = [...baseCategories];
+
+  // Add PoK categories only if PoK is enabled
+  if (expansionsEnabled.pok) {
+    activeCategories.push(...pokCategories);
+  }
+
+  // Add TE categories only if TE is enabled
+  if (expansionsEnabled.te) {
+    activeCategories.push(...teCategories);
+  }
+
+  return activeCategories;
+};
+
+  const categories = getActiveCategories();
   const syncToFirebase = useRef(null);
-  
+
   useEffect(() => {
     if (multiplayerEnabled && draftStarted) {
-      // Debounce sync to avoid too many writes
-      if (syncToFirebase.current) {
-        clearTimeout(syncToFirebase.current);
-      }
-      
+      if (syncToFirebase.current) clearTimeout(syncToFirebase.current);
       syncToFirebase.current = setTimeout(() => {
         multiplayerService.syncDraftState({
           factions,
@@ -128,7 +137,6 @@ export default function DraftSimulator({ onNavigate }) {
     }
   }, [multiplayerEnabled, draftStarted, factions, draftHistory, currentPlayer, round, draftPhase]);
 
-  // Measure header height and set CSS variable so mobile sidebar can sit below it
   useEffect(() => {
     const setHeaderHeightVar = () => {
       try {
@@ -139,19 +147,16 @@ export default function DraftSimulator({ onNavigate }) {
         document.documentElement.style.setProperty('--header-height', `56px`);
       }
     };
-
     setHeaderHeightVar();
     window.addEventListener('resize', setHeaderHeightVar);
     return () => window.removeEventListener('resize', setHeaderHeightVar);
   }, [settingsCollapsed]);
 
-  // Update limits when variant changes
   useEffect(() => {
     const activeCats = getActiveCategories();
     const baseLimits = draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
     const draftBaseLimits = draftVariant === "power" ? powerDraftLimits : defaultDraftLimits;
     
-    // Filter limits to only include active categories
     const filteredLimits = {};
     activeCats.forEach(cat => {
       if (draftVariant === "rotisserie") {
@@ -164,7 +169,6 @@ export default function DraftSimulator({ onNavigate }) {
     setDraftLimits(filteredLimits);
   }, [draftVariant, expansionsEnabled]);
 
-  // Expose end draft function to multiplayer panel
   useEffect(() => {
     if (multiplayerEnabled) {
       window.endMultiplayerDraft = (endDraftCallback) => {
@@ -183,11 +187,8 @@ export default function DraftSimulator({ onNavigate }) {
     };
   }, [multiplayerEnabled, factions, draftHistory, draftVariant, playerCount, draftLimits]);
 
-  // Handle draft state sync from Firebase
   const handleDraftStateSync = (draftState) => {
     if (!draftState) return;
-    
-    // Update local state from Firebase
     if (draftState.factions) setFactions(draftState.factions);
     if (draftState.draftHistory) setDraftHistory(draftState.draftHistory);
     if (draftState.playerProgress) setPlayerProgress(draftState.playerProgress);
@@ -200,58 +201,49 @@ export default function DraftSimulator({ onNavigate }) {
     if (typeof draftState.isPickingPhase === 'boolean') setIsPickingPhase(draftState.isPickingPhase);
   };
 
-  // Component filtering with ban system
   const getFilteredComponents = (category) => {
-  // Base game factions
-  const baseFactions = factionsJSON.factions
+  // --- Faction components ---
+  const factionComponents = factionsJSON.factions
     .filter(f => !bannedFactions.has(f.name))
+    // Exclude PoK factions if PoK is OFF
+    .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
+    // Exclude TE factions if TE is OFF
+    .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
     .flatMap(f => (f[category] || [])
       .filter(comp => !bannedComponents.has(comp.id || comp.name))
-      .filter(comp => {
-        const undraftable = isComponentUndraftable(comp.name, f.name);
-        return !undraftable;
-      })
+      .filter(comp => !isComponentUndraftable(comp.name, f.name))
       .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
     );
 
-  // DS factions (if enabled)
-  const dsFactions = expansionsEnabled.ds && discordantStarsJSON?.factions
+  // --- Discordant Stars factions ---
+  const dsComponents = expansionsEnabled.ds && discordantStarsJSON?.factions
     ? discordantStarsJSON.factions
         .filter(f => !bannedFactions.has(f.name))
         .flatMap(f => (f[category] || [])
           .filter(comp => !bannedComponents.has(comp.id || comp.name))
-          .filter(comp => {
-            const undraftable = isComponentUndraftable(comp.name, f.name);
-            return !undraftable;
-          })
+          .filter(comp => !isComponentUndraftable(comp.name, f.name))
           .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
         )
     : [];
 
-  // Base tiles
-  const baseTiles = (factionsJSON.tiles[category] || [])
-    .filter(comp => !bannedComponents.has(comp.id || comp.name))
-    .filter(comp => {
-      const undraftable = isComponentUndraftable(comp.name);
-      return !undraftable;
-    });
+  // --- Tiles (global, not faction-specific) ---
+  const tiles = (factionsJSON.tiles[category] || [])
+    .filter(tile => !bannedComponents.has(tile.id || tile.name))
+    // PoK tile exclusion
+    .filter(tile => expansionsEnabled.pok || !pokExclusions.tiles.includes(tile.id))
+    // TE tile exclusion
+    .filter(tile => expansionsEnabled.te || !teExclusions.tiles.includes(tile.id));
 
-  // US tiles (if enabled)
+  // --- US / Discordant Stars tiles ---
   const usTiles = expansionsEnabled.us && discordantStarsJSON?.tiles?.[category]
-    ? (discordantStarsJSON.tiles[category] || [])
-        .filter(comp => !bannedComponents.has(comp.id || comp.name))
-        .filter(comp => {
-          const undraftable = isComponentUndraftable(comp.name);
-          return !undraftable;
-        })
+    ? discordantStarsJSON.tiles[category]
+        .filter(tile => !bannedComponents.has(tile.id || tile.name))
     : [];
 
-  // **Option A: add factionIcon to every component**
-  return [...baseFactions, ...dsFactions, ...baseTiles, ...usTiles].map(comp => ({
-    ...comp,
-    factionIcon: factionsJSON.factions.find(f => f.name === comp.faction)?.icon
-  }));
+  // Combine everything
+  return [...factionComponents, ...dsComponents, ...tiles, ...usTiles];
 };
+
 
 
   const createBagsWithUniqueDistribution = () => {
