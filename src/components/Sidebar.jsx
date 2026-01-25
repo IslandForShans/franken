@@ -134,13 +134,68 @@ export default function Sidebar({
         {/* ===== COMPONENT ICON ===== */}
         {component.factionIcon ? (
           <img
-  src={component.factionIcon}
-  alt={component.faction}
-  className="w-5 h-5 rounded-full"
-/>
+            src={component.factionIcon}
+            alt={component.faction}
+            className="w-5 h-5 rounded-full"
+          />
         ) : null}
 
         <span>{component.name}</span>
+
+        {/* ===== TILE PLANET TRAIT + TECH SPECIALTY ICONS ===== */}
+{(cat === "red_tiles" || cat === "blue_tiles") &&
+  Array.isArray(component.planets) &&
+  component.planets.flatMap((planet, pIdx) => {
+    const traitIcons = Array.isArray(planet.trait_icons)
+      ? planet.trait_icons.map((icon, iIdx) => (
+          <img
+            key={`trait-${pIdx}-${iIdx}`}
+            src={icon}
+            alt="planet trait"
+            title="Planet Trait"
+            className="w-4 h-4"
+          />
+        ))
+      : [];
+
+    const techIcons = Array.isArray(planet.tech_specialty_icons)
+      ? planet.tech_specialty_icons.map((icon, iIdx) => (
+          <img
+            key={`tech-${pIdx}-${iIdx}`}
+            src={icon}
+            alt="tech specialty"
+            title="Tech Specialty"
+            className="w-4 h-4"
+          />
+        ))
+      : [];
+
+    return [...traitIcons, ...techIcons];
+  })}
+
+  {/* ===== TILE WORMHOLE ICON ===== */}
+{(cat === "red_tiles" || cat === "blue_tiles") &&
+  component.wormhole_icon && (
+    <img
+      src={component.wormhole_icon}
+      alt="wormhole"
+      title="Wormhole"
+      className="w-4 h-4"
+    />
+)}
+
+{/* ===== TILE ANOMALY ICONS ===== */}
+{(cat === "red_tiles" || cat === "blue_tiles") &&
+  Array.isArray(component.anomaly_icons) &&
+  component.anomaly_icons.map((icon, i) => (
+    <img
+      key={`anomaly-${i}`}
+      src={icon}
+      alt="anomaly"
+      title="Anomaly"
+      className="w-4 h-4"
+    />
+  ))}
 
         {/* ===== FACTION TECH PREREQ ICONS ===== */}
         {cat === "faction_techs" &&
@@ -159,6 +214,41 @@ export default function Sidebar({
                 title={`${color} tech`}
                 className="w-4 h-4"
               />
+            );
+          })}
+
+        {/* ===== BREAKTHROUGH SYNERGY ICONS ===== */}
+        {cat === "breakthrough" &&
+          Array.isArray(component.synergy) &&
+          component.synergy.map((syn, i) => {
+            const primaryKey = syn.primary?.toLowerCase();
+            const secondaryKey = syn.secondary?.toLowerCase();
+            const primaryIcon = TECH_ICONS[primaryKey];
+            const secondaryIcon = TECH_ICONS[secondaryKey];
+            
+            if (!primaryIcon || !secondaryIcon) return null;
+
+            return (
+              <div key={i} className="flex items-center gap-1">
+                <img
+                  src={primaryIcon}
+                  alt={`${syn.primary} tech`}
+                  title={`${syn.primary} tech`}
+                  className="w-4 h-4"
+                />
+                <img
+                  src="./icons/synergy-symbol.png"
+                  alt="synergy"
+                  title="synergy"
+                  className="w-3 h-3"
+                />
+                <img
+                  src={secondaryIcon}
+                  alt={`${syn.secondary} tech`}
+                  title={`${syn.secondary} tech`}
+                  className="w-4 h-4"
+                />
+              </div>
             );
           })}
       </div>
@@ -215,6 +305,39 @@ export default function Sidebar({
                 {hoveredComponent.component.faction}
               </div>
             )}
+
+            {/* Breakthrough Synergy Icons in Preview */}
+            {hoveredComponent.category === 'breakthrough' &&
+              Array.isArray(hoveredComponent.component.synergy) &&
+              hoveredComponent.component.synergy.map((syn, i) => {
+                const primaryKey = syn.primary?.toLowerCase();
+                const secondaryKey = syn.secondary?.toLowerCase();
+                const primaryIcon = TECH_ICONS[primaryKey];
+                const secondaryIcon = TECH_ICONS[secondaryKey];
+                
+                if (!primaryIcon || !secondaryIcon) return null;
+
+                return (
+                  <div key={i} className="flex items-center gap-2 mb-2">
+                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>Synergy:</span>
+                    <img
+                      src={primaryIcon}
+                      alt={`${syn.primary} tech`}
+                      className="w-5 h-5"
+                    />
+                    <img
+                      src="./icons/synergy-symbol.png"
+                      alt="synergy"
+                      className="w-4 h-4"
+                    />
+                    <img
+                      src={secondaryIcon}
+                      alt={`${syn.secondary} tech`}
+                      className="w-5 h-5"
+                    />
+                  </div>
+                );
+              })}
 
             {/* Starting Techs - Special handling */}
             {hoveredComponent.category === 'starting_techs' && (

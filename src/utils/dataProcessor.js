@@ -29,6 +29,7 @@ export const ICON_MAP = {
     "Nebula": `${ICON_PATH}anomaly-nebula.png`,
     "Supernova": `${ICON_PATH}anomaly-supernova.png`,
     "Gravity Rift": `${ICON_PATH}anomaly-gravity-rift.png`,
+    "Entropic Scar": `${ICON_PATH}anomaly-entropic-scar.png`,
   },
   
   // Legendary
@@ -39,6 +40,7 @@ export const ICON_MAP = {
     "Cultural": `${ICON_PATH}trait-cultural.png`,
     "Hazardous": `${ICON_PATH}trait-hazardous.png`,
     "Industrial": `${ICON_PATH}trait-industrial.png`,
+    "Space Station": `${ICON_PATH}space-station.png`,
   },
   
   // Faction icons (add your faction names)
@@ -68,7 +70,12 @@ export const ICON_MAP = {
     "The Xxcha Kingdom": `${ICON_PATH}factions/Xxcha.png`,
     "The Yin Brotherhood": `${ICON_PATH}factions/Yin.png`,
     "The Yssaril Tribes": `${ICON_PATH}factions/Yssaril.png`,
-    // Add more factions as needed
+    "The Deepwrought Scholarate": `${ICON_PATH}factions/Deepwrought.png`,
+    "The Ral Nel Consortium": `${ICON_PATH}factions/Ral Nel.png`,
+    "Last Bastion": `${ICON_PATH}factions/Bastion.png`,
+    "The Firmament": `${ICON_PATH}factions/Firmament.png`,
+    "The Crimson Rebellion": `${ICON_PATH}factions/Crimson.png`,
+    "The Obsidian": `${ICON_PATH}factions/Obsidian.png`,
   }
 };
 
