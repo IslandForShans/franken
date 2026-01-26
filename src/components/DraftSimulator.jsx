@@ -76,7 +76,8 @@ export default function DraftSimulator({ onNavigate }) {
   // Expansion toggles
   const [expansionsEnabled, setExpansionsEnabled] = useState({
     pok: true,
-    te: false
+    te: false,
+    firmobs: false
   });
 
   // Specific faction and tile exclusions for toggles
@@ -86,8 +87,12 @@ export default function DraftSimulator({ onNavigate }) {
   };
 
   const teExclusions = {
-    factions: ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Firmament", "The Crimson Rebellion", "The Obsidian"],
+    factions: ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Crimson Rebellion"],
     tiles: ["97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "113", "114", "115", "116", "117"]
+  };
+
+  const noFirmament = {
+    factions: ["The Firmament", "The Obsidian"]
   };
 
   const getActiveCategories = () => {
@@ -209,6 +214,8 @@ export default function DraftSimulator({ onNavigate }) {
     .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
     // Exclude TE factions if TE is OFF
     .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
+    // Exclude Firmament/Obsidian if OFF
+    .filter(f => expansionsEnabled.firmobs || !noFirmament.factions.includes(f.name))
     .flatMap(f => (f[category] || [])
       .filter(comp => !bannedComponents.has(comp.id || comp.name))
       .filter(comp => !isComponentUndraftable(comp.name, f.name))
@@ -1143,10 +1150,10 @@ setTimeout(() => {
                 onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, te: e.target.checked }))}
                 className="mr-2"
               />
-              <span className="font-medium text-white text-sm">Thunder's Edge (does nothing currently)</span>
+              <span className="font-medium text-white text-sm">Thunder's Edge</span>
             </label>
             <div className="text-xs text-gray-400 ml-6 mb-2">
-              Enables: 6 New factions, Breakthroughs, and new tiles.
+              Enables: 5 New factions, Breakthroughs, and new tiles. (No Firmament/Obsidian)
             </div>
 
             <label className="flex items-center cursor-pointer mb-2">
@@ -1173,6 +1180,19 @@ setTimeout(() => {
             </label>
             <div className="text-xs text-gray-400 ml-6">
               Adds: Additional system tiles
+            </div>
+
+            <label className="flex items-center cursor-pointer mb-2">
+              <input
+                type="checkbox"
+                checked={expansionsEnabled.firmobs}
+                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, firmobs: e.target.checked }))}
+                className="mr-2"
+              />
+              <span className="font-medium text-white text-sm">Add Firmament/Obsidian (DO NOT CHECK, BROKEN)</span>
+            </label>
+            <div className="text-xs text-gray-400 ml-6">
+              Adds: The Firmament and The Obsidian to the draft. (disabled by default)
             </div>
           </div>
 

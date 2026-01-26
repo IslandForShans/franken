@@ -8,10 +8,12 @@ Templates:
 { name: "", faction: "", triggerComponent: "", type: "draftable_and_swap" }
 **/
 
+import { trim } from "lodash";
+
 export const undraftableComponents = {
   // Abilities that are gained/optionally swapped when drafting other components
   abilities: [
-    //Base + PoK
+    //Base + PoK + TE
     { name: "Awaken", faction: "The Titans of Ul", triggerComponent: "Terragenesis", type: "gain_extra" },
     { name: "Coalescence", faction: "The Titans of Ul", triggerComponent: "Terragenesis", type: "gain_extra" },
     { name: "Devour", faction: "The Vuil'Raith Cabal", triggerComponent: "Amalgamation", type: "gain_when_draft" },
@@ -20,6 +22,28 @@ export const undraftableComponents = {
     { name: "Mitosis", faction: "The Arborec", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Hubris", faction: "The Mahact Gene-Sorcerers", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Propagation", faction: "The Nekro Virus", reason: "Just Plain Garbage", type:"garbage" },
+    { name: "Nocturne", faction: "The Obsidian", reason: "Just Plain Garbage", type: "garbage" },
+    { name: "The Blade's Orchestra", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
+    { name: "Sundered", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "gain_extra" },
+    { name: "Incursion", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "gain_extra" },
+    { name: "The Sorrow", faction: "The Crimson Rebellion", reason: "Not Draftable", type: "garbage" },
+    { name: "Research Team", faction: "The Deepwrought Scholarate", triggerComponent: "Oceanbound", type: "gain_extra" },
+    { name: "Research Team", faction: "The Deepwrought Scholarate", triggerComponent: "Eanautic", type: "gain_exra" },
+    { name: "Galvanize", faction: "Last Bastion", triggerComponent: "Raise the Standard", type: "gain_extra" },
+    { name: "Galvanize", faction: "Last Bastion", triggerComponent: "Phoenix Standard", type: "gain_extra" },
+    { name: "Puppets of the Blade", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "gain_extra" },
+    { name: "Puppets of the Blade", faction: "The Firmament", triggerComponent: "The Sowing", type: "gain_extra" },
+    { name: "Plots Within Plots", faction: "The Firmament", triggerComponent: "The Sowing", type: "gain_extra" },
+    { name: "Puppets of the Blade", faction: "The Firmament", triggerComponent: "Firmament Home System", type: "gain_extra" },
+    { name: "Plots Within Plots", faction: "The Firmament", triggerComponent: "Firmament Home System", type: "gain_extra" },
+    { name: "Puppets of the Blade", faction: "The Firmament", triggerComponent: "Plane Splitter", type: "gain_extra" },
+    { name: "Plots Within Plots", faction: "The Firmament", triggerComponent: "Plane Splitter", type: "gain_extra" },
+    { name: "Puppets of the Blade", faction: "The Firmament", triggerComponent: "Neural Parasite", type: "gain_extra" },
+    { name: "Plots Within Plots", faction: "The Firmament", triggerComponent: "Neural Parasite", type: "gain_extra" },
+    { name: "Puppets of the Blade", faction: "The Firmament", triggerComponent: "Viper EX-23", type: "gain_extra" },
+    { name: "Plots Within Plots", faction: "The Firmament", triggerComponent: "Viper EX-23", type: "gain_extra" },
+    { name: "Marionettes", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
+    { name: "Miniaturization", faction: "The Ral Nel Consortium", triggerComponent: "Linkship II", tpye: "gain_extra" },
     // Discordant Stars
     { name: "Arms Dealer", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "gain_extra" },
     { name: "Cybernetic Madness", faction: "The Savages of Cymiae", triggerComponent: "Autonetic Memory", type: "gain_extra" },
@@ -63,9 +87,12 @@ export const undraftableComponents = {
 
  // Home systems with optional swaps
   home_systems: [
-    //Base + PoK
+    //Base + PoK + TE
     { name: "Creuss Gate", faction: "The Ghosts of Creuss", triggerComponent: "Slipstream", type: "optional_swap" },
     { name: "Ghosts Home System", faction: "The Ghosts of Creuss", triggerComponent: "Slipstream", type: "optional_swap" },
+    { name: "Crimson Home System", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "optional_swap" },
+    { name: "Crimson Home System", faction: "The Crimson Rebellion", triggerComponent: "The Sorrow", type: "gain_extra" },
+    { name: "Obsidian Home System", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
     //Discordant Stars
     { name: "Free Systems Home System", faction: "The Free Systms Compact", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Ghoti Home System", faction: "The Ghoti Wayfarers", triggerComponent: "Mobile Command", type: "gain_extra" }
@@ -73,11 +100,13 @@ export const undraftableComponents = {
 
  // Promissory notes
   promissory: [
-    //Base + PoK
+    //Base + PoK + TE
     { name: "Gift of Prescience", faction: "The Naalu Collective", triggerComponent: "Telepathic", type: "optional_swap" },
     { name: "Dark Pact", faction: "The Empyrean", triggerComponent: "Dark Whispers", type: "gain_extra" },
     { name: "Promise of Protection", faction: "The Mentak Coalition", triggerComponent: "Pillage", type: "optional_swap" },
     { name: "Antivirus", faction: "The Nekro Virus", triggerComponent: "Tech Singularity", type: "optional_swap" },
+    { name: "Black Ops", faction: "The Firmament", triggerComponent: "Firmament Home System", type: "gain_extra" },
+    { name: "Malevolency", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
     //DS
     { name: "Read the Fates", faction: "The Augurs of Ilyxum", triggerComponent: "Oracle AI", type: "optional_swap" },
     { name: "Branch Office - Tax haven", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
@@ -88,9 +117,13 @@ export const undraftableComponents = {
 
   // Faction techs
   faction_techs: [
-    //Base + PoK
+    //Base + PoK + TE
     { name: "Valefar Assimilator Y", faction: "The Nekro Virus", triggerComponent: "Galactic Threat", type: "optional_swap" },
     { name: "Valefar Assimilator X", faction: "The Nekro Virus", triggerComponent: "Tech Singularity", type: "optional_swap" },
+    { name: "Exile II", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "optional_swap" },
+    { name: "Hydrothermal Mining", faction: "The Deepwrought Scholarate", triggerComponent: "Oceanbound", type: "optional_swap" },
+    { name: "Plane Splitter", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
+    { name: "Neural Parasite", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
     //DS
     { name: "Voidflare Warden II", faction: "The Nivyn Star Kings", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Zhrgar Stimulants", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
@@ -99,19 +132,28 @@ export const undraftableComponents = {
 
   // Leaders
   agents: [
-    //Base + PoK
+    //Base + PoK + TE
     { name: "Artuno the Betrayer", faction: "The Nomad", triggerComponent: "The Company", type: "gain_extra" },
     { name: "The Thundarian", faction: "The Nomad", triggerComponent: "The Company", type: "gain_extra" },
     { name: "Suffi An", faction: "The Mentak Coalition", triggerComponent: "Pillage", type: "optional_swap" },
+    { name: "Doctor Carrina", faction: "The Deepwrought Scholarate", triggerComponent: "Oceanbound", type: "optional_swap" },
+    { name: "Dame Briar", faction: "Last Bastion", triggerComponent: "Phoenix Standard", type: "optional_swap" },
+    { name: "Myrus Voss", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
+    { name: "Voss Hollow", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
     //DS
     { name: "Lactarius Indigo", faction: "The Myko-Mentori", triggerComponent: "Prescient Memories", type: "optional_swap" },
     { name: "Merkismathr Asvand - Marshal of Trade", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" }
   ],
   
   commanders: [
-    //Base + PoK
+    //Base + PoK + TE
     { name: "Il Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
     { name: "That Which Molds Flesh", faction: "The Vuil'Raith Cabal", triggerComponent: "Dimensional Tear II", type: "optional_swap" },
+    { name: "Ahk Siever", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "optional_swap" },
+    { name: "Aello", faction: "The Deepwrought Scholarate", triggerComponent: "optional_swap", type: "" },
+    { name: "Nip and Tuck", faction: "Last Bastion", triggerComponent: "Phoenix Standard", type: "optiona_swap" },
+    { name: "Captain Aroz", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
+    { name: "Aroz Hollow", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
     //DS
     { name: "Designer TckVsk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
     { name: "Jarl Vel & Jarl Jotrun - Raid Leaders", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
@@ -123,8 +165,11 @@ export const undraftableComponents = {
   ],
 
   heroes: [
-    //Base + PoK
+    //Base + PoK + TE
     { name: "It Feeds On Carrion", faction: "The Vuil'Raith Cabal", triggerComponent: "Dimensional Tear II", type: "optional_swap" },
+    { name: "Lyra Keen", faction: "Last Bastion", triggerComponent: "Phoenix Standard", type: "optional_swap" },
+    { name: "Sharsiss", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
+    { name: "Sharsiss Hollow", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
     //DS
     { name: "Demi-Queen Mdcksssk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
     { name: "Korela - The Lady", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
@@ -139,7 +184,7 @@ export const undraftableComponents = {
 
   // Mechs
   mech: [
-    //Base + PoK
+    //Base + PoK + TE
     { name: "ZS Thunderbolt M2", faction: "The Federation of Sol", triggerComponent: "Orbital Drop", type: "optional_swap" },
     { name: "Blackshade Infiltrator", faction: "The Yssaril Tribes", triggerComponent: "Stall Tactics", type: "optional_swap" },
     { name: "Ember Colossus", faction: "The Embers of Muaat", triggerComponent: "Star Forge", type: "optional_swap" },
@@ -147,6 +192,9 @@ export const undraftableComponents = {
     { name: "Mordred", faction: "The Nekro Virus", triggerComponent: "X or Y Assimilators", type: "optional_swap" },
     { name: "Starlancer", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Edict", type: "optional_swap" },
     { name: "Shield Paling", faction: "The Universities of Jol-Nar", reason: "Just Plain Garbage", type: "garbage" },
+    { name: "Revenant", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "optional_swap" },
+    { name: "A3 Valiance", faction: "Last Bastion", triggerComponent: "Phoenix Standard", type: "optional_swap" },
+    { name: "Viper Hollow", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
     //DS
     { name: "Liberator", faction: "The Free Systems Compact", triggerComponent: "Rally to the Cause", type: "optional_swap" },
     { name: "Oro-Zhin Elite", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
@@ -158,8 +206,12 @@ export const undraftableComponents = {
 
   // Flagships
   flagship: [
-    //Base + Pok
+    //Base + Pok + TE
     { name: "Hil Colish", faction: "The Ghosts of Creuss", triggerComponent: "any component w/ delta WH", type: "optional_swap" },
+    { name: "Quietus", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "optional_swap" },
+    { name: "D.W.S. Luminous", faction: "The Deepwrought Scholarate", triggerComponent: "Oceanbound", type: "optional_swap" },
+    { name: "Heavan's Eye", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
+    { name: "Heavan's Hollow", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
     //DS
     { name: "Hulgade's Hammer", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
     { name: "All Mother", faction: "The Ghoti Wayfarers", triggerComponent: "Ghoti Starting Fleet", type: "draftable_and_swap" }
@@ -167,7 +219,7 @@ export const undraftableComponents = {
 
   // Base units (completely undraftable)
   base_units: [
-    //Base + PoK
+    //Base + PoK + TE
     { name: "Floating Factory I", faction: "The Clan of Saar", type: "base_unit" },
     { name: "Memoria I", faction: "The Nomad", type: "base_unit" },
     { name: "Saturn Engine I", faction: "The Titans of Ul", type: "base_unit" },
@@ -182,6 +234,9 @@ export const undraftableComponents = {
     { name: "Crimson Legionnaire I", faction: "The Mahact Gene-Sorcerers", type: "base_unit" },
     { name: "Hybrid Crystal Fighter I", faction: "The Naalu Collective", type: "base_unit" },
     { name: "Exotrireme I", faction: "Sardakk N'orr", type: "base_unit" },
+    { name: "4X41C 'HELIOS' V1", faction: "Last Bastion", type: "base_unit" },
+    { name: "Linkship I", faction: "The Ral Nel Consortium", type: "base_unit" },
+    { name: "Exile I", faction: "The Crimson Rebellion", type: "base_unit" },
     //DS
     { name: "Trade Port I", faction: "The Celdauri Trade Confederation", type: "base_unit" },
     { name: "Unholy Abomination I", faction: "The Savages of Cymiae", type: "base_unit" },
@@ -217,7 +272,15 @@ export const undraftableComponents = {
   
   //Commodities
   commodities: [
+    // Base + PoK + TE
+    { name: "Commodities", faction: "Last Bastion", reason: "Just Plain Garbage", type: "grabage" },
+    //DS
     { name: "Commodities", faction: "The Myko-Mentori", reason: "Just Plain Garbage", type: "garbage" },
+  ],
+
+  breakthrough: [
+    // Base + PoK + TE
+    { name: "The Reaping", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" }
   ]
 };
 

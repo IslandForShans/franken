@@ -124,6 +124,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "arborec_bt",
+          "name": "Psychospore",
+          "synergy": [
+            {
+              "primary": "Red",
+              "secondary": "Green"
+            }
+          ],
+          "description": "ACTION: Exhaust this card to remove a command token from a system that contains 1 or more of your infantry and return it to your reinforcements. Then, place 1 infantry in that system."
+        }
       ]
     },
     {
@@ -278,6 +291,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "argent_bt",
+          "name": "Wing Transfer",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "When you activate a system that contains only your units, you may place command tokens from your reinforcements into any system adjacent to that system that contain only your units; at the end of this action, you may move ships among the active system and system adjacent to it that contain your command tokens."
+        }
       ]
     },
     {
@@ -406,6 +432,19 @@
               "influence": 1
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "barony_bt",
+          "name": "Gravleash Maneuvers",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Red"
+            }
+          ],
+          "description": "Before you roll dice during space combat, apply +X to the results of 1 of your ship's rolls, where X is the number of ship types you have in the combat. During movement, your non-fighter ships' move values are equal to the highest move value amongst moving ships in the system they started in."
         }
       ]
     },
@@ -541,6 +580,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "saar_bt",
+          "name": "Deorbit Barrage",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Red"
+            }
+          ],
+          "description": "ACTION: Exhaust this card and spend any amount of resources to choose a planet up to 2 systems away from an asteroid field that contains your ships; roll a number of dice equal to the amount spent, and assign 1 hit to a ground force on that planet for each roll of 4 or greater."
+        }
       ]
     },
     {
@@ -564,18 +616,18 @@
       ],
       "faction_techs": [
         {
-          "id": "keleres_iihq",
-          "name": "I.I.H.Q. Modernization",
+          "id": "keleres_eo",
+          "name": "Executive Order",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow"],
-          "description": "You are neighbors with all players that have units in or adjacent to the Mecatol Rex system. Gain the Custodia Vigilia planet card and its legendary planet ability card. You cannot lose these cards, and this card cannot have an X or Y assimilator token placed on it."
+          "description": "ACTION: Exhaust this card and draw the top or bottom card of the agenda deck. Players immediately vote on this agenda as if you were the speaker; you can spend trade goods and resources on this agenda as if they were votes."
         },
         {
           "id": "keleres_asn",
           "name": "Agency Supply Network",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
-          "description": "Whenever you resolve one of your PRODUCTION abilities, you may resolve an additional one of your PRODUCTION abilities in any system; the additional use does not trigger this ability."
+          "description": "Once per action, when you resolve one a unit's PRODUCTION ability, you may resolve an another of your unit's PRODUCTION abilities in any system."
         }
       ],
       "agents": [
@@ -707,6 +759,19 @@
               "influence": 1
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "keleres_bt",
+          "name": "I.I.H.Q. Modernization",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Green"
+            }
+          ],
+          "description": "When you gain this card, gain the Custodia Vigilia planet card and its legendary planet ability card. Wou are neighbors with all players that have units or control planets in or adjacent to the Mecatol Rex system."
         }
       ]
     },
@@ -842,6 +907,19 @@
               "influence": 1
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "muatt_bt",
+          "name": "Stellar Genesis",
+          "synergy": [
+            {
+              "primary": "Red",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "When you gain this card, place the Avernus planet token into a non-home system that is adjacent to a planet you control; gain control of and ready it. After you move 1 of your war suns out of or through Avernus's system and into a non-home system, you may move the Avernus token with it."
         }
       ]
     },
@@ -982,6 +1060,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "hacan_bt",
+          "name": "Auto-Factories",
+          "synergy": [
+            {
+              "primary": "Red",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "When you produce 3 or more non-fighter ships, place 1 command token from your reinforcements into your fleet pool."
+        }
       ]
     },
     {
@@ -1112,6 +1203,19 @@
               "anomalies": ["Nebula"]
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "empy_bt",
+          "name": "Void Tether",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Blue"
+            }
+          ],
+          "description": "When you activate a system that contains or is adjacent to a unit or planet you control, you may place or move 1 of your void tether tokens onto a border that system shares with another system; other players do not treat those systems as adjacent to each other unless you allow it."
         }
       ]
     },
@@ -1257,6 +1361,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "sol_bt",
+          "name": "Bellum Gloriosum",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Green"
+            }
+          ],
+          "description": "When you produce a ship that has capacity, you may also produce any combiantion of ground forces or fighter up to that ship's capacity; they do not count against your PRODUCTION limit."
+        }
       ]
     },
     {
@@ -1382,6 +1499,19 @@
               "wormhole": "Delta"
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "ghosts_bt",
+          "name": "Particle Synthesis",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "Each wormhole in a system that contains your ships gains PRODUCTION 1 as if it were a unit you control. Reduce the combined cost of units you produce in systems that contain wormholes by 1 for each wormhole in that system."
         }
       ]
     },
@@ -1521,6 +1651,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "l1_bt",
+          "name": "Fealty Uplink",
+          "synergy": [
+            {
+              "primary": "Red",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "When you gain control of a planet, place infantry from your reinforcements equal to that planet's influence value on that planet."
+        }
       ]
     },
     {
@@ -1659,6 +1802,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "mahact_bt",
+          "name": "Vaults of the Heir",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Green"
+            }
+          ],
+          "description": "ACTION: Exhaust this card and purge 1 of your technologies to gain 1 relic."
+        }
       ]
     },
     {
@@ -1783,6 +1939,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "mentak_bt",
+          "name": "The Table's Grace",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "If you have the Cruiser II unit upgrade technology, flip this card and place it on top of Cruiser II. Corsair (Flipped Card). If the active system contains another player's non-fighter ships, this unit can move through systems that contain otehr players' ships. Cost 2, Combat 6, Move 3, Capacity 2."
+        }
       ]
     },
     {
@@ -1827,8 +1996,8 @@
       "agents": [
         {
           "id": "naalu_agent",
-          "name": "Z'eu Ω",
-          "description": "ACTION: Exhaust this card and shoose a player; That player may perform a tactical action in a non-home system without placing a command token; that system still counts as being activated."
+          "name": "Z'eu ΩΩ",
+          "description": "After any player's command token is placed in any system: You may exhaust this card to return that token to that player's reinforcements."
         }
       ],
       "commanders": [
@@ -1867,11 +2036,11 @@
       "mech": [
         {
           "id": "naalu_mech",
-          "name": "Iconoclast Ω",
+          "name": "Iconoclast ΩΩ",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
-          "description": "Other players cannot use ANTI-FIGHTER BARRAGE against your units in this system."
+          "description": "DEPLOY: When another player gains a relic, place 1 mech on any planet you control."
         }
       ],
       "starting_techs": [
@@ -1920,6 +2089,19 @@
               "influence": 1
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "naalu_bt",
+          "name": "Mindsieve",
+          "synergy": [
+            {
+              "primary": "Red",
+              "secondary": "Green"
+            }
+          ],
+          "description": "When you would resolve the secondary ability of another player's strategy card, you may give them a promissory note to resolve it without spending a command token."
         }
       ]
     },
@@ -2059,6 +2241,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "nra_bt",
+          "name": "Absolute Synergy",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Blue"
+            }
+          ],
+          "description": "When you have 4 mechs in the same system, you may return 3 of those mechs to your reinforcements to flip this card and place it on top of your mech card. Eidolon Maximum (Flipped Card). This unit is both a ship and a ground force. It cannot be assigned hits from unit abilities. Repair it at the start of every combat round. Game effects cannot place or produce your mechs. When this unit is destroyed or removed, flip this card and return it to your play area. Abilities: Sustain Damage. Combat, 4(x4), Move 3."
+        }
       ]
     },
     {
@@ -2179,6 +2374,19 @@
               "influence": 0
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "nekro_bt",
+          "name": "Valefar Assimilator Z",
+          "synergy": [
+            {
+              "primary": "None",
+              "secondary": "None"
+            }
+          ],
+          "description": "When you would gain another player's technology using one of your faction abilities, you may instead place one of your 'Z' assimilator tokens on that player's faction sheet. Your flagship gains the text abilities of that faction's flagship in addition to its own."
         }
       ]
     },
@@ -2315,6 +2523,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "nomad_bt",
+          "name": "Thunder's Paradox",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Green"
+            }
+          ],
+          "description": "At the start of any player's turn, you may exhaust 1 of your agents to ready any other agent."
+        }
       ]
     },
     {
@@ -2443,6 +2664,19 @@
               "influence": 1
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "sardakk_bt",
+          "name": "N'orr Supremacy",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Red"
+            }
+          ],
+          "description": "After you win a combat, either gain 1 command token or research a unit upgrade technology."
         }
       ]
     },
@@ -2594,6 +2828,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "titans_bt",
+          "name": "Slumberstate Computing",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Green"
+            }
+          ],
+          "description": "When COALESCENCE results in a ground combat, if you commit no other units, you may choose for your units to coexist instead. During the status phase, for each player you are coexisting with, you and that player each draw 1 action card. Other players may allow you to place a sleeper token on a planet they control."
+        }
       ]
     },
     {
@@ -2641,7 +2888,7 @@
       "commanders": [
         {
           "id": "jolnar_commander",
-          "name": "Ta Zernm",
+          "name": "Agnlan Oln",
           "description": "UNLOCK: Own 8 technologies. After you roll dice for a unit ability: You may reroll any of those dice."
         }
       ],
@@ -2735,6 +2982,19 @@
               "influence": 3
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "jolnar_bt",
+          "name": "Specialized Compounds",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Green"
+            }
+          ],
+          "description": "When you research technology using the 'Technology' strategy card, you may exhaust a planet that has a technology specialty instead of spending resources; if you do you must research a technology of that color."
         }
       ]
     },
@@ -2868,6 +3128,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "cabal_bt",
+          "name": "Al'Raith Ix Ianovar",
+          "synergy": [
+            {
+              "primary": "Red",
+              "secondary": "Green"
+            }
+          ],
+          "description": "This breakthrough causes The Fracture to enter play without a roll, if it is not already in play. After this card enters play, move up to 2 ingress tokens into system that contain gravity rifts. Apply +1 to the Move value of each of your ships that start their movement in The Fracture."
+        }
       ]
     },
     {
@@ -2983,6 +3256,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "winnu_breakthrough",
+          "name": "Imperator",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Red"
+            }
+          ],
+          "description": "Apply +1 to the results of each of your unit's combat rolls for each 'Support for the Throne' in your opponent's play area. After you activate a system that contains a legendary planet, apply +1 to the move value of 1 of your ships during this tactical action."
+        }
       ]
     },
     {
@@ -3032,8 +3318,8 @@
       "heroes": [
         {
           "id": "xxcha_hero",
-          "name": "Xxekir Grom Ω",
-          "description": "POLITICLA DATA NEXUS. When you exhaust planets, combine the values of their resources and influence. Treat the combined value as if it were both resources and influence."
+          "name": "Xxekir Grom ΩΩ",
+          "description": "PLANETARY DEFENSE NEXUS - ACTION: Place any combination of up to 4 PDS or mechs onto planets you control; ready each planet that you place a unit on. Then, purge this card."
         }
       ],
       "promissory": [
@@ -3108,6 +3394,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "xxcha_bt",
+          "name": "Archon's Gift",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Green"
+            }
+          ],
+          "description": "You can spend inluence as if it were resources. You can spend resources as if it were influence."
+        }
       ]
     },
     {
@@ -3143,22 +3442,22 @@
       "agents": [
         {
           "id": "yin_agent",
-          "name": "Brother Milor Ω",
-          "description": "After a player's unit is destroyed: You may exhaust this card to allow that player to place 2 fighters in the destroyed unit's system if it were a ship, or 2 infantry on its planet if it was a ground force."
+          "name": "Brother Milor ΩΩ",
+          "description": "After a player's unit is destroyed during combat: You may exhaust this card to allow that player to place 2 fighters in the destroyed unit's system if it were a ship, or 2 infantry on its planet if it was a ground force."
         }
       ],
       "commanders": [
         {
           "id": "yin_commander",
-          "name": "Brother Omar Ω",
-          "description": "UNLOCK: Use one of your faction abilities. This card satisfies a green technology prerequisite. When you research a technology owned by another player, you may return 1 of your infantry to reinforcements to ignore its prerequisites."
+          "name": "Brother Omar ΩΩ",
+          "description": "UNLOCK: Use one of your faction abilities. This card satisfies a green technology prerequisite. When you research a technology owned by another player, you may return 1 of your infantry to reinforcements to ignore all prerequisites."
         }
       ],
       "heroes": [
         {
           "id": "yin_hero",
-          "name": "Dannel of the Tenth Ω",
-          "description": "QUANTUM DISSEMINATION Ω. ACTION: Commit up to 3 infantry from your reinforcements to any non-home planets and resolve invasions on those planets; players cannot use SPACE CANNON against those units. Then, purge this card."
+          "name": "Dannel of the Tenth ΩΩ",
+          "description": "QUANTUM DISSEMINATION. ACTION: Commit up to 3 infantry from your reinforcements to any non-home planets and resolve ground combat on those planets; players cannot use SPACE CANNON against these units. Then, purge this card."
         }
       ],
       "promissory": [
@@ -3227,6 +3526,19 @@
               "influence": 4
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "yin_bt",
+          "name": "Yin Ascendant",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Green"
+            }
+          ],
+          "description": "When you gain this card or score a public objective, gain the commander of a random, unused faction."
         }
       ]
     },
@@ -3357,6 +3669,19 @@
               "influence": 2
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "yssaril_bt",
+          "name": "Deepgloom Executable",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Green"
+            }
+          ],
+          "description": "You can allow other players ot use your STALL TACTICS or SCHEMING faction abilites; when you do, you may resolve a transaction with that player. During the actio phase, that transaction does not count against the once-per=player transactions limit for that turn."
         }
       ]
     },
@@ -3549,7 +3874,7 @@
         },
         {
           "id": "bastion_sd2",
-          "name": "4X41C 'HELIOS' V2",
+          "name": "4X41C 'HELIOS' V2 II",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Yellow", "Yellow"],
           "abilities": ["Production X"],
@@ -4032,7 +4357,7 @@
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
-          "descripiton": "When ground forces are committed to this planet, you may choose for your units to coexist, if they were not already. FLip this card if your faction becomes the Obsidian."
+          "description": "When ground forces are committed to this planet, you may choose for your units to coexist, if they were not already. FLip this card if your faction becomes the Obsidian."
         }
       ],
       "starting_techs": [
@@ -4046,7 +4371,7 @@
         {
           "id": "firmament_starting_fleet",
           "name": "Firmament Starting Fleet",
-          "descripiton": "1 Carrier, 1 Cruiser, 1 Destroyer, 3 Fighters, 3 Infantry, 1 Space Dock"
+          "description": "1 Carrier, 1 Cruiser, 1 Destroyer, 3 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
@@ -4144,7 +4469,7 @@
           "id": "obsidian_np",
           "name": "Neural Parasite",
           "tech_type": "Green",
-          "descripiton": "At the start of your turn, destroy 1 of another player's infantry in or adjacent to a system that contains your infantry. This technology cannot be researched."
+          "description": "At the start of your turn, destroy 1 of another player's infantry in or adjacent to a system that contains your infantry. This technology cannot be researched."
         }
       ],
       "agents": [
@@ -4238,27 +4563,27 @@
         {
           "id": "obsidian_plot1",
           "name": "Mutated Enervate",
-          "descripiton": "This plot has been mutated beyond recognition, and has no effect."
+          "description": "This plot has been mutated beyond recognition, and has no effect."
         },
         {
           "id": "obsidian_plot2",
           "name": "Mutated Seethe",
-          "descripiton": "This plot has been mutated beyond recognition, and has no effect."
+          "description": "This plot has been mutated beyond recognition, and has no effect."
         },
         {
           "id": "obsidian_plot3",
           "name": "Mutated Asail",
-          "descripiton": "This plot has been mutated beyond recognition, and has no effect."
+          "description": "This plot has been mutated beyond recognition, and has no effect."
         },
         {
           "id": "obsidian_plot4",
           "name": "Mutated Extract",
-          "descripiton": "This plot has been mutated beyond recognition, and has no effect."
+          "description": "This plot has been mutated beyond recognition, and has no effect."
         },
         {
           "id": "obsidian_plot5",
           "name": "Mutated Syphon",
-          "descripiton": "This plot has been mutated beyond recognition, and has no effect."
+          "description": "This plot has been mutated beyond recognition, and has no effect."
         }
       ]
     }

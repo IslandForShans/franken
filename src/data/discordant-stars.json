@@ -135,6 +135,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "augurs_bt",
+          "name": "Cryptic Insights",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "When you would explore a planet, you may instead draw 1 action card."
+        }
       ]
     },
     {
@@ -277,6 +290,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "bentor_bt",
+          "name": "Historian Conclave",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Blue"
+            }
+          ],
+          "description": "ACTION: Exhaust this card to allow each other player to explore a planet they control; gain a number of commodities equal to the number of player who do."
+        }
       ]
     },
     {
@@ -414,6 +440,19 @@
               "influence": 0
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "berserkers_bt",
+          "name": "Bannerhalls",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Red"
+            }
+          ],
+          "description": "For each Glory token on the game board, you control 1 Bannerhall card. Once per action, when a player wins a combat in a system that contains a Glory token, ready each Bannerhall card."
         }
       ]
     },
@@ -555,6 +594,19 @@
               "influence": 3
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "celdauri_bt",
+          "name": "Trade Protectorate",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Red"
+            }
+          ],
+          "description": "When you gain this card, gain the Celagrom token in a system that contains your ships, if able. The Celagrom token is a second flagship with the attributes, abilities, and ability text on the Celagrom flagship card. Celagrom. Abilities: Sustain Damage, Space Cannon 5, Bombardment 5. Cost, 5. Combat, 5. Move, 1. Capacity, 2. Text ability: You assign hits this unit produces. While you control another flagship, this unit rolls 1 additional combat die."
         }
       ]
     },
@@ -706,6 +758,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "cheiran_bt",
+          "name": "Matriphagy",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Red"
+            }
+          ],
+          "description": "At the end of your turn, you may exhaust this card to choose 1 of your non-fighter ships on the game board; replace that ship with 1 or more units from your reinforcements that have a total combined cost less than that ship's cost value."
+        }
       ]
     },
     {
@@ -850,6 +915,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "dih-mohn_bt",
+          "name": "Exodus Engineering",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "Once per combat, after 1 of your opponent's non-fighter ships is destroyed, you may exhaust this card to place 1 frontier token in the active system, or produce 1 non-fighter ship in that system to ready this card. You can produce ships in systems that contain both your ships and another player's ships."
+        }
       ]
     },
     {
@@ -979,6 +1057,19 @@
               "influence": 1
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "edyn_bt",
+          "name": "Celestial Ambassadors",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Blue"
+            }
+          ],
+          "description": "ACTION: Exhaust this card and show another player 1 of your unscored secret objectives; that player must show you 1 of their unscored secret objectives, at random, or allow you to place 1 ground force from your reinforcements into coexistence on a planet they control."
         }
       ]
     },
@@ -1127,6 +1218,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "florzen_bt",
+          "name": "Reverie Implants",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Blue"
+            }
+          ],
+          "description": "At the end of your turn, you may exhaust this card and choose 1other player; you and that player each secretly spend 0, 1, or 2 trade goods. Then, reveal the spent trade goods; if you spent the same number of trade goods, take 1 promissory note form that player's hand, at random, if able."
+        }
       ]
     },
     {
@@ -1261,6 +1365,19 @@
               "influence": 1
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "fsc_bt",
+          "name": "Galactic Movement",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "After you spend a strategy token, you may place 1 infantry from your reinforcements into coexistence on any cultural, hazardous, or industrial planet that contains the active player's ground forces. Your infantry tokens on planets you control can be accompanied by your control tokens instead of plastic pieces."
         }
       ]
     },
@@ -1418,6 +1535,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "ghemina_bt",
+          "name": "Raiding Parties",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Red"
+            }
+          ],
+          "description": "During each round of combat, you may choose 1 of your participating units; roll that unit's combat roll twice and resolve the result of your choice. When you announce a retreat, you may exhaust this card to immediately resolve that retreat."
+        }
       ]
     },
     {
@@ -1545,6 +1675,19 @@
               "description": "Special - Tied to Mobile Command"
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "ghoti_bt",
+          "name": "Cult of the All-Mother",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Blue"
+            }
+          ],
+          "description": "After this card enters play, place 1 ingress token in an empty system. Your units may retreat to any empoty system that does not contain another player's ships."
         }
       ]
     },
@@ -1687,6 +1830,19 @@
             }
           ]
         }
+      ],
+      "breakthrough": [
+        {
+          "id": "gledge_bt",
+          "name": "Dhonraz Installations",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Yellow"
+            }
+          ],
+          "description": "Planets you control that contain core tokens are also treated as stations except for the purposes of control; units can be committed to, produced on, and placed on these planets. Stations you control have SPACE CANNON 5."
+        }
       ]
     },
     {
@@ -1816,6 +1972,19 @@
             }
           ],
           "anomalies": ["Nebula"]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "glimmer_bt",
+          "name": "Mirage Craft",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Red"
+            }
+          ],
+          "description": "At the start and end of a space combat in which you are the defender, you may swap 1 of your ships in the active system that contains 1 of your command tokens; the swapped ships cannot transport units."
         }
       ]
     },
