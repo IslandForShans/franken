@@ -25,6 +25,7 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5);
   --transition-fast: 150ms;
   --transition-normal: 300ms;
+  --font-description: 'Myriad Pro', 'Myriad', sans-serif;
 }
 
 /* Global Styles */
@@ -401,6 +402,7 @@ body {
   margin-top: 0.25rem;
   font-size: 0.75rem;
   color: var(--text-tertiary);
+  font-family: var(--font-description);
 }
 
 .component-limit-overlay {
@@ -629,6 +631,7 @@ body {
   font-style: italic;
   border-top: 1px solid var(--border-color);
   padding-top: 0.5rem;
+  font-family: var(--font-description);
 }
 
 .sidebar {
@@ -834,6 +837,7 @@ body {
   font-size: 0.875rem;
   color: var(--text-tertiary);
   margin-top: 0.25rem;
+  font-family: var(--font-description);
 }
 
 .sidebar-content {
@@ -946,6 +950,7 @@ body {
   margin-top: 1rem;
   font-size: 0.75rem;
   color: var(--text-secondary);
+  font-family: var(--font-description);
 }
 
 .player-list {
@@ -1136,6 +1141,7 @@ body {
   color: var(--text-tertiary);
   margin-left: 1.5rem;
   margin-bottom: 0.5rem;
+  font-family: var(--font-description);
 }
 
 /* Utility Classes */
@@ -1485,6 +1491,7 @@ body {
   color: #fcd34d;
   font-size: 0.875rem;
   margin-top: 0.25rem;
+  font-family: var(--font-description);
 }
 
 /* Swap Modal */
@@ -1542,6 +1549,7 @@ body {
 .swap-option-category {
   font-size: 0.875rem;
   color: var(--text-tertiary);
+  font-family: var(--font-description);
 }
 
 .swap-option-faction {
@@ -1601,6 +1609,7 @@ body {
 .available-swap-trigger {
   color: var(--text-tertiary);
   font-size: 0.625rem;
+  font-family: var(--font-description);
 }
 
 /* Unit Stats Display */
@@ -1709,12 +1718,14 @@ body {
   color: #c084fc;
   font-size: 0.75rem;
   margin-top: 0.25rem;
+  font-family: var(--font-description);
 }
 
 .planet-tech {
   color: #fb923c;
   font-size: 0.75rem;
   margin-top: 0.25rem;
+  font-family: var(--font-description);
 }
 
 .planet-legendary {
@@ -1722,6 +1733,7 @@ body {
   font-size: 0.75rem;
   margin-top: 0.25rem;
   font-weight: 600;
+  font-family: var(--font-description);
 }
 
 /* Commodity Display */
@@ -1801,6 +1813,7 @@ body {
   color: var(--text-tertiary);
   font-size: 0.75rem;
   font-style: italic;
+  font-family: var(--font-description);
 }
 
 .tech-icon {
@@ -1865,6 +1878,7 @@ body {
 
 .swap-warning-text {
   color: #bfdbfe;
+  font-family: var(--font-description);
 }
 
 .extra-warning {
@@ -1885,6 +1899,7 @@ body {
   font-size: 0.75rem;
   margin-left: 1rem;
   list-style: disc;
+  font-family: var(--font-description);
 }
 
 /* Empty State */

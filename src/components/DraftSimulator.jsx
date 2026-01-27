@@ -50,7 +50,7 @@ export default function DraftSimulator({ onNavigate }) {
   const [draftLimits, setDraftLimits] = useState(defaultDraftLimits);
   const [draftVariant, setDraftVariant] = useState("franken");
   const [rotisseriePool, setRotisseriePool] = useState({});
-  const [showSummary, setShowSummary] = useState(false);
+  const [showSummary, setShowSummary] = useState(true);
   const [picksThisRound, setPicksThisRound] = useState(0);
   const [draftStarted, setDraftStarted] = useState(false);
   const [draftPhase, setDraftPhase] = useState("draft");
@@ -395,7 +395,7 @@ export default function DraftSimulator({ onNavigate }) {
     setDraftPhase('draft');
     setPendingPicks([]);
     setIsPickingPhase(true);
-    setShowSummary(false);
+    setShowSummary(true);
   };
 
   const getAvailableComponents = () => {
@@ -1068,6 +1068,7 @@ setTimeout(() => {
                     onBanFaction={handleBanFaction} 
                     onBanComponent={handleBanComponent} 
                     categories={getActiveCategories()} 
+                    expansionsEnabled={expansionsEnabled}
                   />
                   
                   {!multiplayerEnabled && !draftStarted && (
@@ -1086,7 +1087,7 @@ setTimeout(() => {
                     {showSummary ? "Hide" : "Show"} Summary
                   </button>
                   
-                  <button 
+                  {/*<button 
                     className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
                       multiplayerEnabled 
                         ? "bg-red-600 hover:bg-red-500 text-white" 
@@ -1095,7 +1096,7 @@ setTimeout(() => {
                     onClick={() => setMultiplayerEnabled(me => !me)}
                   >
                     {multiplayerEnabled ? "Disable" : "Enable"} Multiplayer
-                  </button>
+                  </button>*/}
                   
                   {draftStarted && (
                     <button
@@ -1139,7 +1140,7 @@ setTimeout(() => {
               />
               <span className="font-medium text-white text-sm">Prophecy of Kings</span>
             </label>
-            <div className="text-xs text-gray-400 ml-6 mb-2">
+            <div className="text-xs text-gray-200 ml-6 mb-2">
               Enables: 7 new factions, Agents, Commanders, Heroes, Mechs, and new tiles.
             </div>
 
@@ -1152,7 +1153,7 @@ setTimeout(() => {
               />
               <span className="font-medium text-white text-sm">Thunder's Edge</span>
             </label>
-            <div className="text-xs text-gray-400 ml-6 mb-2">
+            <div className="text-xs text-gray-200 ml-6 mb-2">
               Enables: 5 New factions, Breakthroughs, and new tiles. (No Firmament/Obsidian)
             </div>
 
@@ -1163,9 +1164,9 @@ setTimeout(() => {
                 onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, ds: e.target.checked }))}
                 className="mr-2"
               />
-              <span className="font-medium text-white text-sm">Discordant Stars (DS)</span>
+              <span className="font-medium text-white text-sm">Discordant Stars (DS, Unfinished)</span>
             </label>
-            <div className="text-xs text-gray-400 ml-6 mb-2">
+            <div className="text-xs text-gray-200 ml-6 mb-2">
               Adds: 30 new factions with all components
             </div>
 
@@ -1178,7 +1179,7 @@ setTimeout(() => {
               />
               <span className="font-medium text-white text-sm">Uncharted Space (US)</span>
             </label>
-            <div className="text-xs text-gray-400 ml-6">
+            <div className="text-xs text-gray-200 ml-6 mb-2">
               Adds: Additional system tiles
             </div>
 
@@ -1189,9 +1190,9 @@ setTimeout(() => {
                 onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, firmobs: e.target.checked }))}
                 className="mr-2"
               />
-              <span className="font-medium text-white text-sm">Add Firmament/Obsidian (DO NOT CHECK, BROKEN)</span>
+              <span className="font-medium text-white text-sm">Add Firmament/Obsidian</span>
             </label>
-            <div className="text-xs text-gray-400 ml-6">
+            <div className="text-xs text-gray-200 ml-6 mb-2">
               Adds: The Firmament and The Obsidian to the draft. (disabled by default)
             </div>
           </div>

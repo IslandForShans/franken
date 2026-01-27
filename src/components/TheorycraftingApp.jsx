@@ -47,6 +47,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [powerMode, setPowerMode] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [globalSearchTerm, setGlobalSearchTerm] = useState("");
   const headerRef = useRef(null);
 
   const categories = Object.keys(baseFactionLimits).filter(c => c !== 'blue_tiles' && c !== 'red_tiles');
@@ -83,13 +84,38 @@ export default function TheorycraftingApp({ onNavigate }) {
     );
   };
 
-  const handleAddComponent = (category, component) => {
-    const currentLimit = powerMode ? powerFactionLimits[category] : baseFactionLimits[category];
-    if (customFaction[category].length >= currentLimit) return;
+  // Filter components based on global search term
+  const filterComponentsBySearch = (components, searchTerm) => {
+    if (!searchTerm) return components;
+    
+    const q = searchTerm.toLowerCase().trim();
+    
+    return components.filter(item => {
+      const matchesName = item.name?.toLowerCase().includes(q);
+      const matchesDesc = item.description?.toLowerCase().includes(q);
+      const matchesFaction = item.faction?.toLowerCase().includes(q);
+      
+      // Handle tile-specific properties
+      const matchesPlanet = item.planets?.some(p => p.name?.toLowerCase().includes(q)) || false;
+      const matchesTraits = item.planets?.some(p => 
+        p.traits?.some(trait => trait.toLowerCase().includes(q))
+      ) || false;
+      const matchesAnomalies = item.anomalies?.some(anomaly => 
+        anomaly.toLowerCase().includes(q)
+      ) || false;
+      const matchesWormhole = item.wormhole?.toLowerCase().includes(q) || false;
+
+      return matchesName || matchesDesc || matchesFaction || matchesPlanet || matchesTraits || matchesAnomalies || matchesWormhole;
+    });
+  };
+
+  const handleAddComponent = (cat, item) => {
+    const currentLimit = powerMode ? powerFactionLimits[cat] : baseFactionLimits[cat];
+    if (customFaction[cat].length >= currentLimit) return;
     
     setCustomFaction(prev => ({
       ...prev,
-      [category]: [...prev[category], component]
+      [cat]: [...prev[cat], item]
     }));
   };
 
@@ -336,7 +362,8 @@ export default function TheorycraftingApp({ onNavigate }) {
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="h-full flex">
-        <div className={`sidebar ${!sidebarCollapsed ? 'open' : ''}`}>
+        {!sidebarCollapsed && (
+          <div className="sidebar open">
           <div className="sidebar-header">
             <button
               className="sidebar-close-button md:hidden"
@@ -423,12 +450,55 @@ export default function TheorycraftingApp({ onNavigate }) {
                 Export for Async
               </button>
             </div>
+
+            {/* Global Search Input - At Bottom of Header */}
+            <div className="border-t border-gray-700 pt-3">
+              <input 
+                type="search" 
+                placeholder="Search all components..."
+                value={globalSearchTerm}
+                onChange={(e) => setGlobalSearchTerm(e.target.value)}
+                className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
+              />
+              {globalSearchTerm && (
+                <div className="text-xs text-gray-400 mt-1">
+                  Searching across all categories
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="sidebar-content">
             <Sidebar
-              categories={categories}
-              onSelectCategory={setExpandedCategory}
+              categories={(() => {
+                // If there's a global search, filter categories to only show those with results
+                if (globalSearchTerm) {
+                  return categories.filter(cat => {
+                    let all = getAllComponents(cat);
+                    
+                    // Hide unit-upgrade faction techs that are "I" or "V1" (show only "II" or "V2")
+                    if (cat === "faction_techs") {
+                      all = all.filter(ft => {
+                        const name = ft.name || "";
+                        if (name.includes(" I") && !name.includes(" II")) {
+                          return false;
+                        }
+                        if (name.includes(" V1") && !name.includes(" V2")) {
+                          return false;
+                        }
+                        return true;
+                      });
+                    }
+                    
+                    // Filter by search term
+                    const filtered = filterComponentsBySearch(all, globalSearchTerm);
+                    
+                    // Only include category if it has matching results
+                    return filtered.length > 0;
+                  });
+                }
+                return categories;
+              })()}
               playerProgress={Object.fromEntries(
                 categories.map(cat => [cat, customFaction[cat]?.length || 0])
               )}
@@ -440,20 +510,23 @@ export default function TheorycraftingApp({ onNavigate }) {
                   let all = getAllComponents(cat);
 
                   // Hide unit-upgrade faction techs that are "I" or "V1" (show only "II" or "V2")
-if (cat === "faction_techs") {
-  all = all.filter(ft => {
-    const name = ft.name || "";
-    // Filter out " I" but not " II"
-    if (name.includes(" I") && !name.includes(" II")) {
-      return false;
-    }
-    // Filter out " V1" but not " V2"
-    if (name.includes(" V1") && !name.includes(" V2")) {
-      return false;
-    }
-    return true;
-  });
-}
+                  if (cat === "faction_techs") {
+                    all = all.filter(ft => {
+                      const name = ft.name || "";
+                      // Filter out " I" but not " II"
+                      if (name.includes(" I") && !name.includes(" II")) {
+                        return false;
+                      }
+                      // Filter out " V1" but not " V2"
+                      if (name.includes(" V1") && !name.includes(" V2")) {
+                        return false;
+                      }
+                      return true;
+                    });
+                  }
+
+                  // Apply global search filter
+                  all = filterComponentsBySearch(all, globalSearchTerm);
 
                   components[cat] = all;
                 });
@@ -466,6 +539,7 @@ if (cat === "faction_techs") {
             />
           </div>
         </div>
+        )}
 
         {!sidebarCollapsed && (
           <div
