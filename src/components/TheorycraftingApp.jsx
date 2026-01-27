@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import FactionSheet from "./FactionSheet.jsx";
-import Sidebar from "./Sidebar.jsx";
 import factionsJSONRaw from "../data/factions.json";
 import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData } from "../utils/dataProcessor.js";
@@ -46,6 +45,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [draftLimits, setDraftLimits] = useState(baseFactionLimits);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [powerMode, setPowerMode] = useState(false);
+  const [unlimitedMode, setUnlimitedMode] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [globalSearchTerm, setGlobalSearchTerm] = useState("");
   const headerRef = useRef(null);
@@ -110,8 +110,11 @@ export default function TheorycraftingApp({ onNavigate }) {
   };
 
   const handleAddComponent = (cat, item) => {
-    const currentLimit = powerMode ? powerFactionLimits[cat] : baseFactionLimits[cat];
-    if (customFaction[cat].length >= currentLimit) return;
+    // Skip limit check in unlimited mode
+    if (!unlimitedMode) {
+      const currentLimit = powerMode ? powerFactionLimits[cat] : baseFactionLimits[cat];
+      if (customFaction[cat].length >= currentLimit) return;
+    }
     
     setCustomFaction(prev => ({
       ...prev,
@@ -177,6 +180,19 @@ export default function TheorycraftingApp({ onNavigate }) {
   const handleTogglePowerMode = () => {
     setPowerMode(!powerMode);
     setDraftLimits(powerMode ? baseFactionLimits : powerFactionLimits);
+    // Reset unlimited mode when toggling power mode
+    if (unlimitedMode) {
+      setUnlimitedMode(false);
+    }
+  };
+
+  const handleToggleUnlimitedMode = () => {
+    setUnlimitedMode(!unlimitedMode);
+    // If enabling unlimited, ensure power mode is off
+    if (!unlimitedMode && powerMode) {
+      setPowerMode(false);
+      setDraftLimits(baseFactionLimits);
+    }
   };
 
   const exportFaction = () => {
@@ -414,17 +430,33 @@ export default function TheorycraftingApp({ onNavigate }) {
             />
 
             <div className="mb-4">
-              <label className="flex items-center cursor-pointer">
+              <label className="flex items-center cursor-pointer mb-2">
                 <input 
                   type="checkbox" 
                   checked={powerMode}
                   onChange={handleTogglePowerMode}
                   className="mr-2"
+                  disabled={unlimitedMode}
                 />
-                <span className="font-medium text-white text-sm">Power Mode Limits</span>
+                <span className={`font-medium text-white text-sm ${unlimitedMode ? 'text-gray-500' : ''}`}>
+                  Power Mode Limits
+                </span>
+              </label>
+              <div className="text-xs text-gray-400 mb-3">
+                {powerMode ? "Higher component limits" : "Standard component limits"}
+              </div>
+              
+              <label className="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={unlimitedMode}
+                  onChange={handleToggleUnlimitedMode}
+                  className="mr-2"
+                />
+                <span className="font-medium text-white text-sm">Unlimited Mode</span>
               </label>
               <div className="text-xs text-gray-400">
-                {powerMode ? "Higher component limits" : "Standard component limits"}
+                {unlimitedMode ? "No component limits" : "Enable to remove all limits"}
               </div>
             </div>
 
@@ -469,8 +501,9 @@ export default function TheorycraftingApp({ onNavigate }) {
           </div>
 
           <div className="sidebar-content">
-            <Sidebar
-              categories={(() => {
+            {/* Categories List - directly rendered */}
+            {(() => {
+              const displayCategories = (() => {
                 // If there's a global search, filter categories to only show those with results
                 if (globalSearchTerm) {
                   return categories.filter(cat => {
@@ -498,13 +531,9 @@ export default function TheorycraftingApp({ onNavigate }) {
                   });
                 }
                 return categories;
-              })()}
-              playerProgress={Object.fromEntries(
-                categories.map(cat => [cat, customFaction[cat]?.length || 0])
-              )}
-              draftLimits={draftLimits}
-              selectedCategory={expandedCategory}
-              availableComponents={(() => {
+              })();
+
+              const availableComponents = (() => {
                 const components = {};
                 categories.forEach(cat => {
                   let all = getAllComponents(cat);
@@ -532,11 +561,91 @@ export default function TheorycraftingApp({ onNavigate }) {
                 });
 
                 return components;
-              })()}
-              onComponentClick={handleAddComponent}
-              isMultiplayer={false}
-              draftVariant={powerMode ? "power" : "franken"}
-            />
+              })();
+
+              const playerProgress = Object.fromEntries(
+                categories.map(cat => [cat, customFaction[cat]?.length || 0])
+              );
+
+              return displayCategories.map(cat => {
+                const progress = playerProgress[cat] || 0;
+                const limit = draftLimits[cat] || 0;
+                const isExpanded = expandedCategory === cat;
+                const components = availableComponents[cat] || [];
+                const canPick = unlimitedMode || progress < limit;
+
+                return (
+                  <div key={cat} className="sidebar-category">
+                    <button
+                      className={`sidebar-category-button ${
+                        isExpanded ? "sidebar-category-button-expanded" : ""
+                      }`}
+                      onClick={() => setExpandedCategory(isExpanded ? null : cat)}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <div className="font-medium">
+                            {cat.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                          </div>
+                          {!unlimitedMode && (
+                            <div className="text-sm">
+                              {progress}/{limit} selected
+                            </div>
+                          )}
+                          {unlimitedMode && (
+                            <div className="text-sm">
+                              {progress} selected
+                            </div>
+                          )}
+                        </div>
+                        <div>{isExpanded ? "▲" : "▼"}</div>
+                      </div>
+                    </button>
+
+                    {isExpanded && (
+                      <div className="sidebar-category-content">
+                        <div className="p-2">
+                          {components.map((component, idx) => {
+                            const isDisabled = !canPick;
+                            
+                            return (
+                              <div
+                                key={component.id || component.name || idx}
+                                className={`sidebar-component-item ${
+                                  isDisabled ? "sidebar-component-item-disabled" : ""
+                                }`}
+                                onClick={() => !isDisabled && handleAddComponent(cat, component)}
+                              >
+                                <div className="flex items-center gap-2 font-medium">
+                                  {component.factionIcon && (
+                                    <img
+                                      src={component.factionIcon}
+                                      alt={component.faction}
+                                      className="w-5 h-5 rounded-full"
+                                    />
+                                  )}
+                                  <span>{component.name}</span>
+                                </div>
+                                {isDisabled && !unlimitedMode && (
+                                  <div className="text-xs text-gray-500 mt-1">
+                                    Limit reached
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                          {components.length === 0 && (
+                            <div className="text-xs text-gray-400 p-2">
+                              No components found
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              });
+            })()}
           </div>
         </div>
         )}
@@ -580,8 +689,8 @@ export default function TheorycraftingApp({ onNavigate }) {
                 faction_techs: getFactionTechsForSheet()
               }}
               onRemove={handleRemoveComponent}
-              draftLimits={draftLimits}
-              title={`${customFaction.name} ${powerMode ? "(Power Mode)" : "(Standard)"}`}
+              draftLimits={unlimitedMode ? {} : draftLimits}
+              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}`}
               hiddenCategories={["blue_tiles", "red_tiles"]}
             />
           </div>

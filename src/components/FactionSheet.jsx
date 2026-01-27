@@ -44,9 +44,13 @@ export default function FactionSheet({
 
   const getCategoryStatus = (category) => {
     const items = drafted[category] || [];
-    const limit = draftLimits[category] || 0;
-    const excess = Math.max(0, items.length - limit);
-    return { items, limit, excess, needsReduction: excess > 0 };
+    const rawLimit = draftLimits[category];
+const isUnlimited = rawLimit === undefined;
+
+const limit = isUnlimited ? Infinity : rawLimit;
+const excess = isUnlimited ? 0 : Math.max(0, items.length - limit);
+
+return { items, limit, excess, needsReduction: !isUnlimited && excess > 0 };
   };
 
   const getAvailableSwapsForCategory = (category) => {
@@ -352,7 +356,7 @@ export default function FactionSheet({
         </h2>
       </div>
 
-      {showReductionHelper && (
+      {showReductionHelper && Object.keys(draftLimits).length > 0 && (
         <div className="reduction-helper">
           <div className="reduction-helper-title">⚠️ REDUCTION PHASE</div>
           <div className="reduction-helper-text">
@@ -380,9 +384,12 @@ export default function FactionSheet({
                       {formatCategoryName(category)}
                     </h3>
                     <div className={`faction-category-count ${status.needsReduction ? 'faction-category-count-over' : ''}`}>
-                      {status.items.length}/{status.limit}
-                      {status.needsReduction && ` (Remove ${status.excess})`}
-                    </div>
+  {status.limit === Infinity
+    ? `${status.items.length}`
+    : `${status.items.length}/${status.limit}`
+  }
+  {status.needsReduction && ` (Remove ${status.excess})`}
+</div>
                   </div>
 
                   {/* Available swaps */}
