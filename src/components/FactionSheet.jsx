@@ -36,7 +36,8 @@ export default function FactionSheet({
       commodity_values: "COMMODITIES",
       blue_tiles: "BLUE TILES",
       red_tiles: "RED TILES",
-      home_systems: "HOME SYSTEM"
+      home_systems: "HOME SYSTEM",
+      breakthrough: "BREAKTHROUGHS"
     };
     return names[category] || category.toUpperCase().replace(/_/g, " ");
   };
@@ -137,7 +138,8 @@ export default function FactionSheet({
     { key: 'commodity_values', col: 2 },
     { key: 'blue_tiles', col: 1 },
     { key: 'red_tiles', col: 1 },
-    { key: 'home_systems', col: 1 }
+    { key: 'home_systems', col: 1 },
+    { key: 'breakthrough', col: 2 }
   ];
 
   // Remove any categories the parent explicitly asked to hide (Theorycrafting will use this)
@@ -159,6 +161,8 @@ export default function FactionSheet({
     const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
     const isUnit = (category === 'flagship' || category === 'mech' || category === 'starting_fleet');
     const isTech = (category === 'faction_techs' || category === 'starting_techs');
+    const isTile = (category === 'blue_tiles' || category === 'red_tiles' || category === 'home_systems');
+    const isBreakthrough = (category === 'breakthrough');
 
     return (
       <div
@@ -198,6 +202,82 @@ export default function FactionSheet({
             {isUnit && item.abilities && item.abilities.length > 0 && (
               <div className="text-xs mt-1" style={{color: '#c084fc'}}>
                 <span className="font-semibold">Abilities:</span> {item.abilities.join(', ')}
+              </div>
+            )}
+
+            {/* Breakthrough synergy - always show */}
+            {isBreakthrough && item.synergy && item.synergy.length > 0 && (
+              <div className="text-xs mt-2" style={{color: '#fbbf24'}}>
+                <span className="font-semibold">Synergy:</span> {item.synergy.map(s => `${s.primary}/${s.secondary}`).join(', ')}
+              </div>
+            )}
+
+            {/* Tile/Home System Planets - always show summary */}
+            {isTile && item.planets && item.planets.length > 0 && (
+              <div className="text-xs mt-2" style={{color: '#6ee7b7'}}>
+                <span className="font-semibold">{item.planets.length} Planet{item.planets.length !== 1 ? 's' : ''}</span>
+                {item.planets.map((p, idx) => (
+                  <div key={idx} style={{marginLeft: '0.5rem', marginTop: '0.25rem'}}>
+                    <div className="font-semibold">{p.name}</div>
+                    <div style={{color: '#fcd34d'}}>R: {p.resource || 0}</div>
+                    <div style={{color: '#93c5fd'}}>I: {p.influence || 0}</div>
+                    {p.traits && p.traits.length > 0 && (
+                      <div style={{color: '#c084fc'}}>Traits: {p.traits.join(', ')}</div>
+                    )}
+                    {p.technology_specialty && p.technology_specialty.length > 0 && (
+                      <div style={{color: '#fb923c'}}>Tech: {p.technology_specialty.join(', ')}</div>
+                    )}
+                    {p.legendary_ability && (
+                      <div style={{color: '#fcd34d', fontStyle: 'italic', marginTop: '0.25rem'}}>
+                        Legendary: {p.legendary_ability}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Wormhole - always show */}
+            {isTile && item.wormhole && (
+              <div className="text-xs mt-1" style={{color: '#c084fc'}}>
+                <span className="font-semibold">Wormhole:</span> {item.wormhole}
+              </div>
+            )}
+
+            {/* Anomalies - always show */}
+            {isTile && item.anomalies && item.anomalies.length > 0 && (
+              <div className="text-xs mt-1" style={{color: '#ef4444'}}>
+                <span className="font-semibold">Anomalies:</span> {item.anomalies.join(', ')}
+              </div>
+            )}
+
+            {/* Starting Techs - always show */}
+            {category === 'starting_techs' && (
+              <div className="text-xs mt-2">
+                {item.note && (
+                  <div className="font-semibold mb-2" style={{color: '#fbbf24'}}>
+                    {item.note}
+                  </div>
+                )}
+                {Array.isArray(item.techs) && (
+                  <div style={{marginLeft: '0.5rem'}}>
+                    {item.techs.map((t, i) => {
+                      const techColorMap = {
+                        'Blue': '#60a5fa',
+                        'Red': '#f87171',
+                        'Green': '#34d399',
+                        'Yellow': '#fcd34d'
+                      };
+                      const techColor = techColorMap[t.tech_type] || '#ffffff';
+                      
+                      return (
+                        <div key={i} style={{color: techColor, marginBottom: '0.25rem'}}>
+                          • {typeof t === "string" ? t : t.name}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
           </div>

@@ -13,14 +13,14 @@ const baseFactionLimits = {
   blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
   commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
   commodity_values: 1, flagship: 1, mech: 1, home_systems: 1,
-  breakthrough: 1 // NEW
+  breakthrough: 1
 };
 
 const powerFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 5, faction_techs: 4, agents: 3,
   commanders: 3, heroes: 3, promissory: 2, starting_techs: 2, starting_fleet: 2,
   commodity_values: 2, flagship: 1, mech: 1, home_systems: 1,
-  breakthrough: 2 // NEW
+  breakthrough: 2
 };
 
 export default function TheorycraftingApp({ onNavigate }) {
@@ -41,7 +41,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     blue_tiles: [],
     red_tiles: [],
     home_systems: [],
-    breakthrough: [] // NEW
+    breakthrough: []
   });
   const [draftLimits, setDraftLimits] = useState(baseFactionLimits);
   const [expandedCategory, setExpandedCategory] = useState(null);
@@ -121,7 +121,7 @@ export default function TheorycraftingApp({ onNavigate }) {
         blue_tiles: [],
         red_tiles: [],
         home_systems: faction.home_systems ? [...faction.home_systems] : [],
-        breakthrough: faction.breakthrough || [] // NEW
+        breakthrough: faction.breakthrough || []
       };
       setCustomFaction(loadedFaction);
     }
@@ -144,7 +144,7 @@ export default function TheorycraftingApp({ onNavigate }) {
       blue_tiles: [],
       red_tiles: [],
       home_systems: [],
-      breakthrough: [] // NEW
+      breakthrough: []
     });
   };
 
@@ -188,7 +188,7 @@ export default function TheorycraftingApp({ onNavigate }) {
         blue_tiles: "Blue Tiles",
         red_tiles: "Red Tiles",
         home_systems: "Home System",
-        breakthrough: "Breakthroughs" // NEW
+        breakthrough: "Breakthroughs"
       };
       return names[category] || category.toUpperCase().replace(/_/g, " ");
     };
@@ -268,7 +268,7 @@ export default function TheorycraftingApp({ onNavigate }) {
       promissory: "/franken pn_add promissory:",
       flagship: "/franken unit_add unit:",
       mech: "/franken unit_add unit:",
-      breakthrough: "/franken breakthrough_add breakthrough:" // NEW
+      breakthrough: "/franken breakthrough_add breakthrough:"
     };
 
     let output = [];
@@ -336,95 +336,96 @@ export default function TheorycraftingApp({ onNavigate }) {
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="h-full flex">
-        {!sidebarCollapsed && (
-          <div className={`sidebar ${!sidebarCollapsed ? 'open' : ''} w-80 border-r border-gray-700 bg-gray-900 overflow-y-auto`}>
-            <div className="p-4 border-b border-gray-700 bg-gray-900/95">
-              <button
-                className="sidebar-close-button"
-                aria-label="Close sidebar"
-                onClick={() => setSidebarCollapsed(true)}
+        <div className={`sidebar ${!sidebarCollapsed ? 'open' : ''}`}>
+          <div className="sidebar-header">
+            <button
+              className="sidebar-close-button md:hidden"
+              aria-label="Close sidebar"
+              onClick={() => setSidebarCollapsed(true)}
+            >
+              ✕
+            </button>
+
+            <h1 className="sidebar-title">TI4 Faction Builder</h1>
+            <p className="sidebar-subtitle">Build custom factions</p>
+
+            <div className="space-y-2 mb-4 mt-4">
+              <select 
+                value={selectedFaction} 
+                onChange={e => setSelectedFaction(e.target.value)}
+                className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
               >
-                ✕
-              </button>
-
-              <h1 className="text-xl font-bold mb-2 text-yellow-400">TI4 Faction Builder</h1>
-
-              <div className="space-y-2 mb-4">
-                <select 
-                  value={selectedFaction} 
-                  onChange={e => setSelectedFaction(e.target.value)}
-                  className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white"
-                >
-                  <option value="">Load Base Faction...</option>
-                  {factionsJSON.factions.map(f => 
-                    <option key={f.name} value={f.name}>{f.name}</option>
-                  )}
-                </select>
-                
-                <div className="flex space-x-2">
-                  <button 
-                    onClick={() => handleLoadFaction(selectedFaction)}
-                    disabled={!selectedFaction}
-                    className="flex-1 px-3 py-1 bg-blue-600 text-white rounded disabled:bg-gray-700 hover:bg-blue-500 transition-colors"
-                  >
-                    Load
-                  </button>
-                  <button 
-                    onClick={handleClearFaction}
-                    className="flex-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors"
-                  >
-                    Clear
-                  </button>
-                </div>
-              </div>
-
-              <input 
-                type="text" 
-                value={customFaction.name}
-                onChange={e => setCustomFaction(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full border border-gray-700 p-2 rounded mb-4 bg-gray-800 text-white"
-                placeholder="Faction Name"
-              />
-
-              <div className="mb-4">
-                <label className="flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={powerMode}
-                    onChange={handleTogglePowerMode}
-                    className="mr-2"
-                  />
-                  <span className="font-medium text-white">Power Mode Limits</span>
-                </label>
-                <div className="text-xs text-gray-400">
-                  {powerMode ? "Higher component limits" : "Standard component limits"}
-                </div>
-              </div>
-
-              <div className="space-y-2 mb-4">
+                <option value="">Load Base Faction...</option>
+                {factionsJSON.factions.map(f => 
+                  <option key={f.name} value={f.name}>{f.name}</option>
+                )}
+              </select>
+              
+              <div className="flex space-x-2">
                 <button 
-                  onClick={exportFaction}
-                  className="w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-500 font-semibold transition-colors"
+                  onClick={() => handleLoadFaction(selectedFaction)}
+                  disabled={!selectedFaction}
+                  className="flex-1 px-3 py-1 bg-blue-600 text-white rounded disabled:bg-gray-700 hover:bg-blue-500 transition-colors text-sm"
                 >
-                  Export Faction (JSON)
+                  Load
                 </button>
-
                 <button 
-                  onClick={exportForAsync}
-                  className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 font-semibold transition-colors"
+                  onClick={handleClearFaction}
+                  className="flex-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-sm"
                 >
-                  Export as Text
-                </button>
-
-                <button 
-                  onClick={exportForAsyncCommands}
-                  className="w-full px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-500 font-semibold transition-colors"
-                >
-                  Export for Async
+                  Clear
                 </button>
               </div>
             </div>
 
+            <input 
+              type="text" 
+              value={customFaction.name}
+              onChange={e => setCustomFaction(prev => ({ ...prev, name: e.target.value }))}
+              className="w-full border border-gray-700 p-2 rounded mb-4 bg-gray-800 text-white text-sm"
+              placeholder="Faction Name"
+            />
+
+            <div className="mb-4">
+              <label className="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={powerMode}
+                  onChange={handleTogglePowerMode}
+                  className="mr-2"
+                />
+                <span className="font-medium text-white text-sm">Power Mode Limits</span>
+              </label>
+              <div className="text-xs text-gray-400">
+                {powerMode ? "Higher component limits" : "Standard component limits"}
+              </div>
+            </div>
+
+            <div className="space-y-2 mb-4">
+              <button 
+                onClick={exportFaction}
+                className="w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-500 font-semibold transition-colors text-sm"
+              >
+                Export Faction (JSON)
+              </button>
+
+              <button 
+                onClick={exportForAsync}
+                className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 font-semibold transition-colors text-sm"
+              >
+                Export as Text
+              </button>
+
+              <button 
+                onClick={exportForAsyncCommands}
+                className="w-full px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-500 font-semibold transition-colors text-sm"
+              >
+                Export for Async
+              </button>
+            </div>
+          </div>
+
+          <div className="sidebar-content">
             <Sidebar
               categories={categories}
               onSelectCategory={setExpandedCategory}
@@ -438,16 +439,21 @@ export default function TheorycraftingApp({ onNavigate }) {
                 categories.forEach(cat => {
                   let all = getAllComponents(cat);
 
-                  // Hide unit-upgrade faction techs that are "I" (show only "II")
-                  if (cat === "faction_techs") {
-                    all = all.filter(ft => {
-                      const name = ft.name || "";
-                      if (name.includes(" I") && !name.includes(" II")) {
-                        return false;
-                      }
-                      return true;
-                    });
-                  }
+                  // Hide unit-upgrade faction techs that are "I" or "V1" (show only "II" or "V2")
+if (cat === "faction_techs") {
+  all = all.filter(ft => {
+    const name = ft.name || "";
+    // Filter out " I" but not " II"
+    if (name.includes(" I") && !name.includes(" II")) {
+      return false;
+    }
+    // Filter out " V1" but not " V2"
+    if (name.includes(" V1") && !name.includes(" V2")) {
+      return false;
+    }
+    return true;
+  });
+}
 
                   components[cat] = all;
                 });
@@ -459,7 +465,7 @@ export default function TheorycraftingApp({ onNavigate }) {
               draftVariant={powerMode ? "power" : "franken"}
             />
           </div>
-        )}
+        </div>
 
         {!sidebarCollapsed && (
           <div

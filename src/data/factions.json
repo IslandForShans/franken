@@ -3874,7 +3874,7 @@
         },
         {
           "id": "bastion_sd2",
-          "name": "4X41C 'HELIOS' V2 II",
+          "name": "4X41C 'HELIOS' V2",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Yellow", "Yellow"],
           "abilities": ["Production X"],
@@ -4461,13 +4461,13 @@
       "faction_techs": [
         {
           "id": "obsidian_ps",
-          "name": "Plane Splitter",
+          "name": "Plane Splitter (Flipped)",
           "tech_type": "Yellow",
           "description": "At the start of your strategic actions, you may move an ingress token into a system that contains or is adjacent to your units. This technology cannot be researched."
         },
         {
           "id": "obsidian_np",
-          "name": "Neural Parasite",
+          "name": "Neural Parasite (Flipped)",
           "tech_type": "Green",
           "description": "At the start of your turn, destroy 1 of another player's infantry in or adjacent to a system that contains your infantry. This technology cannot be researched."
         }
