@@ -1992,98 +1992,142 @@
       "name": "The Kyro Sodality",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "kyro_contagion",
+          "name": "Contagion",
+          "description": "After you resolve the primary or secondary ability of the 'Politics' strategy card. Commit 1 infantry from your reinforcements to a planet that is in or adjacent to a system that contains a planet you control; resolve invasion on that planet."
+        },
+        {
+          "id": "kyro_pr",
+          "name": "Plague Reservoir",
+          "description": "Once per action, during invasion on a planet that contains your units, you may resolve ground combat on that planet, even if it does not contain another player's ground forces."
+        },
+        {
+          "id": "kyro_subversive",
+          "name": "Subversive",
+          "description": "When participating in a combat that would end in a draw, you are treated as the winner instead."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_it",
+          "name": "Indoctrination Teams",
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green"],
+          "description": "During the agenda phase, after an outcome you voted for is resolved, place 2 infantry from your reinforcements on a planet you control."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_vp",
+          "name": "Vector Programs",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow"],
+          "description": "At the start of the strategy phase, you may place any number of your trade goods on any combination of strategy cards. Then, place 2 trade goods from the supply on 1 strategy card."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_agent",
+          "name": "Tox - Plague Queen",
+          "description": "After a player loses or draws a ground combat: You may exhaust this card to allow that player to replenish their commodities; place a number of infantry equal to 1 less than their commodity value on a planet you control."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_commander",
+          "name": "Silas Deriga - Necrosage",
+          "description": "UNLOCK: Have 6 infantry and 6 fighters on the game board. When you cast votes: Remove up to 4 of your infantry from the game board to cast 1 additional vote for each infantry removed."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_hero",
+          "name": "Speygh - Blightmaster",
+          "description": "BRIKK STRAIN - GALACTIC BLIGHT. At the start of the status phase: You may attach this card to 1 of your strategy cards. Its initiative value is 9. Non-Kyro players may only resolve 1 clause of this strategy card's primary ability. The Kyro player gains any trade goods placed on this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_pn",
+          "name": "Kyro Rider",
+          "description": "After an agenda is revealed: You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, place 3 infantry form your reinforcements on a planet you contrl. Then, return this card to the Kyro player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_fs",
+          "name": "Auriga",
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "When you commit units to a planet in this system, commit 1 infantry form your reinforcements to that planet."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_mech",
+          "name": "Pustule",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "When this unit would be destroyed, if it is damaged, you may discard 1 action card to repair it instead."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_starting_tech",
+          "name": "Kyro Starting Tech",
+          "note": "Choose 1 of the following:",
+          "techs": [
+            {
+              "name": "Daxcive Animators",
+              "tech_type": "Green"
+            },
+            {
+              "name": "Bio-Stims",
+              "tech_type": "Green"
+            }
+          ]
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kyro_starting_fleet",
+          "name": "Kyro Starting Fleet",
+          "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 3 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "kyro_comms",
+          "name": "Commodities", 
+          "value": 2
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "kyro_hs",
+          "name": "Kyro Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Avicenna",
+              "resource": 4,
               "influence": 0
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "kyro_bt",
+          "name": "Strain Dispersa",
+          "synergy": [
+            {
+              "primary": "Yellow",
+              "secondary": "Red"
+            }
+          ],
+          "description": "When researching technology, you may discard an aciton card to ignore 1 of that technology's prerequisites. Other player must spend 1 influence as an additional cost to research or gain a technology you own."
         }
       ]
     },
@@ -2091,98 +2135,141 @@
       "name": "The Kortali Tribunal",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "kortali_zealous",
+          "name": "Zealous",
+          "description": "When you spend a command token to resolve the secondary ability of the 'Warfare' strategy card, you may resolve the primary ability instead."
+        },
+        {
+          "id": "kortali_ruthless",
+          "name": "Ruthless",
+          "description": "At the start of a ground combat on an exhausted planet you do not control, you may produce 1 hit and assign it to 1 of your opponent's ground forces on that planet."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_td",
+          "name": "Tempest Drive",
+          "tech_type": "Green",
+          "prerequisites": ["Green", "Green"],
+          "description": "After you win a combat in a system, you may exhaust this card to remove 1 command token from that system."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_de",
+          "name": "Deliverance Engine",
+          "tech_type": "Red",
+          "prerequisites": ["Red", "Red"],
+          "description": "Once per space combat, after 1 of your non-fighter ships is destroyed, you may produce 1 hit and assign it to 1 of your opponent's non-carrier ships."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_agent",
+          "name": "Queen Lucreia - Atonement and Punishment",
+          "description": "When a player wins a ground combat: You may exhaust this card to allow that player to take 1 relic fragment their opponent owns, at random, if able."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_commander",
+          "name": "Queen Lorena - Compassion and Destruction",
+          "description": "UNLOCK: Destroy the last of a player's units in a system. During the first round of ground combat, you may cancel 1 hit produced against your units."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_hero",
+          "name": "Queen Nadalia - Life and Death",
+          "description": "CALLING OF THE QUEENS - MOTHER GODDESSES. When you win a combat: You may purge this card to choose and take up to 1 of your opponent's relics. Then, for each planet you control that is a legendary planet or has a technology specialty, gain 1 command token."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_pn",
+          "name": "Blessing of the Queen",
+          "description": "ACTION: Place this card faceup in your play area and remove 1 of your command tokens from the game board. At the start of the status phase, return this card to the Kortali player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_fs",
+          "name": "Magistrate",
+          "cost": 8,
+          "combat": "5(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage", "Bombardment 3"],
+          "description": "After you win a space combat in this system, you may have this ship become damaged to gain 1 command token."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_mech",
+          "name": "Justicar",
+          "cost": 2,
+          "combat": 5,
+          "abilities": ["Planetary Shield", "Sustain Damage"],
+          "description": "This unit cannot lose its PLANETARY SHIELD."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_starting_tech",
+          "name": "Kortali Starting Tech",
+          "techs": [
+            {
+              "name": "Plasma Scoring",
+              "tech_type": "Red"
+            },
+            {
+              "name": "Psychoarchaeology",
+              "tech_type": "Green"
+            }
+          ]
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kortali_starting_fleet",
+          "name": "Kortali Starting Fleet",
+          "description": "2 Carriers, 1 Cruiser, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "kortali_comms",
+          "name": "Commodities", 
+          "value": 3
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "kortali_hs",
+          "name": "Kortali Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Ogdun",
+              "resource": 2,
               "influence": 0
+            },
+            {
+              "name": "Brthkul",
+              "resource": 1,
+              "influence": 3
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "kortali_bt",
+          "name": "The Queen's Wrath",
+          "synergy": [
+            {
+              "primary": "Blue",
+              "secondary": "Red"
+            }
+          ],
+          "description": "If you have the Dreadnought II technology, flip this card and place it on top of Dreadnought II. Tribune (Dreadnought) Cost 4, Combat 5, Move 2, Capacity 1. Abilities: Sustain Damage. This unit cannot be destroyed by 'Direct Hit' action cards. When this unit produces a hit, you may repair it. While this unit is not damaged, you may reroll its combat roll."
         }
       ]
     },
@@ -2190,98 +2277,137 @@
       "name": "The Kollecc Society",
       "abilities": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
-        
+          "id": "kollec_cf",
+          "name": "Cloaked Fleets",
+          "description": "After you produce 1 or more ships, you may place up to 2 of those ships on your faction sheet, those ships are captured."
+        },
+        {
+          "id": "kollec_sol",
+          "name": "Shroud of Lith",
+          "description": "After movement, if the active system contains 1 or more of your non-fighter ships, you may place up to 2 of your captured ships and 2 of your captured ground forces from your faction sheet in that system's space area."
+        },
+        {
+          "id": "kollec_th",
+          "name": "Treasure Hunters",
+          "description": "At the start of your turn, you may look at the top card of the cultural, hazardous, or industrial exploration deck. Then, look at the top card of the relic deck."
         }
       ],
       "faction_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_sd",
+          "name": "Seeker Drones",
+          "tech_type": "Yellow",
+          "prerequisites": ["Yellow", "Yellow"],
+          "description": "ACTION: Exhaust this card to choose 1 of your neighbors that has 1 or more relic fragments. That player gains 2 trade goods and msut give you 1 of those relic fragments of your choice."
         },
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_ss",
+          "name": "Shroud Skirmishers",
+          "tech_type": "Blue",
+          "prerequisites": ["Blue"],
+          "description": "At the start of space combat, you may choose 1 of your ships in the active system that did not begin this action in that system; roll a die. On a result equal to or greater than that ship's combat value, produce 1 hit; your opponent must assign it to 1 of their ships."
         }
       ],
       "agents": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_agent",
+          "name": "Captain Dust - Artifact Broker",
+          "description": "At the start of a player's turn: You may exhaust this card to allow that player to reveal the top 2 cards on an exploration deck that matches a planet they control; they gain any relic fragments that they revealed and discard the rest."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_commander",
+          "name": "Kado S'mah-Qar - Coordinator",
+          "description": "UNLOCK: Have 4 relic fragments. This card satisfies a blue technology prerequisite. When you retreat, if the active systemdoes not contain 1 of your command tokens, you do not place a command token in the system your ships retreated to."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_hero",
+          "name": "Dorrahn Griphyn - The Collector",
+          "description": "SHADOWCASTER - STEALTH EXPEDITION. ACTION: Draw a number of relic cards equal to the number of players in the game, choose 1 to gain, and return the rest to the relic deck. Then, shuffle that deck and purge this card."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_pn",
+          "name": "AI Survey",
+          "description": "At the start of your turn: You may look at either the top card of the cultural, hazardous, and industrial exploration decks, or the top card of the relic deck. Then, return this card to the Kollec player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_fs",
+          "name": "Nightingale V",
+          "cost": 8,
+          "combat": "5(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage"],
+          "description": "When this unit retreats, you may capture each of your units that retreat."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_mech",
+          "name": "Nightshade Vanguard",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "At the end of a tactical action in this system, you may place up to 2 ground force from this planet into your faction sheet, those units are captured."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_starting_tech",
+          "name": "Kollec Starting Tech",
+          "techs": [
+            {
+              "name": "Scanlink Drone Network",
+              "tech_type": "Yellow"
+            }
+          ]
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "kollec_starting_fleet",
+          "name": "Kollec Starting Fleet",
+          "description": "2 Carriers, 1 Cruiser, 2 FIghters, 4 Infantry, 1 Space Dock"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "kollec_comms",
+          "name": "Commodities", 
+          "value": 3
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "kollec_hs",
+          "name": "Kollec Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
-              "influence": 0
+              "name": "Susuros",
+              "resource": 4,
+              "influence": 4
             }
           ]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "kollec_bt",
+          "name": "The Collector's Museum",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Blue"
+            }
+          ],
+          "description": "When you explore a planet, you may exhaus this card to resolve a card from that exploration deck's discard pile instead; if you would discard that card, instead shuffle it into the corresponding exploration deck."
         }
       ]
     },
@@ -2292,7 +2418,6 @@
           "id": "",
           "name": "",
           "description": ""
-        
         }
       ],
       "faction_techs": [
