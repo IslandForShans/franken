@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import Sidebar from "./Sidebar.jsx";
 import FactionSheet from "./FactionSheet.jsx";
 import DraftHistory from "./DraftHistory.jsx";
@@ -13,11 +13,11 @@ import { isComponentUndraftable, getSwapOptions, getExtraComponents } from "../d
 import BanManagementModal from "./BanManagementModal.jsx";
 import { multiplayerService } from "../services/firebaseMultiplayer.js";
 
-// Process faction data to add icon paths
+// PERFORMANCE: Process faction data once at module load instead of on every render
 const factionsJSON = processFactionData(factionsJSONRaw);
 const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
 
-// Updated limits system
+// PERFORMANCE: Define constants outside component to avoid recreation on every render
 const baseFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 3, faction_techs: 2, agents: 1,
   commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
@@ -37,6 +37,21 @@ const defaultDraftLimits = Object.fromEntries(
 const powerDraftLimits = Object.fromEntries(
   Object.entries(powerFactionLimits).map(([key, value]) => [key, value + 1])
 );
+
+// PERFORMANCE: Define exclusions outside component
+const pokExclusions = {
+  factions: ["The Nomad", "The Vuil'Raith Cabal", "The Argent Flight", "The Titans of Ul", "The Mahact Gene-Sorcerers", "The Empyrean", "The Naaz-Rokha Alliance"],
+  tiles: ["59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80"]
+};
+
+const teExclusions = {
+  factions: ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Crimson Rebellion"],
+  tiles: ["97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "113", "114", "115", "116", "117"]
+};
+
+const noFirmament = {
+  factions: ["The Firmament", "The Obsidian"]
+};
 
 export default function DraftSimulator({ onNavigate }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -80,46 +95,29 @@ export default function DraftSimulator({ onNavigate }) {
     firmobs: false
   });
 
-  // Specific faction and tile exclusions for toggles
-  const pokExclusions = {
-    factions: ["The Nomad", "The Vuil'Raith Cabal", "The Argent Flight", "The Titans of Ul", "The Mahact Gene-Sorcerers", "The Empyrean", "The Naaz-Rokha Alliance"],
-    tiles: ["59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80"]
-  };
+  // PERFORMANCE: Memoize active categories computation
+  const categories = useMemo(() => {
+    const baseCategories = [
+      'abilities', 'faction_techs', 'promissory', 'flagship',
+      'starting_techs', 'starting_fleet', 'commodity_values',
+      'blue_tiles', 'red_tiles', 'home_systems'
+    ];
+    const pokCategories = ['agents', 'commanders', 'heroes', 'mech'];
+    const teCategories = ['breakthrough'];
 
-  const teExclusions = {
-    factions: ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Crimson Rebellion"],
-    tiles: ["97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "113", "114", "115", "116", "117"]
-  };
+    let activeCategories = [...baseCategories];
 
-  const noFirmament = {
-    factions: ["The Firmament", "The Obsidian"]
-  };
+    if (expansionsEnabled.pok) {
+      activeCategories.push(...pokCategories);
+    }
 
-  const getActiveCategories = () => {
-  const baseCategories = [
-    'abilities', 'faction_techs', 'promissory', 'flagship',
-    'starting_techs', 'starting_fleet', 'commodity_values',
-    'blue_tiles', 'red_tiles', 'home_systems'
-  ];
-  const pokCategories = ['agents', 'commanders', 'heroes', 'mech'];
-  const teCategories = ['breakthrough'];
+    if (expansionsEnabled.te) {
+      activeCategories.push(...teCategories);
+    }
 
-  let activeCategories = [...baseCategories];
+    return activeCategories;
+  }, [expansionsEnabled.pok, expansionsEnabled.te]);
 
-  // Add PoK categories only if PoK is enabled
-  if (expansionsEnabled.pok) {
-    activeCategories.push(...pokCategories);
-  }
-
-  // Add TE categories only if TE is enabled
-  if (expansionsEnabled.te) {
-    activeCategories.push(...teCategories);
-  }
-
-  return activeCategories;
-};
-
-  const categories = getActiveCategories();
   const syncToFirebase = useRef(null);
 
   useEffect(() => {
@@ -158,12 +156,11 @@ export default function DraftSimulator({ onNavigate }) {
   }, [settingsCollapsed]);
 
   useEffect(() => {
-    const activeCats = getActiveCategories();
     const baseLimits = draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
     const draftBaseLimits = draftVariant === "power" ? powerDraftLimits : defaultDraftLimits;
     
     const filteredLimits = {};
-    activeCats.forEach(cat => {
+    categories.forEach(cat => {
       if (draftVariant === "rotisserie") {
         filteredLimits[cat] = baseLimits[cat];
       } else {
@@ -172,7 +169,7 @@ export default function DraftSimulator({ onNavigate }) {
     });
     
     setDraftLimits(filteredLimits);
-  }, [draftVariant, expansionsEnabled]);
+  }, [draftVariant, categories]);
 
   useEffect(() => {
     if (multiplayerEnabled) {
@@ -192,7 +189,8 @@ export default function DraftSimulator({ onNavigate }) {
     };
   }, [multiplayerEnabled, factions, draftHistory, draftVariant, playerCount, draftLimits]);
 
-  const handleDraftStateSync = (draftState) => {
+  // PERFORMANCE: useCallback for handleDraftStateSync
+  const handleDraftStateSync = useCallback((draftState) => {
     if (!draftState) return;
     if (draftState.factions) setFactions(draftState.factions);
     if (draftState.draftHistory) setDraftHistory(draftState.draftHistory);
@@ -204,62 +202,51 @@ export default function DraftSimulator({ onNavigate }) {
     if (draftState.rotisseriePool) setRotisseriePool(draftState.rotisseriePool);
     if (draftState.pendingPicks) setPendingPicks(draftState.pendingPicks);
     if (typeof draftState.isPickingPhase === 'boolean') setIsPickingPhase(draftState.isPickingPhase);
-  };
+  }, []);
 
-  const getFilteredComponents = (category) => {
-  // --- Faction components ---
-  const factionComponents = factionsJSON.factions
-    .filter(f => !bannedFactions.has(f.name))
-    // Exclude PoK factions if PoK is OFF
-    .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
-    // Exclude TE factions if TE is OFF
-    .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
-    // Exclude Firmament/Obsidian if OFF
-    .filter(f => expansionsEnabled.firmobs || !noFirmament.factions.includes(f.name))
-    .flatMap(f => (f[category] || [])
-      .filter(comp => !bannedComponents.has(comp.id || comp.name))
-      .filter(comp => !isComponentUndraftable(comp.name, f.name))
-      .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
-    );
+  // PERFORMANCE: Memoize getFilteredComponents with useCallback
+  const getFilteredComponents = useCallback((category) => {
+    const factionComponents = factionsJSON.factions
+      .filter(f => !bannedFactions.has(f.name))
+      .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
+      .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
+      .filter(f => expansionsEnabled.firmobs || !noFirmament.factions.includes(f.name))
+      .flatMap(f => (f[category] || [])
+        .filter(comp => !bannedComponents.has(comp.id || comp.name))
+        .filter(comp => !isComponentUndraftable(comp.name, f.name))
+        .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
+      );
 
-  // --- Discordant Stars factions ---
-  const dsComponents = expansionsEnabled.ds && discordantStarsJSON?.factions
-    ? discordantStarsJSON.factions
-        .filter(f => !bannedFactions.has(f.name))
-        .flatMap(f => (f[category] || [])
-          .filter(comp => !bannedComponents.has(comp.id || comp.name))
-          .filter(comp => !isComponentUndraftable(comp.name, f.name))
-          .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
-        )
-    : [];
+    const dsComponents = expansionsEnabled.ds && discordantStarsJSON?.factions
+      ? discordantStarsJSON.factions
+          .filter(f => !bannedFactions.has(f.name))
+          .flatMap(f => (f[category] || [])
+            .filter(comp => !bannedComponents.has(comp.id || comp.name))
+            .filter(comp => !isComponentUndraftable(comp.name, f.name))
+            .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
+          )
+      : [];
 
-  // --- Tiles (global, not faction-specific) ---
-  const tiles = (factionsJSON.tiles[category] || [])
-    .filter(tile => !bannedComponents.has(tile.id || tile.name))
-    // PoK tile exclusion
-    .filter(tile => expansionsEnabled.pok || !pokExclusions.tiles.includes(tile.id))
-    // TE tile exclusion
-    .filter(tile => expansionsEnabled.te || !teExclusions.tiles.includes(tile.id));
+    const tiles = (factionsJSON.tiles[category] || [])
+      .filter(tile => !bannedComponents.has(tile.id || tile.name))
+      .filter(tile => expansionsEnabled.pok || !pokExclusions.tiles.includes(tile.id))
+      .filter(tile => expansionsEnabled.te || !teExclusions.tiles.includes(tile.id));
 
-  // --- US / Discordant Stars tiles ---
-  const usTiles = expansionsEnabled.us && discordantStarsJSON?.tiles?.[category]
-    ? discordantStarsJSON.tiles[category]
-        .filter(tile => !bannedComponents.has(tile.id || tile.name))
-    : [];
+    const usTiles = expansionsEnabled.us && discordantStarsJSON?.tiles?.[category]
+      ? discordantStarsJSON.tiles[category]
+          .filter(tile => !bannedComponents.has(tile.id || tile.name))
+      : [];
 
-  // Combine everything
-  return [...factionComponents, ...dsComponents, ...tiles, ...usTiles];
-};
+    return [...factionComponents, ...dsComponents, ...tiles, ...usTiles];
+  }, [bannedFactions, bannedComponents, expansionsEnabled]);
 
-
-
-  const createBagsWithUniqueDistribution = () => {
+  // PERFORMANCE: useCallback for createBagsWithUniqueDistribution
+  const createBagsWithUniqueDistribution = useCallback(() => {
     const bags = Array.from({ length: playerCount }, () => ({}));
-    const activeCats = getActiveCategories();
     
     console.log(`Creating ${playerCount} bags for ${playerCount} players`);
     
-    activeCats.forEach(category => {
+    categories.forEach(category => {
       const allComponents = getFilteredComponents(category);
       const bagSize = draftLimits[category];
       
@@ -290,29 +277,28 @@ export default function DraftSimulator({ onNavigate }) {
     
     console.log(`Created bags:`, bags.length);
     return bags;
-  };
+  }, [playerCount, categories, getFilteredComponents, draftLimits]);
 
-  const initializeDraft = (settings) => {
+  const initializeDraft = useCallback((settings) => {
     const { variant, playerCount, players } = settings;
-    const activeCats = getActiveCategories();
 
     const emptyFactions = Array.from({ length: playerCount }, (_, i) => {
         const playerName = players?.[i]?.name || `Player ${i + 1}`;
         const f = { name: playerName };
-        activeCats.forEach(cat => { f[cat] = []; });
+        categories.forEach(cat => { f[cat] = []; });
         return f;
     });
     setFactions(emptyFactions);
 
     setPlayerProgress(Array.from({ length: playerCount }, () => {
         const p = {};
-        activeCats.forEach(cat => { p[cat] = 0; });
+        categories.forEach(cat => { p[cat] = 0; });
         return p;
     }));
 
     if (variant === "rotisserie") {
         const pool = {};
-        activeCats.forEach(cat => {
+        categories.forEach(cat => {
         pool[cat] = getFilteredComponents(cat);
         });
         setRotisseriePool(pool);
@@ -335,11 +321,11 @@ export default function DraftSimulator({ onNavigate }) {
     setTimeout(() => {
         checkAndAdvanceIfNeeded(emptyFactions, Array.from({ length: playerCount }, () => {
             const p = {};
-            activeCats.forEach(cat => { p[cat] = 0; });
+            categories.forEach(cat => { p[cat] = 0; });
             return p;
         }), 0);
     }, 100);
-  };
+  }, [categories, getFilteredComponents, createBagsWithUniqueDistribution]);
 
   const checkAndAdvanceIfNeeded = (currentFactions, currentProgress, playerIdx) => {
     if (draftVariant === "rotisserie") return;
@@ -349,9 +335,8 @@ export default function DraftSimulator({ onNavigate }) {
     
     if (!bag) return;
     
-    const activeCats = getActiveCategories();
     let canPick = false;
-    activeCats.forEach(cat => {
+    categories.forEach(cat => {
         const inBag = bag[cat]?.length || 0;
         const alreadyPicked = progress[cat] || 0;
         const limit = draftLimits[cat];
@@ -372,7 +357,7 @@ export default function DraftSimulator({ onNavigate }) {
     }
   };
 
-  const startDraftSolo = () => {
+  const startDraftSolo = useCallback(() => {
     initializeDraft({
         variant: draftVariant,
         playerCount,
@@ -380,10 +365,9 @@ export default function DraftSimulator({ onNavigate }) {
         firstRoundPickCount,
         subsequentRoundPickCount,
     });
-  };
+  }, [initializeDraft, draftVariant, playerCount, draftLimits, firstRoundPickCount, subsequentRoundPickCount]);
 
-  const cancelDraft = () => {
-    // Reset draft-related state to initial defaults
+  const cancelDraft = useCallback(() => {
     setDraftStarted(false);
     setDraftHistory([]);
     setPlayerBags([]);
@@ -396,9 +380,9 @@ export default function DraftSimulator({ onNavigate }) {
     setPendingPicks([]);
     setIsPickingPhase(true);
     setShowSummary(true);
-  };
+  }, []);
 
-  const getAvailableComponents = () => {
+  const getAvailableComponents = useCallback(() => {
     if (multiplayerEnabled) {
       return playerBags || {};
     } else if (draftVariant === "rotisserie") {
@@ -407,9 +391,9 @@ export default function DraftSimulator({ onNavigate }) {
       return playerBags[currentPlayer] || {};
     }
     return {};
-  };
+  }, [multiplayerEnabled, draftVariant, draftStarted, playerBags, currentPlayer, rotisseriePool]);
 
-  const getMaxPicksForRound = () => {
+  const getMaxPicksForRound = useCallback(() => {
     const baseNeeded = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
     
     if (draftVariant === "rotisserie") return 1;
@@ -419,9 +403,8 @@ export default function DraftSimulator({ onNavigate }) {
     
     if (!currentBag) return 0;
     
-    const activeCats = getActiveCategories();
     let availablePicks = 0;
-    activeCats.forEach(cat => {
+    categories.forEach(cat => {
       const inBag = currentBag[cat]?.length || 0;
       const alreadyPicked = progress[cat] || 0;
       const limit = draftLimits[cat];
@@ -433,9 +416,9 @@ export default function DraftSimulator({ onNavigate }) {
     });
     
     return Math.min(baseNeeded, availablePicks);
-  };
+  }, [round, firstRoundPickCount, subsequentRoundPickCount, draftVariant, playerBags, currentPlayer, playerProgress, categories, draftLimits]);
 
-  const handlePick = (category, component) => {
+  const handlePick = useCallback((category, component) => {
     if (!category || !component || !draftStarted || draftPhase !== "draft" || !isPickingPhase) return;
 
     const currentProgress = playerProgress[currentPlayer][category] || 0;
@@ -461,15 +444,15 @@ export default function DraftSimulator({ onNavigate }) {
         category,
         component: { ...component }
     }]);
-  };
+  }, [draftStarted, draftPhase, isPickingPhase, playerProgress, currentPlayer, pendingPicks, draftLimits, getMaxPicksForRound]);
 
-  const handleRemovePendingPick = (category, componentId) => {
+  const handleRemovePendingPick = useCallback((category, componentId) => {
     setPendingPicks(prev => 
         prev.filter(pick => 
         !(pick.category === category && (pick.component.id || pick.component.name) === componentId)
         )
     );
-  };
+  }, []);
 
   const handleSubmitPicks = () => {
     const maxPicks = getMaxPicksForRound();
@@ -539,8 +522,6 @@ export default function DraftSimulator({ onNavigate }) {
         let attempts = 0;
         const maxAttempts = playerCount;
         
-        const activeCats = getActiveCategories();
-        
         while (attempts < maxAttempts) {
             const completedRound = nextPlayer === 0;
             
@@ -567,7 +548,7 @@ export default function DraftSimulator({ onNavigate }) {
                 const nextProgress = updatedProgress[nextPlayer];
                 
                 let canPick = false;
-                activeCats.forEach(cat => {
+                categories.forEach(cat => {
                     const inBag = nextBag?.[cat]?.length || 0;
                     const alreadyPicked = nextProgress[cat] || 0;
                     const limit = draftLimits[cat];
@@ -588,12 +569,11 @@ export default function DraftSimulator({ onNavigate }) {
             setIsPickingPhase(true);
             setPicksThisRound(0);
             
-            // Check if draft is complete with updated factions
 setTimeout(() => {
     const factionLimits = draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
     
     const allPlayersComplete = updatedFactions.every((faction, idx) => {
-        return activeCats.every(cat => {
+        return categories.every(cat => {
             const current = faction[cat]?.length || 0;
             const limit = draftLimits[cat];
             return current >= limit;
@@ -603,9 +583,8 @@ setTimeout(() => {
     if (allPlayersComplete) {
         console.log("Draft complete - checking if reduction is needed");
         
-        // Check if ANY player needs reduction
         const needsReduction = updatedFactions.some((faction, idx) => {
-            return activeCats.some(cat => {
+            return categories.some(cat => {
                 const current = faction[cat]?.length || 0;
                 const limit = factionLimits[cat];
                 const isOver = current > limit;
@@ -635,10 +614,9 @@ setTimeout(() => {
         
         console.log("No players can draft from their bags - checking completion");
         
-        // Final check for completion when no one can pick
-        setTimeout(() => {
+setTimeout(() => {
             const allPlayersComplete = updatedFactions.every((faction, idx) => {
-                return activeCats.every(cat => {
+                return categories.every(cat => {
                     const current = faction[cat]?.length || 0;
                     const limit = draftLimits[cat];
                     return current >= limit;
@@ -650,9 +628,8 @@ setTimeout(() => {
   
   console.log("Draft complete - checking if reduction is needed");
   
-  // Check if ANY player needs reduction
   const needsReduction = updatedFactions.some((faction, idx) => {
-    return activeCats.some(cat => {
+    return categories.some(cat => {
       const current = faction[cat]?.length || 0;
       const limit = factionLimits[cat];
       const isOver = current > limit;
@@ -682,13 +659,12 @@ setTimeout(() => {
   const checkDraftCompletion = () => {
   if (draftVariant === "rotisserie") return;
 
-  const activeCats = getActiveCategories();
   const factionLimits = draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
   
   console.log("Checking draft completion");
   
   const allPlayersComplete = factions.every((faction, idx) => {
-    const complete = activeCats.every(cat => {
+    const complete = categories.every(cat => {
       const current = faction[cat]?.length || 0;
       const limit = draftLimits[cat];
       return current >= limit;
@@ -699,9 +675,8 @@ setTimeout(() => {
   console.log("All players reached draft limits?", allPlayersComplete);
 
   if (allPlayersComplete) {
-    // Check if ANY player needs reduction
     const needsReduction = factions.some((faction, idx) => {
-      return activeCats.some(cat => {
+      return categories.some(cat => {
         const current = faction[cat]?.length || 0;
         const limit = factionLimits[cat];
         const isOver = current > limit;
@@ -725,12 +700,12 @@ setTimeout(() => {
     }
   }
 };
+
   const addAllExtraComponents = (currentFactions) => {
-    const activeCats = getActiveCategories();
     const updatedFactions = currentFactions.map((faction, playerIdx) => {
       const newFaction = { ...faction };
       
-      activeCats.forEach(category => {
+      categories.forEach(category => {
         const components = faction[category] || [];
         
         components.forEach(component => {
@@ -796,9 +771,9 @@ setTimeout(() => {
     return updatedFactions;
   };
 
-  const getCurrentFactionLimits = () => {
+  const getCurrentFactionLimits = useCallback(() => {
     return draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
-  };
+  }, [draftVariant]);
 
   const handleSwap = (playerIndex, swapCategory, componentIndex, swapOption, triggerComponent) => {
     if (!swapOption) return;
@@ -843,15 +818,13 @@ setTimeout(() => {
   setFactions(fc);
 
   const factionLimits = getCurrentFactionLimits();
-  const activeCats = getActiveCategories();
   
   console.log("=== REDUCTION CHECK ===");
   console.log("Faction Limits:", factionLimits);
   
-  // Check each player individually to see if they meet the faction limits
   const allPlayersReduced = fc.every((faction, idx) => {
     console.log(`\nChecking Player ${idx + 1}:`);
-    const playerComplete = activeCats.every(cat => {
+    const playerComplete = categories.every(cat => {
       const currentCount = faction[cat]?.length || 0;
       const limit = factionLimits[cat];
       const isOver = currentCount > limit;
@@ -873,7 +846,7 @@ setTimeout(() => {
   }
 };
 
-  const handleBanFaction = (factionName) => {
+  const handleBanFaction = useCallback((factionName) => {
     setBannedFactions(prev => {
       const newSet = new Set(prev);
       if (newSet.has(factionName)) {
@@ -883,9 +856,9 @@ setTimeout(() => {
       }
       return newSet;
     });
-  };
+  }, []);
 
-  const handleBanComponent = (componentId) => {
+  const handleBanComponent = useCallback((componentId) => {
     setBannedComponents(prev => {
       const newSet = new Set(prev);
       if (newSet.has(componentId)) {
@@ -895,7 +868,7 @@ setTimeout(() => {
       }
       return newSet;
     });
-  };
+  }, []);
 
   const renderCurrentPlayerInfo = () => {
     if (draftPhase === "reduction") {
@@ -1001,10 +974,9 @@ setTimeout(() => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
   <div className="flex h-screen">
-        {/* Collapsible Sidebar */}
         <Sidebar
           isOpen={!sidebarCollapsed}
-          categories={getActiveCategories()}
+          categories={categories}
           onSelectCategory={setSelectedCategory}
           playerProgress={multiplayerEnabled ? {} : (playerProgress[currentPlayer] || {})}
           draftLimits={draftPhase === "reduction" ? getCurrentFactionLimits() : draftLimits}
@@ -1015,7 +987,6 @@ setTimeout(() => {
           draftVariant={draftVariant}
         />
 
-        {/* Backdrop: shown on mobile when sidebar is open; clicking closes sidebar */}
         {!sidebarCollapsed && (
           <div
             className="sidebar-backdrop"
@@ -1026,14 +997,11 @@ setTimeout(() => {
         )}
 
   <div className="flex-1 flex flex-col">
-          {/* Compact Header */}
           <div ref={headerRef} className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg app-header">
             <div className="px-4 py-2">
-                {/* Title on its own line so it sits above all controls (helps on mobile) */}
                 <h2 className="text-xl font-bold text-yellow-400">Franken Draft</h2>
                 <div className="flex justify-between items-center mt-2">
                   <div className="flex items-center gap-3">
-                    {/* Inline sidebar toggle placed to the left of Home so it does not overlay */}
                     <button
                       onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                       className={`sidebar-toggle-button px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors`}
@@ -1067,7 +1035,7 @@ setTimeout(() => {
                     bannedComponents={bannedComponents} 
                     onBanFaction={handleBanFaction} 
                     onBanComponent={handleBanComponent} 
-                    categories={getActiveCategories()} 
+                    categories={categories} 
                     expansionsEnabled={expansionsEnabled}
                   />
                   
@@ -1087,17 +1055,6 @@ setTimeout(() => {
                     {showSummary ? "Hide" : "Show"} Summary
                   </button>
                   
-                  {/*<button 
-                    className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
-                      multiplayerEnabled 
-                        ? "bg-red-600 hover:bg-red-500 text-white" 
-                        : "bg-gray-700 hover:bg-gray-600 text-white"
-                    }`} 
-                    onClick={() => setMultiplayerEnabled(me => !me)}
-                  >
-                    {multiplayerEnabled ? "Disable" : "Enable"} Multiplayer
-                  </button>*/}
-                  
                   {draftStarted && (
                     <button
                       onClick={() => setSettingsCollapsed(!settingsCollapsed)}
@@ -1106,7 +1063,6 @@ setTimeout(() => {
                       {settingsCollapsed ? "Show" : "Hide"} Info
                     </button>
                   )}
-                  {/* Cancel Draft (visible during a local draft) */}
                   {draftStarted && !multiplayerEnabled && (
                     <button
                       onClick={cancelDraft}
@@ -1118,12 +1074,9 @@ setTimeout(() => {
                 </div>
               </div>
             </div>
-
-            {/* settings moved into main scrollable area to avoid header overflow on mobile */}
           </div>
 
           <div className="flex-1 overflow-auto p-4 space-y-4 bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col">
-  {/* Settings and lobby controls */}
   {!settingsCollapsed && (
     <div>
       {!multiplayerEnabled && !draftStarted && (
@@ -1242,7 +1195,6 @@ setTimeout(() => {
     </div>
   )}
 
-  {/* MAIN CONTENT RENDERING - FIXED TO HANDLE ALL PHASES */}
   {(() => {
     console.log("Render check:", { 
       multiplayerEnabled, 
@@ -1313,7 +1265,6 @@ setTimeout(() => {
               </button>
               <button
   onClick={() => {
-    // Helper to generate readable text
     const generateDraftText = () => {
       let text = `=== TI4 Draft Export ===\n`;
       text += `Exported At: ${new Date().toLocaleString()}\n`;
@@ -1323,7 +1274,6 @@ setTimeout(() => {
         text += `Player ${idx + 1}: ${faction.name}\n`;
         text += '--------------------\n';
 
-        // Loop through categories in faction
         Object.keys(faction).forEach(category => {
           const comps = faction[category];
           if (!Array.isArray(comps) || comps.length === 0) return;
@@ -1378,7 +1328,6 @@ setTimeout(() => {
             </div>
           </div>
           
-          {/* Show all completed factions */}
           {factions.map((f, i) => (
             <FactionSheet
               key={i}
@@ -1403,7 +1352,6 @@ setTimeout(() => {
       );
     } else {
       console.log("Rendering default/waiting state");
-      // Show all factions when not in an active draft
       return factions.length > 0 ? (
         factions.map((f, i) => (
           <FactionSheet
