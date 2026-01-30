@@ -983,7 +983,7 @@
         {
           "id": "edyn_hero",
           "name": "Midir - Living Will",
-          "description": "GOLDEN ORDER - PEACE ETERNAL. ACTION: For each Sigil on the game board, draw 1 agenda. Reveal and resolve each agenda in any order as if you had cast 1 vote for an outcome of your choice. Other players cannot resolve abilities during this action. Then, purge this card."
+          "description": "[Frnaken Only] GOLDEN ORDER - PEACE ETERNAL. ACTION: For each system with at least one of your mechs on the game board, draw 1 agenda. Reveal and resolve each agenda in any order as if you had cast 1 vote for an outcome of your choice. Other players cannot resolve abilities during this action. Then, purge this card."
         }
       ],
       "promissory": [
@@ -1387,7 +1387,7 @@
         {
           "id": "ghemina_tlatl",
           "name": "The Lady & The Lord",
-          "description": "During setup, place 1 additional flagship in your reinforcements and the additional Ghemina Hero next to your faction sheet. This additional flagship has the abilities and attributes listed on the Lord flagship card. You have 2 Heroes."
+          "description": "[Franken Only] During setup, place the Lady flagship token in your reinforcements with your chosen drafted flagship and place both drafted Heroes next to your faction sheet. The Lady flagship token is a second flagship unit with the abilities and attributes listed on the Lady Flagship card. You have 2 Heroes."
         },
         {
           "id": "ghemina_rot",
@@ -2274,7 +2274,7 @@
       ]
     },
     {
-      "name": "The Kollecc Society",
+      "name": "The Kollec Society",
       "abilities": [
         {
           "id": "kollec_cf",
@@ -5110,77 +5110,113 @@
       "agents": [
         {
           "id": "zelian_agent",
-          "name": "",
-          "description": ""
+          "name": "Zelian A - The Mutilator",
+          "description": "At the start of invasion: You may exhaust this card to allow the active player to replace 1 infantry in the space area of the active system with 1 mech from their reinforcements."
         }
       ],
       "commanders": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "zelian_commander",
+          "name": "Zelian B - The Hunter",
+          "description": "UNLOCK: Have 1 or more ships in 2 systems that contain an asteroid field. Each of your Dreadnoughts and War Suns without ANTI-FIGHTER BARRAGE gains ANTI-FIGHTER BARRAGE 5."
         }
       ],
       "heroes": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "zelian_hero",
+          "name": "Zelian R - The Destroyer",
+          "description": "CATACLYSM - CELESTIAL IMPACT. After you move a unit with BOMBARDMENT into a non-home system other than Mecatol Rex: You may gain trade goods equal to the total combined resource values of planets in that system. If you do, destroy all units on planets in that system and replace that system tile with the Zelian asteroid tile."
         }
       ],
       "promissory": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "zelian_pn",
+          "name": "Hyperkinetic Ordinance",
+          "description": "When 1 or more of your units would make a BOMBARDMENT roll: If you produce 1 or more hits during this BOMBARDMENT roll, produce 1 additional hit for that roll. Then, return this card ot the Zelian player."
         }
       ],
       "flagship": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "zelian_fs",
+          "name": "World-Cracker",
+          "cost": 8,
+          "combat": 5,
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage", "Bombardment 5", "Anti-Fighter Barrage 5"],
+          "description": "When this unit makes a combat or ability roll, it rolls 1 additional die for each asteroid field adjacent to this unit."
         }
       ],
       "mech": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "zelian_mech",
+          "name": "Collider",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "At the start of invasion, if this unit is in the space area of the active system, you may remove this unit form the game board to destroy 1 unit on a planet in that system."
         }
       ],
       "starting_techs": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "zelian_starting_tech",
+          "name": "Zelian Starting Tech",
+          "techs": [
+            {
+              "name": "Antimass Deflectors",
+              "tech_type": "Blue"
+            },
+            {
+              "name": "AI Development Algorithm",
+              "tech_type": "Red"
+            }
+          ]
         }
       ],
       "starting_fleet": [
         {
-          "id": "",
-          "name": "",
-          "description": ""
+          "id": "zelian_starting_fleet",
+          "name": "Zelian Starting Fleet",
+          "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 1 Fighter, 5 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
-          "id": "",
-          "name": "", 
-          "description": ""
+          "id": "zelian_comms",
+          "name": "Commodities", 
+          "value": 2
         }
       ],
       "home_system": [
         {
-          "id": "",
-          "name": "",
+          "id": "zelian_hs",
+          "name": "Zelian Home System",
           "planets": [
             {
-              "name": "",
-              "resource": 0,
+              "name": "Zelian",
+              "resource": 3,
+              "influence": 3
+            },
+            {
+              "name": "Gen",
+              "resource": 2,
               "influence": 0
             }
-          ]
+          ],
+          "anomalies": ["Asteroid Field"]
+        }
+      ],
+      "breakthrough": [
+        {
+          "id": "zelian_bt",
+          "name": "Awakened Planetoids",
+          "synergy": [
+            {
+              "primary": "Green",
+              "secondary": "Red"
+            }
+          ],
+          "description": "Your planets in the active system participate in space combat if that system contains 1 or more of your ships, and ground combat on themselves if they contain 1 or more of your ground forces. Your planets cannot be assigned hits and have a combat value equal to 10 minus their resource value, minimum 1."
         }
       ]
     }
@@ -5192,11 +5228,10 @@
         "name": "Troac",
         "planets": [
           {
-            "name": "",
+            "name": "Troac",
             "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "influence": 4,
+            "traits": ["Cultural"]
           }
         ],
         "wormhole": null,
@@ -5207,11 +5242,10 @@
         "name": "Etir V",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
+            "name": "Etir V",
+            "resource": 4,
             "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "traits": ["Hazardous"]
           }
         ],
         "wormhole": null,
@@ -5222,11 +5256,10 @@
         "name": "Vioss",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "name": "Vioss",
+            "resource": 3,
+            "influence": 3,
+            "traits": ["Cultural"]
           }
         ],
         "wormhole": null,
@@ -5237,14 +5270,13 @@
         "name": "Fakrenn",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "name": "Fakrenn",
+            "resource": 2,
+            "influence": 2,
+            "traits": ["Hazardous"]
           }
         ],
-        "wormhole": null,
+        "wormhole": "Alpha",
         "anomalies": []
       },
       {
@@ -5252,11 +5284,17 @@
         "name": "San-Vit/Lodran",
         "planets": [
           {
-            "name": "",
+            "name": "San-Vit",
+            "resource": 3,
+            "influence": 1,
+            "traits": ["Cultural"]
+          },
+          {
+            "name": "Lodran",
             "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "influence": 2,
+            "traits": ["Hazardous"],
+            "technology_specialty": ["Yellow"]
           }
         ],
         "wormhole": null,
@@ -5267,11 +5305,17 @@
         "name": "Dorvok/Derbrae",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "name": "Dorvok",
+            "resource": 1,
+            "influence": 2,
+            "traits": ["Industrial"],
+            "technology_specialty": ["Red"]
+          },
+          {
+            "name": "Derbrae",
+            "resource": 2,
+            "influence": 3,
+            "traits": ["Cultural"]
           }
         ],
         "wormhole": null,
@@ -5282,11 +5326,18 @@
         "name": "Moln/Rysaa",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
+            "name": "Moln",
+            "resource": 1,
+            "influence": 2,
+            "traits": ["Industrial"],
+            "technology_specialty": ["Blue"]
+          },
+          {
+            "name": "Rysaa",
+            "resource": 2,
             "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "traits": ["Hazardous"],
+            "technology_specialty": ["Green"]
           }
         ],
         "wormhole": null,
@@ -5297,11 +5348,16 @@
         "name": "Salin/Gwiyun",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "name": "Salin",
+            "resource": 1,
+            "influence": 2,
+            "traits": ["Hazardous"]
+          },
+          {
+            "name": "Gwiyun",
+            "resource": 2,
+            "influence": 2,
+            "traits": ["Hazardous"]
           }
         ],
         "wormhole": null,
@@ -5312,11 +5368,16 @@
         "name": "Inan/Swog",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
+            "name": "Inan",
+            "resource": 1,
+            "influence": 2,
+            "traits": ["Industrial"]
+          },
+          {
+            "name": "Swog",
+            "resource": 1,
             "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "traits": ["Industrial"]
           }
         ],
         "wormhole": null,
@@ -5327,11 +5388,16 @@
         "name": "Detic/Lliot",
         "planets": [
           {
-            "name": "",
+            "name": "Detic",
+            "resource": 3,
+            "influence": 2,
+            "traits": ["Cultural"]
+          },
+          {
+            "name": "Lliot",
             "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "influence": 1,
+            "traits": ["Cultural"]
           }
         ],
         "wormhole": null,
@@ -5342,11 +5408,22 @@
         "name": "Qaak/Larred/Nairb",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "name": "Qaak",
+            "resource": 1,
+            "influence": 1,
+            "traits": ["Cultural"]
+          },
+          {
+            "name": "Larred",
+            "resource": 1,
+            "influence": 1,
+            "traits": ["Industrial"]
+          },
+          {
+            "name": "Nairb",
+            "resource": 1,
+            "influence": 1,
+            "traits": ["Hazardous"]
           }
         ],
         "wormhole": null,
@@ -5357,11 +5434,22 @@
         "name": "Sierpen/Mandle/Regnem",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
+            "name": "Sierpen",
+            "resource": 2,
             "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""]
+            "traits": ["Cultural"]
+          },
+          {
+            "name": "Mandle",
+            "resource": 1,
+            "influence": 1,
+            "traits": ["Industrial"]
+          },
+          {
+            "name": "Regnem",
+            "resource": 0,
+            "influence": 2,
+            "traits": ["Hazardous"]
           }
         ],
         "wormhole": null,
@@ -5372,12 +5460,11 @@
         "name": "Silence",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""],
-            "legendary_ability": ""
+            "name": "Silence",
+            "resource": 2,
+            "influence": 2,
+            "traits": ["Industrial"],
+            "legendary_ability": "Imperial Salvage Yard - You may exhaust this card at the end of your turn to place 1 cruiser from your reinforcements in any system that contains 1 or more of your ships."
           }
         ],
         "wormhole": null,
@@ -5388,12 +5475,11 @@
         "name": "Echo",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""],
-            "legendary_ability": ""
+            "name": "Echo",
+            "resource": 1,
+            "influence": 2,
+            "traits": ["Hazardous"],
+            "legendary_ability": "Bi-Phasic Generators - You may exhaust this card at the end of your turn to place 1 frontier token in a system that does not contain a planet."
           }
         ],
         "wormhole": null,
@@ -5404,12 +5490,11 @@
         "name": "Tarrock",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
+            "name": "Tarrock",
+            "resource": 3,
             "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""],
-            "legendary_ability": ""
+            "traits": ["Industrial"],
+            "legendary_ability": "Council Black Site - After an agenda is revealed, you may exhaust this card to predict aloud an outcome of that agenda. If your prediction is correct, draw 1 secret objective."
           }
         ],
         "wormhole": null,
@@ -5420,12 +5505,11 @@
         "name": "Prism",
         "planets": [
           {
-            "name": "",
+            "name": "Prism",
             "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""],
-            "legendary_ability": ""
+            "influence": 3,
+            "traits": ["Industrial"],
+            "legendary_ability": "Mystic Library - You may exhaust this card at the end of your turn and purge a non-faction, non-unit upgrade technology you own to gain 1 technology with the same number of prerequisites."
           }
         ],
         "wormhole": null,
@@ -5438,16 +5522,15 @@
         "name": "Domna",
         "planets": [
           {
-            "name": "",
-            "resource": 0,
-            "influence": 0,
-            "traits": [""],
-            "technology_specialty": [""],
-            "legendary_ability": ""
+            "name": "Domna",
+            "resource": 2,
+            "influence": 1,
+            "traits": ["Hazardous"],
+            "legendary_ability": "Fractal Gate - You may exhaust this card at the end of your turn to remove 1 of your ships from the game board and place that unit in an adjacent system that does not contain another player's ships."
           }
         ],
         "wormhole": "",
-        "anomalies": []
+        "anomalies": ["Nebula"]
       },
       {
         "id": "4270",
@@ -5467,36 +5550,36 @@
         "id": "4272",
         "name": "Beta Nebula",
         "planets": [],
-        "wormhole": "",
-        "anomalies": []
+        "wormhole": "Beta",
+        "anomalies": ["Nebula"]
       },
       {
         "id": "4273",
         "name": "Nebula Asteroid Field",
         "planets": [],
         "wormhole": "",
-        "anomalies": []
+        "anomalies": ["Nebula", "Asteroid Field"]
       },
       {
         "id": "4274",
         "name": "Gravity Rift Asteroid Field",
         "planets": [],
         "wormhole": "",
-        "anomalies": []
+        "anomalies": ["Gravity Rift", "Asteroid Field"]
       },
       {
         "id": "4275",
         "name": "Gamma Rift",
         "planets": [],
-        "wormhole": "",
-        "anomalies": []
+        "wormhole": "Gamma",
+        "anomalies": ["Gravity Rift"]
       },
       {
         "id": "4276",
         "name": "Alpha Beta Nova",
         "planets": [],
-        "wormhole": "",
-        "anomalies": []
+        "wormhole": ["Alpha", "Beta"],
+        "anomalies": ["Supernova"]
       }
     ]
   }
