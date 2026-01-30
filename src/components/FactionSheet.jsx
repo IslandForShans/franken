@@ -228,7 +228,13 @@ const confirmReplacement = (replaceIndex) => {
             </div>
             {item.faction && (
               <div className="faction-component-faction">
-                {item.icon && <img src={item.icon} alt={item.faction} style={{width: '1.25rem', height: '1.25rem'}} />}
+                {(item.icon || item.factionIcon) && (
+                  <img 
+                    src={item.icon || item.factionIcon} 
+                    alt={item.faction} 
+                    style={{width: '1.25rem', height: '1.25rem'}} 
+                  />
+                )}
                 <span>{item.faction}</span>
               </div>
             )}

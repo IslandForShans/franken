@@ -233,7 +233,7 @@ export default function DraftSimulator({ onNavigate }) {
       .flatMap(f => (f[category] || [])
         .filter(comp => !bannedComponents.has(comp.id || comp.name))
         .filter(comp => !isComponentUndraftable(comp.name, f.name))
-        .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
+        .map(item => ({ ...item, faction: f.name, factionIcon: f.icon, icon: f.icon }))
       );
 
     console.log(`Base faction components: ${factionComponents.length}`);
@@ -252,7 +252,7 @@ export default function DraftSimulator({ onNavigate }) {
             return categoryData
               .filter(comp => !bannedComponents.has(comp.id || comp.name))
               .filter(comp => !isComponentUndraftable(comp.name, f.name))
-              .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }));
+              .map(item => ({ ...item, faction: f.name, factionIcon: f.icon, icon: f.icon }));
           })
       : [];
 
@@ -773,6 +773,50 @@ setTimeout(() => {
 };
 
   const addAllExtraComponents = (currentFactions) => {
+    // Helper function to find full component data from JSON
+    const findFullComponentData = (componentName, factionName, targetCategory) => {
+      // First try to find in base factions
+      const baseFaction = factionsJSON.factions.find(f => f.name === factionName);
+      if (baseFaction && baseFaction[targetCategory]) {
+        const found = baseFaction[targetCategory].find(c => c.name === componentName);
+        if (found) {
+          return { ...found, faction: baseFaction.name, factionIcon: baseFaction.icon, icon: baseFaction.icon };
+        }
+      }
+      
+      // Try DS factions
+      if (discordantStarsJSON?.factions) {
+        const dsFaction = discordantStarsJSON.factions.find(f => f.name === factionName);
+        if (dsFaction) {
+          // Handle DS's different naming for home_systems
+          let categoryData = dsFaction[targetCategory];
+          if (!categoryData && targetCategory === 'home_systems') {
+            categoryData = dsFaction['home_system'];
+          }
+          
+          if (categoryData) {
+            const found = categoryData.find(c => c.name === componentName);
+            if (found) {
+              return { ...found, faction: dsFaction.name, factionIcon: dsFaction.icon, icon: dsFaction.icon };
+            }
+          }
+        }
+      }
+      
+      // If not found in factions, try tiles
+      if (factionsJSON.tiles[targetCategory]) {
+        const found = factionsJSON.tiles[targetCategory].find(t => t.name === componentName);
+        if (found) return { ...found };
+      }
+      
+      if (discordantStarsJSON?.tiles?.[targetCategory]) {
+        const found = discordantStarsJSON.tiles[targetCategory].find(t => t.name === componentName);
+        if (found) return { ...found };
+      }
+      
+      return null;
+    };
+
     const updatedFactions = currentFactions.map((faction, playerIdx) => {
       const newFaction = { ...faction };
       
@@ -802,12 +846,22 @@ setTimeout(() => {
                 targetCategory = categoryMap[extra.name];
               }
 
-              const extraComponent = {
-  ...extra,                          // copy all original fields
-  isExtra: true,                     // mark as extra
-  triggerComponent: component.name,  // reference the source
-  description: extra.description || `Gained from ${component.name}` // fallback
-};
+              // Try to find the full component data from JSON
+              const fullComponentData = findFullComponentData(extra.name, extra.faction || component.faction, targetCategory);
+              
+              const extraComponent = fullComponentData ? {
+                ...fullComponentData,           // Use full component data if found
+                isExtra: true,                  // mark as extra
+                triggerComponent: component.name // reference the source
+              } : {
+                ...extra,                       // fallback to basic extra data
+                isExtra: true,
+                triggerComponent: component.name,
+                description: extra.description || `Gained from ${component.name}`,
+                faction: extra.faction || component.faction,
+                icon: extra.icon || component.icon || component.factionIcon,
+                factionIcon: extra.factionIcon || component.factionIcon || component.icon
+              };
 
               if (!newFaction[targetCategory]) {
                 newFaction[targetCategory] = [];
@@ -869,6 +923,7 @@ setTimeout(() => {
     ...fullComponent,
     faction: swapOption.faction,
     factionIcon: factionData.icon,
+    icon: factionData.icon,
     isSwap: true,
     originalComponent: triggerComponent.name,
     triggerComponent: triggerComponent.name
