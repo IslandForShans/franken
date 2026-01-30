@@ -1425,7 +1425,10 @@ setTimeout(() => {
               <FactionSheet
                 key={i}
                 drafted={f}
-                onRemove={(cat, idx) => handleReduction(i, cat, idx)}
+                onRemove={(cat, idx) => {
+                  console.log(`onRemove called for player ${i}, category ${cat}, index ${idx}`);
+                  handleReduction(i, cat, idx);
+                }}
                 onSwapComponent={(playerIdx, category, componentIdx, swapOption, triggerComponent) => 
                   handleSwap(playerIdx, category, componentIdx, swapOption, triggerComponent)
                 }
