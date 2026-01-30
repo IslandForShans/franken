@@ -48,12 +48,18 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [unlimitedMode, setUnlimitedMode] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [globalSearchTerm, setGlobalSearchTerm] = useState("");
+  const [dsOnlyMode, setDsOnlyMode] = useState(false);
+  const [dsAddMode, setDsAddMode] = useState(false);
   const headerRef = useRef(null);
 
   const categories = Object.keys(baseFactionLimits).filter(c => c !== 'blue_tiles' && c !== 'red_tiles');
 
   const getAllComponents = (category) => {
-    const allComponents = [
+    let baseComponents = [];
+    let dsComponents = [];
+
+    // Get base game components
+    baseComponents = [
       ...(factionsJSON.factions.flatMap(f =>
         (f[category] || []).map(item => {
           const isUnitUpgrade = item.tech_type === "Unit Upgrade";
@@ -78,6 +84,50 @@ export default function TheorycraftingApp({ onNavigate }) {
       )),
       ...(factionsJSON.tiles[category] || [])
     ];
+
+    // Get Discordant Stars components
+    dsComponents = [
+      ...(discordantStarsJSON.factions.flatMap(f =>
+        (f[category] || []).map(item => {
+          const isUnitUpgrade = item.tech_type === "Unit Upgrade";
+
+          return {
+            ...item,
+            faction: f.name,
+            factionIcon: f.icon,
+            isDiscordantStars: true,
+
+            // Make unit upgrades render like units
+            ...(isUnitUpgrade && {
+              unit: true,
+              stats: {
+                cost: item.cost,
+                combat: item.combat,
+                abilities: item.abilities,
+                description: item.description
+              }
+            })
+          };
+        })
+      )),
+      ...(discordantStarsJSON.tiles[category] || []).map(item => ({
+        ...item,
+        isDiscordantStars: true
+      }))
+    ];
+
+    // Combine based on mode
+    let allComponents = [];
+    if (dsOnlyMode) {
+      // Show ONLY DS components
+      allComponents = dsComponents;
+    } else if (dsAddMode) {
+      // Show base + DS components
+      allComponents = [...baseComponents, ...dsComponents];
+    } else {
+      // Show only base components
+      allComponents = baseComponents;
+    }
 
     return allComponents.sort((a, b) =>
       (a.name || "").localeCompare(b.name || "")
@@ -132,10 +182,19 @@ export default function TheorycraftingApp({ onNavigate }) {
   };
 
   const handleLoadFaction = (factionName) => {
-    const faction = factionsJSON.factions.find(f => f.name === factionName);
+    // Try to find in base factions first
+    let faction = factionsJSON.factions.find(f => f.name === factionName);
+    let factionSource = "Base";
+    
+    // If not found, try Discordant Stars
+    if (!faction) {
+      faction = discordantStarsJSON.factions.find(f => f.name === factionName);
+      factionSource = "DS";
+    }
+    
     if (faction) {
       const loadedFaction = {
-        name: faction.name + " (Base)",
+        name: faction.name + ` (${factionSource})`,
         abilities: faction.abilities || [],
         faction_techs: faction.faction_techs || [],
         agents: faction.agents || [],
@@ -192,6 +251,26 @@ export default function TheorycraftingApp({ onNavigate }) {
     if (!unlimitedMode && powerMode) {
       setPowerMode(false);
       setDraftLimits(baseFactionLimits);
+    }
+  };
+
+  const handleToggleDsOnlyMode = () => {
+    const newValue = !dsOnlyMode;
+    setDsOnlyMode(newValue);
+    
+    // If enabling DS Only, disable DS Add
+    if (newValue && dsAddMode) {
+      setDsAddMode(false);
+    }
+  };
+
+  const handleToggleDsAddMode = () => {
+    const newValue = !dsAddMode;
+    setDsAddMode(newValue);
+    
+    // If enabling DS Add, disable DS Only
+    if (newValue && dsOnlyMode) {
+      setDsOnlyMode(false);
     }
   };
 
@@ -334,9 +413,11 @@ export default function TheorycraftingApp({ onNavigate }) {
 
   const getFactionTechsForSheet = () => {
     return (customFaction.faction_techs || []).map(ft => {
-      const original = factionsJSON.factions
-        .flatMap(f => f.faction_techs || [])
-        .find(t => t.name === ft.name);
+      // Search in both base and DS factions
+      const original = [
+        ...factionsJSON.factions.flatMap(f => f.faction_techs || []),
+        ...discordantStarsJSON.factions.flatMap(f => f.faction_techs || [])
+      ].find(t => t.name === ft.name);
 
       if (!original) return ft;
 
@@ -357,6 +438,13 @@ export default function TheorycraftingApp({ onNavigate }) {
 
       return ft;
     });
+  };
+
+  // Get combined faction list for dropdown
+  const getAllFactionsList = () => {
+    const baseFactions = factionsJSON.factions.map(f => ({ ...f, source: 'Base' }));
+    const dsFactions = discordantStarsJSON.factions.map(f => ({ ...f, source: 'DS' }));
+    return [...baseFactions, ...dsFactions].sort((a, b) => a.name.localeCompare(b.name));
   };
 
   useEffect(() => {
@@ -399,8 +487,10 @@ export default function TheorycraftingApp({ onNavigate }) {
                 className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
               >
                 <option value="">Load Base Faction...</option>
-                {factionsJSON.factions.map(f => 
-                  <option key={f.name} value={f.name}>{f.name}</option>
+                {getAllFactionsList().map(f => 
+                  <option key={f.name + f.source} value={f.name}>
+                    {f.name} {f.source === 'DS' ? '(DS)' : ''}
+                  </option>
                 )}
               </select>
               
@@ -446,7 +536,7 @@ export default function TheorycraftingApp({ onNavigate }) {
                 {powerMode ? "Higher component limits" : "Standard component limits"}
               </div>
               
-              <label className="flex items-center cursor-pointer">
+              <label className="flex items-center cursor-pointer mb-2">
                 <input 
                   type="checkbox" 
                   checked={unlimitedMode}
@@ -455,8 +545,38 @@ export default function TheorycraftingApp({ onNavigate }) {
                 />
                 <span className="font-medium text-white text-sm">Unlimited Mode</span>
               </label>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-gray-400 mb-3">
                 {unlimitedMode ? "No component limits" : "Enable to remove all limits"}
+              </div>
+
+              <div className="border-t border-gray-700 pt-3 mt-3">
+                <div className="text-sm font-semibold text-yellow-400 mb-2">Discordant Stars</div>
+                
+                <label className="flex items-center cursor-pointer mb-2">
+                  <input 
+                    type="checkbox" 
+                    checked={dsOnlyMode}
+                    onChange={handleToggleDsOnlyMode}
+                    className="mr-2"
+                  />
+                  <span className="font-medium text-white text-sm">DS Only Mode</span>
+                </label>
+                <div className="text-xs text-gray-400 mb-3">
+                  {dsOnlyMode ? "Showing only non-DS components" : "Showing only DS + US components"}
+                </div>
+                
+                <label className="flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={dsAddMode}
+                    onChange={handleToggleDsAddMode}
+                    className="mr-2"
+                  />
+                  <span className="font-medium text-white text-sm">Add DS Components</span>
+                </label>
+                <div className="text-xs text-gray-400">
+                  {dsAddMode ? "Showing Base+PoK+TE components only" : "Adding DS components to base game"}
+                </div>
               </div>
             </div>
 
@@ -625,6 +745,9 @@ export default function TheorycraftingApp({ onNavigate }) {
                                     />
                                   )}
                                   <span>{component.name}</span>
+                                  {component.isDiscordantStars && (
+                                    <span className="text-xs px-1.5 py-0.5 bg-yellow-600 text-white rounded">DS</span>
+                                  )}
                                 </div>
                                 {isDisabled && !unlimitedMode && (
                                   <div className="text-xs text-gray-500 mt-1">
@@ -690,7 +813,7 @@ export default function TheorycraftingApp({ onNavigate }) {
               }}
               onRemove={handleRemoveComponent}
               draftLimits={unlimitedMode ? {} : draftLimits}
-              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}`}
+              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}`}
               hiddenCategories={["blue_tiles", "red_tiles"]}
             />
           </div>

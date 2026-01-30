@@ -118,7 +118,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "augurs_hs",
           "name": "Augurs Home System",
@@ -273,7 +273,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "bentor_hs",
           "name": "Bentor Home System",
@@ -424,7 +424,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "berserkers_hs",
           "name": "Berserkers Home System",
@@ -578,7 +578,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "celdauri_hs",
           "name": "Celdauri Home System",
@@ -741,7 +741,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "cheiran_hs",
           "name": "Cheiran Home System",
@@ -903,7 +903,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "dih-mohn_hs",
           "name": "Dih-Mohn Home System",
@@ -1036,7 +1036,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "edyn_hs",
           "name": "Edyn Home System",
@@ -1201,7 +1201,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "florzen_hs",
           "name": "Florzen Home System",
@@ -1344,7 +1344,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "fsc_hs",
           "name": "Free Systems Compact Home System",
@@ -1518,7 +1518,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "ghemina_hs",
           "name": "Ghemina Home System",
@@ -1666,7 +1666,7 @@
           "description": "4"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "ghoti_hs",
           "name": "Ghoti Home System",
@@ -1818,7 +1818,7 @@
           "description": "2"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "gledge_hs",
           "name": "GLEdge Home System",
@@ -1955,7 +1955,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "glimmer_hs",
           "name": "Glimmer Home System",
@@ -2104,7 +2104,7 @@
           "value": 2
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "kyro_hs",
           "name": "Kyro Home System",
@@ -2241,7 +2241,7 @@
           "value": 3
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "kortali_hs",
           "name": "Kortali Home System",
@@ -2384,7 +2384,7 @@
           "value": 3
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "kollec_hs",
           "name": "Kollec Home System",
@@ -2531,7 +2531,7 @@
           "value": 2
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "lanefir_hs",
           "name": "Lanefir Home System",
@@ -2684,7 +2684,7 @@
           "value": 3
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "lz_hs",
           "name": "Li-Zho Home System",
@@ -2881,7 +2881,7 @@
           "value": 2
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "lk_hs",
           "name": "L'tokk Khrask Home System",
@@ -3031,7 +3031,7 @@
           "value": 3
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "mirveda_hs",
           "name": "Mirveda Home System",
@@ -3179,7 +3179,7 @@
           "value": 3
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "kolume_hs",
           "name": "Kolume Home System",
@@ -3329,7 +3329,7 @@
           "value": 1
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "mm_hs",
           "name": "Myko-Mentori Home System",
@@ -3474,7 +3474,7 @@
           "value": 3
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "nivyn_hs",
           "name": "Nivyn Home System",
@@ -3635,7 +3635,7 @@
           "value": 4
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "nokar_hs",
           "name": "Nokar Home System",
@@ -3772,7 +3772,7 @@
           "description": "3"
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "olradin_hs",
           "name": "Olradin Home System",
@@ -3959,7 +3959,7 @@
           "value": 4
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "rm_hs",
           "name": "Rho'Dhna Home System",
@@ -4104,7 +4104,7 @@
           "value": 3
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "cymiae_hs",
           "name": "Cymiae Home System",
@@ -4241,7 +4241,7 @@
           "value": 5
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "axis_hs",
           "name": "Axis Home System",
@@ -4418,7 +4418,7 @@
           "value": 2
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "tnelis_hs",
           "name": "Tnelis Home System",
@@ -4565,7 +4565,7 @@
           "value": 3
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "vaden_hs",
           "name": "Vaden Home System",
@@ -4725,7 +4725,7 @@
           "value": 2
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "vs_hs",
           "name": "Vaylerian Home System",
@@ -4896,7 +4896,7 @@
           "value": 4
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "veldyr_hs",
           "name": "Veldyr Home System",
@@ -5029,7 +5029,7 @@
           "value": 3
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "rhodun_hs",
           "name": "Rhodun Home System",
@@ -5187,7 +5187,7 @@
           "value": 2
         }
       ],
-      "home_system": [
+      "home_systems": [
         {
           "id": "zelian_hs",
           "name": "Zelian Home System",

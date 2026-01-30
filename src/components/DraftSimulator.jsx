@@ -92,7 +92,10 @@ export default function DraftSimulator({ onNavigate }) {
   const [expansionsEnabled, setExpansionsEnabled] = useState({
     pok: true,
     te: false,
-    firmobs: false
+    ds: false,
+    us: false,
+    firmobs: false,
+    dsOnly: false
   });
 
   // PERFORMANCE: Memoize active categories computation
@@ -107,16 +110,24 @@ export default function DraftSimulator({ onNavigate }) {
 
     let activeCategories = [...baseCategories];
 
-    if (expansionsEnabled.pok) {
+    // DS Only mode: Include PoK/TE categories because DS factions use them
+    // But tiles still respect individual PoK/TE toggles
+    if (expansionsEnabled.dsOnly) {
       activeCategories.push(...pokCategories);
-    }
-
-    if (expansionsEnabled.te) {
       activeCategories.push(...teCategories);
+    } else {
+      // Normal mode - respect PoK and TE toggles
+      if (expansionsEnabled.pok) {
+        activeCategories.push(...pokCategories);
+      }
+
+      if (expansionsEnabled.te) {
+        activeCategories.push(...teCategories);
+      }
     }
 
     return activeCategories;
-  }, [expansionsEnabled.pok, expansionsEnabled.te]);
+  }, [expansionsEnabled.pok, expansionsEnabled.te, expansionsEnabled.dsOnly]);
 
   const syncToFirebase = useRef(null);
 
@@ -206,7 +217,15 @@ export default function DraftSimulator({ onNavigate }) {
 
   // PERFORMANCE: Memoize getFilteredComponents with useCallback
   const getFilteredComponents = useCallback((category) => {
-    const factionComponents = factionsJSON.factions
+    console.log(`Getting filtered components for category: ${category}`, {
+      dsOnly: expansionsEnabled.dsOnly,
+      ds: expansionsEnabled.ds,
+      pok: expansionsEnabled.pok,
+      te: expansionsEnabled.te
+    });
+
+    // If DS Only mode is enabled, skip base game FACTIONS but still include all tiles
+    const factionComponents = expansionsEnabled.dsOnly ? [] : factionsJSON.factions
       .filter(f => !bannedFactions.has(f.name))
       .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
       .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
@@ -217,27 +236,69 @@ export default function DraftSimulator({ onNavigate }) {
         .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
       );
 
-    const dsComponents = expansionsEnabled.ds && discordantStarsJSON?.factions
+    console.log(`Base faction components: ${factionComponents.length}`);
+
+    const dsComponents = (expansionsEnabled.ds && discordantStarsJSON?.factions)
       ? discordantStarsJSON.factions
           .filter(f => !bannedFactions.has(f.name))
-          .flatMap(f => (f[category] || [])
-            .filter(comp => !bannedComponents.has(comp.id || comp.name))
-            .filter(comp => !isComponentUndraftable(comp.name, f.name))
-            .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }))
-          )
+          .flatMap(f => {
+            // Handle DS's different naming: "home_system" vs "home_systems"
+            let categoryData = f[category];
+            if (!categoryData && category === 'home_systems') {
+              categoryData = f['home_system'];
+            }
+            
+            if (!categoryData || !Array.isArray(categoryData)) return [];
+            return categoryData
+              .filter(comp => !bannedComponents.has(comp.id || comp.name))
+              .filter(comp => !isComponentUndraftable(comp.name, f.name))
+              .map(item => ({ ...item, faction: f.name, factionIcon: f.icon }));
+          })
       : [];
 
+    console.log(`DS components: ${dsComponents.length}`);
+
+    // DS Only mode only excludes base game FACTIONS, not tiles
+    // When dsOnly is enabled, include ALL tiles (Base, PoK, TE)
     const tiles = (factionsJSON.tiles[category] || [])
       .filter(tile => !bannedComponents.has(tile.id || tile.name))
-      .filter(tile => expansionsEnabled.pok || !pokExclusions.tiles.includes(tile.id))
-      .filter(tile => expansionsEnabled.te || !teExclusions.tiles.includes(tile.id));
+      .filter(tile => {
+        // In dsOnly mode, include all tiles regardless of PoK/TE settings
+        if (expansionsEnabled.dsOnly) {
+          return true;
+        }
+        
+        // In normal mode, filter based on expansion settings
+        if (pokExclusions.tiles.includes(tile.id) && !expansionsEnabled.pok) {
+          return false;
+        }
+        if (teExclusions.tiles.includes(tile.id) && !expansionsEnabled.te) {
+          return false;
+        }
+        return true;
+      });
 
-    const usTiles = expansionsEnabled.us && discordantStarsJSON?.tiles?.[category]
-      ? discordantStarsJSON.tiles[category]
+    console.log(`Base tiles: ${tiles.length}`);
+
+    // US tiles (Uncharted Space) - these contain tiles for DS
+    // Include when either US is enabled OR when dsOnly is enabled (to get DS tiles)
+    const shouldIncludeUSTiles = (expansionsEnabled.us || expansionsEnabled.dsOnly) && 
+                                  expansionsEnabled.ds && 
+                                  discordantStarsJSON?.tiles?.[category];
+    
+    const usTiles = shouldIncludeUSTiles
+      ? (Array.isArray(discordantStarsJSON.tiles[category])
+          ? discordantStarsJSON.tiles[category]
+          : [])
           .filter(tile => !bannedComponents.has(tile.id || tile.name))
       : [];
 
-    return [...factionComponents, ...dsComponents, ...tiles, ...usTiles];
+    console.log(`US tiles: ${usTiles.length}`);
+
+    const totalComponents = [...factionComponents, ...dsComponents, ...tiles, ...usTiles];
+    console.log(`Total components for ${category}: ${totalComponents.length}`);
+    
+    return totalComponents;
   }, [bannedFactions, bannedComponents, expansionsEnabled]);
 
   // PERFORMANCE: useCallback for createBagsWithUniqueDistribution
@@ -248,6 +309,16 @@ export default function DraftSimulator({ onNavigate }) {
     
     categories.forEach(category => {
       const allComponents = getFilteredComponents(category);
+      
+      // Skip categories with no components
+      if (allComponents.length === 0) {
+        console.log(`Skipping ${category} - no components available`);
+        bags.forEach(bag => {
+          bag[category] = [];
+        });
+        return;
+      }
+      
       const bagSize = draftLimits[category];
       
       let distributionPool = [];
@@ -732,13 +803,11 @@ setTimeout(() => {
               }
 
               const extraComponent = {
-                id: extra.name.toLowerCase().replace(/\s+/g, '_'),
-                name: extra.name,
-                faction: extra.faction,
-                description: `Gained from ${component.name}`,
-                isExtra: true,
-                triggerComponent: component.name
-              };
+  ...extra,                          // copy all original fields
+  isExtra: true,                     // mark as extra
+  triggerComponent: component.name,  // reference the source
+  description: extra.description || `Gained from ${component.name}` // fallback
+};
 
               if (!newFaction[targetCategory]) {
                 newFaction[targetCategory] = [];
@@ -776,35 +845,50 @@ setTimeout(() => {
   }, [draftVariant]);
 
   const handleSwap = (playerIndex, swapCategory, componentIndex, swapOption, triggerComponent) => {
-    if (!swapOption) return;
+  if (!swapOption) return;
 
-    const fc = [...factions];
-    
-    const swapComponent = {
-      id: swapOption.name.toLowerCase().replace(/\s+/g, '_'),
-      name: swapOption.name,
-      faction: swapOption.faction,
-      description: `Swapped from ${triggerComponent.name}`,
-      isSwap: true,
-      originalComponent: triggerComponent.name,
-      triggerComponent: triggerComponent.name
-    };
+  const fc = [...factions];
 
-    if (!fc[playerIndex][swapCategory]) {
-      fc[playerIndex][swapCategory] = [];
-    }
-    fc[playerIndex][swapCategory].push(swapComponent);
-    setFactions(fc);
+  // 🔍 Find full component data from processed faction data
+  const allFactions = [...factionsJSON.factions, ...(discordantStarsJSON?.factions || [])];
+  const factionData = allFactions.find(f => f.name === swapOption.faction);
 
-    setDraftHistory(prev => [...prev, {
-      playerIndex,
-      category: swapCategory,
-      item: swapComponent,
-      round: "SWAP",
-      componentId: swapComponent.id,
-      action: `Swapped for ${swapComponent.name} (triggered by ${triggerComponent.name})`
-    }]);
+  if (!factionData) {
+    console.warn("Faction not found for swap:", swapOption.faction);
+    return;
+  }
+
+  const fullComponent = (factionData[swapCategory] || []).find(c => c.name === swapOption.name);
+
+  if (!fullComponent) {
+    console.warn("Component not found in faction data:", swapOption.name);
+    return;
+  }
+
+  const swapComponent = {
+    ...fullComponent,
+    faction: swapOption.faction,
+    factionIcon: factionData.icon,
+    isSwap: true,
+    originalComponent: triggerComponent.name,
+    triggerComponent: triggerComponent.name
   };
+
+  // 🧠 THE ACTUAL SWAP (replace, not add)
+  fc[playerIndex][swapCategory][componentIndex] = swapComponent;
+
+  setFactions(fc);
+
+  setDraftHistory(prev => [...prev, {
+    playerIndex,
+    category: swapCategory,
+    item: swapComponent,
+    round: "SWAP",
+    componentId: swapComponent.id || swapComponent.name,
+    action: `Swapped ${triggerComponent.name} → ${swapComponent.name}`
+  }]);
+};
+
 
  const handleReduction = (playerIndex, category, componentIndex) => {
   console.log("=== HANDLE REDUCTION CALLED ===");
@@ -1147,6 +1231,22 @@ setTimeout(() => {
             </label>
             <div className="text-xs text-gray-200 ml-6 mb-2">
               Adds: The Firmament and The Obsidian to the draft. (disabled by default)
+            </div>
+
+            <label className="flex items-center cursor-pointer mb-2">
+              <input
+                type="checkbox"
+                checked={expansionsEnabled.dsOnly}
+                disabled={!expansionsEnabled.ds}
+                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, dsOnly: e.target.checked }))}
+                className="mr-2"
+              />
+              <span className={`font-medium text-sm ${!expansionsEnabled.ds ? 'text-gray-500' : 'text-white'}`}>
+                Discordant Stars Only Mode
+              </span>
+            </label>
+            <div className="text-xs text-gray-200 ml-6 mb-2">
+              Removes all base game factions and tiles, using only Discordant Stars content. (Requires DS to be enabled)
             </div>
           </div>
 

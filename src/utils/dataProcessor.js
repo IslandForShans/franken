@@ -106,7 +106,7 @@ export const ICON_MAP = {
     "The Savages of Cymiae": `${ICON_PATH}ds/Cymiae.png`,
     "The Shipwrights of Axis": `${ICON_PATH}ds/Axis.png`,
     "The Tnelis Syndicate": `${ICON_PATH}ds/Tnelis.png`,
-    "The Vayden Banking Clans": `${ICON_PATH}ds/Vayden.png`,
+    "The Vaden Banking Clans": `${ICON_PATH}ds/Vaden.png`,
     "The Veldyr Sovereignty": `${ICON_PATH}ds/Veldyr.png`,
     "The Vaylerian Scourge": `${ICON_PATH}ds/Vaylerian.png`,
     "The Zealots of Rhodun": `${ICON_PATH}ds/Zealots.png`,

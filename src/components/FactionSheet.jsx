@@ -18,6 +18,9 @@ export default function FactionSheet({
   const [swapModalOpen, setSwapModalOpen] = useState(false);
   const [swapOptions, setSwapOptions] = useState([]);
   const [swapTarget, setSwapTarget] = useState(null);
+  const [swapSelectionStep, setSwapSelectionStep] = useState("chooseSwap"); 
+  const [selectedSwapOption, setSelectedSwapOption] = useState(null);
+  const [resolvedSwaps, setResolvedSwaps] = useState(new Set());
 
   const getId = (item) => item?.id ?? item?.name ?? JSON.stringify(item);
 
@@ -43,15 +46,29 @@ export default function FactionSheet({
   };
 
   const getCategoryStatus = (category) => {
-    const items = drafted[category] || [];
-    const rawLimit = draftLimits[category];
-const isUnlimited = rawLimit === undefined;
+  const items = drafted[category] || [];
 
-const limit = isUnlimited ? Infinity : rawLimit;
-const excess = isUnlimited ? 0 : Math.max(0, items.length - limit);
+  if (!showReductionHelper) {
+    return {
+      items,
+      limit: Infinity,
+      excess: 0,
+      needsReduction: false
+    };
+  }
 
-return { items, limit, excess, needsReduction: !isUnlimited && excess > 0 };
-  };
+  const rawLimit = draftLimits[category];
+  const isUnlimited = rawLimit === undefined;
+  const limit = isUnlimited ? Infinity : rawLimit;
+  const excess = isUnlimited ? 0 : Math.max(0, items.length - limit);
+
+  return { items, limit, excess, needsReduction: !isUnlimited && excess > 0 };
+};
+
+
+  const getSwapKey = (swap, trigger) =>
+  `${trigger.name}|${trigger.faction}|${swap.name}|${swap.category}`;
+
 
   const getAvailableSwapsForCategory = (category) => {
   const swaps = [];
@@ -80,10 +97,14 @@ return { items, limit, excess, needsReduction: !isUnlimited && excess > 0 };
       
       triggeredSwaps.forEach(swap => {
         if (swap.category === category) {
-          swaps.push({
-            ...swap,
-            triggerComponent: item
-          });
+          const key = getSwapKey(swap, item);
+if (!resolvedSwaps.has(key)) {
+  swaps.push({
+    ...swap,
+    triggerComponent: item,
+    swapKey: key
+  });
+}
         }
       });
     });
@@ -109,24 +130,46 @@ return { items, limit, excess, needsReduction: !isUnlimited && excess > 0 };
   };
 
   const handleSwap = (category, index) => {
-    const component = drafted[category][index];
-    const availableSwaps = getSwapOptionsForTrigger(component.name, component.faction);
-    
-    if (availableSwaps.length > 0) {
-      setSwapOptions(availableSwaps);
-      setSwapTarget({ category, index, component });
-      setSwapModalOpen(true);
-    }
-  };
+  const component = drafted[category][index];
+  const availableSwaps = getSwapOptionsForTrigger(component.name, component.faction);
+  
+  if (availableSwaps.length > 0) {
+    setSwapOptions(availableSwaps);
+    setSwapTarget({ category, index, component });
+    setSwapSelectionStep("chooseSwap");
+    setSelectedSwapOption(null);
+    setSwapModalOpen(true);
+  }
+};
 
   const confirmSwap = (swapOption) => {
-    if (swapTarget && onSwapComponent && playerIndex !== null) {
-      onSwapComponent(playerIndex, swapOption.category, 0, swapOption, swapTarget.component);
-    }
-    setSwapModalOpen(false);
-    setSwapOptions([]);
-    setSwapTarget(null);
-  };
+  setSelectedSwapOption(swapOption);
+  setSwapSelectionStep("chooseReplace");
+};
+
+const confirmReplacement = (replaceIndex) => {
+  if (!swapTarget || !selectedSwapOption) return;
+
+  onSwapComponent(
+    playerIndex,
+    swapTarget.category,
+    replaceIndex,
+    selectedSwapOption,
+    swapTarget.component
+  );
+
+  setResolvedSwaps(prev => new Set(prev).add(
+  getSwapKey(selectedSwapOption, swapTarget.component)
+));
+
+
+  setSwapModalOpen(false);
+  setSwapOptions([]);
+  setSwapTarget(null);
+  setSelectedSwapOption(null);
+  setSwapSelectionStep("chooseSwap");
+};
+
 
   let categories = [
     { key: 'abilities', col: 1 },
@@ -406,16 +449,21 @@ return { items, limit, excess, needsReduction: !isUnlimited && excess > 0 };
                               </div>
                             </div>
                             <button
-                              onClick={() => {
-                                if (onSwapComponent && playerIndex !== null) {
-                                  onSwapComponent(playerIndex, swap.category, 0, swap, swap.triggerComponent);
-                                }
-                              }}
-                              className="btn btn-primary btn-sm"
-                              style={{flexShrink: 0}}
-                            >
-                              ADD
-                            </button>
+  onClick={() => {
+    setSwapOptions([swap]);
+    setSwapTarget({
+      category: swap.category,
+      index: drafted[swap.category]?.findIndex(
+        c => c.name === swap.triggerComponent.name && c.faction === swap.triggerComponent.faction
+      ),
+      component: swap.triggerComponent
+    });
+    setSwapModalOpen(true);
+  }}
+  className="btn btn-primary btn-sm"
+>
+  SWAP
+</button>
                           </div>
                         </div>
                       ))}
@@ -438,48 +486,89 @@ return { items, limit, excess, needsReduction: !isUnlimited && excess > 0 };
       </div>
 
       {/* Swap Modal */}
-      {swapModalOpen && swapTarget && (
-        <div className="swap-modal-overlay">
-          <div className="swap-modal-content">
-            <h3 className="swap-modal-title">
-              SWAP OPTIONS FOR {swapTarget.component.name?.toUpperCase()}
-            </h3>
-            
-            <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
-              {swapOptions.map((option, idx) => (
-                <div key={idx} className="swap-option">
-                  <div className="swap-option-header">
-                    <div>
-                      <div className="swap-option-name">{option.name}</div>
-                      <div className="swap-option-category">{option.category.replace('_', ' ')}</div>
-                      <div className="swap-option-faction">{option.faction}</div>
-                    </div>
-                    <button
-                      onClick={() => confirmSwap(option)}
-                      className="btn btn-primary"
-                    >
-                      SWAP
-                    </button>
+{swapModalOpen && swapTarget && (
+  <div className="swap-modal-overlay">
+    <div className="swap-modal-content">
+
+      {swapSelectionStep === "chooseSwap" && (
+        <>
+          <h3 className="swap-modal-title">CHOOSE COMPONENT TO GAIN</h3>
+          <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+            {swapOptions.map((option, idx) => (
+              <div key={idx} className="swap-option">
+                <div className="swap-option-header">
+                  <div>
+                    <div className="swap-option-name">{option.name}</div>
+                    <div className="swap-option-category">{option.category.replace('_', ' ')}</div>
+                    <div className="swap-option-faction">{option.faction}</div>
                   </div>
+                  <button onClick={() => confirmSwap(option)} className="btn btn-primary">
+                    SELECT
+                  </button>
                 </div>
-              ))}
-            </div>
-            
-            <div className="swap-modal-footer">
-              <button
-                onClick={() => {
-                  setSwapModalOpen(false);
-                  setSwapOptions([]);
-                  setSwapTarget(null);
-                }}
-                className="btn btn-secondary"
-              >
-                CANCEL
-              </button>
-            </div>
+              </div>
+            ))}
           </div>
-        </div>
+        </>
       )}
+
+      {swapSelectionStep === "chooseReplace" && selectedSwapOption && (
+        <>
+          <h3 className="swap-modal-title">
+            REPLACE WHICH {swapTarget.category.replace('_', ' ').toUpperCase()}?
+          </h3>
+          <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+            {(drafted[swapTarget.category] || []).map((comp, idx) => (
+              <div key={idx} className="swap-option">
+                <div className="swap-option-header">
+                  <div>
+                    <div className="swap-option-name">{comp.name}</div>
+                    <div className="swap-option-faction">{comp.faction}</div>
+                  </div>
+                  <button onClick={() => confirmReplacement(idx)} className="btn btn-danger">
+                    REPLACE
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      <div className="swap-modal-footer">
+  <button
+    onClick={() => {
+      if (swapTarget && swapOptions.length > 0) {
+        const key = getSwapKey(swapOptions[0], swapTarget.component);
+        setResolvedSwaps(prev => new Set(prev).add(key));
+      }
+      setSwapModalOpen(false);
+      setSwapOptions([]);
+      setSwapTarget(null);
+      setSelectedSwapOption(null);
+      setSwapSelectionStep("chooseSwap");
+    }}
+    className="btn btn-warning"
+  >
+    REFUSE SWAP
+  </button>
+
+  <button
+    onClick={() => {
+      setSwapModalOpen(false);
+      setSwapOptions([]);
+      setSwapTarget(null);
+      setSelectedSwapOption(null);
+      setSwapSelectionStep("chooseSwap");
+    }}
+    className="btn btn-secondary"
+  >
+    CANCEL
+  </button>
+</div>
+    </div>
+  </div>
+)}
     </div>
   );
 

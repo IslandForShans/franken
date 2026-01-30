@@ -20,24 +20,23 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 
 ## Key Features
 
-- Real-time multiplayer via Firebase (unavailable)
+- Filter by expansion! PoK, TE, DS, US
+- DS Only mode!
 - Faction theorycrafting mode!
 - Export Built faction to either json (for whatever reason) or text file for easy reading!
 - Draft history tracking!
-- Component search and filtering!
+- Component search!
 - Tile resource/influence calculations!
 - Export all factions into one text file for easy reading/printing!
 
 ## Adding/Fixing soon
 
 ### High Priority
-- Add Thunders Edge stuff once Luminous works out how to implement into franken. (Logic is out, added skeleton for button, just need to add the factions, all bt's, and tiles.)
+- Fix added components not showing component info on faction sheet.
+- Add Blue Reverie factions. (Will only be the original 6, not the three new ones.)
 
 ### Low Priority
 - Create FrankenDraz mode option
-- Adding DS as an optional/standalone (in progress)
-- Adding US as an optional/standalone (in progress)
-- Make expansion content able to be separated.
 - Creating custom Non-Draft Components
 - Make draft actually start with local multiayer
 
