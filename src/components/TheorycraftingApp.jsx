@@ -59,6 +59,8 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [globalSearchTerm, setGlobalSearchTerm] = useState("");
   const [dsOnlyMode, setDsOnlyMode] = useState(false);
   const [dsAddMode, setDsAddMode] = useState(false);
+  const [factionFilterOpen, setFactionFilterOpen] = useState(false);
+  const [visibleFactions, setVisibleFactions] = useState(new Set());
   const headerRef = useRef(null);
 
   // Hover preview state for component popups
@@ -519,6 +521,19 @@ export default function TheorycraftingApp({ onNavigate }) {
     return () => window.removeEventListener('resize', setHeaderHeightVar);
   }, []);
 
+  const toggleFactionVisibility = (name) => {
+  setVisibleFactions(prev => {
+    const next = new Set(prev);
+    if (next.has(name)) next.delete(name);
+    else next.add(name);
+    return next;
+  });
+};
+
+const clearFactionFilter = () => {
+  setVisibleFactions(new Set());
+};
+
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="h-full flex">
@@ -674,6 +689,14 @@ export default function TheorycraftingApp({ onNavigate }) {
                 </div>
               )}
             </div>
+
+            <button
+  onClick={() => setFactionFilterOpen(true)}
+  className="w-full mt-3 px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm"
+>
+  Filter Factions
+</button>
+
           </div>
 
           <div className="sidebar-content">
@@ -733,7 +756,11 @@ export default function TheorycraftingApp({ onNavigate }) {
                   // Apply global search filter
                   all = filterComponentsBySearch(all, globalSearchTerm);
 
-                  components[cat] = all;
+                  if (visibleFactions.size > 0) {
+  all = all.filter(c => !c.faction || visibleFactions.has(c.faction));
+}
+
+components[cat] = all;
                 });
 
                 return components;
@@ -1002,6 +1029,49 @@ export default function TheorycraftingApp({ onNavigate }) {
           </div>
         </div>
       </div>
+
+      {factionFilterOpen && createPortal(
+  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[99999]">
+    <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 w-[400px] max-h-[80vh] overflow-y-auto">
+      <h2 className="text-lg font-bold text-yellow-400 mb-3">Show Factions</h2>
+
+      <div className="space-y-2">
+        {getAllFactionsList().map(f => {
+          const isActive = visibleFactions.has(f.name);
+          return (
+            <label key={f.name + f.source} className="flex items-center gap-2 cursor-pointer text-sm">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={() => toggleFactionVisibility(f.name)}
+              />
+              <span className="text-white">
+                {f.name} {f.source === "DS" ? "(DS)" : ""}
+              </span>
+            </label>
+          );
+        })}
+      </div>
+
+      <div className="flex justify-between mt-4">
+        <button
+          onClick={clearFactionFilter}
+          className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-sm"
+        >
+          Clear Filter
+        </button>
+        <button
+          onClick={() => setFactionFilterOpen(false)}
+          className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </div>,
+  document.body
+)}
+
 
       {/* Hover Preview Popup */}
       {hoveredComponent && supportsHover &&
