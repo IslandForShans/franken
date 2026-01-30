@@ -22,6 +22,8 @@ export default function Sidebar({
   draftVariant = "franken"
 }) {
   const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
+  const [showAllComponents, setShowAllComponents] = useState(false);
+
 
   // Hover preview state
   const [hoveredComponent, setHoveredComponent] = useState(null);
@@ -64,205 +66,180 @@ export default function Sidebar({
   };
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        <h2 className="sidebar-title">Draft Categories</h2>
-        <div className="sidebar-subtitle">
-          Click categories to view available components
-        </div>
-      </div>
-
-      <div className="sidebar-content">
-        {categories.map((cat) => {
-          const progress = playerProgress[cat] || 0;
-          const limit = draftLimits[cat] || 0;
-          const isExpanded = expandedCategory === cat;
-          const components = availableComponents[cat] || [];
-          const canPick = progress < limit;
-
-          return (
-            <div key={cat} className="sidebar-category">
-              <button
-                className={`sidebar-category-button ${
-                  isExpanded ? "sidebar-category-button-expanded" : ""
-                }`}
-                onClick={() => handleCategoryClick(cat)}
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="font-medium">
-                      {formatCategoryName(cat)}
-                    </div>
-                    <div className="text-sm">
-                      {progress}/{limit} selected
-                    </div>
-                  </div>
-                  <div>{isExpanded ? "▲" : "▼"}</div>
-                </div>
-              </button>
-
-              {isExpanded && (
-                <div className="sidebar-category-content">
-                  <div className="p-2">
-                    {components.map((component, idx) => {
-  const isDisabled = !canPick;
-
-  return (
-    <div
-      key={component.id || component.name || idx}
-      className={`sidebar-component-item ${
-        isDisabled ? "sidebar-component-item-disabled" : ""
-      }`}
-      onClick={() => !isDisabled && handleComponentClick(cat, component)}
-      onMouseEnter={(e) => {
-        if (!supportsHover) return;
-
-        const rect = e.currentTarget.getBoundingClientRect();
-        const pos = clampToViewport(rect.right + 12, rect.top);
-
-        hoverTimeoutRef.current = setTimeout(() => {
-          setHoverPosition(pos);
-          setHoveredComponent({ component, category: cat });
-        }, 150);
-      }}
-      onMouseLeave={() => {
-        if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-        setHoveredComponent(null);
-      }}
-    >
-      <div className="flex items-center gap-2 font-medium">
-        {/* ===== COMPONENT ICON ===== */}
-        {component.factionIcon ? (
-          <img
-            src={component.factionIcon}
-            alt={component.faction}
-            className="w-5 h-5 rounded-full"
-          />
-        ) : null}
-
-        <span>{component.name}</span>
-
-        {/* ===== TILE PLANET TRAIT + TECH SPECIALTY ICONS ===== */}
-{(cat === "red_tiles" || cat === "blue_tiles") &&
-  Array.isArray(component.planets) &&
-  component.planets.flatMap((planet, pIdx) => {
-    const traitIcons = Array.isArray(planet.trait_icons)
-      ? planet.trait_icons.map((icon, iIdx) => (
-          <img
-            key={`trait-${pIdx}-${iIdx}`}
-            src={icon}
-            alt="planet trait"
-            title="Planet Trait"
-            className="w-4 h-4"
-          />
-        ))
-      : [];
-
-    const techIcons = Array.isArray(planet.tech_specialty_icons)
-      ? planet.tech_specialty_icons.map((icon, iIdx) => (
-          <img
-            key={`tech-${pIdx}-${iIdx}`}
-            src={icon}
-            alt="tech specialty"
-            title="Tech Specialty"
-            className="w-4 h-4"
-          />
-        ))
-      : [];
-
-    return [...traitIcons, ...techIcons];
-  })}
-
-  {/* ===== TILE WORMHOLE ICON ===== */}
-{(cat === "red_tiles" || cat === "blue_tiles") &&
-  component.wormhole_icon && (
-    <img
-      src={component.wormhole_icon}
-      alt="wormhole"
-      title="Wormhole"
-      className="w-4 h-4"
-    />
-)}
-
-{/* ===== TILE ANOMALY ICONS ===== */}
-{(cat === "red_tiles" || cat === "blue_tiles") &&
-  Array.isArray(component.anomaly_icons) &&
-  component.anomaly_icons.map((icon, i) => (
-    <img
-      key={`anomaly-${i}`}
-      src={icon}
-      alt="anomaly"
-      title="Anomaly"
-      className="w-4 h-4"
-    />
-  ))}
-
-        {/* ===== FACTION TECH PREREQ ICONS ===== */}
-        {cat === "faction_techs" &&
-          Array.isArray(component.prerequisites) &&
-          component.prerequisites.map((p, i) => {
-            const color = typeof p === "string" ? p : p.tech_type || p.color || "";
-            const key = color.toLowerCase();
-            const icon = TECH_ICONS[key];
-            if (!icon) return null;
-
-            return (
-              <img
-                key={i}
-                src={icon}
-                alt={`${color} tech`}
-                title={`${color} tech`}
-                className="w-4 h-4"
-              />
-            );
-          })}
-
-        {/* ===== BREAKTHROUGH SYNERGY ICONS ===== */}
-        {cat === "breakthrough" &&
-          Array.isArray(component.synergy) &&
-          component.synergy.map((syn, i) => {
-            const primaryKey = syn.primary?.toLowerCase();
-            const secondaryKey = syn.secondary?.toLowerCase();
-            const primaryIcon = TECH_ICONS[primaryKey];
-            const secondaryIcon = TECH_ICONS[secondaryKey];
-            
-            if (!primaryIcon || !secondaryIcon) return null;
-
-            return (
-              <div key={i} className="flex items-center gap-1">
-                <img
-                  src={primaryIcon}
-                  alt={`${syn.primary} tech`}
-                  title={`${syn.primary} tech`}
-                  className="w-4 h-4"
-                />
-                <img
-                  src="./icons/synergy-symbol.png"
-                  alt="synergy"
-                  title="synergy"
-                  className="w-3 h-3"
-                />
-                <img
-                  src={secondaryIcon}
-                  alt={`${syn.secondary} tech`}
-                  title={`${syn.secondary} tech`}
-                  className="w-4 h-4"
-                />
-              </div>
-            );
-          })}
+  <div className="sidebar">
+    <div className="sidebar-header">
+      <h2 className="sidebar-title">Draft Categories</h2>
+      <div className="sidebar-subtitle">
+        Hover over components to view details!
       </div>
     </div>
-  );
-})}
 
-                  </div>
-                </div>
-              )}
+    <div className="sidebar-content">
+      {Object.keys(availableComponents).flatMap((cat) => {
+        const components = availableComponents[cat] || [];
+        const progress = playerProgress[cat] || 0;
+        const limit = draftLimits[cat] || 0;
+        const canPick = progress < limit;
+
+        return components.flatMap((component, idx) => {
+          const isDisabled = !canPick;
+
+          return [
+            // Category header above first component
+            idx === 0 && (
+              <div
+                key={`header-${cat}`}
+                className="sidebar-category-header text-sm font-bold mb-1 mt-2 px-2 text-yellow-400"
+              >
+                {formatCategoryName(cat)}
+              </div>
+            ),
+
+            <div
+              key={component.id || component.name || idx}
+              className={`sidebar-component-item ${
+                isDisabled ? "sidebar-component-item-disabled" : ""
+              }`}
+              onClick={() => !isDisabled && handleComponentClick(cat, component)}
+              onMouseEnter={(e) => {
+                if (!supportsHover) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const pos = clampToViewport(rect.right + 12, rect.top);
+
+                hoverTimeoutRef.current = setTimeout(() => {
+                  setHoverPosition(pos);
+                  setHoveredComponent({ component, category: cat });
+                }, 150);
+              }}
+              onMouseLeave={() => {
+                if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+                setHoveredComponent(null);
+              }}
+            >
+              <div className="flex items-center gap-2 font-medium">
+                {component.factionIcon && (
+                  <img
+                    src={component.factionIcon}
+                    alt={component.faction}
+                    className="w-5 h-5 rounded-full"
+                  />
+                )}
+                <span>{component.name}</span>
+
+                {/* ===== TILE PLANET TRAIT + TECH SPECIALTY ICONS ===== */}
+                {(cat === "red_tiles" || cat === "blue_tiles") &&
+                  Array.isArray(component.planets) &&
+                  component.planets.flatMap((planet, pIdx) => {
+                    const traitIcons = Array.isArray(planet.trait_icons)
+                      ? planet.trait_icons.map((icon, iIdx) => (
+                          <img
+                            key={`trait-${pIdx}-${iIdx}`}
+                            src={icon}
+                            alt="planet trait"
+                            title="Planet Trait"
+                            className="w-4 h-4"
+                          />
+                        ))
+                      : [];
+
+                    const techIcons = Array.isArray(planet.tech_specialty_icons)
+                      ? planet.tech_specialty_icons.map((icon, iIdx) => (
+                          <img
+                            key={`tech-${pIdx}-${iIdx}`}
+                            src={icon}
+                            alt="tech specialty"
+                            title="Tech Specialty"
+                            className="w-4 h-4"
+                          />
+                        ))
+                      : [];
+
+                    return [...traitIcons, ...techIcons];
+                  })}
+
+                {(cat === "red_tiles" || cat === "blue_tiles") &&
+                  component.wormhole_icon && (
+                    <img
+                      src={component.wormhole_icon}
+                      alt="wormhole"
+                      title="Wormhole"
+                      className="w-4 h-4"
+                    />
+                  )}
+
+                {(cat === "red_tiles" || cat === "blue_tiles") &&
+                  Array.isArray(component.anomaly_icons) &&
+                  component.anomaly_icons.map((icon, i) => (
+                    <img
+                      key={`anomaly-${i}`}
+                      src={icon}
+                      alt="anomaly"
+                      title="Anomaly"
+                      className="w-4 h-4"
+                    />
+                  ))}
+
+                {cat === "faction_techs" &&
+                  Array.isArray(component.prerequisites) &&
+                  component.prerequisites.map((p, i) => {
+                    const color =
+                      typeof p === "string"
+                        ? p
+                        : p.tech_type || p.color || "";
+                    const key = color.toLowerCase();
+                    const icon = TECH_ICONS[key];
+                    if (!icon) return null;
+
+                    return (
+                      <img
+                        key={i}
+                        src={icon}
+                        alt={`${color} tech`}
+                        title={`${color} tech`}
+                        className="w-4 h-4"
+                      />
+                    );
+                  })}
+
+                {cat === "breakthrough" &&
+                  Array.isArray(component.synergy) &&
+                  component.synergy.map((syn, i) => {
+                    const primaryKey = syn.primary?.toLowerCase();
+                    const secondaryKey = syn.secondary?.toLowerCase();
+                    const primaryIcon = TECH_ICONS[primaryKey];
+                    const secondaryIcon = TECH_ICONS[secondaryKey];
+
+                    if (!primaryIcon || !secondaryIcon) return null;
+
+                    return (
+                      <div key={i} className="flex items-center gap-1">
+                        <img
+                          src={primaryIcon}
+                          alt={`${syn.primary} tech`}
+                          title={`${syn.primary} tech`}
+                          className="w-4 h-4"
+                        />
+                        <img
+                          src="./icons/synergy-symbol.png"
+                          alt="synergy"
+                          title="synergy"
+                          className="w-3 h-3"
+                        />
+                        <img
+                          src={secondaryIcon}
+                          alt={`${syn.secondary} tech`}
+                          title={`${syn.secondary} tech`}
+                          className="w-4 h-4"
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
-          );
-        })}
-      </div>
+          ];
+        });
+      })}
+    </div>
 
       {/* === Hover Preview (Portal) === */}
       {hoveredComponent &&

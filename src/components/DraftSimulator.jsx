@@ -1220,90 +1220,129 @@ setTimeout(() => {
     <div>
       {!multiplayerEnabled && !draftStarted && (
         <>
-          <div className="mb-3 p-3 bg-gray-900/50 rounded-lg border border-gray-700">
-            <h3 className="font-bold mb-2 text-yellow-400 text-sm">Expansions</h3>
-            
-            <label className="flex items-center cursor-pointer mb-2">
-              <input
-                type="checkbox"
-                checked={expansionsEnabled.pok}
-                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, pok: e.target.checked }))}
-                className="mr-2"
-              />
-              <span className="font-medium text-white text-sm">Prophecy of Kings</span>
-            </label>
-            <div className="text-xs text-gray-200 ml-6 mb-2">
-              Enables: 7 new factions, Agents, Commanders, Heroes, Mechs, and new tiles.
-            </div>
+          <div className="mb-3 p-4 bg-gray-900/70 rounded-lg border border-gray-700">
+  <h3 className="font-bold mb-4 text-yellow-400 text-sm">Expansions</h3>
 
-            <label className="flex items-center cursor-pointer mb-2">
-              <input
-                type="checkbox"
-                checked={expansionsEnabled.te}
-                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, te: e.target.checked }))}
-                className="mr-2"
-              />
-              <span className="font-medium text-white text-sm">Thunder's Edge</span>
-            </label>
-            <div className="text-xs text-gray-200 ml-6 mb-2">
-              Enables: 5 New factions, Breakthroughs, and new tiles. (No Firmament/Obsidian)
-            </div>
+  <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+    {/* Prophecy of Kings */}
+    <div>
+      <label className="flex items-center cursor-pointer mb-1">
+        <input
+          type="checkbox"
+          checked={expansionsEnabled.pok}
+          onChange={(e) =>
+            setExpansionsEnabled((prev) => ({ ...prev, pok: e.target.checked }))
+          }
+          className="mr-2"
+        />
+        <span className="font-medium text-white text-sm">Prophecy of Kings</span>
+      </label>
+      <div className="text-xs text-gray-200 ml-6">
+        Enables: 7 new factions, Agents, Commanders, Heroes, Mechs, and new tiles.
+      </div>
+    </div>
 
-            <label className="flex items-center cursor-pointer mb-2">
-              <input
-                type="checkbox"
-                checked={expansionsEnabled.ds}
-                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, ds: e.target.checked }))}
-                className="mr-2"
-              />
-              <span className="font-medium text-white text-sm">Discordant Stars (DS, Unfinished)</span>
-            </label>
-            <div className="text-xs text-gray-200 ml-6 mb-2">
-              Adds: 30 new factions with all components
-            </div>
+    {/* Thunder's Edge */}
+    <div>
+      <label className="flex items-center cursor-pointer mb-1">
+        <input
+          type="checkbox"
+          checked={expansionsEnabled.te}
+          onChange={(e) =>
+            setExpansionsEnabled((prev) => ({ ...prev, te: e.target.checked }))
+          }
+          className="mr-2"
+        />
+        <span className="font-medium text-white text-sm">Thunder's Edge</span>
+      </label>
+      <div className="text-xs text-gray-200 ml-6">
+        Enables: 5 new factions, Breakthroughs, and new tiles. (No Firmament/Obsidian)
+      </div>
+    </div>
 
-            <label className="flex items-center cursor-pointer mb-2">
-              <input
-                type="checkbox"
-                checked={expansionsEnabled.us}
-                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, us: e.target.checked }))}
-                className="mr-2"
-              />
-              <span className="font-medium text-white text-sm">Uncharted Space (US)</span>
-            </label>
-            <div className="text-xs text-gray-200 ml-6 mb-2">
-              Adds: Additional system tiles
-            </div>
+    {/* Discordant Stars */}
+    <div>
+      <label className="flex items-center cursor-pointer mb-1">
+        <input
+          type="checkbox"
+          checked={expansionsEnabled.ds}
+          onChange={(e) =>
+            setExpansionsEnabled((prev) => ({ ...prev, ds: e.target.checked }))
+          }
+          className="mr-2"
+        />
+        <span className="font-medium text-white text-sm">
+          Discordant Stars (DS, Unfinished)
+        </span>
+      </label>
+      <div className="text-xs text-gray-200 ml-6">
+        Adds: 30 new factions with all components
+      </div>
+    </div>
 
-            <label className="flex items-center cursor-pointer mb-2">
-              <input
-                type="checkbox"
-                checked={expansionsEnabled.firmobs}
-                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, firmobs: e.target.checked }))}
-                className="mr-2"
-              />
-              <span className="font-medium text-white text-sm">Add Firmament/Obsidian</span>
-            </label>
-            <div className="text-xs text-gray-200 ml-6 mb-2">
-              Adds: The Firmament and The Obsidian to the draft. (disabled by default)
-            </div>
+    {/* Uncharted Space */}
+    <div>
+      <label className="flex items-center cursor-pointer mb-1">
+        <input
+          type="checkbox"
+          checked={expansionsEnabled.us}
+          onChange={(e) =>
+            setExpansionsEnabled((prev) => ({ ...prev, us: e.target.checked }))
+          }
+          className="mr-2"
+        />
+        <span className="font-medium text-white text-sm">Uncharted Space (US)</span>
+      </label>
+      <div className="text-xs text-gray-200 ml-6">
+        Adds: Additional system tiles
+      </div>
+    </div>
 
-            <label className="flex items-center cursor-pointer mb-2">
-              <input
-                type="checkbox"
-                checked={expansionsEnabled.dsOnly}
-                disabled={!expansionsEnabled.ds}
-                onChange={(e) => setExpansionsEnabled(prev => ({ ...prev, dsOnly: e.target.checked }))}
-                className="mr-2"
-              />
-              <span className={`font-medium text-sm ${!expansionsEnabled.ds ? 'text-gray-500' : 'text-white'}`}>
-                Discordant Stars Only Mode
-              </span>
-            </label>
-            <div className="text-xs text-gray-200 ml-6 mb-2">
-              Removes all base game factions and tiles, using only Discordant Stars content. (Requires DS to be enabled)
-            </div>
-          </div>
+    {/* Firmament/Obsidian */}
+    <div>
+      <label className="flex items-center cursor-pointer mb-1">
+        <input
+          type="checkbox"
+          checked={expansionsEnabled.firmobs}
+          onChange={(e) =>
+            setExpansionsEnabled((prev) => ({ ...prev, firmobs: e.target.checked }))
+          }
+          className="mr-2"
+        />
+        <span className="font-medium text-white text-sm">Add Firmament/Obsidian</span>
+      </label>
+      <div className="text-xs text-gray-200 ml-6">
+        Adds: The Firmament and The Obsidian to the draft. (disabled by default)
+      </div>
+    </div>
+
+    {/* Discordant Stars Only Mode */}
+    <div>
+      <label className="flex items-center cursor-pointer mb-1">
+        <input
+          type="checkbox"
+          checked={expansionsEnabled.dsOnly}
+          disabled={!expansionsEnabled.ds}
+          onChange={(e) =>
+            setExpansionsEnabled((prev) => ({ ...prev, dsOnly: e.target.checked }))
+          }
+          className="mr-2"
+        />
+        <span
+          className={`font-medium text-sm ${
+            !expansionsEnabled.ds ? "text-gray-500" : "text-white"
+          }`}
+        >
+          Discordant Stars Only Mode
+        </span>
+      </label>
+      <div className="text-xs text-gray-200 ml-6">
+        Removes all base game factions and tiles, using only Discordant Stars content. (Requires DS to be enabled)
+      </div>
+    </div>
+  </div>
+</div>
+
 
           <DraftSettingsPanel
             playerCount={playerCount}
