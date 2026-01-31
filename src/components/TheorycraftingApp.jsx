@@ -314,20 +314,24 @@ export default function TheorycraftingApp({ onNavigate }) {
 
   const handleToggleDsOnlyMode = () => {
     const newValue = !dsOnlyMode;
+    console.log('DS Only Mode toggled:', newValue, 'dsAddMode:', dsAddMode);
     setDsOnlyMode(newValue);
     
     // If enabling DS Only, disable DS Add
     if (newValue && dsAddMode) {
+      console.log('Disabling DS Add Mode');
       setDsAddMode(false);
     }
   };
 
   const handleToggleDsAddMode = () => {
     const newValue = !dsAddMode;
+    console.log('DS Add Mode toggled:', newValue, 'dsOnlyMode:', dsOnlyMode);
     setDsAddMode(newValue);
     
     // If enabling DS Add, disable DS Only
     if (newValue && dsOnlyMode) {
+      console.log('Disabling DS Only Mode');
       setDsOnlyMode(false);
     }
   };
@@ -499,11 +503,26 @@ export default function TheorycraftingApp({ onNavigate }) {
   };
 
   // Get combined faction list for dropdown
-  const getAllFactionsList = () => {
+  const getAllFactionsList = React.useCallback(() => {
     const baseFactions = factionsJSON.factions.map(f => ({ ...f, source: 'Base' }));
     const dsFactions = discordantStarsJSON.factions.map(f => ({ ...f, source: 'DS' }));
-    return [...baseFactions, ...dsFactions].sort((a, b) => a.name.localeCompare(b.name));
-  };
+    
+    // Apply filtering based on DS mode
+    let filteredFactions = [];
+    
+    if (dsOnlyMode) {
+      // DS Only mode: Show ONLY DS factions
+      filteredFactions = dsFactions;
+    } else if (dsAddMode) {
+      // DS Add mode: Show base + DS factions
+      filteredFactions = [...baseFactions, ...dsFactions];
+    } else {
+      // Default mode: Show only base factions
+      filteredFactions = baseFactions;
+    }
+    
+    return filteredFactions.sort((a, b) => a.name.localeCompare(b.name));
+  }, [dsOnlyMode, dsAddMode]);
 
   useEffect(() => {
     const setHeaderHeightVar = () => {
@@ -633,7 +652,7 @@ const clearFactionFilter = () => {
                   <span className="font-medium text-white text-sm">DS Only Mode</span>
                 </label>
                 <div className="text-xs text-gray-400 mb-3">
-                  {dsOnlyMode ? "Showing only non-DS components" : "Showing only DS + US components"}
+                  {dsOnlyMode ? "Showing only DS components" : "Show only Discordant Stars components"}
                 </div>
                 
                 <label className="flex items-center cursor-pointer">
@@ -646,7 +665,7 @@ const clearFactionFilter = () => {
                   <span className="font-medium text-white text-sm">Add DS Components</span>
                 </label>
                 <div className="text-xs text-gray-400">
-                  {dsAddMode ? "Showing Base+PoK+TE components only" : "Adding DS components to base game"}
+                  {dsAddMode ? "Adding DS components to base game" : "Add Discordant Stars to base game components"}
                 </div>
               </div>
             </div>
