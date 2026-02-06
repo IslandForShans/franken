@@ -250,7 +250,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     
     return components.filter(item => {
       const matchesName = item.name?.toLowerCase().includes(q);
-      const matchesDesc = item.description?.toLowerCase().includes(q);
+      const matchesDesc = String(item.description ?? "").toLowerCase().includes(q);
       const matchesFaction = item.faction?.toLowerCase().includes(q);
       
       // Handle tile-specific properties

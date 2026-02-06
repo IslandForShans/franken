@@ -183,10 +183,10 @@ const confirmReplacement = (replaceIndex) => {
     { key: 'starting_techs', col: 1 },
     { key: 'starting_fleet', col: 3 },
     { key: 'commodity_values', col: 2 },
-    { key: 'blue_tiles', col: 1 },
-    { key: 'red_tiles', col: 1 },
+    { key: 'breakthrough', col: 3 },
     { key: 'home_systems', col: 1 },
-    { key: 'breakthrough', col: 2 }
+    { key: 'blue_tiles', col: 2 },
+    { key: 'red_tiles', col: 3 },
   ];
 
   // Remove any categories the parent explicitly asked to hide (Theorycrafting will use this)
