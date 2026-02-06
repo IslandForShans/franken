@@ -111,6 +111,13 @@ export const ICON_MAP = {
     "The Vaylerian Scourge": `${ICON_PATH}ds/Vaylerian.png`,
     "The Zealots of Rhodun": `${ICON_PATH}ds/Zealots.png`,
     "The Zelian Purifier": `${ICON_PATH}ds/Zelian.png`,
+    //BR
+    "Atokera Legacy": `${ICON_PATH}br/Atokera.png`,
+    "Belkosea Allied States": `${ICON_PATH}br/Belkosea.png`,
+    "Pharad'n Order": `${ICON_PATH}br/Pharadn.png`,
+    "Qhet Republic": `${ICON_PATH}br/Qhet.png`,
+    "Toldar Concordat": `${ICON_PATH}br/Toldar.png`,
+    "Uydai Conclave": `${ICON_PATH}br/Uydai.png`
   }
 };
 

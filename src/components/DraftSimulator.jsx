@@ -53,6 +53,10 @@ const noFirmament = {
   factions: ["The Firmament", "The Obsidian"]
 };
 
+const brExclusions = {
+  factions: ["Atokera Legacy", "Belkosia Allied States", "Pharad'n Order", "Qhet Republic", "Tolder Concordat", "Uydai Conclave"]
+};
+
 export default function DraftSimulator({ onNavigate }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [playerCount, setPlayerCount] = useState(4);
@@ -95,7 +99,8 @@ export default function DraftSimulator({ onNavigate }) {
     ds: false,
     us: false,
     firmobs: false,
-    dsOnly: false
+    dsOnly: false,
+    br: false
   });
 
   // PERFORMANCE: Memoize active categories computation
@@ -221,7 +226,8 @@ export default function DraftSimulator({ onNavigate }) {
       dsOnly: expansionsEnabled.dsOnly,
       ds: expansionsEnabled.ds,
       pok: expansionsEnabled.pok,
-      te: expansionsEnabled.te
+      te: expansionsEnabled.te,
+      br: expansionsEnabled.br
     });
 
     // If DS Only mode is enabled, skip base game FACTIONS but still include all tiles
@@ -230,6 +236,7 @@ export default function DraftSimulator({ onNavigate }) {
       .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
       .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
       .filter(f => expansionsEnabled.firmobs || !noFirmament.factions.includes(f.name))
+      .filter(f => expansionsEnabled.br || !brExclusions.factions.includes(f.name))
       .flatMap(f => (f[category] || [])
         .filter(comp => !bannedComponents.has(comp.id || comp.name))
         .filter(comp => !isComponentUndraftable(comp.name, f.name))
@@ -1071,7 +1078,7 @@ setTimeout(() => {
             {draftVariant === "rotisserie" && " (One pick per turn)"}
         </div>
         <div className="text-xs text-blue-300">Variant: {draftVariant}</div>
-        <div className="text-xs text-gray-400">Bag {currentPlayer} of {playerBags.length} bags</div>
+        <div className="text-xs text-gray-400">Bag {currentPlayer + 1} of {playerBags.length} bags</div>
       
         {pendingPicks.length > 0 && (
             <div className="mt-2">
@@ -1338,6 +1345,26 @@ setTimeout(() => {
       </label>
       <div className="text-xs text-gray-200 ml-6">
         Removes all base game factions and tiles, using only Discordant Stars content. (Requires DS to be enabled)
+      </div>
+    </div>
+
+    {/* Blue Reverie */}
+    <div>
+      <label className="flex items-center cursor-pointer mb-1">
+        <input
+          type="checkbox"
+          checked={expansionsEnabled.br}
+          onChange={(e) =>
+            setExpansionsEnabled((prev) => ({ ...prev, br: e.target.checked }))
+          }
+          className="mr-2"
+        />
+        <span className="font-medium text-white text-sm">
+          Blue Reverie
+        </span>
+      </label>
+      <div className="text-xs text-gray-200 ml-6">
+        Adds: 6 New factions by the creator of DS
       </div>
     </div>
   </div>

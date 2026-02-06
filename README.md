@@ -32,8 +32,8 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 ## Adding/Fixing soon
 
 ### High Priority
-- Fix added components not showing component info on faction sheet.
-- Add Blue Reverie factions. (Will only be the original 6, not the three new ones.)
+- Make Faction Builder automatically handle swaps and adds
+- Make component preview on hover show any added/swapped components
 
 ### Low Priority
 - Create FrankenDraz mode option

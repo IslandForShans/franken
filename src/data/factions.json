@@ -4103,7 +4103,7 @@
         {
           "id": "rn_commodity",
           "name": "Commodities",
-          "value": 4
+          "description": 4
         }
       ],
       "home_systems": [
@@ -4254,7 +4254,7 @@
         {
           "id": "crimson_comms",
           "name": "Commodities",
-          "value": 2
+          "description": 2
         }
       ],
       "home_systems": [
@@ -4383,7 +4383,7 @@
         {
           "id": "firmament_comms",
           "name": "Commodities",
-          "value": 3
+          "description": 3
         }
       ],
       "home_systems": [
@@ -4530,7 +4530,7 @@
         {
           "id": "obsidian_comms",
           "name": "Commodities",
-          "value": 3
+          "description": 3
         }
       ],
       "home_systems": [

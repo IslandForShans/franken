@@ -31,6 +31,18 @@ const powerFactionLimits = {
   breakthrough: 2
 };
 
+const isBlueReverieFaction = (factionName) => {
+  const brFactions = [
+    "Atokera Legacy",
+    "Belkosea Allied States",
+    "Pharad'n Order",
+    "Qhet Republic",
+    "Toldar Concordat",
+    "Uydai Conclave"
+  ];
+  return brFactions.includes(factionName);
+};
+
 export default function TheorycraftingApp({ onNavigate }) {
   const [selectedFaction, setSelectedFaction] = useState("");
   const [customFaction, setCustomFaction] = useState({
@@ -59,6 +71,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [globalSearchTerm, setGlobalSearchTerm] = useState("");
   const [dsOnlyMode, setDsOnlyMode] = useState(false);
   const [dsAddMode, setDsAddMode] = useState(false);
+  const [brAddMode, setBrAddMode] = useState(false);
   const [factionFilterOpen, setFactionFilterOpen] = useState(false);
   const [visibleFactions, setVisibleFactions] = useState(new Set());
   const headerRef = useRef(null);
@@ -115,6 +128,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const getAllComponents = (category) => {
     let baseComponents = [];
     let dsComponents = [];
+    let brComponents = [];
 
     // Get base game components
     baseComponents = [
@@ -143,48 +157,84 @@ export default function TheorycraftingApp({ onNavigate }) {
       ...(factionsJSON.tiles[category] || [])
     ];
 
-    // Get Discordant Stars components
+    // Get Discordant Stars components (excluding Blue Reverie)
     dsComponents = [
-      ...(discordantStarsJSON.factions.flatMap(f =>
-        (f[category] || []).map(item => {
-          const isUnitUpgrade = item.tech_type === "Unit Upgrade";
+      ...(discordantStarsJSON.factions
+        .filter(f => !isBlueReverieFaction(f.name))
+        .flatMap(f =>
+          (f[category] || []).map(item => {
+            const isUnitUpgrade = item.tech_type === "Unit Upgrade";
 
-          return {
-            ...item,
-            faction: f.name,
-            factionIcon: f.icon,
-            isDiscordantStars: true,
+            return {
+              ...item,
+              faction: f.name,
+              factionIcon: f.icon,
+              isDiscordantStars: true,
 
-            // Make unit upgrades render like units
-            ...(isUnitUpgrade && {
-              unit: true,
-              stats: {
-                cost: item.cost,
-                combat: item.combat,
-                abilities: item.abilities,
-                description: item.description
-              }
-            })
-          };
-        })
-      )),
+              // Make unit upgrades render like units
+              ...(isUnitUpgrade && {
+                unit: true,
+                stats: {
+                  cost: item.cost,
+                  combat: item.combat,
+                  abilities: item.abilities,
+                  description: item.description
+                }
+              })
+            };
+          })
+        )),
       ...(discordantStarsJSON.tiles[category] || []).map(item => ({
         ...item,
         isDiscordantStars: true
       }))
     ];
 
+    // Get Blue Reverie components (from DS JSON)
+    brComponents = [
+      ...(discordantStarsJSON.factions
+        .filter(f => isBlueReverieFaction(f.name))
+        .flatMap(f =>
+          (f[category] || []).map(item => {
+            const isUnitUpgrade = item.tech_type === "Unit Upgrade";
+
+            return {
+              ...item,
+              faction: f.name,
+              factionIcon: f.icon,
+              isBlueReverie: true,
+
+              // Make unit upgrades render like units
+              ...(isUnitUpgrade && {
+                unit: true,
+                stats: {
+                  cost: item.cost,
+                  combat: item.combat,
+                  abilities: item.abilities,
+                  description: item.description
+                }
+              })
+            };
+          })
+        ))
+    ];
+
     // Combine based on mode
     let allComponents = [];
     if (dsOnlyMode) {
-      // Show ONLY DS components
+      // Show ONLY DS components (not BR)
       allComponents = dsComponents;
     } else if (dsAddMode) {
-      // Show base + DS components
+      // Show base + DS components (not BR)
       allComponents = [...baseComponents, ...dsComponents];
     } else {
       // Show only base components
       allComponents = baseComponents;
+    }
+
+    // Add Blue Reverie if enabled
+    if (brAddMode) {
+      allComponents = [...allComponents, ...brComponents];
     }
 
     return allComponents.sort((a, b) =>
@@ -247,7 +297,9 @@ export default function TheorycraftingApp({ onNavigate }) {
     // If not found, try Discordant Stars
     if (!faction) {
       faction = discordantStarsJSON.factions.find(f => f.name === factionName);
-      factionSource = "DS";
+      if (faction) {
+        factionSource = isBlueReverieFaction(faction.name) ? "BR" : "DS";
+      }
     }
     
     if (faction) {
@@ -334,6 +386,12 @@ export default function TheorycraftingApp({ onNavigate }) {
       console.log('Disabling DS Only Mode');
       setDsOnlyMode(false);
     }
+  };
+
+  const handleToggleBrAddMode = () => {
+    const newValue = !brAddMode;
+    console.log('BR Add Mode toggled:', newValue);
+    setBrAddMode(newValue);
   };
 
   const exportFaction = () => {
@@ -475,7 +533,7 @@ export default function TheorycraftingApp({ onNavigate }) {
 
   const getFactionTechsForSheet = () => {
     return (customFaction.faction_techs || []).map(ft => {
-      // Search in both base and DS factions
+      // Search in base and DS factions (includes BR)
       const original = [
         ...factionsJSON.factions.flatMap(f => f.faction_techs || []),
         ...discordantStarsJSON.factions.flatMap(f => f.faction_techs || [])
@@ -505,24 +563,34 @@ export default function TheorycraftingApp({ onNavigate }) {
   // Get combined faction list for dropdown
   const getAllFactionsList = React.useCallback(() => {
     const baseFactions = factionsJSON.factions.map(f => ({ ...f, source: 'Base' }));
-    const dsFactions = discordantStarsJSON.factions.map(f => ({ ...f, source: 'DS' }));
+    const dsFactions = discordantStarsJSON.factions
+      .filter(f => !isBlueReverieFaction(f.name))
+      .map(f => ({ ...f, source: 'DS' }));
+    const brFactions = discordantStarsJSON.factions
+      .filter(f => isBlueReverieFaction(f.name))
+      .map(f => ({ ...f, source: 'BR' }));
     
-    // Apply filtering based on DS mode
+    // Apply filtering based on mode
     let filteredFactions = [];
     
     if (dsOnlyMode) {
-      // DS Only mode: Show ONLY DS factions
+      // DS Only mode: Show ONLY DS factions (not BR)
       filteredFactions = dsFactions;
     } else if (dsAddMode) {
-      // DS Add mode: Show base + DS factions
+      // DS Add mode: Show base + DS factions (not BR)
       filteredFactions = [...baseFactions, ...dsFactions];
     } else {
       // Default mode: Show only base factions
       filteredFactions = baseFactions;
     }
     
+    // Add Blue Reverie if enabled
+    if (brAddMode) {
+      filteredFactions = [...filteredFactions, ...brFactions];
+    }
+    
     return filteredFactions.sort((a, b) => a.name.localeCompare(b.name));
-  }, [dsOnlyMode, dsAddMode]);
+  }, [dsOnlyMode, dsAddMode, brAddMode]);
 
   useEffect(() => {
     const setHeaderHeightVar = () => {
@@ -579,7 +647,7 @@ const clearFactionFilter = () => {
                 <option value="">Load Base Faction...</option>
                 {getAllFactionsList().map(f => 
                   <option key={f.name + f.source} value={f.name}>
-                    {f.name} {f.source === 'DS' ? '(DS)' : ''}
+                    {f.name} {f.source === 'DS' ? '(DS)' : f.source === 'BR' ? '(BR)' : ''}
                   </option>
                 )}
               </select>
@@ -655,7 +723,7 @@ const clearFactionFilter = () => {
                   {dsOnlyMode ? "Showing only DS components" : "Show only Discordant Stars components"}
                 </div>
                 
-                <label className="flex items-center cursor-pointer">
+                <label className="flex items-center cursor-pointer mb-2">
                   <input 
                     type="checkbox" 
                     checked={dsAddMode}
@@ -664,8 +732,21 @@ const clearFactionFilter = () => {
                   />
                   <span className="font-medium text-white text-sm">Add DS Components</span>
                 </label>
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-gray-400 mb-3">
                   {dsAddMode ? "Adding DS components to base game" : "Add Discordant Stars to base game components"}
+                </div>
+
+                <label className="flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={brAddMode}
+                    onChange={handleToggleBrAddMode}
+                    className="mr-2"
+                  />
+                  <span className="font-medium text-white text-sm">Add Blue Reverie (BR)</span>
+                </label>
+                <div className="text-xs text-gray-400">
+                  {brAddMode ? "Adding Blue Reverie components" : "Add Blue Reverie components (from DS data)"}
                 </div>
               </div>
             </div>
@@ -977,6 +1058,11 @@ components[cat] = all;
                                   {component.isDiscordantStars && (
                                     <span className="text-xs px-1.5 py-0.5 bg-yellow-600 text-white rounded">DS</span>
                                   )}
+
+                                  {/* Blue Reverie Badge */}
+                                  {component.isBlueReverie && (
+                                    <span className="text-xs px-1.5 py-0.5 bg-blue-600 text-white rounded">BR</span>
+                                  )}
                                 </div>
                                 {isDisabled && !unlimitedMode && (
                                   <div className="text-xs text-gray-500 mt-1">
@@ -1042,7 +1128,7 @@ components[cat] = all;
               }}
               onRemove={handleRemoveComponent}
               draftLimits={unlimitedMode ? {} : draftLimits}
-              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}`}
+              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}`}
               hiddenCategories={["blue_tiles", "red_tiles"]}
             />
           </div>
@@ -1065,7 +1151,7 @@ components[cat] = all;
                 onChange={() => toggleFactionVisibility(f.name)}
               />
               <span className="text-white">
-                {f.name} {f.source === "DS" ? "(DS)" : ""}
+                {f.name} {f.source === "DS" ? "(DS)" : f.source === "BR" ? "(BR)" : ""}
               </span>
             </label>
           );
