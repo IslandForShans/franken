@@ -67,7 +67,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [draftLimits, setDraftLimits] = useState(baseFactionLimits);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [powerMode, setPowerMode] = useState(false);
-  const [unlimitedMode, setUnlimitedMode] = useState(false);
+  const [unlimitedMode, setUnlimitedMode] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [globalSearchTerm, setGlobalSearchTerm] = useState("");
   const [dsOnlyMode, setDsOnlyMode] = useState(false);
