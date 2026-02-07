@@ -152,16 +152,15 @@ const confirmReplacement = (replaceIndex) => {
 
   onSwapComponent(
     playerIndex,
-    swapTarget.category,
+    selectedSwapOption.category,  // Use the swap option's category, not the trigger's
     replaceIndex,
     selectedSwapOption,
     swapTarget.component
   );
 
   setResolvedSwaps(prev => new Set(prev).add(
-  getSwapKey(selectedSwapOption, swapTarget.component)
-));
-
+    getSwapKey(selectedSwapOption, swapTarget.component)
+  ));
 
   setSwapModalOpen(false);
   setSwapOptions([]);
@@ -204,8 +203,9 @@ const confirmReplacement = (replaceIndex) => {
     const id = getId(item);
     const isExpanded = expandedId === id;
     const swapOption = getSwapOptions(item.name, item.faction);
-    const extraComponents = getExtraComponents(item.name, item.faction);
     const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
+    const hasSwaps = triggeredSwaps && triggeredSwaps.length > 0;
+    const extraComponents = getExtraComponents(item.name, item.faction);
     const isUnit = (category === 'flagship' || category === 'mech' || category === 'starting_fleet');
     const isTech = (category === 'faction_techs' || category === 'starting_techs');
     const isTile = (category === 'blue_tiles' || category === 'red_tiles' || category === 'home_systems');
@@ -337,7 +337,7 @@ const confirmReplacement = (replaceIndex) => {
 
           {/* Action buttons */}
           <div className="faction-component-actions">
-            {showReductionHelper && swapOption && !item.isSwap && (
+            {hasSwaps && !item.isSwap && (
               <button
                 onClick={(e) => { 
                   e.stopPropagation(); 
@@ -345,7 +345,7 @@ const confirmReplacement = (replaceIndex) => {
                 }}
                 className="btn btn-primary btn-sm"
               >
-                SWAP
+                SWAP(s) Available
               </button>
             )}
             <button
@@ -442,39 +442,39 @@ const confirmReplacement = (replaceIndex) => {
                   </div>
 
                   {/* Available swaps */}
-                  {showReductionHelper && availableSwaps.length > 0 && (
-                    <div className="available-swaps">
-                      <div className="available-swaps-title">SWAPS AVAILABLE:</div>
-                      {availableSwaps.map((swap, idx) => (
-                        <div key={idx} className="available-swap-item">
-                          <div className="available-swap-header">
-                            <div className="available-swap-info">
-                              <div className="available-swap-name">{swap.name}</div>
-                              <div className="available-swap-trigger">
-                                From: {swap.triggerComponent.name}
-                              </div>
-                            </div>
-                            <button
-  onClick={() => {
-    setSwapOptions([swap]);
-    setSwapTarget({
-      category: swap.category,
-      index: drafted[swap.category]?.findIndex(
-        c => c.name === swap.triggerComponent.name && c.faction === swap.triggerComponent.faction
-      ),
-      component: swap.triggerComponent
-    });
-    setSwapModalOpen(true);
-  }}
-  className="btn btn-primary btn-sm"
->
-  SWAP
-</button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+{availableSwaps.length > 0 && (
+  <div className="available-swaps">
+    <div className="available-swaps-title">SWAPS AVAILABLE:</div>
+    {availableSwaps.map((swap, idx) => (
+      <div key={idx} className="available-swap-item">
+        <div className="available-swap-header">
+          <div className="available-swap-info">
+            <div className="available-swap-name">{swap.name}</div>
+            <div className="available-swap-trigger">
+              From: {swap.triggerComponent.name}
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setSwapOptions([swap]);
+              setSwapTarget({
+                category: swap.category,
+                index: drafted[swap.category]?.findIndex(
+                  c => c.name === swap.triggerComponent.name && c.faction === swap.triggerComponent.faction
+                ),
+                component: swap.triggerComponent
+              });
+              setSwapModalOpen(true);
+            }}
+            className="btn btn-primary btn-sm"
+          >
+            SWAP
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
 
                   {/* Components */}
                   {status.items.length === 0 ? (
@@ -519,27 +519,27 @@ const confirmReplacement = (replaceIndex) => {
       )}
 
       {swapSelectionStep === "chooseReplace" && selectedSwapOption && (
-        <>
-          <h3 className="swap-modal-title">
-            REPLACE WHICH {swapTarget.category.replace('_', ' ').toUpperCase()}?
-          </h3>
-          <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
-            {(drafted[swapTarget.category] || []).map((comp, idx) => (
-              <div key={idx} className="swap-option">
-                <div className="swap-option-header">
-                  <div>
-                    <div className="swap-option-name">{comp.name}</div>
-                    <div className="swap-option-faction">{comp.faction}</div>
-                  </div>
-                  <button onClick={() => confirmReplacement(idx)} className="btn btn-danger">
-                    REPLACE
-                  </button>
-                </div>
-              </div>
-            ))}
+  <>
+    <h3 className="swap-modal-title">
+      REPLACE WHICH {selectedSwapOption.category.replace('_', ' ').toUpperCase()}?
+    </h3>
+    <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+      {(drafted[selectedSwapOption.category] || []).map((comp, idx) => (
+        <div key={idx} className="swap-option">
+          <div className="swap-option-header">
+            <div>
+              <div className="swap-option-name">{comp.name}</div>
+              <div className="swap-option-faction">{comp.faction}</div>
+            </div>
+            <button onClick={() => confirmReplacement(idx)} className="btn btn-danger">
+              REPLACE
+            </button>
           </div>
-        </>
-      )}
+        </div>
+      ))}
+    </div>
+  </>
+)}
 
       <div className="swap-modal-footer">
   <button

@@ -4,6 +4,7 @@ import FactionSheet from "./FactionSheet.jsx";
 import factionsJSONRaw from "../data/factions.json";
 import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData, ICON_MAP } from "../utils/dataProcessor.js";
+import { getSwapOptions, getExtraComponents, getSwapOptionsForTrigger } from "../data/undraftable-components.js";
 
 // Tech color icons mapping
 const TECH_ICONS = {
@@ -268,26 +269,152 @@ export default function TheorycraftingApp({ onNavigate }) {
   };
 
   const handleAddComponent = (cat, item) => {
-    // Skip limit check in unlimited mode
-    if (!unlimitedMode) {
-      const currentLimit = powerMode ? powerFactionLimits[cat] : baseFactionLimits[cat];
-      if (customFaction[cat].length >= currentLimit) return;
-    }
-    
-    setCustomFaction(prev => ({
+  // Skip limit check in unlimited mode
+  if (!unlimitedMode) {
+    const currentLimit = powerMode ? powerFactionLimits[cat] : baseFactionLimits[cat];
+    if (customFaction[cat].length >= currentLimit) return;
+  }
+  
+  setCustomFaction(prev => {
+    const updated = {
       ...prev,
       [cat]: [...prev[cat], item]
-    }));
-  };
+    };
+    
+    // Auto-add extra components
+    const extraComponents = getExtraComponents(item.name, item.faction);
+    
+    if (extraComponents.length > 0) {
+      console.log(`Auto-adding extra components for ${item.name}:`, extraComponents.map(e => e.name));
+      
+      extraComponents.forEach(extra => {
+        let targetCategory = cat;
+        
+        const categoryMap = {
+          "Artuno the Betrayer": "agents",
+          "The Thundarian": "agents", 
+          "Awaken": "abilities",
+          "Coalescence": "abilities",
+          "Devour": "abilities",
+          "Dark Pact": "promissory",
+          "Ghoti Home System": "home_systems"
+        };
+
+        if (categoryMap[extra.name]) {
+          targetCategory = categoryMap[extra.name];
+        }
+
+        // Find full component data from JSON
+        const findFullComponentData = (componentName, factionName, targetCategory) => {
+          // Try base factions first
+          const baseFaction = factionsJSON.factions.find(f => f.name === factionName);
+          if (baseFaction && baseFaction[targetCategory]) {
+            const found = baseFaction[targetCategory].find(c => c.name === componentName);
+            if (found) {
+              return { ...found, faction: baseFaction.name, factionIcon: baseFaction.icon, icon: baseFaction.icon };
+            }
+          }
+          
+          // Try DS factions
+          if (discordantStarsJSON?.factions) {
+            const dsFaction = discordantStarsJSON.factions.find(f => f.name === factionName);
+            if (dsFaction) {
+              let categoryData = dsFaction[targetCategory];
+              if (!categoryData && targetCategory === 'home_systems') {
+                categoryData = dsFaction['home_system'];
+              }
+              
+              if (categoryData) {
+                const found = categoryData.find(c => c.name === componentName);
+                if (found) {
+                  return { ...found, faction: dsFaction.name, factionIcon: dsFaction.icon, icon: dsFaction.icon };
+                }
+              }
+            }
+          }
+          
+          return null;
+        };
+
+        const fullComponentData = findFullComponentData(extra.name, extra.faction || item.faction, targetCategory);
+        
+        const extraComponent = fullComponentData ? {
+          ...fullComponentData,
+          isExtra: true,
+          triggerComponent: item.name
+        } : {
+          ...extra,
+          isExtra: true,
+          triggerComponent: item.name,
+          description: extra.description || `Gained from ${item.name}`,
+          faction: extra.faction || item.faction,
+          icon: extra.icon || item.icon || item.factionIcon,
+          factionIcon: extra.factionIcon || item.factionIcon || item.icon
+        };
+
+        if (!updated[targetCategory]) {
+          updated[targetCategory] = [];
+        }
+        
+        // Don't add if already exists
+        const alreadyAdded = updated[targetCategory].some(
+          existingItem => existingItem.name === extra.name && existingItem.isExtra
+        );
+        
+        if (!alreadyAdded) {
+          updated[targetCategory] = [...updated[targetCategory], extraComponent];
+        }
+      });
+    }
+    
+    return updated;
+  });
+};
 
   const handleRemoveComponent = (category, index) => {
-    setCustomFaction(prev => {
-      const updated = { ...prev };
-      updated[category] = [...prev[category]];
-      updated[category].splice(index, 1);
-      return updated;
-    });
-  };
+  setCustomFaction(prev => {
+    const updated = { ...prev };
+    const componentToRemove = prev[category][index];
+    
+    // Remove the component
+    updated[category] = [...prev[category]];
+    updated[category].splice(index, 1);
+    
+    // Also remove any extra components that were triggered by this component
+    if (componentToRemove && !componentToRemove.isExtra) {
+      const extraComponents = getExtraComponents(componentToRemove.name, componentToRemove.faction);
+      
+      if (extraComponents.length > 0) {
+        extraComponents.forEach(extra => {
+          let targetCategory = category;
+          
+          const categoryMap = {
+            "Artuno the Betrayer": "agents",
+            "The Thundarian": "agents", 
+            "Awaken": "abilities",
+            "Coalescence": "abilities",
+            "Devour": "abilities",
+            "Dark Pact": "promissory",
+            "Ghoti Home System": "home_systems"
+          };
+
+          if (categoryMap[extra.name]) {
+            targetCategory = categoryMap[extra.name];
+          }
+          
+          // Remove the extra component that matches this trigger
+          if (updated[targetCategory]) {
+            updated[targetCategory] = updated[targetCategory].filter(
+              item => !(item.isExtra && item.triggerComponent === componentToRemove.name && item.name === extra.name)
+            );
+          }
+        });
+      }
+    }
+    
+    return updated;
+  });
+};
 
   const handleLoadFaction = (factionName) => {
     // Try to find in base factions first
@@ -1122,15 +1249,55 @@ components[cat] = all;
 
           <div className="flex-1 overflow-auto p-4 bg-gradient-to-b from-gray-900 to-gray-800">
             <FactionSheet
-              drafted={{
-                ...customFaction,
-                faction_techs: getFactionTechsForSheet()
-              }}
-              onRemove={handleRemoveComponent}
-              draftLimits={unlimitedMode ? {} : draftLimits}
-              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}`}
-              hiddenCategories={["blue_tiles", "red_tiles"]}
-            />
+  drafted={{
+    ...customFaction,
+    faction_techs: getFactionTechsForSheet()
+  }}
+  onRemove={handleRemoveComponent}
+  onSwapComponent={(playerIndex, category, componentIdx, swapOption, triggerComponent) => {
+    // Handle swap in theorycrafting mode
+    setCustomFaction(prev => {
+      const updated = { ...prev };
+      
+      // Find full component data from JSON
+      const allFactions = [...factionsJSON.factions, ...(discordantStarsJSON?.factions || [])];
+      const factionData = allFactions.find(f => f.name === swapOption.faction);
+      
+      if (!factionData) {
+        console.warn("Faction not found for swap:", swapOption.faction);
+        return prev;
+      }
+      
+      const fullComponent = (factionData[category] || []).find(c => c.name === swapOption.name);
+      
+      if (!fullComponent) {
+        console.warn("Component not found in faction data:", swapOption.name);
+        return prev;
+      }
+      
+      const swapComponent = {
+        ...fullComponent,
+        faction: swapOption.faction,
+        factionIcon: factionData.icon,
+        icon: factionData.icon,
+        isSwap: true,
+        originalComponent: triggerComponent.name,
+        triggerComponent: triggerComponent.name
+      };
+      
+      // Replace component at the specified index
+      updated[category] = [...updated[category]];
+      updated[category][componentIdx] = swapComponent;
+      
+      return updated;
+    });
+  }}
+  draftLimits={unlimitedMode ? {} : draftLimits}
+  title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}`}
+  hiddenCategories={["blue_tiles", "red_tiles"]}
+  showReductionHelper={false}
+  playerIndex={0}
+/>
           </div>
         </div>
       </div>
