@@ -4,14 +4,12 @@ import FactionSheet from "./FactionSheet.jsx";
 import DraftHistory from "./DraftHistory.jsx";
 import DraftSettingsPanel from "./DraftSettingsPanel.jsx";
 import DraftSummary from "./DraftSummary.jsx";
-import FirebaseMultiplayerPanel from "./FirebaseMultiplayerPanel.jsx";
 import { shuffleArray } from "../utils/shuffle.js";
 import factionsJSONRaw from "../data/factions.json";
 import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData } from "../utils/dataProcessor.js";
-import { isComponentUndraftable, getSwapOptions, getExtraComponents } from "../data/undraftable-components.js";
+import { isComponentUndraftable, getSwapOptionsForTrigger, getExtraComponents } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
-import { multiplayerService } from "../services/firebaseMultiplayer.js";
 
 // PERFORMANCE: Process faction data once at module load instead of on every render
 const factionsJSON = processFactionData(factionsJSONRaw);
@@ -77,14 +75,13 @@ export default function DraftSimulator({ onNavigate }) {
   const [subsequentRoundPickCount, setSubsequentRoundPickCount] = useState(2);
   const [pendingPicks, setPendingPicks] = useState([]);
   const [isPickingPhase, setIsPickingPhase] = useState(true);
+  const [pendingSwaps, setPendingSwaps] = useState([]);
 
   // Ban system
   const [bannedFactions, setBannedFactions] = useState(new Set());
   const [bannedComponents, setBannedComponents] = useState(new Set());
 
-  // Multiplayer state
-  const [multiplayerEnabled, setMultiplayerEnabled] = useState(false);
-  const [selectedPicks, setSelectedPicks] = useState([]);
+  // Sidebar
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   // UI state
@@ -134,28 +131,6 @@ export default function DraftSimulator({ onNavigate }) {
     return activeCategories;
   }, [expansionsEnabled.pok, expansionsEnabled.te, expansionsEnabled.dsOnly]);
 
-  const syncToFirebase = useRef(null);
-
-  useEffect(() => {
-    if (multiplayerEnabled && draftStarted) {
-      if (syncToFirebase.current) clearTimeout(syncToFirebase.current);
-      syncToFirebase.current = setTimeout(() => {
-        multiplayerService.syncDraftState({
-          factions,
-          draftHistory,
-          playerProgress,
-          currentPlayer,
-          round,
-          phase: draftPhase,
-          playerBags,
-          rotisseriePool,
-          pendingPicks,
-          isPickingPhase
-        });
-      }, 1000);
-    }
-  }, [multiplayerEnabled, draftStarted, factions, draftHistory, currentPlayer, round, draftPhase]);
-
   useEffect(() => {
     const setHeaderHeightVar = () => {
       try {
@@ -186,39 +161,6 @@ export default function DraftSimulator({ onNavigate }) {
     
     setDraftLimits(filteredLimits);
   }, [draftVariant, categories]);
-
-  useEffect(() => {
-    if (multiplayerEnabled) {
-      window.endMultiplayerDraft = (endDraftCallback) => {
-        endDraftCallback(factions, draftHistory, {
-          variant: draftVariant,
-          playerCount,
-          draftLimits,
-          firstRoundPickCount,
-          subsequentRoundPickCount
-        });
-      };
-    }
-    
-    return () => {
-      delete window.endMultiplayerDraft;
-    };
-  }, [multiplayerEnabled, factions, draftHistory, draftVariant, playerCount, draftLimits]);
-
-  // PERFORMANCE: useCallback for handleDraftStateSync
-  const handleDraftStateSync = useCallback((draftState) => {
-    if (!draftState) return;
-    if (draftState.factions) setFactions(draftState.factions);
-    if (draftState.draftHistory) setDraftHistory(draftState.draftHistory);
-    if (draftState.playerProgress) setPlayerProgress(draftState.playerProgress);
-    if (typeof draftState.currentPlayer === 'number') setCurrentPlayer(draftState.currentPlayer);
-    if (typeof draftState.round === 'number') setRound(draftState.round);
-    if (draftState.phase) setDraftPhase(draftState.phase);
-    if (draftState.playerBags) setPlayerBags(draftState.playerBags);
-    if (draftState.rotisseriePool) setRotisseriePool(draftState.rotisseriePool);
-    if (draftState.pendingPicks) setPendingPicks(draftState.pendingPicks);
-    if (typeof draftState.isPickingPhase === 'boolean') setIsPickingPhase(draftState.isPickingPhase);
-  }, []);
 
   // PERFORMANCE: Memoize getFilteredComponents with useCallback
   const getFilteredComponents = useCallback((category) => {
@@ -461,16 +403,14 @@ export default function DraftSimulator({ onNavigate }) {
   }, []);
 
   const getAvailableComponents = useCallback(() => {
-    if (multiplayerEnabled) {
-      return playerBags || {};
-    } else if (draftVariant === "rotisserie") {
+    if (draftVariant === "rotisserie") {
       return rotisseriePool;
     } else if (draftStarted && playerBags.length > 0) {
       return playerBags[currentPlayer] || {};
     }
     return {};
-  }, [multiplayerEnabled, draftVariant, draftStarted, playerBags, currentPlayer, rotisseriePool]);
-
+  }, [draftVariant, draftStarted, playerBags, currentPlayer, rotisseriePool]);
+  
   const getMaxPicksForRound = useCallback(() => {
     const baseNeeded = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
     
@@ -905,12 +845,10 @@ setTimeout(() => {
     return draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
   }, [draftVariant]);
 
-  const handleSwap = (playerIndex, swapCategory, componentIndex, swapOption, triggerComponent) => {
+const handleSwap = (playerIndex, swapCategory, componentIndex, swapOption, triggerComponent) => {
   if (!swapOption) return;
 
-  const fc = [...factions];
-
-  // 🔍 Find full component data from processed faction data
+  // Find full component data from processed faction data
   const allFactions = [...factionsJSON.factions, ...(discordantStarsJSON?.factions || [])];
   const factionData = allFactions.find(f => f.name === swapOption.faction);
 
@@ -919,7 +857,13 @@ setTimeout(() => {
     return;
   }
 
-  const fullComponent = (factionData[swapCategory] || []).find(c => c.name === swapOption.name);
+  // Handle different category names (e.g., home_system vs home_systems)
+  let categoryData = factionData[swapCategory];
+  if (!categoryData && swapCategory === 'home_systems') {
+    categoryData = factionData['home_system'];
+  }
+
+  const fullComponent = (categoryData || []).find(c => c.name === swapOption.name);
 
   if (!fullComponent) {
     console.warn("Component not found in faction data:", swapOption.name);
@@ -936,9 +880,8 @@ setTimeout(() => {
     triggerComponent: triggerComponent.name
   };
 
-  // 🧠 THE ACTUAL SWAP (replace, not add)
+  const fc = [...factions];
   fc[playerIndex][swapCategory][componentIndex] = swapComponent;
-
   setFactions(fc);
 
   setDraftHistory(prev => [...prev, {
@@ -949,10 +892,27 @@ setTimeout(() => {
     componentId: swapComponent.id || swapComponent.name,
     action: `Swapped ${triggerComponent.name} → ${swapComponent.name}`
   }]);
+
+  // Remove this swap from pending swaps
+  setPendingSwaps(prev => prev.filter(s => 
+    !(s.playerIndex === playerIndex && 
+      s.triggerComponent.name === triggerComponent.name &&
+      s.swapOption.name === swapOption.name)
+  ));
 };
 
+const handleRefuseSwap = (playerIndex, triggerComponent, swapOption) => {
+  console.log(`Player ${playerIndex + 1} refused swap: ${swapOption.name}`);
+  
+  // Remove this swap from pending swaps
+  setPendingSwaps(prev => prev.filter(s => 
+    !(s.playerIndex === playerIndex && 
+      s.triggerComponent.name === triggerComponent.name &&
+      s.swapOption.name === swapOption.name)
+  ));
+};
 
- const handleReduction = (playerIndex, category, componentIndex) => {
+const handleReduction = (playerIndex, category, componentIndex) => {
   console.log("=== HANDLE REDUCTION CALLED ===");
   console.log("Player:", playerIndex, "Category:", category, "Index:", componentIndex);
   
@@ -961,7 +921,6 @@ setTimeout(() => {
   
   const fc = [...factions];
   fc[playerIndex][category].splice(componentIndex, 1);
-  setFactions(fc);
 
   const factionLimits = getCurrentFactionLimits();
   
@@ -983,14 +942,60 @@ setTimeout(() => {
 
   console.log("\nAll players reduced?", allPlayersReduced);
 
+  // Always update factions state first
+  setFactions(fc);
+
   if (allPlayersReduced) {
-    console.log("Reduction complete - adding extra components");
+    console.log("Reduction complete - checking for available swaps");
+    
+    // Collect all available swaps across all players
+    const allSwaps = [];
+    fc.forEach((faction, playerIdx) => {
+      categories.forEach(cat => {
+        const items = faction[cat] || [];
+        items.forEach((item, itemIdx) => {
+          if (!item || !item.name) return; // Safety check
+          
+          const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
+          if (triggeredSwaps && Array.isArray(triggeredSwaps) && triggeredSwaps.length > 0) {
+            triggeredSwaps.forEach(swap => {
+              allSwaps.push({
+                playerIndex: playerIdx,
+                triggerComponent: item,
+                triggerCategory: cat,
+                triggerIndex: itemIdx,
+                swapOption: swap
+              });
+            });
+          }
+        });
+      });
+    });
+    
+    console.log(`Found ${allSwaps.length} available swaps`);
+    
+    if (allSwaps.length > 0) {
+      console.log("Moving to swap phase");
+      setPendingSwaps(allSwaps);
+      setDraftPhase("swap");
+      return;
+    }
+    
+    console.log("No swaps available - adding extra components and completing");
     const factionsWithExtras = addAllExtraComponents(fc);
     setFactions(factionsWithExtras);
     setDraftPhase("complete");
-    return;
   }
 };
+
+  useEffect(() => {
+  if (draftPhase === "swap" && pendingSwaps.length === 0) {
+    console.log("All swaps resolved - adding extra components and completing");
+    const factionsWithExtras = addAllExtraComponents(factions);
+    setFactions(factionsWithExtras);
+    setDraftPhase("complete");
+  }
+}, [pendingSwaps, draftPhase]);
 
   const handleBanFaction = useCallback((factionName) => {
     setBannedFactions(prev => {
@@ -1017,14 +1022,25 @@ setTimeout(() => {
   }, []);
 
   const renderCurrentPlayerInfo = () => {
-    if (draftPhase === "reduction") {
-        return (
-        <div className="p-3 bg-orange-900/30 rounded-lg border border-orange-600">
-            <h3 className="font-bold text-orange-400 text-sm">Reduction Phase</h3>
-            <div className="text-xs text-orange-300">Remove excess components to meet faction limits</div>
+  if (draftPhase === "reduction") {
+    return (
+      <div className="p-3 bg-orange-900/30 rounded-lg border border-orange-600">
+        <h3 className="font-bold text-orange-400 text-sm">Reduction Phase</h3>
+        <div className="text-xs text-orange-300">Remove excess components to meet faction limits</div>
+      </div>
+    );
+  }
+
+  if (draftPhase === "swap") {
+    return (
+      <div className="p-3 bg-blue-900/30 rounded-lg border border-blue-600">
+        <h3 className="font-bold text-blue-400 text-sm">Swap Phase</h3>
+        <div className="text-xs text-blue-300">
+          Review available swaps: {pendingSwaps.length} remaining
         </div>
-        );
-    }
+      </div>
+    );
+  }
 
     if (draftPhase === "complete") {
         return (
@@ -1039,15 +1055,6 @@ setTimeout(() => {
         return (
         <div className="p-3 bg-yellow-900/30 rounded-lg border border-yellow-600">
             <h3 className="font-bold text-yellow-400 text-sm">Configure settings and click "Start Draft" to begin</h3>
-        </div>
-        );
-    }
-
-    if (multiplayerEnabled) {
-        return (
-        <div className="p-3 bg-blue-900/30 rounded-lg border border-blue-600">
-            <h3 className="font-bold text-blue-400 text-sm">Multiplayer Draft - Round {round}</h3>
-            <div className="text-xs text-blue-300">Selected picks: {selectedPicks.length}</div>
         </div>
         );
     }
@@ -1124,12 +1131,11 @@ setTimeout(() => {
           isOpen={!sidebarCollapsed}
           categories={categories}
           onSelectCategory={setSelectedCategory}
-          playerProgress={multiplayerEnabled ? {} : (playerProgress[currentPlayer] || {})}
+          playerProgress={playerProgress[currentPlayer] || {}}
           draftLimits={draftPhase === "reduction" ? getCurrentFactionLimits() : draftLimits}
           selectedCategory={selectedCategory}
           availableComponents={getAvailableComponents()}
           onComponentClick={handlePick}
-          isMultiplayer={multiplayerEnabled}
           draftVariant={draftVariant}
         />
 
@@ -1185,7 +1191,7 @@ setTimeout(() => {
                     expansionsEnabled={expansionsEnabled}
                   />
                   
-                  {!multiplayerEnabled && !draftStarted && (
+                  {!draftStarted && (
                     <button 
                       className="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors" 
                       onClick={startDraftSolo}
@@ -1209,7 +1215,7 @@ setTimeout(() => {
                       {settingsCollapsed ? "Show" : "Hide"} Info
                     </button>
                   )}
-                  {draftStarted && !multiplayerEnabled && (
+                  {draftStarted && (
                     <button
                       onClick={cancelDraft}
                       className="px-3 py-1.5 rounded-lg bg-red-700 hover:bg-red-600 text-white text-sm font-semibold transition-colors"
@@ -1225,7 +1231,7 @@ setTimeout(() => {
           <div className="flex-1 overflow-auto p-4 space-y-4 bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col">
   {!settingsCollapsed && (
     <div>
-      {!multiplayerEnabled && !draftStarted && (
+      {!draftStarted && (
         <>
           <div className="mb-3 p-4 bg-gray-900/70 rounded-lg border border-gray-700">
   <h3 className="font-bold mb-4 text-yellow-400 text-sm">Expansions</h3>
@@ -1386,46 +1392,19 @@ setTimeout(() => {
         </>
       )}
 
-      {multiplayerEnabled && (
-        <FirebaseMultiplayerPanel
-          draftSettings={{
-            variant: draftVariant,
-            playerCount: playerCount,
-            draftLimits: draftLimits,
-            firstRoundPickCount: firstRoundPickCount,
-            subsequentRoundPickCount: subsequentRoundPickCount
-          }}
-          onDraftStart={(lobbyData) => {
-            console.log("Draft starting with lobby data:", lobbyData);
-
-            const players = Object.values(lobbyData.players || {}).sort(
-              (a, b) => a.joinedAt - b.joinedAt
-            );
-
-            initializeDraft({
-              ...lobbyData.settings,
-              playerCount: players.length,
-              players,
-            });
-          }}
-          onDraftStateSync={handleDraftStateSync}
-        />
-      )}
-
       {renderCurrentPlayerInfo()}
     </div>
   )}
 
   {(() => {
-    console.log("Render check:", { 
-      multiplayerEnabled, 
+    console.log("Render check:", {
       draftStarted, 
       draftPhase,
       factionsLength: factions.length,
       currentPlayer 
     });
     
-    if (!multiplayerEnabled && draftStarted && draftPhase === "draft") {
+    if (draftStarted && draftPhase === "draft") {
       console.log("Rendering draft phase");
       return (
         <FactionSheet
@@ -1436,7 +1415,7 @@ setTimeout(() => {
           isCurrentPlayer={true}
         />
       );
-    } else if (!multiplayerEnabled && draftStarted && draftPhase === "reduction") {
+    } else if (draftStarted && draftPhase === "reduction") {
       console.log("Rendering reduction phase for", factions.length, "factions");
       return (
         <>
@@ -1468,7 +1447,44 @@ setTimeout(() => {
           })}
         </>
       );
-    } else if (!multiplayerEnabled && draftStarted && draftPhase === "complete") {
+    } else if (draftStarted && draftPhase === "swap") {
+    console.log("Rendering swap phase");
+    return (
+      <>
+        <div className="mb-4 p-4 bg-blue-900/30 rounded-lg border border-blue-600">
+          <h3 className="font-bold text-blue-400 text-lg mb-2">Swap Phase</h3>
+          <p className="text-blue-300 text-sm">
+            Review available component swaps. You can choose to swap components or refuse the swap.
+          </p>
+          <p className="text-blue-300 text-sm mt-2">
+            Pending swaps: {pendingSwaps.length}
+          </p>
+        </div>
+        {factions.map((f, i) => {
+          const playerSwaps = pendingSwaps.filter(s => s.playerIndex === i);
+          console.log(`Rendering faction ${i} with ${playerSwaps.length} swaps:`, f.name);
+          return (
+            <FactionSheet
+              key={i}
+              drafted={f}
+              onRemove={() => {}}
+              onSwapComponent={(playerIdx, category, componentIdx, swapOption, triggerComponent) => 
+                handleSwap(playerIdx, category, componentIdx, swapOption, triggerComponent)
+              }
+              onRefuseSwap={(playerIdx, triggerComponent, swapOption) =>
+                handleRefuseSwap(playerIdx, triggerComponent, swapOption)
+              }
+              draftLimits={{}}
+              title={`Player ${i + 1} - Review Swaps`}
+              showSwapHelper={true}
+              availableSwaps={playerSwaps}
+              playerIndex={i}
+            />
+          );
+        })}
+      </>
+    );
+  } else if (draftStarted && draftPhase === "complete") {
       console.log("Rendering complete phase");
       return (
         <>
@@ -1563,16 +1579,6 @@ setTimeout(() => {
             />
           ))}
         </>
-      );
-    } else if (multiplayerEnabled) {
-      console.log("Rendering multiplayer");
-      return (
-        <FactionSheet
-          drafted={factions[multiplayerService.playerId] || {}}
-          onRemove={() => {}}
-          draftLimits={draftLimits}
-          title="Your Multiplayer Draft"
-        />
       );
     } else {
       console.log("Rendering default/waiting state");

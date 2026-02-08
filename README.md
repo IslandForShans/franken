@@ -31,8 +31,14 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 
 ## Adding/Fixing soon
 
+### Known Bugs
+- When drafting a component that adds components not in it's category, those components show up in drafted components category.
+- Swap menu still shows all items even if you've already swapped one.
+- Swaps aren't appearing in Faction Builder.
+- Info isn't being shown on gained components or swapped components.
+
 ### High Priority
-- Make Faction Builder automatically handle swaps and adds
+- Make Faction Builder automatically handle swaps and adds (adds almost complete, swaps are being an issue)
 - Make component preview on hover show any added/swapped components
 
 ### Low Priority

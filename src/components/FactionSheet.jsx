@@ -8,9 +8,12 @@ export default function FactionSheet({
   onRemove = () => {},
   onDropComponent = () => {},
   onSwapComponent = () => {},
+  onRefuseSwap = () => {},
   title = "Your Drafted Faction",
   isCurrentPlayer = false,
   showReductionHelper = false,
+  showSwapHelper = false,
+  availableSwaps = [],
   playerIndex = null,
   hiddenCategories = [] // optional array of category keys to hide
 }) {
@@ -202,9 +205,13 @@ const confirmReplacement = (replaceIndex) => {
   const renderComponent = (item, category, index) => {
     const id = getId(item);
     const isExpanded = expandedId === id;
-    const swapOption = getSwapOptions(item.name, item.faction);
     const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
     const hasSwaps = triggeredSwaps && triggeredSwaps.length > 0;
+    const showSwapButton = showSwapHelper && hasSwaps && !item.isSwap && 
+    availableSwaps.some(s => 
+      s.triggerComponent.name === item.name && 
+      s.triggerComponent.faction === item.faction
+    );
     const extraComponents = getExtraComponents(item.name, item.faction);
     const isUnit = (category === 'flagship' || category === 'mech' || category === 'starting_fleet');
     const isTech = (category === 'faction_techs' || category === 'starting_techs');
@@ -212,17 +219,17 @@ const confirmReplacement = (replaceIndex) => {
     const isBreakthrough = (category === 'breakthrough');
 
     return (
-      <div
-        key={id + index}
-        className={`faction-component ${
-          item.isSwap ? 'faction-component-swap' : 
-          item.isExtra ? 'faction-component-extra' : ''
-        }`}
-        onClick={() => setExpandedId(isExpanded ? null : id)}
-      >
-        {/* Header */}
-        <div className="faction-component-header">
-          <div style={{flex: 1}}>
+    <div
+      key={id + index}
+      className={`faction-component ${
+        item.isSwap ? 'faction-component-swap' : 
+        item.isExtra ? 'faction-component-extra' : ''
+      }`}
+      onClick={() => setExpandedId(isExpanded ? null : id)}
+    >
+      {/* Header */}
+      <div className="faction-component-header">
+        <div style={{flex: 1}}>
             <div className="faction-component-name">
               {item.name?.toUpperCase()}
             </div>
@@ -336,18 +343,19 @@ const confirmReplacement = (replaceIndex) => {
           </div>
 
           {/* Action buttons */}
-          <div className="faction-component-actions">
-            {hasSwaps && !item.isSwap && (
-              <button
-                onClick={(e) => { 
-                  e.stopPropagation(); 
-                  handleSwap(category, index);
-                }}
-                className="btn btn-primary btn-sm"
-              >
-                SWAP(s) Available
-              </button>
-            )}
+        <div className="faction-component-actions">
+          {showSwapButton && (
+            <button
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                handleSwap(category, index);
+              }}
+              className="btn btn-primary btn-sm"
+            >
+              SWAP
+            </button>
+          )}
+          {(showReductionHelper || !showSwapHelper) && (
             <button
               onClick={(e) => { 
                 e.stopPropagation(); 
@@ -357,8 +365,9 @@ const confirmReplacement = (replaceIndex) => {
             >
               REMOVE
             </button>
-          </div>
+          )}
         </div>
+      </div>
 
         {/* Description - always show for non-units or if expanded */}
         {item.description && (!isUnit || isExpanded) && (
@@ -441,41 +450,6 @@ const confirmReplacement = (replaceIndex) => {
 </div>
                   </div>
 
-                  {/* Available swaps */}
-{availableSwaps.length > 0 && (
-  <div className="available-swaps">
-    <div className="available-swaps-title">SWAPS AVAILABLE:</div>
-    {availableSwaps.map((swap, idx) => (
-      <div key={idx} className="available-swap-item">
-        <div className="available-swap-header">
-          <div className="available-swap-info">
-            <div className="available-swap-name">{swap.name}</div>
-            <div className="available-swap-trigger">
-              From: {swap.triggerComponent.name}
-            </div>
-          </div>
-          <button
-            onClick={() => {
-              setSwapOptions([swap]);
-              setSwapTarget({
-                category: swap.category,
-                index: drafted[swap.category]?.findIndex(
-                  c => c.name === swap.triggerComponent.name && c.faction === swap.triggerComponent.faction
-                ),
-                component: swap.triggerComponent
-              });
-              setSwapModalOpen(true);
-            }}
-            className="btn btn-primary btn-sm"
-          >
-            SWAP
-          </button>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
                   {/* Components */}
                   {status.items.length === 0 ? (
                     <div className="empty-state">
@@ -497,26 +471,40 @@ const confirmReplacement = (replaceIndex) => {
     <div className="swap-modal-content">
 
       {swapSelectionStep === "chooseSwap" && (
-        <>
-          <h3 className="swap-modal-title">CHOOSE COMPONENT TO GAIN</h3>
-          <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
-            {swapOptions.map((option, idx) => (
-              <div key={idx} className="swap-option">
-                <div className="swap-option-header">
-                  <div>
-                    <div className="swap-option-name">{option.name}</div>
-                    <div className="swap-option-category">{option.category.replace('_', ' ')}</div>
-                    <div className="swap-option-faction">{option.faction}</div>
-                  </div>
-                  <button onClick={() => confirmSwap(option)} className="btn btn-primary">
-                    SELECT
-                  </button>
+  <>
+    <h3 className="swap-modal-title">CHOOSE COMPONENT TO GAIN</h3>
+    <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+      {swapOptions.map((option, idx) => (
+        <div key={idx} className="swap-option">
+          <div className="swap-option-header">
+            <div style={{flex: 1}}>
+              <div className="swap-option-name">{option.name}</div>
+              <div className="swap-option-category">{option.category.replace('_', ' ')}</div>
+              <div className="swap-option-faction">{option.faction}</div>
+              {option.description && (
+                <div className="text-xs mt-2" style={{color: '#d1d5db', fontStyle: 'italic'}}>
+                  {option.description}
                 </div>
-              </div>
-            ))}
+              )}
+              {/* Show unit stats if applicable */}
+              {option.combat && (
+                <div className="text-xs mt-2 flex gap-2" style={{color: '#fff'}}>
+                  {option.cost !== undefined && <span>Cost: {option.cost}</span>}
+                  <span>Combat: {option.combat}</span>
+                  {option.move !== undefined && <span>Move: {option.move}</span>}
+                  {option.capacity !== undefined && <span>Capacity: {option.capacity}</span>}
+                </div>
+              )}
+            </div>
+            <button onClick={() => confirmSwap(option)} className="btn btn-primary">
+              SELECT
+            </button>
           </div>
-        </>
-      )}
+        </div>
+      ))}
+    </div>
+  </>
+)}
 
       {swapSelectionStep === "chooseReplace" && selectedSwapOption && (
   <>
@@ -543,21 +531,20 @@ const confirmReplacement = (replaceIndex) => {
 
       <div className="swap-modal-footer">
   <button
-    onClick={() => {
-      if (swapTarget && swapOptions.length > 0) {
-        const key = getSwapKey(swapOptions[0], swapTarget.component);
-        setResolvedSwaps(prev => new Set(prev).add(key));
-      }
-      setSwapModalOpen(false);
-      setSwapOptions([]);
-      setSwapTarget(null);
-      setSelectedSwapOption(null);
-      setSwapSelectionStep("chooseSwap");
-    }}
-    className="btn btn-warning"
-  >
-    REFUSE SWAP
-  </button>
+  onClick={() => {
+    if (swapTarget && swapOptions.length > 0 && onRefuseSwap) {
+      onRefuseSwap(playerIndex, swapTarget.component, swapOptions[0]);
+    }
+    setSwapModalOpen(false);
+    setSwapOptions([]);
+    setSwapTarget(null);
+    setSelectedSwapOption(null);
+    setSwapSelectionStep("chooseSwap");
+  }}
+  className="btn btn-warning"
+>
+  REFUSE SWAP
+</button>
 
   <button
     onClick={() => {
@@ -577,37 +564,4 @@ const confirmReplacement = (replaceIndex) => {
 )}
     </div>
   );
-
-// renderUnitStats helper function:
-const renderUnitStats = (item) => {
-  if (!item.combat) return null;
-
-  return (
-    <div className="unit-stats">
-      {item.cost !== undefined && (
-        <div className="unit-stat unit-stat-cost">
-          <div className="unit-stat-label">COST</div>
-          <div className="unit-stat-value">{item.cost}</div>
-        </div>
-      )}
-      <div className="unit-stat unit-stat-combat">
-        <div className="unit-stat-label">COMBAT</div>
-        <div className="unit-stat-value">{item.combat}</div>
-      </div>
-      {item.move !== undefined && (
-        <div className="unit-stat unit-stat-move">
-          <div className="unit-stat-label">MOVE</div>
-          <div className="unit-stat-value">{item.move}</div>
-        </div>
-      )}
-      {item.capacity !== undefined && (
-        <div className="unit-stat unit-stat-capacity">
-          <div className="unit-stat-label">CAPACITY</div>
-          <div className="unit-stat-value">{item.capacity}</div>
-        </div>
-      )}
-    </div>
-  );
-};
-
 }

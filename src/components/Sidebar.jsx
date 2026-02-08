@@ -18,7 +18,6 @@ export default function Sidebar({
   selectedCategory,
   availableComponents = {},
   onComponentClick,
-  isMultiplayer = false,
   draftVariant = "franken"
 }) {
   const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
