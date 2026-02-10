@@ -32,14 +32,10 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 ## Adding/Fixing soon
 
 ### Known Bugs
-- Swap menu still shows all items even if you've already swapped one.
-- Swapped component stays if you remove original component that triggered the swap.
 - On mobile, sidebar doesn't scroll properly and boxes are out O.O.B.
 
 ### High Priority
-- Make Faction Builder automatically handle swaps and adds (adds complete, swaps are being an issue but nearly done)
 - Make component preview on hover show any added/swapped components
-- Unify Sidebar style in both draft and Faction Builder to match draft sidebar
 
 ### Low Priority
 - Create FrankenDraz mode option
