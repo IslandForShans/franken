@@ -5,6 +5,7 @@ import factionsJSONRaw from "../data/factions.json";
 import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData, ICON_MAP } from "../utils/dataProcessor.js";
 import { getSwapOptions, getExtraComponents, getSwapOptionsForTrigger } from "../data/undraftable-components.js";
+import { executeSwap } from "../utils/swapUtils.js";
 
 // Tech color icons mapping
 const TECH_ICONS = {
@@ -748,6 +749,34 @@ const clearFactionFilter = () => {
   setVisibleFactions(new Set());
 };
 
+const getAllAvailableSwaps = () => {
+  const swaps = [];
+  
+  categories.forEach(cat => {
+    const items = customFaction[cat] || [];
+    
+    items.forEach((item, itemIdx) => {
+      if (!item || !item.name) return;
+      
+      const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
+      
+      if (triggeredSwaps && Array.isArray(triggeredSwaps) && triggeredSwaps.length > 0) {
+        triggeredSwaps.forEach(swap => {
+          swaps.push({
+            playerIndex: 0,
+            triggerComponent: item,
+            triggerCategory: cat,
+            triggerIndex: itemIdx,
+            swapOption: swap
+          });
+        });
+      }
+    });
+  });
+  
+  return swaps;
+};
+
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="h-full flex">
@@ -1255,47 +1284,25 @@ components[cat] = all;
   }}
   onRemove={handleRemoveComponent}
   onSwapComponent={(playerIndex, category, componentIdx, swapOption, triggerComponent) => {
-    // Handle swap in theorycrafting mode
-    setCustomFaction(prev => {
-      const updated = { ...prev };
-      
-      // Find full component data from JSON
-      const allFactions = [...factionsJSON.factions, ...(discordantStarsJSON?.factions || [])];
-      const factionData = allFactions.find(f => f.name === swapOption.faction);
-      
-      if (!factionData) {
-        console.warn("Faction not found for swap:", swapOption.faction);
-        return prev;
-      }
-      
-      const fullComponent = (factionData[category] || []).find(c => c.name === swapOption.name);
-      
-      if (!fullComponent) {
-        console.warn("Component not found in faction data:", swapOption.name);
-        return prev;
-      }
-      
-      const swapComponent = {
-        ...fullComponent,
-        faction: swapOption.faction,
-        factionIcon: factionData.icon,
-        icon: factionData.icon,
-        isSwap: true,
-        originalComponent: triggerComponent.name,
-        triggerComponent: triggerComponent.name
-      };
-      
-      // Replace component at the specified index
-      updated[category] = [...updated[category]];
-      updated[category][componentIdx] = swapComponent;
-      
-      return updated;
-    });
-  }}
+  const { updatedFactions } = executeSwap({
+    factions: [customFaction],
+    playerIndex: 0,
+    swapCategory: category,
+    replaceIndex: componentIdx,
+    swapOption,
+    triggerComponent
+  });
+
+  if (updatedFactions[0]) {
+    setCustomFaction(updatedFactions[0]);
+  }
+}}
   draftLimits={unlimitedMode ? {} : draftLimits}
   title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}`}
   hiddenCategories={["blue_tiles", "red_tiles"]}
   showReductionHelper={false}
+  showSwapHelper={true}
+  availableSwaps={getAllAvailableSwaps()}
   playerIndex={0}
 />
           </div>

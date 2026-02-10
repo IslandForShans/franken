@@ -10,6 +10,7 @@ import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData } from "../utils/dataProcessor.js";
 import { isComponentUndraftable, getSwapOptionsForTrigger, getExtraComponents } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
+import { executeSwap } from "../utils/swapUtils.js";
 
 // PERFORMANCE: Process faction data once at module load instead of on every render
 const factionsJSON = processFactionData(factionsJSONRaw);
@@ -846,43 +847,18 @@ setTimeout(() => {
   }, [draftVariant]);
 
 const handleSwap = (playerIndex, swapCategory, componentIndex, swapOption, triggerComponent) => {
-  if (!swapOption) return;
+  const { updatedFactions, swapComponent } = executeSwap({
+    factions,
+    playerIndex,
+    swapCategory,
+    replaceIndex: componentIndex,
+    swapOption,
+    triggerComponent
+  });
 
-  // Find full component data from processed faction data
-  const allFactions = [...factionsJSON.factions, ...(discordantStarsJSON?.factions || [])];
-  const factionData = allFactions.find(f => f.name === swapOption.faction);
+  if (!swapComponent) return;
 
-  if (!factionData) {
-    console.warn("Faction not found for swap:", swapOption.faction);
-    return;
-  }
-
-  // Handle different category names (e.g., home_system vs home_systems)
-  let categoryData = factionData[swapCategory];
-  if (!categoryData && swapCategory === 'home_systems') {
-    categoryData = factionData['home_system'];
-  }
-
-  const fullComponent = (categoryData || []).find(c => c.name === swapOption.name);
-
-  if (!fullComponent) {
-    console.warn("Component not found in faction data:", swapOption.name);
-    return;
-  }
-
-  const swapComponent = {
-    ...fullComponent,
-    faction: swapOption.faction,
-    factionIcon: factionData.icon,
-    icon: factionData.icon,
-    isSwap: true,
-    originalComponent: triggerComponent.name,
-    triggerComponent: triggerComponent.name
-  };
-
-  const fc = [...factions];
-  fc[playerIndex][swapCategory][componentIndex] = swapComponent;
-  setFactions(fc);
+  setFactions(updatedFactions);
 
   setDraftHistory(prev => [...prev, {
     playerIndex,
@@ -893,7 +869,6 @@ const handleSwap = (playerIndex, swapCategory, componentIndex, swapOption, trigg
     action: `Swapped ${triggerComponent.name} → ${swapComponent.name}`
   }]);
 
-  // Remove this swap from pending swaps
   setPendingSwaps(prev => prev.filter(s => 
     !(s.playerIndex === playerIndex && 
       s.triggerComponent.name === triggerComponent.name &&
@@ -1441,6 +1416,7 @@ const handleReduction = (playerIndex, category, componentIndex) => {
                 draftLimits={getCurrentFactionLimits()}
                 title={`Player ${i + 1} - Remove Excess Components`}
                 showReductionHelper={true}
+                showRemoveButton={true}
                 playerIndex={i}
               />
             );
