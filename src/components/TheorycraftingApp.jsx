@@ -34,6 +34,12 @@ const powerFactionLimits = {
   breakthrough: 2
 };
 
+const CATEGORIES = [
+  'abilities', 'faction_techs', 'agents', 'commanders', 'heroes', 'promissory',
+  'starting_techs', 'starting_fleet', 'commodity_values', 'flagship', 'mech',
+  'home_systems', 'breakthrough'
+];
+
 const isBlueReverieFaction = (factionName) => {
   const brFactions = [
     "Atokera Legacy",
@@ -103,11 +109,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   };
 
   // FIXED: Explicitly list categories to ensure home_systems and breakthrough are included
-  const categories = [
-    'abilities', 'faction_techs', 'agents', 'commanders', 'heroes', 'promissory',
-    'starting_techs', 'starting_fleet', 'commodity_values', 'flagship', 'mech',
-    'home_systems', 'breakthrough'
-  ];
+  const categories = CATEGORIES;
 
   // Helper function for better category display names
   const getCategoryDisplayName = (category) => {
