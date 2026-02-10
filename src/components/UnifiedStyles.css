@@ -825,6 +825,7 @@ body {
   padding: 0.75rem;
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-secondary);
+  text-align: center;
 }
 
 .sidebar-title {
@@ -844,6 +845,7 @@ body {
   /* Make the entire .sidebar the single scroll container so header and load/export
      areas scroll together with the component list. Avoid internal overflow so
      the experience is consistent across desktop and mobile. */
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -912,6 +914,7 @@ body {
     height: 100vh;
     width: 280px;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .sidebar-toggle-button {

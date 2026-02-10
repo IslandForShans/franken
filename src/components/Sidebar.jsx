@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "./UnifiedStyles.css";
 import { ICON_MAP } from "../utils/dataProcessor";
@@ -18,15 +18,47 @@ export default function Sidebar({
   selectedCategory,
   availableComponents = {},
   onComponentClick,
-  draftVariant = "franken"
+  draftVariant = "franken",
+  defaultCollapsed = false,
+  isSearching = false,
+  noWrapper = false
 }) {
   const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
   const [showAllComponents, setShowAllComponents] = useState(false);
+  const [collapsedCategories, setCollapsedCategories] = useState(() => {
+  if (defaultCollapsed) {
+    return new Set(categories);
+  }
+  return new Set();
+});
 
 
   // Hover preview state
   const [hoveredComponent, setHoveredComponent] = useState(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+
+  // Auto-expand categories with matches when searching
+useEffect(() => {
+  if (isSearching) {
+    // Expand categories that have components, keep others collapsed
+    setCollapsedCategories(prev => {
+      const newSet = new Set(prev);
+      Object.keys(availableComponents).forEach(cat => {
+        const components = availableComponents[cat] || [];
+        if (components.length > 0) {
+          newSet.delete(cat); // Expand if has components
+        } else {
+          newSet.add(cat); // Collapse if no components
+        }
+      });
+      return newSet;
+    });
+  } else if (defaultCollapsed) {
+    // When search is cleared, collapse all if defaultCollapsed is true
+    setCollapsedCategories(new Set(categories));
+  }
+}, [isSearching, availableComponents, categories, defaultCollapsed]);
+
   const hoverTimeoutRef = useRef(null);
 
   const supportsHover =
@@ -53,6 +85,35 @@ export default function Sidebar({
     }
   };
 
+  const toggleCategoryCollapse = (category) => {
+  setCollapsedCategories(prev => {
+    const newSet = new Set(prev);
+    if (newSet.has(category)) {
+      newSet.delete(category);
+    } else {
+      newSet.add(category);
+    }
+    return newSet;
+  });
+};
+
+const toggleAllCategories = () => {
+  const allCategories = Object.keys(availableComponents).filter(cat => {
+    const components = availableComponents[cat] || [];
+    return components.length > 0;
+  });
+  
+  // If more than half are collapsed, expand all. Otherwise collapse all.
+  const collapsedCount = allCategories.filter(cat => collapsedCategories.has(cat)).length;
+  const shouldExpandAll = collapsedCount > allCategories.length / 2;
+  
+  if (shouldExpandAll) {
+    setCollapsedCategories(new Set());
+  } else {
+    setCollapsedCategories(new Set(allCategories));
+  }
+};
+
   const clampToViewport = (x, y, width = 300, height = 420) => {
     const padding = 12;
     const maxX = window.innerWidth - width - padding;
@@ -64,10 +125,23 @@ export default function Sidebar({
     };
   };
 
-  return (
-  <div className="sidebar">
+  const content = (
+  <>
     <div className="sidebar-header">
       <h2 className="sidebar-title">Draft Categories</h2>
+      <button
+        onClick={toggleAllCategories}
+        className="w-full py-1 mb-2 text-xs bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors"
+        title="Expand/Collapse All"
+      >
+        {Object.keys(availableComponents).filter(cat => {
+          const components = availableComponents[cat] || [];
+          return components.length > 0 && collapsedCategories.has(cat);
+        }).length > Object.keys(availableComponents).filter(cat => {
+          const components = availableComponents[cat] || [];
+          return components.length > 0;
+        }).length / 2 ? 'Expand All' : 'Collapse All'}
+      </button>
       <div className="sidebar-subtitle">
         Hover over components to view details!
       </div>
@@ -75,24 +149,41 @@ export default function Sidebar({
 
     <div className="sidebar-content">
       {Object.keys(availableComponents).flatMap((cat) => {
-        const components = availableComponents[cat] || [];
-        const progress = playerProgress[cat] || 0;
-        const limit = draftLimits[cat] || 0;
-        const canPick = progress < limit;
+  const components = availableComponents[cat] || [];
+  const progress = playerProgress[cat] || 0;
+  const limit = draftLimits[cat] || 0;
+  const canPick = progress < limit;
+  const isCollapsed = collapsedCategories.has(cat);
 
-        return components.flatMap((component, idx) => {
-          const isDisabled = !canPick;
+  // Skip categories with no components
+  if (components.length === 0) {
+    return [];
+  }
 
-          return [
-            // Category header above first component
-            idx === 0 && (
-              <div
-                key={`header-${cat}`}
-                className="sidebar-category-header text-sm font-bold mb-1 mt-2 px-2 text-yellow-400"
-              >
-                {formatCategoryName(cat)}
-              </div>
-            ),
+  return [
+    // Category header (always shown)
+    <div
+  key={`header-${cat}`}
+  className="sidebar-category-header text-sm font-bold mb-1 mt-2 text-yellow-400 flex items-center justify-between cursor-pointer hover:bg-gray-800 rounded transition-colors"
+  style={{ paddingLeft: '0.75rem', paddingRight: '0.75rem' }}
+  onClick={() => toggleCategoryCollapse(cat)}
+>
+      <span>{formatCategoryName(cat)}</span>
+      <svg
+        className={`w-4 h-4 transition-transform ${isCollapsed ? '' : 'rotate-90'}`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      </svg>
+    </div>,
+
+    // Components (only shown when not collapsed)
+    ...(!isCollapsed ? components.map((component, idx) => {
+      const isDisabled = !canPick;
+
+      return (
 
             <div
               key={component.id || component.name || idx}
@@ -235,9 +326,10 @@ export default function Sidebar({
                   })}
               </div>
             </div>
-          ];
-        });
-      })}
+          );
+        }) : [])
+      ];
+    })}
     </div>
 
       {/* === Hover Preview (Portal) === */}
@@ -489,6 +581,8 @@ export default function Sidebar({
           </div>,
           document.body
         )}
-    </div>
+    </>
   );
+
+  return noWrapper ? content : <div className="sidebar">{content}</div>;
 }

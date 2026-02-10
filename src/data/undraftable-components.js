@@ -362,13 +362,13 @@ export const getSwapOptionsForTrigger = (triggerComponentName, faction) => {
 
 export const getExtraComponents = (componentName, faction) => {
   const results = [];
-  for (const category of Object.values(undraftableComponents)) {
-    const extras = category.filter(comp => 
+  for (const [category, components] of Object.entries(undraftableComponents)) {
+    const extras = components.filter(comp => 
       comp.triggerComponent === componentName && 
       comp.faction === faction && 
       (comp.type === "gain_extra" || comp.type === "gain_when_draft")
     );
-    results.push(...extras);
+    results.push(...extras.map(extra => ({ ...extra, category })));
   }
   return results;
 };

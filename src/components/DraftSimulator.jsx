@@ -778,7 +778,7 @@ setTimeout(() => {
             console.log(`Adding extra components for ${component.name}:`, extraComponents.map(e => e.name));
             
             extraComponents.forEach(extra => {
-              let targetCategory = category;
+              let targetCategory = extra.category || category;
               
               const categoryMap = {
                 "Artuno the Betrayer": "agents",
@@ -897,6 +897,15 @@ const handleReduction = (playerIndex, category, componentIndex) => {
   const fc = [...factions];
   fc[playerIndex][category].splice(componentIndex, 1);
 
+  // Also remove any swapped components that were triggered by this component
+  if (component && !component.isSwap) {
+    categories.forEach(cat => {
+      fc[playerIndex][cat] = fc[playerIndex][cat].filter(
+        item => !(item.isSwap && item.triggerComponent === component.name)
+      );
+    });
+  }
+
   const factionLimits = getCurrentFactionLimits();
   
   console.log("=== REDUCTION CHECK ===");
@@ -929,7 +938,7 @@ const handleReduction = (playerIndex, category, componentIndex) => {
       categories.forEach(cat => {
         const items = faction[cat] || [];
         items.forEach((item, itemIdx) => {
-          if (!item || !item.name) return; // Safety check
+          if (!item || !item.name) return;
           
           const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
           if (triggeredSwaps && Array.isArray(triggeredSwaps) && triggeredSwaps.length > 0) {

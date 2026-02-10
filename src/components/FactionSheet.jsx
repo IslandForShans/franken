@@ -147,8 +147,26 @@ if (!resolvedSwaps.has(key)) {
       return fullData ? { ...swap, ...fullData } : swap;
     });
     
+    // Filter out swap options that are already in the faction (excluding swapped components)
+    const filteredSwaps = enrichedSwaps.filter(swap => {
+      const categoryItems = drafted[swap.category] || [];
+      // Check if this component already exists in the faction (and is NOT a swap)
+      const alreadyExists = categoryItems.some(item => 
+        item.name === swap.name && 
+        item.faction === swap.faction && 
+        !item.isSwap
+      );
+      return !alreadyExists;
+    });
+    
+    // Only open modal if there are actually swaps available
+    if (filteredSwaps.length === 0) {
+      alert('No swap options available - all options are already in your faction.');
+      return;
+    }
+    
     setSwapModalData({
-      swapOptions: enrichedSwaps,
+      swapOptions: filteredSwaps,
       triggerComponent: component,
       triggerCategory: category,
       triggerIndex: index
