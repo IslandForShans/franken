@@ -6,7 +6,8 @@ export default function DraftSettingsPanel({
   draftVariant, setDraftVariant,
   draftLimits, setDraftLimits,
   firstRoundPickCount, setFirstRoundPickCount,
-  subsequentRoundPickCount, setSubsequentRoundPickCount
+  subsequentRoundPickCount, setSubsequentRoundPickCount,
+  frankenDrazSettings, setFrankenDrazSettings
 }) {
 
   // Helper function to format category names
@@ -46,6 +47,7 @@ export default function DraftSettingsPanel({
             <option value="franken">Franken</option>
             <option value="rotisserie">Rotisserie</option>
             <option value="power">Power Draft</option>
+            <option value="frankendraz">FrankenDraz</option>
           </select>
         </label>
       </div>
@@ -88,6 +90,42 @@ export default function DraftSettingsPanel({
           </label>
         ))}
       </div>
+
+      {draftVariant === "frankendraz" && (
+        <div className="settings-grid mt-4 p-3 border-2 border-purple-600 rounded-lg bg-purple-900/20">
+          <h4 className="col-span-full font-bold text-purple-400 mb-2">FrankenDraz Bag Contents</h4>
+          <label className="settings-label">
+            Factions per bag:
+            <input
+              type="number"
+              value={frankenDrazSettings.factionsPerBag}
+              onChange={e => setFrankenDrazSettings({...frankenDrazSettings, factionsPerBag: parseInt(e.target.value)})}
+              className="input input-sm"
+              style={{ width: '4rem', marginLeft: '0.25rem' }}
+            />
+          </label>
+          <label className="settings-label">
+            Blue Tiles per bag:
+            <input
+              type="number"
+              value={frankenDrazSettings.blueTilesPerBag}
+              onChange={e => setFrankenDrazSettings({...frankenDrazSettings, blueTilesPerBag: parseInt(e.target.value)})}
+              className="input input-sm"
+              style={{ width: '4rem', marginLeft: '0.25rem' }}
+            />
+          </label>
+          <label className="settings-label">
+            Red Tiles per bag:
+            <input
+              type="number"
+              value={frankenDrazSettings.redTilesPerBag}
+              onChange={e => setFrankenDrazSettings({...frankenDrazSettings, redTilesPerBag: parseInt(e.target.value)})}
+              className="input input-sm"
+              style={{ width: '4rem', marginLeft: '0.25rem' }}
+            />
+          </label>
+        </div>
+      )}
     </div>
   );
 }

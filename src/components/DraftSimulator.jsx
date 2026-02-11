@@ -11,6 +11,7 @@ import { processFactionData } from "../utils/dataProcessor.js";
 import { isComponentUndraftable, getSwapOptionsForTrigger, getExtraComponents } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
 import { executeSwap } from "../utils/swapUtils.js";
+import FrankenDrazBuilder from "./FrankenDrazBuilder.jsx";
 
 // PERFORMANCE: Process faction data once at module load instead of on every render
 const factionsJSON = processFactionData(factionsJSONRaw);
@@ -99,6 +100,12 @@ export default function DraftSimulator({ onNavigate }) {
     firmobs: false,
     dsOnly: false,
     br: false
+  });
+
+  const [frankenDrazSettings, setFrankenDrazSettings] = useState({
+    factionsPerBag: 6,
+    blueTilesPerBag: 4,
+    redTilesPerBag: 3
   });
 
   // PERFORMANCE: Memoize active categories computation
@@ -300,6 +307,94 @@ export default function DraftSimulator({ onNavigate }) {
     return bags;
   }, [playerCount, categories, getFilteredComponents, draftLimits]);
 
+  const createBagsForFrankenDraz = useCallback(() => {
+    const bags = Array.from({ length: playerCount }, () => ({
+      factions: [],
+      blue_tiles: [],
+      red_tiles: []
+    }));
+    
+    console.log(`Creating ${playerCount} FrankenDraz bags`);
+    
+    // Get all available factions (names and icons only)
+    let allFactions = factionsJSON.factions
+      .filter(f => !bannedFactions.has(f.name))
+      .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
+      .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
+      .filter(f => expansionsEnabled.firmobs || !noFirmament.factions.includes(f.name))
+      .filter(f => expansionsEnabled.br || !brExclusions.factions.includes(f.name))
+      .map(f => ({ name: f.name, icon: f.icon }));
+    
+    if (expansionsEnabled.ds && discordantStarsJSON?.factions) {
+      const dsFactions = discordantStarsJSON.factions
+        .filter(f => !bannedFactions.has(f.name))
+        .map(f => ({ name: f.name, icon: f.icon }));
+      allFactions = [...allFactions, ...dsFactions];
+    }
+    
+    // Get blue and red tiles
+    const blueTiles = getFilteredComponents('blue_tiles');
+    const redTiles = getFilteredComponents('red_tiles');
+    
+    // Distribute factions
+    const { factionsPerBag } = frankenDrazSettings;
+    let factionPool = shuffleArray([...allFactions]);
+    const totalFactionsNeeded = playerCount * factionsPerBag;
+    
+    // Repeat factions if needed
+    while (factionPool.length < totalFactionsNeeded) {
+      factionPool = [...factionPool, ...shuffleArray([...allFactions])];
+    }
+    factionPool = shuffleArray(factionPool);
+    
+    let factionIndex = 0;
+    for (let playerIdx = 0; playerIdx < playerCount; playerIdx++) {
+      for (let i = 0; i < factionsPerBag && factionIndex < factionPool.length; i++) {
+        bags[playerIdx].factions.push(factionPool[factionIndex]);
+        factionIndex++;
+      }
+    }
+    
+    // Distribute blue tiles
+    const { blueTilesPerBag } = frankenDrazSettings;
+    let bluePool = shuffleArray([...blueTiles]);
+    const totalBlueNeeded = playerCount * blueTilesPerBag;
+    
+    while (bluePool.length < totalBlueNeeded) {
+      bluePool = [...bluePool, ...shuffleArray([...blueTiles].map(t => ({ ...t, copyIndex: (bluePool.length / blueTiles.length) })))];
+    }
+    bluePool = shuffleArray(bluePool);
+    
+    let blueIndex = 0;
+    for (let playerIdx = 0; playerIdx < playerCount; playerIdx++) {
+      for (let i = 0; i < blueTilesPerBag && blueIndex < bluePool.length; i++) {
+        bags[playerIdx].blue_tiles.push(bluePool[blueIndex]);
+        blueIndex++;
+      }
+    }
+    
+    // Distribute red tiles
+    const { redTilesPerBag } = frankenDrazSettings;
+    let redPool = shuffleArray([...redTiles]);
+    const totalRedNeeded = playerCount * redTilesPerBag;
+    
+    while (redPool.length < totalRedNeeded) {
+      redPool = [...redPool, ...shuffleArray([...redTiles].map(t => ({ ...t, copyIndex: (redPool.length / redTiles.length) })))];
+    }
+    redPool = shuffleArray(redPool);
+    
+    let redIndex = 0;
+    for (let playerIdx = 0; playerIdx < playerCount; playerIdx++) {
+      for (let i = 0; i < redTilesPerBag && redIndex < redPool.length; i++) {
+        bags[playerIdx].red_tiles.push(redPool[redIndex]);
+        redIndex++;
+      }
+    }
+    
+    console.log('Created FrankenDraz bags:', bags);
+    return bags;
+  }, [playerCount, getFilteredComponents, bannedFactions, expansionsEnabled, frankenDrazSettings]);
+
   const initializeDraft = useCallback((settings) => {
     const { variant, playerCount, players } = settings;
 
@@ -324,6 +419,10 @@ export default function DraftSimulator({ onNavigate }) {
         });
         setRotisseriePool(pool);
         setPlayerBags([]);
+    } else if (variant === "frankendraz") {
+        const bags = createBagsForFrankenDraz();
+        setPlayerBags(bags);
+        setRotisseriePool({});
     } else {
         const bags = createBagsWithUniqueDistribution();
         setPlayerBags(bags);
@@ -366,6 +465,21 @@ export default function DraftSimulator({ onNavigate }) {
             canPick = true;
         }
     });
+
+    if (draftVariant === "frankendraz") {
+      // Check if there's anything left in the FrankenDraz bag
+      canPick = (bag.factions?.length > 0) || (bag.blue_tiles?.length > 0) || (bag.red_tiles?.length > 0);
+    } else {
+      categories.forEach(cat => {
+          const inBag = bag[cat]?.length || 0;
+          const alreadyPicked = progress[cat] || 0;
+          const limit = draftLimits[cat];
+          
+          if (inBag > 0 && alreadyPicked < limit) {
+              canPick = true;
+          }
+      });
+    }
     
     if (!canPick) {
         console.log(`Player ${playerIdx + 1} auto-passing on initialization - nothing to draft`);
@@ -417,6 +531,10 @@ export default function DraftSimulator({ onNavigate }) {
     
     if (draftVariant === "rotisserie") return 1;
     
+    if (draftVariant === "frankendraz") {
+      return round === 1 ? (firstRoundPickCount || 2) : (subsequentRoundPickCount || 1);
+    }
+
     const currentBag = playerBags[currentPlayer];
     const progress = playerProgress[currentPlayer];
     
@@ -440,6 +558,39 @@ export default function DraftSimulator({ onNavigate }) {
   const handlePick = useCallback((category, component) => {
     if (!category || !component || !draftStarted || draftPhase !== "draft" || !isPickingPhase) return;
 
+    // FrankenDraz special handling
+    if (draftVariant === "frankendraz") {
+      const validCategories = ['factions', 'blue_tiles', 'red_tiles'];
+      if (!validCategories.includes(category)) return;
+      
+      const componentId = component.id || component.name;
+      
+      // Check if already picked - if so, remove it (toggle behavior)
+      const alreadyPicked = pendingPicks.some(p => 
+        p.category === category && (p.component.id || p.component.name) === componentId
+      );
+      
+      if (alreadyPicked) {
+        setPendingPicks(prev => 
+          prev.filter(pick => 
+            !(pick.category === category && (pick.component.id || pick.component.name) === componentId)
+          )
+        );
+        return;
+      }
+      
+      // Check if can add more picks
+      const maxPicks = getMaxPicksForRound();
+      if (pendingPicks.length >= maxPicks) {
+        alert(`You can only pick ${maxPicks} item${maxPicks !== 1 ? 's' : ''} this round.`);
+        return;
+      }
+      
+      setPendingPicks(prev => [...prev, { category, component }]);
+      return;
+    }
+
+    // Original logic for other draft variants
     const currentProgress = playerProgress[currentPlayer][category] || 0;
     const pendingCountInCategory = pendingPicks.filter(p => p.category === category).length;
   
@@ -463,7 +614,7 @@ export default function DraftSimulator({ onNavigate }) {
         category,
         component: { ...component }
     }]);
-  }, [draftStarted, draftPhase, isPickingPhase, playerProgress, currentPlayer, pendingPicks, draftLimits, getMaxPicksForRound]);
+  }, [draftStarted, draftPhase, isPickingPhase, playerProgress, currentPlayer, pendingPicks, draftLimits, getMaxPicksForRound, draftVariant]);
 
   const handleRemovePendingPick = useCallback((category, componentId) => {
     setPendingPicks(prev => 
@@ -495,10 +646,14 @@ export default function DraftSimulator({ onNavigate }) {
 
     const fc = [...factions];
     const pg = [...playerProgress];
+    let updatedBags = [...playerBags];
 
     pendingPicks.forEach(({ category, component }) => {
         fc[currentPlayer][category] = [...(fc[currentPlayer][category] || []), component];
-        pg[currentPlayer][category] = (pg[currentPlayer][category] || 0) + 1;
+        
+        if (draftVariant !== "frankendraz") {
+          pg[currentPlayer][category] = (pg[currentPlayer][category] || 0) + 1;
+        }
 
         if (draftVariant === "rotisserie") {
         setRotisseriePool(prev => {
@@ -508,14 +663,11 @@ export default function DraftSimulator({ onNavigate }) {
             return pool;
         });
         } else {
-        setPlayerBags(prev => {
-            const nb = [...prev];
-            const currentBagIdx = currentPlayer;
-            nb[currentBagIdx] = { ...nb[currentBagIdx] };
-            const compId = component.id || component.name;
-            nb[currentBagIdx][category] = nb[currentBagIdx][category].filter(c => (c.id || c.name) !== compId);
-            return nb;
-        });
+        // Update local bags array
+        const currentBagIdx = currentPlayer;
+        updatedBags[currentBagIdx] = { ...updatedBags[currentBagIdx] };
+        const compId = component.id || component.name;
+        updatedBags[currentBagIdx][category] = updatedBags[currentBagIdx][category].filter(c => (c.id || c.name) !== compId);
         }
 
         setDraftHistory(prev => [...prev, { 
@@ -527,10 +679,27 @@ export default function DraftSimulator({ onNavigate }) {
         }]);
     });
 
+    // Set updated bags state
+    setPlayerBags(updatedBags);
     setFactions(fc);
     setPlayerProgress(pg);
     setPendingPicks([]);
     setIsPickingPhase(false);
+
+    // FOR FRANKENDRAZ: Check if all bags are empty using the updated bags
+    if (draftVariant === "frankendraz") {
+      const allBagsEmpty = updatedBags.every(bag => 
+        (!bag.factions || bag.factions.length === 0) &&
+        (!bag.blue_tiles || bag.blue_tiles.length === 0) &&
+        (!bag.red_tiles || bag.red_tiles.length === 0)
+      );
+      
+      if (allBagsEmpty) {
+        console.log("All FrankenDraz bags are empty - moving to build phase");
+        setDraftPhase("build");
+        return; // Don't advance to next player
+      }
+    }
 
     advanceToNextPlayer(fc, pg);
   };
@@ -546,6 +715,23 @@ export default function DraftSimulator({ onNavigate }) {
             
             if (completedRound && draftVariant !== "rotisserie") {
                 setRound(r => r + 1);
+
+                // Check if bags are empty for FrankenDraz to transition to build phase
+                if (draftVariant === "frankendraz") {
+                    const allBagsEmpty = playerBags.every(bag => 
+                        (!bag.factions || bag.factions.length === 0) &&
+                        (!bag.blue_tiles || bag.blue_tiles.length === 0) &&
+                        (!bag.red_tiles || bag.red_tiles.length === 0)
+                    );
+                    
+                    if (allBagsEmpty) {
+                        console.log("FrankenDraz draft complete - moving to build phase");
+                        setDraftPhase("build");
+                        setIsPickingPhase(false);
+                        return;
+                    }
+                }
+
                 setPlayerBags(prev => {
                     if (prev.length <= 1) return prev;
                     const rotated = [...prev];
@@ -567,15 +753,21 @@ export default function DraftSimulator({ onNavigate }) {
                 const nextProgress = updatedProgress[nextPlayer];
                 
                 let canPick = false;
-                categories.forEach(cat => {
-                    const inBag = nextBag?.[cat]?.length || 0;
-                    const alreadyPicked = nextProgress[cat] || 0;
-                    const limit = draftLimits[cat];
-                    
-                    if (inBag > 0 && alreadyPicked < limit) {
-                        canPick = true;
-                    }
-                });
+                
+                if (draftVariant === "frankendraz") {
+                    // Check if there's anything in the FrankenDraz bag
+                    canPick = (nextBag?.factions?.length > 0) || (nextBag?.blue_tiles?.length > 0) || (nextBag?.red_tiles?.length > 0);
+                } else {
+                    categories.forEach(cat => {
+                        const inBag = nextBag?.[cat]?.length || 0;
+                        const alreadyPicked = nextProgress[cat] || 0;
+                        const limit = draftLimits[cat];
+                        
+                        if (inBag > 0 && alreadyPicked < limit) {
+                            canPick = true;
+                        }
+                    });
+                }
                 
                 if (!canPick) {
                     console.log(`Player ${nextPlayer + 1} auto-passing - nothing they can draft from their bag`);
@@ -972,6 +1164,117 @@ const handleReduction = (playerIndex, category, componentIndex) => {
   }
 };
 
+const handleAddComponentToBuild = (playerIndex, category, component) => {
+    const fc = [...factions];
+    
+    // Check if at limit
+    const currentCount = (fc[playerIndex][category] || []).length;
+    const limit = getCurrentFactionLimits()[category];
+    
+    if (currentCount >= limit) {
+      alert(`Cannot add more ${category}. Limit is ${limit}.`);
+      return;
+    }
+    
+    // Check if already added
+    const alreadyAdded = (fc[playerIndex][category] || []).some(
+      item => item.name === component.name && item.faction === component.faction
+    );
+    
+    if (alreadyAdded) {
+      return;
+    }
+    
+    // Add component
+    if (!fc[playerIndex][category]) {
+      fc[playerIndex][category] = [];
+    }
+    
+    fc[playerIndex][category] = [...fc[playerIndex][category], component];
+    setFactions(fc);
+  };
+  
+  const handleRemoveComponentFromBuild = (playerIndex, category, componentIndex) => {
+    const fc = [...factions];
+    
+    if (!fc[playerIndex][category] || !fc[playerIndex][category][componentIndex]) {
+      return;
+    }
+    
+    fc[playerIndex][category] = fc[playerIndex][category].filter((_, idx) => idx !== componentIndex);
+    setFactions(fc);
+  };
+  
+  const handleCompleteBuildPhase = () => {
+    const limits = getCurrentFactionLimits();
+    
+    // Check if any player needs reduction
+    let needsReduction = false;
+    
+    factions.forEach((faction, idx) => {
+      categories.forEach(cat => {
+        const count = (faction[cat] || []).length;
+        const limit = limits[cat];
+        
+        if (count > limit) {
+          needsReduction = true;
+        }
+      });
+    });
+    
+    // Remove 'factions' category from all players as it's no longer needed
+    const fc = factions.map(faction => {
+      const { factions: _, ...rest } = faction;
+      return rest;
+    });
+    
+    setFactions(fc);
+    console.log("Build phase complete");
+    
+    // If any player is over limits, go to reduction phase
+    // Otherwise skip straight to swap phase
+    if (needsReduction) {
+      console.log("Players over limits - moving to reduction phase");
+      setDraftPhase("reduction");
+    } else {
+      console.log("All players within limits - checking for swaps");
+      // Check for available swaps
+      const allSwaps = [];
+      fc.forEach((faction, playerIdx) => {
+        categories.forEach(cat => {
+          const items = faction[cat] || [];
+          items.forEach((item, itemIdx) => {
+            if (!item || !item.name) return;
+            
+            const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
+            if (triggeredSwaps && Array.isArray(triggeredSwaps) && triggeredSwaps.length > 0) {
+              triggeredSwaps.forEach(swap => {
+                allSwaps.push({
+                  playerIndex: playerIdx,
+                  triggerComponent: item,
+                  triggerCategory: cat,
+                  triggerIndex: itemIdx,
+                  swapOption: swap
+                });
+              });
+            }
+          });
+        });
+      });
+      
+      if (allSwaps.length > 0) {
+        console.log(`Found ${allSwaps.length} available swaps - moving to swap phase`);
+        setPendingSwaps(allSwaps);
+        setDraftPhase("swap");
+      } else {
+        console.log("No swaps available - adding extra components and completing");
+        const factionsWithExtras = addAllExtraComponents(fc);
+        setFactions(factionsWithExtras);
+        setDraftPhase("complete");
+      }
+    }
+  };
+
   useEffect(() => {
   if (draftPhase === "swap" && pendingSwaps.length === 0) {
     console.log("All swaps resolved - adding extra components and completing");
@@ -1116,7 +1419,10 @@ const handleReduction = (playerIndex, category, componentIndex) => {
           categories={categories}
           onSelectCategory={setSelectedCategory}
           playerProgress={playerProgress[currentPlayer] || {}}
-          draftLimits={draftPhase === "reduction" ? getCurrentFactionLimits() : draftLimits}
+          draftLimits={draftPhase === "reduction" ?
+            getCurrentFactionLimits() : 
+            draftLimits
+          }
           selectedCategory={selectedCategory}
           availableComponents={getAvailableComponents()}
           onComponentClick={handlePick}
@@ -1372,6 +1678,8 @@ const handleReduction = (playerIndex, category, componentIndex) => {
             setFirstRoundPickCount={setFirstRoundPickCount}
             subsequentRoundPickCount={subsequentRoundPickCount}
             setSubsequentRoundPickCount={setSubsequentRoundPickCount}
+            frankenDrazSettings={frankenDrazSettings}
+            setFrankenDrazSettings={setFrankenDrazSettings}
           />
         </>
       )}
@@ -1398,6 +1706,41 @@ const handleReduction = (playerIndex, category, componentIndex) => {
           title={`Player ${currentPlayer + 1}'s Draft`}
           isCurrentPlayer={true}
         />
+      );
+   } else if (draftStarted && draftPhase === "build") {
+      console.log("Rendering build phase");
+      return (
+        <>
+          <div className="mb-4 p-4 bg-purple-900/30 rounded-lg border border-purple-600">
+            <h3 className="font-bold text-purple-400 text-lg mb-2">Build Phase</h3>
+            <p className="text-purple-300 text-sm mb-2">
+              Build your factions from the components you drafted. Click on components to add them to your build.
+            </p>
+            <p className="text-purple-300 text-sm mb-3">
+              You must stay within the standard faction limits. Your drafted blue and red tiles are already included.
+            </p>
+            <button
+              onClick={handleCompleteBuildPhase}
+              className="mt-2 px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-bold transition-colors shadow-lg"
+            >
+              Complete Build Phase & Continue
+            </button>
+          </div>
+          
+          <div className="space-y-6">
+            {factions.map((f, i) => (
+              <FrankenDrazBuilder
+                key={i}
+                playerIndex={i}
+                draftedItems={f}
+                builtFaction={f}
+                onAddComponent={(category, component) => handleAddComponentToBuild(i, category, component)}
+                onRemoveComponent={(category, index) => handleRemoveComponentFromBuild(i, category, index)}
+                factionLimits={getCurrentFactionLimits()}
+              />
+            ))}
+          </div>
+        </>
       );
     } else if (draftStarted && draftPhase === "reduction") {
       console.log("Rendering reduction phase for", factions.length, "factions");

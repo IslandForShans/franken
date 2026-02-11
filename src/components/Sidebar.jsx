@@ -125,6 +125,246 @@ const toggleAllCategories = () => {
     };
   };
 
+  // Special handling for FrankenDraz bags
+  if (draftVariant === "frankendraz" && Object.keys(availableComponents).length > 0) {
+    const hasItems = (availableComponents.factions && availableComponents.factions.length > 0) ||
+                     (availableComponents.blue_tiles && availableComponents.blue_tiles.length > 0) ||
+                     (availableComponents.red_tiles && availableComponents.red_tiles.length > 0);
+    
+    if (!hasItems) {
+      return (
+        <div className={noWrapper ? "" : "sidebar"}>
+          <div className="sidebar-header">
+            <h2 className="sidebar-title">Draft Categories</h2>
+            <div className="sidebar-subtitle">Your bag is empty</div>
+          </div>
+        </div>
+      );
+    }
+
+    const frankenDrazContent = (
+      <>
+        <div className="sidebar-header">
+          <h2 className="sidebar-title">Your FrankenDraz Bag</h2>
+          <div className="sidebar-subtitle">Click to select items</div>
+        </div>
+
+        <div className="sidebar-content">
+          {/* Factions */}
+          {availableComponents.factions && availableComponents.factions.length > 0 && (
+            <div key="factions-section" className="mb-4">
+              <div className="sidebar-category-header text-sm font-bold mb-2 text-purple-400"
+                   style={{ paddingLeft: '0.75rem' }}>
+                Factions ({availableComponents.factions.length})
+              </div>
+              <div className="space-y-1">
+                {availableComponents.factions.map((faction, idx) => (
+                  <div
+                    key={faction.name || idx}
+                    className="sidebar-component-item"
+                    onClick={() => handleComponentClick('factions', faction)}
+                  >
+                    <div className="flex items-center gap-2">
+                      {faction.icon && (
+                        <img src={faction.icon} alt={faction.name} className="w-6 h-6" />
+                      )}
+                      <span className="font-medium">{faction.name}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Blue Tiles */}
+          {availableComponents.blue_tiles && availableComponents.blue_tiles.length > 0 && (
+            <div key="blue-tiles-section" className="mb-4">
+              <div className="sidebar-category-header text-sm font-bold mb-2 text-blue-400"
+                   style={{ paddingLeft: '0.75rem' }}>
+                Blue Tiles ({availableComponents.blue_tiles.length})
+              </div>
+              <div className="space-y-1">
+                {availableComponents.blue_tiles.map((tile, idx) => (
+                  <div
+                    key={tile.id || tile.name || idx}
+                    className="sidebar-component-item"
+                    onClick={() => handleComponentClick('blue_tiles', tile)}
+                    onMouseEnter={(e) => {
+                      if (!supportsHover) return;
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const pos = clampToViewport(rect.right + 12, rect.top);
+
+                      hoverTimeoutRef.current = setTimeout(() => {
+                        setHoverPosition(pos);
+                        setHoveredComponent({ component: tile, category: 'blue_tiles' });
+                      }, 150);
+                    }}
+                    onMouseLeave={() => {
+                      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+                      setHoveredComponent(null);
+                    }}
+                  >
+                    <div>
+                      <div className="font-medium">{tile.name}</div>
+                      {tile.planets && tile.planets.length > 0 && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          {tile.planets.length} planet{tile.planets.length !== 1 ? 's' : ''}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Red Tiles */}
+          {availableComponents.red_tiles && availableComponents.red_tiles.length > 0 && (
+            <div key="red-tiles-section">
+              <div className="sidebar-category-header text-sm font-bold mb-2 text-red-400"
+                   style={{ paddingLeft: '0.75rem' }}>
+                Red Tiles ({availableComponents.red_tiles.length})
+              </div>
+              <div className="space-y-1">
+                {availableComponents.red_tiles.map((tile, idx) => (
+                  <div
+                    key={tile.id || tile.name || idx}
+                    className="sidebar-component-item"
+                    onClick={() => handleComponentClick('red_tiles', tile)}
+                    onMouseEnter={(e) => {
+                      if (!supportsHover) return;
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const pos = clampToViewport(rect.right + 12, rect.top);
+
+                      hoverTimeoutRef.current = setTimeout(() => {
+                        setHoverPosition(pos);
+                        setHoveredComponent({ component: tile, category: 'red_tiles' });
+                      }, 150);
+                    }}
+                    onMouseLeave={() => {
+                      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+                      setHoveredComponent(null);
+                    }}
+                  >
+                    <div>
+                      <div className="font-medium">{tile.name}</div>
+                      {tile.planets && tile.planets.length > 0 && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          {tile.planets.length} planet{tile.planets.length !== 1 ? 's' : ''}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </>
+    );
+
+    if (noWrapper) {
+      return frankenDrazContent;
+    }
+
+    return (
+      <div className="sidebar">
+        {frankenDrazContent}
+        {/* Hover preview portal - use existing hover preview structure */}
+        {hoveredComponent && createPortal(
+          <div
+            style={{
+              position: "fixed",
+              top: hoverPosition.y,
+              left: hoverPosition.x,
+              width: "300px",
+              maxHeight: "500px",
+              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
+              background: "#0b1220",
+              border: "1px solid var(--border-color)",
+              borderRadius: "0.75rem",
+              padding: "1rem",
+              boxShadow: "0 30px 70px rgba(0,0,0,0.85)",
+              zIndex: 100000,
+              pointerEvents: "none"
+            }}
+          >
+            <div
+              className="font-bold mb-2 uppercase"
+              style={{
+                color: "var(--accent-yellow)",
+                fontSize: "1.1rem",
+                letterSpacing: "0.05em"
+              }}
+            >
+              {hoveredComponent.component.name}
+            </div>
+
+            {/* Faction preview */}
+            {hoveredComponent.category === 'factions' && (
+              <div className="mt-2">
+                <div className="flex items-center gap-2 mb-3">
+                  {hoveredComponent.component.icon && (
+                    <img 
+                      src={hoveredComponent.component.icon} 
+                      alt={hoveredComponent.component.name} 
+                      className="w-8 h-8" 
+                    />
+                  )}
+                  <span className="text-purple-400 font-semibold">Faction Shell</span>
+                </div>
+                <p className="text-sm text-gray-300 italic">
+                  During the build phase, you'll be able to select components from this faction to build your custom faction.
+                </p>
+              </div>
+            )}
+
+            {/* Tile preview - reuse existing tile rendering logic */}
+            {(hoveredComponent.category === 'blue_tiles' || hoveredComponent.category === 'red_tiles') && 
+             hoveredComponent.component.planets && 
+             hoveredComponent.component.planets.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-gray-700">
+                <div className="font-semibold mb-2 text-sm" style={{ color: "var(--accent-yellow)" }}>
+                  PLANETS ({hoveredComponent.component.planets.length})
+                </div>
+                {hoveredComponent.component.planets.map((planet, pIdx) => (
+                  <div key={pIdx} className="mb-3 pb-3 border-b border-gray-700 last:border-b-0">
+                    <div className="font-semibold text-white mb-1">{planet.name}</div>
+                    <div className="flex gap-3 text-xs">
+                      <div>
+                        <span className="font-semibold text-blue-400">Resources:</span>{' '}
+                        <span className="text-white">{planet.resources}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-yellow-400">Influence:</span>{' '}
+                        <span className="text-white">{planet.influence}</span>
+                      </div>
+                    </div>
+                    {planet.trait && (
+                      <div className="text-xs mt-1">
+                        <span className="font-semibold text-green-400">Trait:</span>{' '}
+                        <span className="text-white">{planet.trait}</span>
+                      </div>
+                    )}
+                    {planet.tech_specialty && (
+                      <div className="text-xs mt-1">
+                        <span className="font-semibold text-purple-400">Tech:</span>{' '}
+                        <span className="text-white">{planet.tech_specialty}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>,
+          document.body
+        )}
+      </div>
+    );
+  }
+
   const content = (
   <>
     <div className="sidebar-header">
@@ -365,7 +605,26 @@ const toggleAllCategories = () => {
               {hoveredComponent.component.name}
             </div>
 
-            {hoveredComponent.component.faction && (
+            {/* ADD THIS SECTION FOR FACTIONS */}
+            {hoveredComponent.category === 'factions' && (
+              <div className="mt-2">
+                <div className="flex items-center gap-2 mb-3">
+                  {hoveredComponent.component.icon && (
+                    <img 
+                      src={hoveredComponent.component.icon} 
+                      alt={hoveredComponent.component.name} 
+                      className="w-8 h-8" 
+                    />
+                  )}
+                  <span className="text-purple-400 font-semibold">Faction Shell</span>
+                </div>
+                <p className="text-sm text-gray-300 italic">
+                  During the build phase, you'll be able to select components from this faction to build your custom faction.
+                </p>
+              </div>
+            )}
+
+            {hoveredComponent.component.faction && hoveredComponent.category !== 'factions' && (
               <div
                 className="text-sm mb-2"
                 style={{ color: "var(--accent-blue)" }}
