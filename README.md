@@ -28,20 +28,22 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Component search!
 - Tile resource/influence calculations!
 - Export all factions into one text file for easy reading/printing!
+- Detailed draft summary!
+- Export draft history!
+- Variants: Normal, Power, Rotisserie, FrankenDraz!
 
 ## Adding/Fixing soon
 
 ### Known Bugs
 - On mobile, sidebar doesn't scroll properly and boxes are out O.O.B.
 - Refuse swap button is confusing, need to remove from swap modal main menu
-
-#### FrankenDraz Bugs
+- Legendary icons not showing on legendary tiles
 
 ### High Priority
 - Make component preview on hover show any added/swapped components
+- Make draft summary show tech icons and anomaly/trait/legendary icons
 
 ### Low Priority
-- Create FrankenDraz mode option
 - Creating custom Non-Draft Components
 - Make draft actually start with local multiayer
 

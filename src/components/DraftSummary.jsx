@@ -127,7 +127,7 @@ export default function DraftSummary({ factions }) {
                       </span>
                     )}
                     {tile.planets && tile.planets.map(p => (
-                      <div key={p.name} className="ml-4 text-xs text-gray-700">
+                      <div key={p.name} className="ml-4 text-xs text-white">
                         • {p.name}: {p.resource}R/{p.influence}I
                         {p.traits && p.traits.length > 0 && (
                           <span className="text-purple-600 ml-1">

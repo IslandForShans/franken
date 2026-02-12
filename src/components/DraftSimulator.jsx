@@ -121,20 +121,13 @@ export default function DraftSimulator({ onNavigate }) {
 
     let activeCategories = [...baseCategories];
 
-    // DS Only mode: Include PoK/TE categories because DS factions use them
-    // But tiles still respect individual PoK/TE toggles
-    if (expansionsEnabled.dsOnly) {
+    // Respect PoK/TE toggles in all modes (including DS Only)
+    if (expansionsEnabled.pok) {
       activeCategories.push(...pokCategories);
-      activeCategories.push(...teCategories);
-    } else {
-      // Normal mode - respect PoK and TE toggles
-      if (expansionsEnabled.pok) {
-        activeCategories.push(...pokCategories);
-      }
+    }
 
       if (expansionsEnabled.te) {
-        activeCategories.push(...teCategories);
-      }
+      activeCategories.push(...teCategories);
     }
 
     return activeCategories;
@@ -1060,8 +1053,22 @@ setTimeout(() => {
   };
 
   const getCurrentFactionLimits = useCallback(() => {
-    return draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
-  }, [draftVariant]);
+    if (draftVariant === "power") {
+      return powerFactionLimits;
+    }
+
+    if (draftVariant === "frankendraz") {
+      return {
+        ...baseFactionLimits,
+        abilities: 4,
+        faction_techs: 3,
+        blue_tiles: frankenDrazSettings.blueTilesPerBag,
+        red_tiles: frankenDrazSettings.redTilesPerBag
+      };
+    }
+
+    return baseFactionLimits;
+  }, [draftVariant, frankenDrazSettings.blueTilesPerBag, frankenDrazSettings.redTilesPerBag]);
 
 const handleSwap = (playerIndex, swapCategory, componentIndex, swapOption, triggerComponent) => {
   const { updatedFactions, swapComponent } = executeSwap({
