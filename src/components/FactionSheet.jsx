@@ -346,6 +346,15 @@ const handleCancelSwap = () => {
               </div>
             )}
 
+            {/* Leaders note - always show */}
+            {(category === 'commanders' || category === 'heroes') && item.note && (
+              <div className="text-xs mt-2">
+                <div className="font-semibold mb-2" style={{color: '#fbbf24'}}>
+                  {item.note}
+                </div>
+              </div>
+            )}
+
             {/* Starting Techs - always show */}
             {category === 'starting_techs' && (
               <div className="text-xs mt-2">

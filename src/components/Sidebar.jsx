@@ -745,6 +745,15 @@ const toggleAllCategories = () => {
                 );
               })}
 
+              {/* Leaders note */}
+            {(hoveredComponent.category === 'commanders' || hoveredComponent.category === 'heroes') && hoveredComponent.component.note && (
+              <div className="text-sm mb-3">
+                <div className="font-semibold mb-2" style={{ color: "var(--accent-yellow)" }}>
+                  {hoveredComponent.component.note}
+                </div>
+              </div>
+            )}
+
             {/* Starting Techs - Special handling */}
             {hoveredComponent.category === 'starting_techs' && (
               <div className="text-sm mb-3">

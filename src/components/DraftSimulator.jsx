@@ -85,6 +85,7 @@ export default function DraftSimulator({ onNavigate }) {
 
   // Sidebar
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const showSidebar = draftStarted && draftPhase === "draft";
 
   // UI state
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
@@ -175,6 +176,12 @@ export default function DraftSimulator({ onNavigate }) {
     
     setDraftLimits(filteredLimits);
   }, [draftVariant, categories]);
+
+  useEffect(() => {
+    if (!showSidebar) {
+      setSidebarCollapsed(true);
+    }
+  }, [showSidebar]);
 
   // PERFORMANCE: Memoize getFilteredComponents with useCallback
   const getFilteredComponents = useCallback((category) => {
@@ -1432,28 +1439,32 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
   <div className="flex h-screen">
-        <Sidebar
-          isOpen={!sidebarCollapsed}
-          categories={categories}
-          onSelectCategory={setSelectedCategory}
-          playerProgress={playerProgress[currentPlayer] || {}}
-          draftLimits={draftPhase === "reduction" ?
-            getCurrentFactionLimits() : 
-            draftLimits
-          }
-          selectedCategory={selectedCategory}
-          availableComponents={getAvailableComponents()}
-          onComponentClick={handlePick}
-          draftVariant={draftVariant}
-        />
+        {showSidebar && (
+          <>
+            <Sidebar
+              isOpen={!sidebarCollapsed}
+              categories={categories}
+              onSelectCategory={setSelectedCategory}
+              playerProgress={playerProgress[currentPlayer] || {}}
+              draftLimits={draftPhase === "reduction" ?
+                getCurrentFactionLimits() : 
+                draftLimits
+              }
+              selectedCategory={selectedCategory}
+              availableComponents={getAvailableComponents()}
+              onComponentClick={handlePick}
+              draftVariant={draftVariant}
+            />
 
         {!sidebarCollapsed && (
-          <div
-            className="sidebar-backdrop"
-            role="button"
-            aria-label="Close sidebar"
-            onClick={() => setSidebarCollapsed(true)}
-          />
+              <div
+                className="sidebar-backdrop"
+                role="button"
+                aria-label="Close sidebar"
+                onClick={() => setSidebarCollapsed(true)}
+              />
+            )}
+          </>
         )}
 
   <div className="flex-1 flex flex-col">
@@ -1462,13 +1473,15 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
                 <h2 className="text-xl font-bold text-yellow-400">Franken Draft</h2>
                 <div className="flex justify-between items-center mt-2">
                   <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                      className={`sidebar-toggle-button px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors`}
-                      aria-label={sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'}
-                    >
-                      {sidebarCollapsed ? '☰' : '✕'}
-                    </button>
+                    {showSidebar && (
+                      <button
+                        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                        className={`sidebar-toggle-button px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors`}
+                        aria-label={sidebarCollapsed ? 'Open sidebar' : 'Close sidebar'}
+                      >
+                        {sidebarCollapsed ? '☰' : '✕'}
+                      </button>
+                    )}
 
                     {onNavigate && (
                       <button

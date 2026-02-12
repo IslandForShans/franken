@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import factionsJSONRaw from "../data/factions.json";
 import discordantStarsJSONRaw from "../data/discordant-stars.json";
-import { processFactionData } from "../utils/dataProcessor.js";
+import { ICON_MAP, processFactionData } from "../utils/dataProcessor.js";
 import { isComponentUndraftable } from "../data/undraftable-components.js";
 import './UnifiedStyles.css';
 
 const factionsJSON = processFactionData(factionsJSONRaw);
 const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
+
+const TECH_ICONS = {
+  red: ICON_MAP.techColors.Red,
+  blue: ICON_MAP.techColors.Blue,
+  green: ICON_MAP.techColors.Green,
+  yellow: ICON_MAP.techColors.Yellow
+};
 
 export default function FrankenDrazBuilder({
   playerIndex,
@@ -93,6 +100,7 @@ export default function FrankenDrazBuilder({
     const isTech = ['faction_techs', 'starting_techs'].includes(category);
     const isTile = ['blue_tiles', 'red_tiles', 'home_systems'].includes(category);
     const isBreakthrough = category === 'breakthrough';
+    const typeIcon = component.tech_type ? TECH_ICONS[component.tech_type.toLowerCase()] : null;
 
     return (
       <div
@@ -138,12 +146,45 @@ export default function FrankenDrazBuilder({
             {/* Tech type & prerequisites */}
             {isTech && component.tech_type && (
               <div className="text-xs mt-1" style={{ color: '#93c5fd' }}>
-                <span className="font-semibold">Type:</span> {component.tech_type}
+                <span className="font-semibold">Type:</span>
+                {typeIcon ? (
+                  <img
+                    src={typeIcon}
+                    alt={`${component.tech_type} tech`}
+                    title={`${component.tech_type} tech`}
+                    className="inline-block w-4 h-4 ml-1 align-middle"
+                  />
+                ) : (
+                  <span className="ml-1">{component.tech_type}</span>
+                )}
                 {component.prerequisites && component.prerequisites.length > 0 && (
-                  <span className="ml-2">
-                    <span className="font-semibold">Prereqs:</span> {component.prerequisites.join(', ')}
+                  <span className="ml-2 inline-flex items-center gap-1">
+                    <span className="font-semibold">Prereqs:</span>
+                    {component.prerequisites.map((prereq, idx) => {
+                      const prereqName = typeof prereq === 'string' ? prereq : prereq.tech_type || prereq.color || '';
+                      const prereqIcon = TECH_ICONS[prereqName.toLowerCase()];
+                      if (!prereqIcon) {
+                        return <span key={idx}>{prereqName}</span>;
+                      }
+                      return (
+                        <img
+                          key={idx}
+                          src={prereqIcon}
+                          alt={`${prereqName} prerequisite`}
+                          title={`${prereqName} prerequisite`}
+                          className="w-4 h-4"
+                        />
+                      );
+                    })}
                   </span>
                 )}
+              </div>
+            )}
+
+            {/* Leaders note */}
+            {(category === 'commanders' || category === 'heroes') && component.note && (
+              <div className="text-xs mt-1 font-semibold" style={{ color: '#fbbf24' }}>
+                {component.note}
               </div>
             )}
 
@@ -168,7 +209,25 @@ export default function FrankenDrazBuilder({
             {/* Breakthrough synergy */}
             {isBreakthrough && component.synergy && component.synergy.length > 0 && (
               <div className="text-xs mt-1" style={{ color: '#fbbf24' }}>
-                <span className="font-semibold">Synergy:</span> {component.synergy.map(s => `${s.primary}/${s.secondary}`).join(', ')}
+                <span className="font-semibold">Synergy:</span>
+                <span className="ml-1 inline-flex flex-wrap items-center gap-2">
+                  {component.synergy.map((s, idx) => {
+                    const primaryIcon = TECH_ICONS[s.primary?.toLowerCase()];
+                    const secondaryIcon = TECH_ICONS[s.secondary?.toLowerCase()];
+
+                    if (!primaryIcon || !secondaryIcon) {
+                      return <span key={idx}>{`${s.primary}/${s.secondary}`}</span>;
+                    }
+
+                    return (
+                      <span key={idx} className="inline-flex items-center gap-1">
+                        <img src={primaryIcon} alt={`${s.primary} tech`} title={`${s.primary} tech`} className="w-4 h-4" />
+                        <img src="./icons/synergy-symbol.png" alt="synergy" title="synergy" className="w-3 h-3" />
+                        <img src={secondaryIcon} alt={`${s.secondary} tech`} title={`${s.secondary} tech`} className="w-4 h-4" />
+                      </span>
+                    );
+                  })}
+                </span>
               </div>
             )}
 

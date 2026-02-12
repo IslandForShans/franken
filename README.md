@@ -36,7 +36,6 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Refuse swap button is confusing, need to remove from swap modal main menu
 
 #### FrankenDraz Bugs
-- Tech icons not appearing in FrankenDraz build phase.
 
 ### High Priority
 - Make component preview on hover show any added/swapped components
