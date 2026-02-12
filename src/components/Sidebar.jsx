@@ -2,6 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "./UnifiedStyles.css";
 import { ICON_MAP } from "../utils/dataProcessor";
+import factionsJSONRaw from "../data/factions.json";
+import discordantStarsJSONRaw from "../data/discordant-stars.json";
+import { processFactionData } from "../utils/dataProcessor.js";
+import { isComponentUndraftable } from "../data/undraftable-components.js";
+
+const factionsJSON = processFactionData(factionsJSONRaw);
+const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
+
+const FACTION_CATEGORIES = [
+  'abilities', 'faction_techs', 'agents', 'commanders', 'heroes', 'promissory',
+  'starting_techs', 'starting_fleet', 'commodity_values', 'flagship', 'mech',
+  'home_systems', 'breakthrough'
+];
 
 const TECH_ICONS = {
   red: ICON_MAP.techColors.Red,
@@ -163,6 +176,19 @@ const toggleAllCategories = () => {
                     key={faction.name || idx}
                     className="sidebar-component-item"
                     onClick={() => handleComponentClick('factions', faction)}
+                    onMouseEnter={(e) => {
+                      if (!supportsHover) return;
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const pos = clampToViewport(rect.right + 12, rect.top);
+                      hoverTimeoutRef.current = setTimeout(() => {
+                        setHoverPosition(pos);
+                        setHoveredComponent({ component: faction, category: 'factions' });
+                      }, 150);
+                    }}
+                    onMouseLeave={() => {
+                      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+                      setHoveredComponent(null);
+                    }}
                   >
                     <div className="flex items-center gap-2">
                       {faction.icon && (
@@ -193,7 +219,6 @@ const toggleAllCategories = () => {
                       if (!supportsHover) return;
                       const rect = e.currentTarget.getBoundingClientRect();
                       const pos = clampToViewport(rect.right + 12, rect.top);
-
                       hoverTimeoutRef.current = setTimeout(() => {
                         setHoverPosition(pos);
                         setHoveredComponent({ component: tile, category: 'blue_tiles' });
@@ -204,13 +229,27 @@ const toggleAllCategories = () => {
                       setHoveredComponent(null);
                     }}
                   >
-                    <div>
-                      <div className="font-medium">{tile.name}</div>
-                      {tile.planets && tile.planets.length > 0 && (
-                        <div className="text-xs text-gray-500 mt-1">
-                          {tile.planets.length} planet{tile.planets.length !== 1 ? 's' : ''}
-                        </div>
+                    <div className="flex items-center gap-2 font-medium">
+                      <span>{tile.name}</span>
+                      {Array.isArray(tile.planets) && tile.planets.flatMap((planet, pIdx) => {
+                        const traitIcons = Array.isArray(planet.trait_icons)
+                          ? planet.trait_icons.map((icon, iIdx) => (
+                              <img key={`trait-${pIdx}-${iIdx}`} src={icon} alt="planet trait" className="w-4 h-4" />
+                            ))
+                          : [];
+                        const techIcons = Array.isArray(planet.tech_specialty_icons)
+                          ? planet.tech_specialty_icons.map((icon, iIdx) => (
+                              <img key={`tech-${pIdx}-${iIdx}`} src={icon} alt="tech specialty" className="w-4 h-4" />
+                            ))
+                          : [];
+                        return [...traitIcons, ...techIcons];
+                      })}
+                      {tile.wormhole_icon && (
+                        <img src={tile.wormhole_icon} alt="wormhole" className="w-4 h-4" />
                       )}
+                      {Array.isArray(tile.anomaly_icons) && tile.anomaly_icons.map((icon, i) => (
+                        <img key={`anomaly-${i}`} src={icon} alt="anomaly" className="w-4 h-4" />
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -235,7 +274,6 @@ const toggleAllCategories = () => {
                       if (!supportsHover) return;
                       const rect = e.currentTarget.getBoundingClientRect();
                       const pos = clampToViewport(rect.right + 12, rect.top);
-
                       hoverTimeoutRef.current = setTimeout(() => {
                         setHoverPosition(pos);
                         setHoveredComponent({ component: tile, category: 'red_tiles' });
@@ -246,13 +284,27 @@ const toggleAllCategories = () => {
                       setHoveredComponent(null);
                     }}
                   >
-                    <div>
-                      <div className="font-medium">{tile.name}</div>
-                      {tile.planets && tile.planets.length > 0 && (
-                        <div className="text-xs text-gray-500 mt-1">
-                          {tile.planets.length} planet{tile.planets.length !== 1 ? 's' : ''}
-                        </div>
+                    <div className="flex items-center gap-2 font-medium">
+                      <span>{tile.name}</span>
+                      {Array.isArray(tile.planets) && tile.planets.flatMap((planet, pIdx) => {
+                        const traitIcons = Array.isArray(planet.trait_icons)
+                          ? planet.trait_icons.map((icon, iIdx) => (
+                              <img key={`trait-${pIdx}-${iIdx}`} src={icon} alt="planet trait" className="w-4 h-4" />
+                            ))
+                          : [];
+                        const techIcons = Array.isArray(planet.tech_specialty_icons)
+                          ? planet.tech_specialty_icons.map((icon, iIdx) => (
+                              <img key={`tech-${pIdx}-${iIdx}`} src={icon} alt="tech specialty" className="w-4 h-4" />
+                            ))
+                          : [];
+                        return [...traitIcons, ...techIcons];
+                      })}
+                      {tile.wormhole_icon && (
+                        <img src={tile.wormhole_icon} alt="wormhole" className="w-4 h-4" />
                       )}
+                      {Array.isArray(tile.anomaly_icons) && tile.anomaly_icons.map((icon, i) => (
+                        <img key={`anomaly-${i}`} src={icon} alt="anomaly" className="w-4 h-4" />
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -301,25 +353,52 @@ const toggleAllCategories = () => {
             >
               {hoveredComponent.component.name}
             </div>
+            
+            {/* Faction Preview */}
+            {hoveredComponent.category === 'factions' && (() => {
+              const factionName = hoveredComponent.component.name;
+              let fullFaction = factionsJSON.factions.find(f => f.name === factionName);
+              if (!fullFaction) {
+                fullFaction = discordantStarsJSON?.factions?.find(f => f.name === factionName);
+              }
+              // Use active draft categories if available, otherwise fall back to all
+              const categoriesToShow = Array.isArray(categories) && categories.length > 0
+                ? FACTION_CATEGORIES.filter(cat => categories.includes(cat))
+                : FACTION_CATEGORIES;
 
-            {/* Faction preview */}
-            {hoveredComponent.category === 'factions' && (
-              <div className="mt-2">
-                <div className="flex items-center gap-2 mb-3">
-                  {hoveredComponent.component.icon && (
-                    <img 
-                      src={hoveredComponent.component.icon} 
-                      alt={hoveredComponent.component.name} 
-                      className="w-8 h-8" 
-                    />
+              const componentsByCategory = fullFaction
+                ? categoriesToShow.flatMap(cat =>
+                    (fullFaction[cat] || [])
+                      .filter(c => !isComponentUndraftable(c.name, factionName))
+                      .map(c => ({ name: c.name, category: cat }))
+                  )
+                : [];
+
+              return (
+                <div className="mt-2">
+                  <div className="flex items-center gap-2 mb-3">
+                    {hoveredComponent.component.icon && (
+                      <img src={hoveredComponent.component.icon} alt={factionName} className="w-8 h-8" />
+                    )}
+                    <span className="text-purple-400 font-semibold text-sm">{factionName}</span>
+                  </div>
+                  {componentsByCategory.length > 0 ? (
+                    <div className="space-y-1">
+                      {componentsByCategory.map((comp, i) => (
+                        <div key={i} className="flex justify-between items-center text-xs">
+                          <span className="text-white">{comp.name}</span>
+                          <span className="text-gray-500 ml-3 flex-shrink-0">
+                            {comp.category.replace(/_/g, ' ')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-gray-400 italic">No components found</p>
                   )}
-                  <span className="text-purple-400 font-semibold">Faction Shell</span>
                 </div>
-                <p className="text-sm text-gray-300 italic">
-                  During the build phase, you'll be able to select components from this faction to build your custom faction.
-                </p>
-              </div>
-            )}
+              );
+            })()}
 
             {/* Tile preview - reuse existing tile rendering logic */}
             {(hoveredComponent.category === 'blue_tiles' || hoveredComponent.category === 'red_tiles') && 

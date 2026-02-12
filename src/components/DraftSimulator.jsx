@@ -155,6 +155,12 @@ export default function DraftSimulator({ onNavigate }) {
   }, [settingsCollapsed]);
 
   useEffect(() => {
+    if (draftVariant === "frankendraz") {
+      setFirstRoundPickCount(2);
+      setSubsequentRoundPickCount(1);
+      return; // draftLimits not used in FrankenDraz
+    }
+
     const baseLimits = draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
     const draftBaseLimits = draftVariant === "power" ? powerDraftLimits : defaultDraftLimits;
     
@@ -317,7 +323,8 @@ export default function DraftSimulator({ onNavigate }) {
     console.log(`Creating ${playerCount} FrankenDraz bags`);
     
     // Get all available factions (names and icons only)
-    let allFactions = factionsJSON.factions
+    // Get all available factions (names and icons only)
+    let allFactions = expansionsEnabled.dsOnly ? [] : factionsJSON.factions
       .filter(f => !bannedFactions.has(f.name))
       .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
       .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
@@ -328,6 +335,7 @@ export default function DraftSimulator({ onNavigate }) {
     if (expansionsEnabled.ds && discordantStarsJSON?.factions) {
       const dsFactions = discordantStarsJSON.factions
         .filter(f => !bannedFactions.has(f.name))
+        .filter(f => expansionsEnabled.br || !brExclusions.factions.includes(f.name))
         .map(f => ({ name: f.name, icon: f.icon }));
       allFactions = [...allFactions, ...dsFactions];
     }
@@ -445,7 +453,7 @@ export default function DraftSimulator({ onNavigate }) {
             return p;
         }), 0);
     }, 100);
-  }, [categories, getFilteredComponents, createBagsWithUniqueDistribution]);
+  }, [categories, getFilteredComponents, createBagsWithUniqueDistribution, createBagsForFrankenDraz ]);
 
   const checkAndAdvanceIfNeeded = (currentFactions, currentProgress, playerIdx) => {
     if (draftVariant === "rotisserie") return;
@@ -532,7 +540,12 @@ export default function DraftSimulator({ onNavigate }) {
     if (draftVariant === "rotisserie") return 1;
     
     if (draftVariant === "frankendraz") {
-      return round === 1 ? (firstRoundPickCount || 2) : (subsequentRoundPickCount || 1);
+      const currentBag = playerBags[currentPlayer];
+      if (!currentBag) return 0;
+      const availableCategories = ['factions', 'blue_tiles', 'red_tiles'].filter(
+        cat => currentBag[cat] && currentBag[cat].length > 0
+      ).length;
+      return Math.min(baseNeeded, availableCategories);
     }
 
     const currentBag = playerBags[currentPlayer];
@@ -576,6 +589,12 @@ export default function DraftSimulator({ onNavigate }) {
             !(pick.category === category && (pick.component.id || pick.component.name) === componentId)
           )
         );
+        return;
+      }
+
+      const alreadyPickedInCategory = pendingPicks.some(p => p.category === category);
+      if (alreadyPickedInCategory) {
+        alert(`You can only pick one ${category.replace('_', ' ')} per round.`);
         return;
       }
       
@@ -714,8 +733,6 @@ export default function DraftSimulator({ onNavigate }) {
             const completedRound = nextPlayer === 0;
             
             if (completedRound && draftVariant !== "rotisserie") {
-                setRound(r => r + 1);
-
                 // Check if bags are empty for FrankenDraz to transition to build phase
                 if (draftVariant === "frankendraz") {
                     const allBagsEmpty = playerBags.every(bag => 
@@ -731,7 +748,8 @@ export default function DraftSimulator({ onNavigate }) {
                         return;
                     }
                 }
-
+                
+                setRound(r => r + 1);
                 setPlayerBags(prev => {
                     if (prev.length <= 1) return prev;
                     const rotated = [...prev];
@@ -1737,6 +1755,9 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
                 onAddComponent={(category, component) => handleAddComponentToBuild(i, category, component)}
                 onRemoveComponent={(category, index) => handleRemoveComponentFromBuild(i, category, index)}
                 factionLimits={getCurrentFactionLimits()}
+                expansionsEnabled={expansionsEnabled}
+                activeCategories={categories}
+                bannedComponents={bannedComponents}
               />
             ))}
           </div>

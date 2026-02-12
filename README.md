@@ -36,10 +36,7 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Refuse swap button is confusing, need to remove from swap modal main menu
 
 #### FrankenDraz Bugs
-- Tiles don't show stuff like normal
-- Draft settings don't actually work
-- No limit to amount of things you can pick per category if there is more than one pick
-- Components in build phase don't show all info
+- Tech icons not appearing in FrankenDraz build phase.
 
 ### High Priority
 - Make component preview on hover show any added/swapped components

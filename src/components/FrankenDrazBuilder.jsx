@@ -14,16 +14,20 @@ export default function FrankenDrazBuilder({
   builtFaction,
   onAddComponent,
   onRemoveComponent,
-  factionLimits
+  factionLimits,
+  expansionsEnabled = {},
+  activeCategories = [],
+  bannedComponents = new Set()
 }) {
   const [selectedCategory, setSelectedCategory] = useState('abilities');
   const [expandedFaction, setExpandedFaction] = useState(null);
 
+  // Only show categories that are active in this draft
   const categories = [
     'abilities', 'faction_techs', 'agents', 'commanders', 'heroes', 'promissory',
     'starting_techs', 'starting_fleet', 'commodity_values', 'flagship', 'mech',
     'home_systems', 'breakthrough'
-  ];
+  ].filter(cat => activeCategories.includes(cat));
 
   const formatCategoryName = (category) =>
     category.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
@@ -34,17 +38,17 @@ export default function FrankenDrazBuilder({
     const draftedFactions = draftedItems.factions || [];
 
     draftedFactions.forEach(draftedFaction => {
-      // Find the full faction data
       let fullFaction = factionsJSON.factions.find(f => f.name === draftedFaction.name);
-      
       if (!fullFaction && discordantStarsJSON?.factions) {
         fullFaction = discordantStarsJSON.factions.find(f => f.name === draftedFaction.name);
       }
 
       if (fullFaction && fullFaction[category]) {
         fullFaction[category].forEach(comp => {
-          // Filter out undraftable components
-          if (!isComponentUndraftable(comp.name, fullFaction.name)) {
+          if (
+            !isComponentUndraftable(comp.name, fullFaction.name) &&
+            !bannedComponents.has(comp.id || comp.name)
+          ) {
             components.push({
               ...comp,
               faction: fullFaction.name,
@@ -85,6 +89,11 @@ export default function FrankenDrazBuilder({
     const atLimit = isCategoryAtLimit(category);
     const canAdd = !isAdded && !atLimit;
 
+    const isUnit = ['flagship', 'mech', 'starting_fleet'].includes(category);
+    const isTech = ['faction_techs', 'starting_techs'].includes(category);
+    const isTile = ['blue_tiles', 'red_tiles', 'home_systems'].includes(category);
+    const isBreakthrough = category === 'breakthrough';
+
     return (
       <div
         key={`${component.name}-${component.faction}`}
@@ -97,21 +106,115 @@ export default function FrankenDrazBuilder({
         }`}
         onClick={() => canAdd && onAddComponent(category, component)}
       >
-        <div className="flex items-start gap-2 mb-2">
-          {component.icon && (
-            <img src={component.icon} alt={component.faction} className="w-5 h-5 mt-1" />
+        {/* Header */}
+        <div className="flex items-start gap-2">
+          {(component.icon || component.factionIcon) && (
+            <img src={component.icon || component.factionIcon} alt={component.faction} className="w-5 h-5 mt-0.5 flex-shrink-0" />
           )}
-          <div className="flex-1">
-            <div className="font-bold text-yellow-400 text-sm">{component.name}</div>
-            <div className="text-xs text-gray-400">{component.faction}</div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <div className="font-bold text-yellow-400 text-sm uppercase">{component.name}</div>
+              {isAdded && <span className="text-green-400 text-xs font-semibold flex-shrink-0">✓ ADDED</span>}
+            </div>
+            <div className="text-xs text-gray-400 mb-1">{component.faction}</div>
+
+            {/* Unit stats */}
+            {isUnit && component.combat && (
+              <div className="text-xs flex gap-2 mt-1" style={{ color: '#fff' }}>
+                {component.cost !== undefined && <span className="font-semibold">Cost: {component.cost}</span>}
+                <span className="font-semibold">Combat: {component.combat}</span>
+                {component.move !== undefined && <span className="font-semibold">Move: {component.move}</span>}
+                {component.capacity !== undefined && <span className="font-semibold">Capacity: {component.capacity}</span>}
+              </div>
+            )}
+
+            {/* Unit abilities */}
+            {isUnit && component.abilities && component.abilities.length > 0 && (
+              <div className="text-xs mt-1" style={{ color: '#c084fc' }}>
+                <span className="font-semibold">Abilities:</span> {component.abilities.join(', ')}
+              </div>
+            )}
+
+            {/* Tech type & prerequisites */}
+            {isTech && component.tech_type && (
+              <div className="text-xs mt-1" style={{ color: '#93c5fd' }}>
+                <span className="font-semibold">Type:</span> {component.tech_type}
+                {component.prerequisites && component.prerequisites.length > 0 && (
+                  <span className="ml-2">
+                    <span className="font-semibold">Prereqs:</span> {component.prerequisites.join(', ')}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Starting techs package */}
+            {category === 'starting_techs' && (
+              <div className="text-xs mt-1">
+                {component.note && (
+                  <div className="font-semibold mb-1" style={{ color: '#fbbf24' }}>{component.note}</div>
+                )}
+                {Array.isArray(component.techs) && component.techs.map((t, i) => {
+                  const techColorMap = { Blue: '#60a5fa', Red: '#f87171', Green: '#34d399', Yellow: '#fcd34d' };
+                  const color = techColorMap[t.tech_type] || '#fff';
+                  return (
+                    <div key={i} style={{ color, marginBottom: '0.15rem' }}>
+                      • {typeof t === 'string' ? t : t.name}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Breakthrough synergy */}
+            {isBreakthrough && component.synergy && component.synergy.length > 0 && (
+              <div className="text-xs mt-1" style={{ color: '#fbbf24' }}>
+                <span className="font-semibold">Synergy:</span> {component.synergy.map(s => `${s.primary}/${s.secondary}`).join(', ')}
+              </div>
+            )}
+
+            {/* Tile planets */}
+            {isTile && component.planets && component.planets.length > 0 && (
+              <div className="text-xs mt-1" style={{ color: '#6ee7b7' }}>
+                <span className="font-semibold">{component.planets.length} Planet{component.planets.length !== 1 ? 's' : ''}:</span>
+                {component.planets.map((p, idx) => (
+                  <div key={idx} style={{ marginLeft: '0.5rem', marginTop: '0.15rem' }}>
+                    <span className="font-semibold text-white">{p.name}</span>
+                    {' '}
+                    <span style={{ color: '#fcd34d' }}>R: {p.resource || p.resources || 0}</span>
+                    {' '}
+                    <span style={{ color: '#93c5fd' }}>I: {p.influence || 0}</span>
+                    {p.traits && p.traits.length > 0 && (
+                      <span style={{ color: '#c084fc' }}> • {p.traits.join(', ')}</span>
+                    )}
+                    {p.technology_specialty && p.technology_specialty.length > 0 && (
+                      <span style={{ color: '#fb923c' }}> • Tech: {p.technology_specialty.join(', ')}</span>
+                    )}
+                    {p.legendary_ability && (
+                      <div style={{ color: '#fcd34d', fontStyle: 'italic' }}>Legendary: {p.legendary_ability}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Tile wormhole & anomalies */}
+            {isTile && component.wormhole && (
+              <div className="text-xs mt-1" style={{ color: '#c084fc' }}>
+                <span className="font-semibold">Wormhole:</span> {component.wormhole}
+              </div>
+            )}
+            {isTile && component.anomalies && component.anomalies.length > 0 && (
+              <div className="text-xs mt-1" style={{ color: '#ef4444' }}>
+                <span className="font-semibold">Anomalies:</span> {component.anomalies.join(', ')}
+              </div>
+            )}
+
+            {/* Description — always for non-units, hidden for units (too long) */}
+            {component.description && (
+              <div className="text-xs text-gray-300 mt-1 italic">{component.description}</div>
+            )}
           </div>
-          {isAdded && (
-            <span className="text-green-400 text-xs font-semibold">✓ ADDED</span>
-          )}
         </div>
-        {component.description && (
-          <div className="text-xs text-gray-300 mt-1">{component.description}</div>
-        )}
       </div>
     );
   };

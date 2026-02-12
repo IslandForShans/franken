@@ -76,20 +76,22 @@ export default function DraftSettingsPanel({
         </label>
       </div>
 
-      <div className="settings-grid">
-        {Object.keys(draftLimits).map(cat => (
-          <label key={cat} className="settings-label">
-            {formatCategoryName(cat)}:
-            <input
-              type="number"
-              value={draftLimits[cat]}
-              onChange={e => handleLimitChange(cat, e.target.value)}
-              className="input input-sm"
-              style={{ width: '4rem', marginLeft: '0.25rem' }}
-            />
-          </label>
-        ))}
-      </div>
+      {draftVariant !== "frankendraz" && (
+        <div className="settings-grid">
+          {Object.keys(draftLimits).map(cat => (
+            <label key={cat} className="settings-label">
+              {formatCategoryName(cat)}:
+              <input
+                type="number"
+                value={draftLimits[cat]}
+                onChange={e => handleLimitChange(cat, e.target.value)}
+                className="input input-sm"
+                style={{ width: '4rem', marginLeft: '0.25rem' }}
+              />
+            </label>
+          ))}
+        </div>
+      )}
 
       {draftVariant === "frankendraz" && (
         <div className="settings-grid mt-4 p-3 border-2 border-purple-600 rounded-lg bg-purple-900/20">
