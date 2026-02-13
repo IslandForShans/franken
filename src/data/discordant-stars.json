@@ -49,14 +49,16 @@
         {
           "id": "augurs_commander",
           "name": "Lachis - Reader",
-          "description": "UNLOCK: Win a combat in a system that contains a legendary planet or a planet that has a technology specialty. This card satisfies a yellow technology prerequisite. When you cast at least 1 vote, cast 1 additional vote for every 2 technologies you own."
+          "note": "[UNLOCK: Win a combat in a system that contains a legendary planet or a planet that has a technology specialty.]",
+          "description": "This card satisfies a yellow technology prerequisite. When you cast at least 1 vote, cast 1 additional vote for every 2 technologies you own."
         }
       ],
       "heroes": [
         {
           "id": "augurs_hero",
           "name": "Atropha - Weaver",
-          "description": "SYNCHRONICITY ALGORITHM - WOVEN FATE. ACTION: Draw 3 objective cards from 1 of the public objective decks; choose up to 1 of those cards to replace an objective card on a player's faction sheet, and return the others to the bottom of their corresponding decks. Then, purge this card."
+          "note": "SYNCHRONICITY ALGORITHM - WOVEN FATE",
+          "description": "ACTION: Draw 3 objective cards from 1 of the public objective decks; choose up to 1 of those cards to replace an objective card on a player's faction sheet, and return the others to the bottom of their corresponding decks. Then, purge this card."
         }
       ],
       "promissory": [
@@ -199,14 +201,16 @@
         {
           "id": "bentor_commander",
           "name": "C.M.O. Ranc - Marketing Guru",
-          "description": "UNLOCK: Have 3 Fragment tokens on your faction sheet. Your commodity value is increased by 1."
+          "note": "[UNLOCK: Have 3 Fragment tokens on your faction sheet.]",
+          "description": "Your commodity value is increased by 1."
         }
       ],
       "heroes": [
         {
           "id": "bentor_hero",
           "name": "C.E.O. Tucc - Visionary Explorer",
-          "description": "PRIMORDIAL DATA CORE - GRAND REVEAL. ACTION: Purge this card to explore each planet you control, in any order."
+          "note": "PRIMORDIAL DATA CORE - GRAND REVEAL",
+          "description": "ACTION: Purge this card to explore each planet you control, in any order."
         }
       ],
       "promissory": [
@@ -364,14 +368,16 @@
         {
           "id": "berserkers_commander",
           "name": "Sdallari Tvungovot - Marshal Engineer",
-          "description": "UNLOCK: Have 2 Glory tokens on the game board. When researching a unit upgrade technology, each of your unit upgrade technologies may satisfy 1 prerequisite it shares with the technology you are researching."
+          "note": "[UNLOCK: Have 2 Glory tokens on the game board.]",
+          "description": "When researching a unit upgrade technology, each of your unit upgrade technologies may satisfy 1 prerequisite it shares with the technology you are researching."
         }
       ],
       "heroes": [
         {
           "id": "berserkers_hero",
           "name": "Ygegnad, The Thunder - Honorary Skald",
-          "description": "A TALE OF LEGENDS - FOR ETERNAL GLORY. ACTION: For each system that contains a Glory token, remove up to 1 command token in or adjacent to that system from the game board and gain 1 command token, if able. Then, purge this card."
+          "note": "A TALE OF LEGENDS - FOR ETERNAL GLORY",
+          "description": "ACTION: For each system that contains a Glory token, remove up to 1 command token in or adjacent to that system from the game board and gain 1 command token, if able. Then, purge this card."
         }
       ],
       "promissory": [
@@ -504,14 +510,16 @@
         {
           "id": "celdauri_commander",
           "name": "Henry Storcher - Starbase Commander",
-          "description": "UNLOCK: Have 1 space dock on the game board that is not adjacent to your home system. After you activate a system that contains 1 or more of your space docks, gain 1 commodity. Your ships may treat systems that contain 1 or more of your space docks as adjacent to each other."
+          "note": "[UNLOCK: Have 1 space dock on the game board that is not adjacent to your home system.]",
+          "description": "After you activate a system that contains 1 or more of your space docks, gain 1 commodity. Your ships may treat systems that contain 1 or more of your space docks as adjacent to each other."
         }
       ],
       "heroes": [
         {
           "id": "celdauri_hero",
           "name": "Titus Flavius - Councilman",
-          "description": "TRADER MOBILIZATION ACT - MERCHANT REARAMENT. After aplayer activates a system other than Mecatol Rex: You may place 1 space dock on a planet you control in the active system, convert each of your commodities to a trade good, and use the PRODUCTION ability of each of your units in the active system. Then, purge this card."
+          "note": "TRADER MOBILIZATION ACT - MERCHANT REARAMENT",
+          "description": "After aplayer activates a system other than Mecatol Rex: You may place 1 space dock on a planet you control in the active system, convert each of your commodities to a trade good, and use the PRODUCTION ability of each of your units in the active system. Then, purge this card."
         }
       ],
       "promissory": [
@@ -671,14 +679,16 @@
         {
           "id": "cheiran_commander",
           "name": "Spc. Phquaiset - Alloyed Carapace",
-          "description": "UNLOCK: Have 4 structures on non-home planets. While you are the defender during ground combat: After your opponent produces 1 or more hits against your units, you may spend 1 commodity or 1 trade good to cancel 1 of those hits."
+          "note": "[UNLOCK: Have 4 structures on non-home planets.]",
+          "description": "While you are the defender during ground combat: After your opponent produces 1 or more hits against your units, you may spend 1 commodity or 1 trade good to cancel 1 of those hits."
         }
       ],
       "heroes": [
         {
           "id": "cheiran_hero",
           "name": "Thakt Clqua - Polemarch",
-          "description": "CONTINGENCY PLAN - BIOMASS EVENT. ACTION: Gather units from your reinforcements up to equal to your starting units. Place these units, in any combination, in the space area of any systems that contain 1 of your structures and no other players' ships, or on planets you control. Then, purge this card."
+          "note": "CONTINGENCY PLAN - BIOMASS EVENT",
+          "description": "ACTION: Gather units from your reinforcements up to equal to your starting units. Place these units, in any combination, in the space area of any systems that contain 1 of your structures and no other players' ships, or on planets you control. Then, purge this card."
         }
       ],
       "promissory": [
@@ -834,14 +844,16 @@
         {
           "id": "dih-mohn_commander",
           "name": "Clona Bathru - Founder of Bathru Robotics",
-          "description": "UNLOCK: Research a ship unit upgrade technology. This car satisfies a red tehcnology prerequisite. At the start of a space combat in a system that contains 3 or more different types of your non-fighter ships, produce 1 hit against your opponent's ships."
+          "note": "[UNLOCK: Research a ship unit upgrade technology.]",
+          "description": "This card satisfies a red tehcnology prerequisite. At the start of a space combat in a system that contains 3 or more different types of your non-fighter ships, produce 1 hit against your opponent's ships."
         }
       ],
       "heroes": [
         {
           "id": "dih-mohn_hero",
           "name": "Verrisus Ypru - Former Admiral of the Unrelenting Battlegroup",
-          "description": "DEFENSE MATRIX OVERLOAD - VOLATILE EMP BURST. After the 'Roll Dice' step of space combat: You may purhe this card. If you do, all ships in the active system become damaged; during this round of space combat your ships cannot be destroyed."
+          "note": "DEFENSE MATRIX OVERLOAD - VOLATILE EMP BURST",
+          "description": "After the 'Roll Dice' step of space combat: You may purhe this card. If you do, all ships in the active system become damaged; during this round of space combat your ships cannot be destroyed."
         }
       ],
       "promissory": [
@@ -976,14 +988,16 @@
         {
           "id": "edyn_commander",
           "name": "Kadryn - Highest Grace",
-          "description": "UNLOCK: Have 1 or more laws in play. When any game effect would allow you to score a public objective, you may instead draw 1 secret objective."
+          "note": "[UNLOCK: Have 1 or more laws in play.]",
+          "description": "When any game effect would allow you to score a public objective, you may instead draw 1 secret objective."
         }
       ],
       "heroes": [
         {
           "id": "edyn_hero",
           "name": "Midir - Living Will",
-          "description": "[Frnaken Only] GOLDEN ORDER - PEACE ETERNAL. ACTION: For each system with at least one of your mechs on the game board, draw 1 agenda. Reveal and resolve each agenda in any order as if you had cast 1 vote for an outcome of your choice. Other players cannot resolve abilities during this action. Then, purge this card."
+          "note": "[Franken Only] GOLDEN ORDER - PEACE ETERNAL",
+          "description": "ACTION: For each system with at least one of your mechs on the game board, draw 1 agenda. Reveal and resolve each agenda in any order as if you had cast 1 vote for an outcome of your choice. Other players cannot resolve abilities during this action. Then, purge this card."
         }
       ],
       "promissory": [
@@ -1132,14 +1146,16 @@
         {
           "id": "florzen_commander",
           "name": "Quaxdol Junitas - The Unseen Hand",
-          "description": "UNLOCK: Have the outcome you voted for or predicted on an agenda resolved. After the second agenda is revealed during the agenda phase: You may ready 1 planet you control; explore that planet, if able."
+          "note": "[UNLOCK: Have the outcome you voted for or predicted on an agenda resolved.]",
+          "description": "After the second agenda is revealed during the agenda phase: You may ready 1 planet you control; explore that planet, if able."
         }
       ],
       "heroes": [
         {
           "id": "florzen_hero",
           "name": "Banua Gowen - Administrator of Minds",
-          "description": "SLEEPER CELLS - SHADY ACQUISITIONS. ACTION: Place 2 fighters from your reinforcements in each system that contains 1 or more planets you control and no other player's ships. Then, you may remove 1 attachment from any planet in a system hat contains 1 or more of your ships and attach it to 1 planet in your home system. Then, purge this card."
+          "note": "SLEEPER CELLS - SHADY ACQUISITIONS",
+          "description": "ACTION: Place 2 fighters from your reinforcements in each system that contains 1 or more planets you control and no other player's ships. Then, you may remove 1 attachment from any planet in a system hat contains 1 or more of your ships and attach it to 1 planet in your home system. Then, purge this card."
         }
       ],
       "promissory": [
@@ -1279,14 +1295,16 @@
         {
           "id": "fsc_commander",
           "name": "President Cyhn - Crisis Leader",
-          "description": "UNLOCK: Each non-legendary planet on the game board is controlled. After you gain control of a non-home planet during a tactical action: if you have 1 or more ships in the active system, you may produce 1 ship in that system."
+          "note": "[UNLOCK: Each non-legendary planet on the game board is controlled.]",
+          "description": "After you gain control of a non-home planet during a tactical action: if you have 1 or more ships in the active system, you may produce 1 ship in that system."
         }
       ],
       "heroes": [
         {
           "id": "fsc_hero",
           "name": "Count Otto P'may - Inspiring Rhetorician",
-          "description": "HEART OF REBELLION - FREEDOM OR DEATH. ACTION: Ready a non-home planet other than Mecatol Rex that you control, remove all units on that planet and attach this card to it. Units cannot be committed to, produced on, or placed on this planet."
+          "note": "HEART OF REBELLION - FREEDOM OR DEATH",
+          "description": "ACTION: Ready a non-home planet other than Mecatol Rex that you control, remove all units on that planet and attach this card to it. Units cannot be committed to, produced on, or placed on this planet."
         }
       ],
       "promissory": [
@@ -1434,19 +1452,22 @@
         {
           "id": "ghemina_commander",
           "name": "Jarl Vel & Jarl Jotrun - Raid Leaders",
-          "description": "UNLOCK: Have 2 flagships on the game board. After you win a combat in a system that contains no planets or on a planet that contains a structure, you may gain 1 trade good."
+          "note": "[UNLOCK: Have 2 flagships on the game board.]",
+          "description": "After you win a combat in a system that contains no planets or on a planet that contains a structure, you may gain 1 trade good."
         }
       ],
       "heroes": [
         {
           "id": "ghemina_hero1",
           "name": "Korela - The Lady",
-          "description": "RAZE ORDER - FEAR AND ASH. ACTION: Purge this card to destroy all units on a non-home planet other than Mecatol Rex that is adjacen to a system that contains 1 of your flagships."
+          "note": "RAZE ORDER - FEAR AND ASH",
+          "description": "ACTION: Purge this card to destroy all units on a non-home planet other than Mecatol Rex that is adjacen to a system that contains 1 of your flagships."
         },
         {
           "id": "ghemina_hero2",
           "name": "Kantrus - The Lord",
-          "description": "DESTINY DRIVE - ALLEGED BIRTHRIGHT. ACTION: Purge this card to choose 1 non-home planet other than Mecatol Rex that does not contain another player's units and is adjacent to a system that contains 1 or more of your flagships; gain control of that planet. Then, ready that planet."
+          "note": "DESTINY DRIVE - ALLEGED BIRTHRIGHT",
+          "description": "ACTION: Purge this card to choose 1 non-home planet other than Mecatol Rex that does not contain another player's units and is adjacent to a system that contains 1 or more of your flagships; gain control of that planet. Then, ready that planet."
         }
       ],
       "promissory": [
@@ -1596,14 +1617,16 @@
         {
           "id": "ghoti_commander",
           "name": "Ceie Doleegueaunm - Abyssal Queen",
-          "description": "UNLOCK: Have units in 3 systems that do not contain planets. After you activate a system: You may treat systems that contain no planets as adjacent to each other during this tactical action."
+          "note": "[UNLOCK: Have units in 3 systems that do not contain planets.]",
+          "description": "After you activate a system: You may treat systems that contain no planets as adjacent to each other during this tactical action."
         }
       ],
       "heroes": [
         {
           "id": "ghoti_hero",
           "name": "Nmenmede - Ghoti All Mother",
-          "description": "TRANSCENDENCE - THE GHOTI ARISE. ACTION: For each system that contains 1 or more of your non-fighter ships, you may replace 1 of your non-fighter ships in that system with a ship from your reinforcements that has a cost value of up to 2 greater than the cost value of that ship. Then, purge this card."
+          "note": "TRANSCENDENCE - THE GHOTI ARISE",
+          "description": "ACTION: For each system that contains 1 or more of your non-fighter ships, you may replace 1 of your non-fighter ships in that system with a ship from your reinforcements that has a cost value of up to 2 greater than the cost value of that ship. Then, purge this card."
         }
       ],
       "promissory": [
@@ -1744,14 +1767,16 @@
         {
           "id": "gledge_commander",
           "name": "Voldun - Forge Lord",
-          "description": "UNLOCK: Control non-fighter ships with a cost of at least 10 in 1 system. When you use the PRODUCTION of 1 or more of your units, you may increase the total PRODUCTION value of those units by 1 for each space dock you control."
+          "note": "[UNLOCK: Control non-fighter ships with a cost of at least 10 in 1 system.]",
+          "description": "When you use the PRODUCTION of 1 or more of your units, you may increase the total PRODUCTION value of those units by 1 for each space dock you control."
         }
       ],
       "heroes": [
         {
           "id": "gledge_hero",
           "name": "Gorthrim - Chief of Expeditions",
-          "description": "MAGNUM OPUS - WORLD SHAPERS. ACTION: Reveal cards from any non-frontier exploration decks until you reveal up to 3 attachments, if able; attach those cards to any planets you control of the corresponding planet type, and discard the rest. Then, purge this card."
+          "note": "MAGNUM OPUS - WORLD SHAPERS",
+          "description": "ACTION: Reveal cards from any non-frontier exploration decks until you reveal up to 3 attachments, if able; attach those cards to any planets you control of the corresponding planet type, and discard the rest. Then, purge this card."
         }
       ],
       "promissory": [
@@ -1886,14 +1911,16 @@
         {
           "id": "glimmer_commander",
           "name": "Komat - Vibrant Blue",
-          "description": "UNLOCK: Have ships in 3 or more system not adjacent to or including your home system. At the start of a space combat while you are not the active player: Choose 1 of your non-fighter ships in the active system to gain SUSTAIN DAMAGE until the end of combat."
+          "note": "[UNLOCK: Have ships in 3 or more system not adjacent to or including your home system.]",
+          "description": "At the start of a space combat while you are not the active player: Choose 1 of your non-fighter ships in the active system to gain SUSTAIN DAMAGE until the end of combat."
         }
       ],
       "heroes": [
         {
           "id": "glimmer_hero",
           "name": "Bayan - Deep Magenta",
-          "description": "WEAVELINK REPLICATOR - TWO BY TWO. ACTION: Purge this card to choose 1 ship you control in each system; for each of those units, you may place 1 unit of that type from your reinforcements in the space area of that unit's system, if able."
+          "note": "WEAVELINK REPLICATOR - TWO BY TWO",
+          "description": "ACTION: Purge this card to choose 1 ship you control in each system; for each of those units, you may place 1 unit of that type from your reinforcements in the space area of that unit's system, if able."
         }
       ],
       "promissory": [
@@ -2034,14 +2061,16 @@
         {
           "id": "kyro_commander",
           "name": "Silas Deriga - Necrosage",
-          "description": "UNLOCK: Have 6 infantry and 6 fighters on the game board. When you cast votes: Remove up to 4 of your infantry from the game board to cast 1 additional vote for each infantry removed."
+          "note": "[UNLOCK: Have 6 infantry and 6 fighters on the game board.]",
+          "description": "When you cast votes: Remove up to 4 of your infantry from the game board to cast 1 additional vote for each infantry removed."
         }
       ],
       "heroes": [
         {
           "id": "kyro_hero",
           "name": "Speygh - Blightmaster",
-          "description": "BRIKK STRAIN - GALACTIC BLIGHT. At the start of the status phase: You may attach this card to 1 of your strategy cards. Its initiative value is 9. Non-Kyro players may only resolve 1 clause of this strategy card's primary ability. The Kyro player gains any trade goods placed on this card."
+          "note": "BRIKK STRAIN - GALACTIC BLIGHT",
+          "description": "At the start of the status phase: You may attach this card to 1 of your strategy cards. Its initiative value is 9. Non-Kyro players may only resolve 1 clause of this strategy card's primary ability. The Kyro player gains any trade goods placed on this card."
         }
       ],
       "promissory": [
@@ -2172,14 +2201,16 @@
         {
           "id": "kortali_commander",
           "name": "Queen Lorena - Compassion and Destruction",
-          "description": "UNLOCK: Destroy the last of a player's units in a system. During the first round of ground combat, you may cancel 1 hit produced against your units."
+          "note": "[UNLOCK: Destroy the last of a player's units in a system.]",
+          "description": "During the first round of ground combat, you may cancel 1 hit produced against your units."
         }
       ],
       "heroes": [
         {
           "id": "kortali_hero",
           "name": "Queen Nadalia - Life and Death",
-          "description": "CALLING OF THE QUEENS - MOTHER GODDESSES. When you win a combat: You may purge this card to choose and take up to 1 of your opponent's relics. Then, for each planet you control that is a legendary planet or has a technology specialty, gain 1 command token."
+          "note": "CALLING OF THE QUEENS - MOTHER GODDESSES",
+          "description": "When you win a combat: You may purge this card to choose and take up to 1 of your opponent's relics. Then, for each planet you control that is a legendary planet or has a technology specialty, gain 1 command token."
         }
       ],
       "promissory": [
@@ -2319,14 +2350,16 @@
         {
           "id": "kollec_commander",
           "name": "Kado S'mah-Qar - Coordinator",
-          "description": "UNLOCK: Have 4 relic fragments. This card satisfies a blue technology prerequisite. When you retreat, if the active systemdoes not contain 1 of your command tokens, you do not place a command token in the system your ships retreated to."
+          "note": "[UNLOCK: Have 4 relic fragments.]",
+          "description": "This card satisfies a blue technology prerequisite. When you retreat, if the active systemdoes not contain 1 of your command tokens, you do not place a command token in the system your ships retreated to."
         }
       ],
       "heroes": [
         {
           "id": "kollec_hero",
           "name": "Dorrahn Griphyn - The Collector",
-          "description": "SHADOWCASTER - STEALTH EXPEDITION. ACTION: Draw a number of relic cards equal to the number of players in the game, choose 1 to gain, and return the rest to the relic deck. Then, shuffle that deck and purge this card."
+          "note": "SHADOWCASTER - STEALTH EXPEDITION",
+          "description": "ACTION: Draw a number of relic cards equal to the number of players in the game, choose 1 to gain, and return the rest to the relic deck. Then, shuffle that deck and purge this card."
         }
       ],
       "promissory": [
@@ -2457,14 +2490,16 @@
         {
           "id": "lanefir_commander",
           "name": "Master Halbert - Quartermaster",
-          "description": "UNLOCK: 7 relic fragments have been purged. After you explore a planet: You may place 1 infantry form your reinforcements on that planet."
+          "note": "[UNLOCK: 7 relic fragments have been purged.]",
+          "description": "After you explore a planet: You may place 1 infantry form your reinforcements on that planet."
         }
       ],
       "heroes": [
         {
           "id": "lanefir_hero",
           "name": "The Venerable - Keeper of Myths",
-          "description": "RESONANCE CASCADE - BROKEN LEGACY. ACTION: Draw and reveal up to 3 relics. For each relic that started this action in a player's play area, gain 1 command token; you may swap that relic for 1 of the revealed relics or a relic in a player's play area. Then, shuffle the remaining relics into the relic deck and purge this card."
+          "note": "RESONANCE CASCADE - BROKEN LEGACY",
+          "description": "ACTION: Draw and reveal up to 3 relics. For each relic that started this action in a player's play area, gain 1 command token; you may swap that relic for 1 of the revealed relics or a relic in a player's play area. Then, shuffle the remaining relics into the relic deck and purge this card."
         }
       ],
       "promissory": [
@@ -2615,14 +2650,16 @@
         {
           "id": "lz_commander",
           "name": "Dhume Tathu - Ruthless Strategist",
-          "description": "UNLOCK: Have 4 trap attachments on the game board. During a round of combat in which no more than 1 of your non-fighter ships or 1 of your infantry is participating, you may choose 1 of your units in combat, that unit rolls 1 additional combat die."
+          "note": "[UNLOCK: Have 4 trap attachments on the game board.]",
+          "description": "During a round of combat in which no more than 1 of your non-fighter ships or 1 of your infantry is participating, you may choose 1 of your units in combat, that unit rolls 1 additional combat die."
         }
       ],
       "heroes": [
         {
           "id": "lz_hero",
           "name": "Khaz-Rin Li-Zho - Empress",
-          "description": "STAR'S RAZOR - CLOSING MOVES. ACTION: You may attach, or remove and attach, each Trap card to a planet on the game board; place a total of up to 12 fighters in any number of systems that contain 1 or more planets with Trap attachments and no other player's ships. Then, purge this card."
+          "note": "STAR'S RAZOR - CLOSING MOVES",
+          "description": "ACTION: You may attach, or remove and attach, each Trap card to a planet on the game board; place a total of up to 12 fighters in any number of systems that contain 1 or more planets with Trap attachments and no other player's ships. Then, purge this card."
         }
       ],
       "promissory": [
@@ -2812,14 +2849,16 @@
         {
           "id": "lk_commander",
           "name": "Hkot Tokal - Crystal Druid",
-          "description": "UNLOCK: Win a ground combat on a planet you do not control. At the start of invasion in a system that contains 1 or more planets: You may place 1 infantry from your reinforcements in that system's space area if you have unused capacity in that system."
+          "note": "[UNLOCK: Win a ground combat on a planet you do not control.]",
+          "description": "At the start of invasion in a system that contains 1 or more planets: You may place 1 infantry from your reinforcements in that system's space area if you have unused capacity in that system."
         }
       ],
       "heroes": [
         {
           "id": "lk_hero",
           "name": "Vehl-Tikar - Arch Druis",
-          "description": "CRYSTAL CHORUS - WORLDS AWAKEN. ACTION: Purge this card to choose up to 4 planets; exhaust or ready each of those planets."
+          "note": "CRYSTAL CHORUS - WORLDS AWAKEN",
+          "description": "ACTION: Purge this card to choose up to 4 planets; exhaust or ready each of those planets."
         }
       ],
       "promissory": [
@@ -2966,14 +3005,16 @@
         {
           "id": "mirveda_commander",
           "name": "Assault Machina - Delta Shield",
-          "description": "UNLOCK: Own 2 unit upgrade technologies. During Movement, for each infantry you transport, you may replace that unit with 1 fighter. You may use the SPACE CANNON of 1 of your units against units that are adjacent to that unit's system."
+          "note": "[UNLOCK: Own 2 unit upgrade technologies.]",
+          "description": "During Movement, for each infantry you transport, you may replace that unit with 1 fighter. You may use the SPACE CANNON of 1 of your units against units that are adjacent to that unit's system."
         }
       ],
       "heroes": [
         {
           "id": "mirveda_hero",
           "name": "Wrath Machina - AI Mainframe",
-          "description": "DHOR'S HAMMER - PEACE AT LAST. ACTION: Place up to 3 PDS units from your reinforcements on planets you control and choose 1 system; your PDS units may use their SPACE CANNON on ships in that system, and BOMBARDMENT against units on 1 planet in that system. Then, purge this card."
+          "note": "DHOR'S HAMMER - PEACE AT LAST",
+          "description": "ACTION: Place up to 3 PDS units from your reinforcements on planets you control and choose 1 system; your PDS units may use their SPACE CANNON on ships in that system, and BOMBARDMENT against units on 1 planet in that system. Then, purge this card."
         }
       ],
       "promissory": [
@@ -3109,14 +3150,16 @@
         {
           "id": "kolume_commander",
           "name": "Issac of Sinci - Kinematics Specialist",
-          "description": "UNLOCK: During the action phase, ready 1 of your technologies. Apply +1 to each of your unit's ability rolls."
+          "note": "[UNLOCK: During the action phase, ready 1 of your technologies.]",
+          "description": "Apply +1 to each of your unit's ability rolls."
         }
       ],
       "heroes": [
         {
           "id": "kolume_hero",
           "name": "Wonell the Silent - Grandmaster of the Order",
-          "description": "COIL OVERCHARGE - STREAKS IN THE NIGHT. ACTION: Place this card near the game board; during this game round, after you perform a component action, you may use 1 of your unit's SPACE CANNON against ships in or adjacent to that unit's system, without rolling additional dice."
+          "note": "COIL OVERCHARGE - STREAKS IN THE NIGHT",
+          "description": "ACTION: Place this card near the game board; during this game round, after you perform a component action, you may use 1 of your unit's SPACE CANNON against ships in or adjacent to that unit's system, without rolling additional dice."
         }
       ],
       "promissory": [
@@ -3264,14 +3307,16 @@
         {
           "id": "mm_commander",
           "name": "Amanita Muscaria - Rampant Growth",
-          "description": "UNLOCK: Have 4 commodities on your faction sheet. After another player produces 1 or more hits against your units during space combat, you may spend 1 commodity or 1 trade good to cancel 1 of those hits."
+          "note": "[UNLOCK: Have 4 commodities on your faction sheet.]",
+          "description": "After another player produces 1 or more hits against your units during space combat, you may spend 1 commodity or 1 trade good to cancel 1 of those hits."
         }
       ],
       "heroes": [
         {
           "id": "mm_hero",
           "name": "Coprinus Comatus - Necromancer",
-          "description": "SOUL CAGE - RISE AGAIN. When another player's hero would be purged, instead attach it to this card. You may resolve this card as if it had the text of any single hero attached to this card. When this card is purged, purge each of its attachments as well."
+          "note": "SOUL CAGE - RISE AGAIN",
+          "description": "When another player's hero would be purged, instead attach it to this card. You may resolve this card as if it had the text of any single hero attached to this card. When this card is purged, purge each of its attachments as well."
         }
       ],
       "promissory": [
@@ -3395,14 +3440,16 @@
         {
           "id": "nivyn_commander",
           "name": "Thussad Krath - High Inquisitor",
-          "description": "UNLOCK: Have units in 2 different non-home anomalies. When 1 or more of your damaged units make a combat roll, up to 2 of those units may roll an additional combat die."
+          "note": "[UNLOCK: Have units in 2 different non-home anomalies.]",
+          "description": "When 1 or more of your damaged units make a combat roll, up to 2 of those units may roll an additional combat die."
         }
       ],
       "heroes": [
         {
           "id": "nivyn_hero",
           "name": "Krill Drakkon - Star-Crowned King",
-          "description": "SINGULARITY CRADLE - EYE OF THE ABYSS. ACTION: Each unit on the game board with SUSTAIN DAMAGE, other than your mechs, becomes damaged, if able. Place this card near the game board; you may treat each unit you control as adjacent to the system that contains the Wound token until the end of this game round. At the end of this game round, purge this card."
+          "note": "SINGULARITY CRADLE - EYE OF THE ABYSS",
+          "description": "ACTION: Each unit on the game board with SUSTAIN DAMAGE, other than your mechs, becomes damaged, if able. Place this card near the game board; you may treat each unit you control as adjacent to the system that contains the Wound token until the end of this game round. At the end of this game round, purge this card."
         }
       ],
       "promissory": [
@@ -3561,14 +3608,16 @@
         {
           "id": "nokar_commander",
           "name": "Jack Hallard - The Commodore",
-          "description": "UNLOCK: Another player moves 1 of your ships. Before you assign hits to your ships during a space combat, if you announced a retreat, cancel up to 2 hits. During combat, you may treat the active system as adjacent to each system adjacent to your home system."
+          "note": "[UNLOCK: Another player moves 1 of your ships.]",
+          "description": "Before you assign hits to your ships during a space combat, if you announced a retreat, cancel up to 2 hits. During combat, you may treat the active system as adjacent to each system adjacent to your home system."
         }
       ],
       "heroes": [
         {
           "id": "nokar_hero",
           "name": "Starsails - Mercenary King",
-          "description": "IRREFUTABLE OFFER - GALACTICE PRESS GANG. ACTION: Place this card near the game board, until the end of this game round, each of your planets gains the PRODUCTION 3 ability as if it were a unit. At the end of this game round, purge this card."
+          "note": "IRREFUTABLE OFFER - GALACTICE PRESS GANG",
+          "description": "ACTION: Place this card near the game board, until the end of this game round, each of your planets gains the PRODUCTION 3 ability as if it were a unit. At the end of this game round, purge this card."
         }
       ],
       "promissory": [
@@ -3703,14 +3752,16 @@
         {
           "id": "olradin_commander",
           "name": "Knak Halfear - Grizzled Negotiator",
-          "description": "UNLOCK: Control 1 cultural planet, 1 hazardous planet, and 1 industrial planet. When you pass: You may exhaust 1 non-home planet you control other than Mecatol Rex to gain a number of trade goods equal to that planet's resource or influence value."
+          "note": "[UNLOCK: Control 1 cultural planet, 1 hazardous planet, and 1 industrial planet.]",
+          "description": "When you pass: You may exhaust 1 non-home planet you control other than Mecatol Rex to gain a number of trade goods equal to that planet's resource or influence value."
         }
       ],
       "heroes": [
         {
           "id": "olradin_hero",
           "name": "Pahn Silverfur - Council Speaker",
-          "description": "SHADOW COUNCIL - CHANGE OF PLANS. ACTION: Place 1 infantry from your reinforcements on each planet you control; you may chose and flip 1 Policy card. Then, purge this card."
+          "note": "SHADOW COUNCIL - CHANGE OF PLANS",
+          "description": "ACTION: Place 1 infantry from your reinforcements on each planet you control; you may chose and flip 1 Policy card. Then, purge this card."
         }
       ],
       "promissory": [
@@ -3890,14 +3941,16 @@
         {
           "id": "rm_commander",
           "name": "B-Unit 205643a - Predominant Constructor",
-          "description": "UNLOCK: Have units with a combined PRODUCTION value of at least 7 in a single system. When you spend a command token to resolve the secondary ability of the 'Construction' strategy card, you may resolve the primary ability instead."
+          "note": "[UNLOCK: Have units with a combined PRODUCTION value of at least 7 in a single system.]",
+          "description": "When you spend a command token to resolve the secondary ability of the 'Construction' strategy card, you may resolve the primary ability instead."
         }
       ],
       "heroes": [
         {
           "id": "rm_hero",
           "name": "Roh-Vhin Dhna mk4 - Ruthless Executive",
-          "description": "PRIMESPACE ACTUALIZATION - SUBVERSIVE AUTOMATION. After you mvoe 1 or more of your ships into the active system: You may purge this card to produce ships using the PRODUCTION ability of any untis in the active system as if they were your own, regardless of whether that system contains another player's ships."
+          "note": "PRIMESPACE ACTUALIZATION - SUBVERSIVE AUTOMATION",
+          "description": "After you mvoe 1 or more of your ships into the active system: You may purge this card to produce ships using the PRODUCTION ability of any untis in the active system as if they were your own, regardless of whether that system contains another player's ships."
         }
       ],
       "promissory": [
@@ -4035,14 +4088,16 @@
         {
           "id": "cymiae_commander",
           "name": "Koryl Ferax - The Third Voice",
-          "description": "UNLOCK: Have 10 or more infantry on the board. After you gain control of a planet during a tactical action: You may discard 1 action card to place or move 1 mech onto that planet."
+          "note": "[UNLOCK: Have 10 or more infantry on the board.]",
+          "description": "After you gain control of a planet during a tactical action: You may discard 1 action card to place or move 1 mech onto that planet."
         }
       ],
       "heroes": [
         {
           "id": "cymiae_hero",
           "name": "The Voice United - Psionic Maelsrom",
-          "description": "THE SCREAM - SYMPHONY OF AGONY. ACTION: Draw and reveal a number of action cards from the action card deck equal to 1 more than the number of players in the game, give 1 to each other player in the game and keep the rest; each other player must discard 1 action card. Then, purge this card."
+          "note": "THE SCREAM - SYMPHONY OF AGONY",
+          "description": "ACTION: Draw and reveal a number of action cards from the action card deck equal to 1 more than the number of players in the game, give 1 to each other player in the game and keep the rest; each other player must discard 1 action card. Then, purge this card."
         }
       ],
       "promissory": [
@@ -4172,14 +4227,16 @@
         {
           "id": "axis_commander",
           "name": "Designer TckVsk - Dilligent Retro-Engineer",
-          "description": "UNLOCK: Have 4 Axis Order cards of different unit types in 1 or more players' play areas. After aplayer resolves an Axis Order card: You may spend 6 resources to gain the corresponding unit's unit upgrade technology."
+          "note": "[UNLOCK: Have 4 Axis Order cards of different unit types in 1 or more players' play areas.]",
+          "description": "After aplayer resolves an Axis Order card: You may spend 6 resources to gain the corresponding unit's unit upgrade technology."
         }
       ],
       "heroes": [
         {
           "id": "axis_hero",
           "name": "Demi-Queen Mdcksssk - Commissioner of Profits",
-          "description": "GALACTIC FIELD TEST - AGGRESSIVE MARKETING. ACTION: Purge this card and give 1 or more Axis Order cards in your play area to 1 or more other players; for each Axis Order card you give to another player, you may force that player to give you 1 promissory note from their hand."
+          "note": "GALACTIC FIELD TEST - AGGRESSIVE MARKETING",
+          "description": "ACTION: Purge this card and give 1 or more Axis Order cards in your play area to 1 or more other players; for each Axis Order card you give to another player, you may force that player to give you 1 promissory note from their hand."
         }
       ],
       "promissory": [
@@ -4344,14 +4401,16 @@
         {
           "id": "tnelis_commander",
           "name": "Fillipo Rois - Logistical Expeditor",
-          "description": "UNLOCK: Have 6 of your destroyers on the game board. After you activate a system, you may produce and assign 1 hit to a non-fighter ship you control in a system to apply +1 to the move value of 1 of your ships in that system until the end of this tactical action."
+          "note": "[UNLOCK: Have 6 of your destroyers on the game board.]",
+          "description": "After you activate a system, you may produce and assign 1 hit to a non-fighter ship you control in a system to apply +1 to the move value of 1 of your ships in that system until the end of this tactical action."
         }
       ],
       "heroes": [
         {
           "id": "tnelis_hero",
           "name": "Turra Sveyar - Shadow Councilor",
-          "description": "CONTRACT NETWORK - FRIENDS IN LOW PLACES. After another player scores a secret objective: You may attach, or remove and attach, this card to that secret objective. You treat the attached secret objective as if it were a public objective. After you score the attached objective, purge this card."
+          "note": "CONTRACT NETWORK - FRIENDS IN LOW PLACES",
+          "description": "After another player scores a secret objective: You may attach, or remove and attach, this card to that secret objective. You treat the attached secret objective as if it were a public objective. After you score the attached objective, purge this card."
         }
       ],
       "promissory": [
@@ -4491,14 +4550,16 @@
         {
           "id": "vaden_commander",
           "name": "Komdar Borodin - Banker",
-          "description": "UNLOCK: Have 1 or more different players' control tokens on your faction sheet for every 2 players in the game. At the start of the status phase: Gain 1 trade good for each secret objective you have scored and 1 commodity for each public objective you have scored."
+          "note": "[UNLOCK: Have 1 or more different players' control tokens on your faction sheet for every 2 players in the game.]",
+          "description": "At the start of the status phase: Gain 1 trade good for each secret objective you have scored and 1 commodity for each public objective you have scored."
         }
       ],
       "heroes": [
         {
           "id": "vaden_hero",
           "name": "Putriv Sirvonsk - Clanmaster Prime",
-          "description": "ACULA NETWORK - DEBTS COME DUE. ACTION: For each control token that belongs to another player on your faction sheet, you may return that token. If you do, that player must give you 1 of their trade goods, 2 of their commodities, or 1 prommisory note from their hand, if able. Then, purge this card."
+          "note": "ACULA NETWORK - DEBTS COME DUE",
+          "description": "ACTION: For each control token that belongs to another player on your faction sheet, you may return that token. If you do, that player must give you 1 of their trade goods, 2 of their commodities, or 1 prommisory note from their hand, if able. Then, purge this card."
         }
       ],
       "promissory": [
@@ -4656,14 +4717,16 @@
         {
           "id": "vs_commander",
           "name": "Pyndil Gonsuul - Strike Team Coordinator",
-          "description": "UNLOCK: Control 3 planets that each have the same trait. After you activate a system: Choose 1 ship you control with a capacity value, apply +2 to that value during this tactical action."
+          "note": "[UNLOCK: Control 3 planets that each have the same trait.]",
+          "description": "After you activate a system: Choose 1 ship you control with a capacity value, apply +2 to that value during this tactical action."
         }
       ],
       "heroes": [
         {
           "id": "vs_hero",
           "name": "Dyln Harthuul - Vice Admiral of Fleet Group 15",
-          "description": "SPEAR OF VAYLAR - HIDDEN VANGUARD. After you ativate a system: Remove 1 of your command tokens from the game board and gain 1 command token. Until the end of this tactical action, apply +1 to the move value of each of your ships and the result of each of your ships' combat rolls. At the end of this turn, purge this card."
+          "note": "SPEAR OF VAYLAR - HIDDEN VANGUARD",
+          "description": "After you ativate a system: Remove 1 of your command tokens from the game board and gain 1 command token. Until the end of this tactical action, apply +1 to the move value of each of your ships and the result of each of your ships' combat rolls. At the end of this turn, purge this card."
         }
       ],
       "promissory": [
@@ -4812,14 +4875,16 @@
         {
           "id": "veldyr_commander",
           "name": "Vera Khage - Chief Legal Officer",
-          "description": "UNLOCK: 2 other players control 1 or more planets that have Branch Office Attachments. When you research a technology that is wned by a player who controls a planet with a Branch Office attachment, you may ignore 1 prerequisite on that technology."
+          "note": "[UNLOCK: 2 other players control 1 or more planets that have Branch Office Attachments.]",
+          "description": "When you research a technology that is wned by a player who controls a planet with a Branch Office attachment, you may ignore 1 prerequisite on that technology."
         }
       ],
       "heroes": [
         {
           "id": "veldyr_hero",
           "name": "Auberon Elyrin - Chairman",
-          "description": "TWILIGHT PROTOCOL - A NEW DAWN. ACTION: For each planet that has a Branch Office attachment, you may gain 1 unit upgrade technology of the same unit type as 1 owned by the player that controls that planet. Then, purge this card."
+          "note": "TWILIGHT PROTOCOL - A NEW DAWN",
+          "description": "ACTION: For each planet that has a Branch Office attachment, you may gain 1 unit upgrade technology of the same unit type as 1 owned by the player that controls that planet. Then, purge this card."
         }
       ],
       "promissory": [
@@ -4964,14 +5029,16 @@
         {
           "id": "rhodun_commander",
           "name": "Bishop Ulin - The Librarian",
-          "description": "UNLOCK: Have a technology with 2 or more prerequisites. When researching a technology, you may use the technology specialty of 1 planet you control to ignore any 1 prerequisite on the technology card you are researching."
+          "note": "[UNLOCK: Have a technology with 2 or more prerequisites.]",
+          "description": "When researching a technology, you may use the technology specialty of 1 planet you control to ignore any 1 prerequisite on the technology card you are researching."
         }
       ],
       "heroes": [
         {
           "id": "rhodun_hero",
           "name": "Saint Binal - The Prophet",
-          "description": "BLESSING OF THE ANCIENTS - FORGOTTEN SORCERY. ACTION: Place this card and up to 3 non-faction technologies near the game board, you gain those technologies. At the start of the next strategy phase, purge all but 1 of those technologies and this card."
+          "note": "BLESSING OF THE ANCIENTS - FORGOTTEN SORCERY",
+          "description": "ACTION: Place this card and up to 3 non-faction technologies near the game board, you gain those technologies. At the start of the next strategy phase, purge all but 1 of those technologies and this card."
         }
       ],
       "promissory": [
@@ -5118,14 +5185,16 @@
         {
           "id": "zelian_commander",
           "name": "Zelian B - The Hunter",
-          "description": "UNLOCK: Have 1 or more ships in 2 systems that contain an asteroid field. Each of your Dreadnoughts and War Suns without ANTI-FIGHTER BARRAGE gains ANTI-FIGHTER BARRAGE 5."
+          "note": "[UNLOCK: Have 1 or more ships in 2 systems that contain an asteroid field.]",
+          "description": "Each of your Dreadnoughts and War Suns without ANTI-FIGHTER BARRAGE gains ANTI-FIGHTER BARRAGE 5."
         }
       ],
       "heroes": [
         {
           "id": "zelian_hero",
           "name": "Zelian R - The Destroyer",
-          "description": "CATACLYSM - CELESTIAL IMPACT. After you move a unit with BOMBARDMENT into a non-home system other than Mecatol Rex: You may gain trade goods equal to the total combined resource values of planets in that system. If you do, destroy all units on planets in that system and replace that system tile with the Zelian asteroid tile."
+          "note": "CATACLYSM - CELESTIAL IMPACT",
+          "description": "After you move a unit with BOMBARDMENT into a non-home system other than Mecatol Rex: You may gain trade goods equal to the total combined resource values of planets in that system. If you do, destroy all units on planets in that system and replace that system tile with the Zelian asteroid tile."
         }
       ],
       "promissory": [
@@ -5274,14 +5343,16 @@
         {
           "id": "atokera_commander",
           "name": "Ordagka - Maker",
-          "description": "[Cast more votes for an outcome than any other player.] Once per agenda phase, after an agenda is revealed: You may predict aloud an outcome of that agenda. If you do not vote on that agenda, and your prediction is correct, gain 1 command token."
+          "note": "[UNLOCK: Cast more votes for an outcome than any other player.]",
+          "description": "Once per agenda phase, after an agenda is revealed: You may predict aloud an outcome of that agenda. If you do not vote on that agenda, and your prediction is correct, gain 1 command token."
         }
       ],
       "heroes": [
         {
           "id": "atokera_hero",
           "name": "Kapoko Vui - Great Spirit",
-          "description": "FALLEN SKY - JUDGEMENT. At the start of invasion: You may purge this card to commit any of your ships in the active system to planets as if they were ground forces; those units participate in combat. At the end of this tactical action, return those ships to the space area of the active system."
+          "note": "FALLEN SKY - JUDGEMENT",
+          "description": "At the start of invasion: You may purge this card to commit any of your ships in the active system to planets as if they were ground forces; those units participate in combat. At the end of this tactical action, return those ships to the space area of the active system."
         }
       ],
       "promissory": [
@@ -5423,14 +5494,16 @@
         {
           "id": "belkosea_commander",
           "name": "Ciphus Gault - Mercenary Demon",
-          "description": "[Have 1 superweapon card in your play area.] When one of your units would make a combat roll, you may use that unit's ANTI-FIGHTER BARRAGE instead. You cannot use this ability during the first round of space combat."
+          "note": "[UNLOCK: Have 1 superweapon card in your play area.]",
+          "description": "When one of your units would make a combat roll, you may use that unit's ANTI-FIGHTER BARRAGE instead. You cannot use this ability during the first round of space combat."
         }
       ],
       "heroes": [
         {
           "id": "belkosea_hero",
           "name": "Mobius Spike - The Reaper",
-          "description": "ACE OF ACES - INSPIRATIONAL PILOT. At the start of combat, you may exhaust this card; if you do, during this combat, hits produced by your fighters' ANTI-FIGHTER BARRAGE are instead produced against all ships (not just fighters)."
+          "note": "ACE OF ACES - INSPIRATIONAL PILOT",
+          "description": "At the start of combat, you may exhaust this card; if you do, during this combat, hits produced by your fighters' ANTI-FIGHTER BARRAGE are instead produced against all ships (not just fighters)."
         }
       ],
       "promissory": [
@@ -5599,14 +5672,16 @@
         {
           "id": "pharadn_commander",
           "name": "Avhkan - The Crow",
-          "description": "[ACTION: Destroy 2 of your infantry on each of 5 planets.] At the start of ground combat on a planet you control, you may destroy 1 infantry on that planet."
+          "note": "[UNLOCK: Destroy 2 of your infantry on each of 5 planets.]",
+          "description": "At the start of ground combat on a planet you control, you may destroy 1 infantry on that planet."
         }
       ],
       "heroes": [
         {
           "id": "pharadn_hero",
           "name": "Pharad'n the Immortal - Imperishable Unifier",
-          "description": "BLACK STAR - APOCALYPSE. After a player commits ground forces to a planet that contains 1 of your strutcures, you may purge this card to destroy all infantry on that planet, or commit any number of your captured infantry to that planet as if they were your own."
+          "note": "BLACK STAR - APOCALYPSE",
+          "description": "After a player commits ground forces to a planet that contains 1 of your strutcures, you may purge this card to destroy all infantry on that planet, or commit any number of your captured infantry to that planet as if they were your own."
         }
       ],
       "promissory": [
@@ -5760,14 +5835,16 @@
         {
           "id": "qhet_commander",
           "name": "Ghaist Asmora - Paramilitary Liaison",
-          "description": "[Win 2 combats in 1 turn.] After you perform an action: If you won a combat during that action, you may perform an additional action."
+          "note": "[UNLOCK: Win 2 combats in 1 turn.]",
+          "description": "After you perform an action: If you won a combat during that action, you may perform an additional action."
         }
       ],
       "heroes": [
         {
           "id": "qhet_hero",
           "name": "Tvor Khage - Shield of Qhet",
-          "description": "LOGISTICAL SUPREMACY - WAR UNBOUND. ACTION: Place this card near the game board; until the end of this game round, when you win a combat, if your opponent has a control token on your faction sheet, remove 1 of your command tokens from the active system, if able."
+          "note": "LOGISTICAL SUPREMACY - WAR UNBOUND",
+          "description": "ACTION: Place this card near the game board; until the end of this game round, when you win a combat, if your opponent has a control token on your faction sheet, remove 1 of your command tokens from the active system, if able."
         }
       ],
       "promissory": [
@@ -5907,14 +5984,16 @@
         {
           "id": "toldar_commander",
           "name": "Baird Feraux - Reserved Strategist",
-          "description": "[Have a code card.] During each round of combat, one of your units may reroll 1 of its combat dice; if your opponent controls more units participating in that combat than you, that unit may roll 1 additional combat die instead."
+          "note": "[UNLOCK: Have a code card.]",
+          "description": "During each round of combat, one of your units may reroll 1 of its combat dice; if your opponent controls more units participating in that combat than you, that unit may roll 1 additional combat die instead."
         }
       ],
       "heroes": [
         {
           "id": "toldar_hero",
           "name": "Cadh Acamont - Concordat Marshall",
-          "description": "CONCORD RENEWED - GALACTIC OUTREACH. ACTION: Attach this card to a revealed objective. The players with the fewest victory points may score this objective without fulfilling its requirements; after a player scores this objective, the Toldar player may draw 1 secret objective."
+          "note": "CONCORD RENEWED - GALACTIC OUTREACH",
+          "description": "ACTION: Attach this card to a revealed objective. The players with the fewest victory points may score this objective without fulfilling its requirements; after a player scores this objective, the Toldar player may draw 1 secret objective."
         }
       ],
       "promissory": [
@@ -6077,14 +6156,16 @@
         {
           "id": "uydai_commander",
           "name": "Reides Lupa - Gifted Telepath",
-          "description": "[Lose control of a planet.] Once during each of your turns, you may look at the top card of 1 non-objective common deck; you may spend 1 trade good or 1 commodity to place that card on the bottom of that deck."
+          "note": "[UNLOCK: Lose control of a planet.]",
+          "description": "Once during each of your turns, you may look at the top card of 1 non-objective common deck; you may spend 1 trade good or 1 commodity to place that card on the bottom of that deck."
         }
       ],
       "heroes": [
         {
           "id": "uydai_hero",
           "name": "Londor II - God Emperor",
-          "description": "OBSIDIAN GATE - PATHFINDER. After you activate a non-home system: You may purge this card to treat each of your non-structure units as adjacent to the active system until the end of this tactical action."
+          "note": "OBSIDIAN GATE - PATHFINDER",
+          "description": "After you activate a non-home system: You may purge this card to treat each of your non-structure units as adjacent to the active system until the end of this tactical action."
         }
       ],
       "promissory": [
