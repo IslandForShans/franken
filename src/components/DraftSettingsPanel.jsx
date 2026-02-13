@@ -1,5 +1,6 @@
 import React from "react";
 import './UnifiedStyles.css';
+import { formatCategoryName } from "../utils/formatters";
 
 export default function DraftSettingsPanel({
   playerCount, setPlayerCount,
@@ -9,10 +10,6 @@ export default function DraftSettingsPanel({
   subsequentRoundPickCount, setSubsequentRoundPickCount,
   frankenDrazSettings, setFrankenDrazSettings
 }) {
-
-  // Helper function to format category names
-  const formatCategoryName = (category) =>
-    category.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 
   const handleLimitChange = (cat, val) => {
     setDraftLimits({ ...draftLimits, [cat]: parseInt(val) });

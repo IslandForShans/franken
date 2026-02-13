@@ -1,16 +1,11 @@
-import factionsJSONRaw from "../data/factions.json";
-import discordantStarsJSONRaw from "../data/discordant-stars.json";
-import { processFactionData } from "./dataProcessor.js";
-
-const factionsJSON = processFactionData(factionsJSONRaw);
-const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
+import { factionsData, discordantStarsData } from "../data/processedData";
 
 /**
  * Find full component data from JSON files
  */
 export const findFullComponentData = (componentName, factionName, targetCategory) => {
   // Try base factions first
-  const baseFaction = factionsJSON.factions.find(f => f.name === factionName);
+  const baseFaction = factionsData.factions.find(f => f.name === factionName);
   if (baseFaction && baseFaction[targetCategory]) {
     const found = baseFaction[targetCategory].find(c => c.name === componentName);
     if (found) {
@@ -19,8 +14,8 @@ export const findFullComponentData = (componentName, factionName, targetCategory
   }
   
   // Try DS factions
-  if (discordantStarsJSON?.factions) {
-    const dsFaction = discordantStarsJSON.factions.find(f => f.name === factionName);
+  if (discordantStarsData?.factions) {
+    const dsFaction = discordantStarsData.factions.find(f => f.name === factionName);
     if (dsFaction) {
       // Handle DS's different naming for home_systems
       let categoryData = dsFaction[targetCategory];

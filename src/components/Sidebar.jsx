@@ -2,14 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "./UnifiedStyles.css";
 import { ICON_MAP } from "../utils/dataProcessor";
-import factionsJSONRaw from "../data/factions.json";
-import discordantStarsJSONRaw from "../data/discordant-stars.json";
-import { processFactionData } from "../utils/dataProcessor.js";
+import { factionsData, discordantStarsData } from "../data/processedData.js";
 import { isComponentUndraftable, getExtraComponents, getSwapOptionsForTrigger } from "../data/undraftable-components.js";
 import { findFullComponentData } from "../utils/swapUtils.js";
-
-const factionsJSON = processFactionData(factionsJSONRaw);
-const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
+import { formatCategoryName } from "../utils/formatters.js";
 
 const FACTION_CATEGORIES = [
   'abilities', 'faction_techs', 'agents', 'commanders', 'heroes', 'promissory',
@@ -105,9 +101,6 @@ useEffect(() => {
     typeof window !== "undefined" &&
     window.matchMedia &&
     window.matchMedia("(hover: hover)").matches;
-
-  const formatCategoryName = (category) =>
-    category.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
   const handleCategoryClick = (category) => {
     if (expandedCategory === category) {
@@ -417,9 +410,9 @@ const toggleAllCategories = () => {
             {/* Faction Preview */}
             {hoveredComponent.category === 'factions' && (() => {
               const factionName = hoveredComponent.component.name;
-              let fullFaction = factionsJSON.factions.find(f => f.name === factionName);
+              let fullFaction = factionsData.factions.find(f => f.name === factionName);
               if (!fullFaction) {
-                fullFaction = discordantStarsJSON?.factions?.find(f => f.name === factionName);
+                fullFaction = discordantStarsData?.factions?.find(f => f.name === factionName);
               }
               // Use active draft categories if available, otherwise fall back to all
               const categoriesToShow = Array.isArray(categories) && categories.length > 0

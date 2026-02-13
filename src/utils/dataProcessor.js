@@ -256,38 +256,3 @@ export function processFactionData(rawFactionData) {
   
   return processed;
 }
-
-/**
- * Load and process faction data
- */
-export async function loadProcessedFactionData() {
-  // Import your raw JSON
-  const rawData = await import('../data/factions.json');
-  
-  // Process it to add icon paths
-  return processFactionData(rawData.default || rawData);
-}
-
-/**
- * Get icon path for a specific type and value
- */
-export function getIconPath(type, value) {
-  switch (type) {
-    case 'tech':
-      return ICON_MAP.techColors[value];
-    case 'wormhole':
-      return ICON_MAP.wormholes[value];
-    case 'anomaly':
-      return ICON_MAP.anomalies[value];
-    case 'resource':
-      return ICON_MAP.resource;
-    case 'influence':
-      return ICON_MAP.influence;
-    case 'legendary':
-      return ICON_MAP.legendary;
-    case 'faction':
-      return ICON_MAP.factions[value];
-    default:
-      return null;
-  }
-}

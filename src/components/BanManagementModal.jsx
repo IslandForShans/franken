@@ -1,12 +1,8 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import factionsJSONRaw from "../data/factions.json";
-import discordantStarsJSONRaw from "../data/discordant-stars.json";
-import { processFactionData } from "../utils/dataProcessor.js";
+import { factionsData, discordantStarsData } from "../data/processedData";
+import { filterFactionsByExpansions, filterTilesByExpansions } from "../utils/expansionFilters";
 import './UnifiedStyles.css';
-
-const factionsJSON = processFactionData(factionsJSONRaw);
-const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
 
 const CARTER_CUT = [
   "Hired Guns",
@@ -149,43 +145,11 @@ export default function BanManagementModal({
 
   if (!isOpen) return null;
 
-  // Expansion exclusions (from DraftSimulator.jsx)
-  const pokExclusions = {
-    factions: ["The Nomad", "The Vuil'Raith Cabal", "The Argent Flight", "The Titans of Ul", "The Mahact Gene-Sorcerers", "The Empyrean", "The Naaz-Rokha Alliance"],
-    tiles: ["59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80"]
-  };
-
-  const teExclusions = {
-    factions: ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Crimson Rebellion"],
-    tiles: ["97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "113", "114", "115", "116", "117"]
-  };
-
-  const noFirmament = {
-    factions: ["The Firmament", "The Obsidian"]
-  };
-
   // Filter factions based on expansion settings
   const getFilteredFactions = () => {
-    let factions = [...factionsJSON.factions];
-    
-    // Filter out PoK factions if PoK is disabled
-    if (!expansionsEnabled.pok) {
-      factions = factions.filter(f => !pokExclusions.factions.includes(f.name));
-    }
-    
-    // Filter out TE factions if TE is disabled
-    if (!expansionsEnabled.te) {
-      factions = factions.filter(f => !teExclusions.factions.includes(f.name));
-    }
-    
-    // Filter out Firmament/Obsidian if disabled
-    if (!expansionsEnabled.firmobs) {
-      factions = factions.filter(f => !noFirmament.factions.includes(f.name));
-    }
-    
-    // Add Discordant Stars factions if enabled
-    if (expansionsEnabled.ds && discordantStarsJSON?.factions) {
-      factions = [...factions, ...discordantStarsJSON.factions];
+    let factions = filterFactionsByExpansions(factionsData.factions, expansionsEnabled);
+    if (expansionsEnabled.ds && discordantStarsData?.facitons) {
+      factions = [...factions, ...discordantStarsData.factions];
     }
     
     return factions;
@@ -208,21 +172,10 @@ export default function BanManagementModal({
       
       // Get tiles based on expansion settings
       if (category === 'blue_tiles' || category === 'red_tiles') {
-        let tiles = [...(factionsJSON.tiles[category] || [])];
-        
-        // Filter out PoK tiles if PoK is disabled
-        if (!expansionsEnabled.pok) {
-          tiles = tiles.filter(tile => !pokExclusions.tiles.includes(tile.id));
-        }
-        
-        // Filter out TE tiles if TE is disabled
-        if (!expansionsEnabled.te) {
-          tiles = tiles.filter(tile => !teExclusions.tiles.includes(tile.id));
-        }
-        
-        // Add Uncharted Space tiles if enabled
-        if (expansionsEnabled.us && discordantStarsJSON?.tiles?.[category]) {
-          tiles = [...tiles, ...discordantStarsJSON.tiles[category]];
+        let tiles = [...(factionsData.tiles[category] || [])];
+        tiles = filterTilesByExpansions(tiles, expansionsEnabled);
+        if (expansionsEnabled.us && discordantStarsData?.tiles?.[category]) {
+          tiles = [...tiles, ...discordantStarsData.tiles[category]];
         }
         
         const tileComponents = tiles.map(comp => ({

@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import factionsJSONRaw from "../data/factions.json";
-import discordantStarsJSONRaw from "../data/discordant-stars.json";
-import { ICON_MAP, processFactionData } from "../utils/dataProcessor.js";
+import { factionsData, discordantStarsData } from "../data/processedData.js";
+import { ICON_MAP } from "../utils/dataProcessor.js";
 import { isComponentUndraftable } from "../data/undraftable-components.js";
 import './UnifiedStyles.css';
-
-const factionsJSON = processFactionData(factionsJSONRaw);
-const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
+import { formatCategoryName } from "../utils/formatters.js";
 
 const TECH_ICONS = {
   red: ICON_MAP.techColors.Red,
@@ -36,18 +33,15 @@ export default function FrankenDrazBuilder({
     'home_systems', 'breakthrough'
   ].filter(cat => activeCategories.includes(cat));
 
-  const formatCategoryName = (category) =>
-    category.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-
   // Get all components available from drafted factions for a category
   const getAvailableComponents = (category) => {
     const components = [];
     const draftedFactions = draftedItems.factions || [];
 
     draftedFactions.forEach(draftedFaction => {
-      let fullFaction = factionsJSON.factions.find(f => f.name === draftedFaction.name);
-      if (!fullFaction && discordantStarsJSON?.factions) {
-        fullFaction = discordantStarsJSON.factions.find(f => f.name === draftedFaction.name);
+      let fullFaction = factionsData.factions.find(f => f.name === draftedFaction.name);
+      if (!fullFaction && discordantStarsData?.factions) {
+        fullFaction = discordantStarsData.factions.find(f => f.name === draftedFaction.name);
       }
 
       if (fullFaction && fullFaction[category]) {

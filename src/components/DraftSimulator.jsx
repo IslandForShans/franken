@@ -5,17 +5,12 @@ import DraftHistory from "./DraftHistory.jsx";
 import DraftSettingsPanel from "./DraftSettingsPanel.jsx";
 import DraftSummary from "./DraftSummary.jsx";
 import { shuffleArray } from "../utils/shuffle.js";
-import factionsJSONRaw from "../data/factions.json";
-import discordantStarsJSONRaw from "../data/discordant-stars.json";
-import { processFactionData } from "../utils/dataProcessor.js";
+import { factionsData, discordantStarsData } from "../data/processedData.js";
+import { pokExclusions, teExclusions, noFirmament, brExclusions } from "../utils/expansionFilters.js";
 import { isComponentUndraftable, getSwapOptionsForTrigger, getExtraComponents } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
 import { executeSwap } from "../utils/swapUtils.js";
 import FrankenDrazBuilder from "./FrankenDrazBuilder.jsx";
-
-// PERFORMANCE: Process faction data once at module load instead of on every render
-const factionsJSON = processFactionData(factionsJSONRaw);
-const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
 
 // PERFORMANCE: Define constants outside component to avoid recreation on every render
 const baseFactionLimits = {
@@ -37,25 +32,6 @@ const defaultDraftLimits = Object.fromEntries(
 const powerDraftLimits = Object.fromEntries(
   Object.entries(powerFactionLimits).map(([key, value]) => [key, value + 1])
 );
-
-// PERFORMANCE: Define exclusions outside component
-const pokExclusions = {
-  factions: ["The Nomad", "The Vuil'Raith Cabal", "The Argent Flight", "The Titans of Ul", "The Mahact Gene-Sorcerers", "The Empyrean", "The Naaz-Rokha Alliance"],
-  tiles: ["59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80"]
-};
-
-const teExclusions = {
-  factions: ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Crimson Rebellion"],
-  tiles: ["97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "113", "114", "115", "116", "117"]
-};
-
-const noFirmament = {
-  factions: ["The Firmament", "The Obsidian"]
-};
-
-const brExclusions = {
-  factions: ["Atokera Legacy", "Belkosia Allied States", "Pharad'n Order", "Qhet Republic", "Tolder Concordat", "Uydai Conclave"]
-};
 
 export default function DraftSimulator({ onNavigate }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -187,7 +163,7 @@ export default function DraftSimulator({ onNavigate }) {
     });
 
     // If DS Only mode is enabled, skip base game FACTIONS but still include all tiles
-    const factionComponents = expansionsEnabled.dsOnly ? [] : factionsJSON.factions
+    const factionComponents = expansionsEnabled.dsOnly ? [] : factionsData.factions
       .filter(f => !bannedFactions.has(f.name))
       .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
       .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
@@ -201,8 +177,8 @@ export default function DraftSimulator({ onNavigate }) {
 
     console.log(`Base faction components: ${factionComponents.length}`);
 
-    const dsComponents = (expansionsEnabled.ds && discordantStarsJSON?.factions)
-      ? discordantStarsJSON.factions
+    const dsComponents = (expansionsEnabled.ds && discordantStarsData?.factions)
+      ? discordantStarsData.factions
           .filter(f => !bannedFactions.has(f.name))
           .flatMap(f => {
             // Handle DS's different naming: "home_system" vs "home_systems"
@@ -223,7 +199,7 @@ export default function DraftSimulator({ onNavigate }) {
 
     // DS Only mode only excludes base game FACTIONS, not tiles
     // When dsOnly is enabled, include ALL tiles (Base, PoK, TE)
-    const tiles = (factionsJSON.tiles[category] || [])
+    const tiles = (factionsData.tiles[category] || [])
       .filter(tile => !bannedComponents.has(tile.id || tile.name))
       .filter(tile => {
         // In dsOnly mode, include all tiles regardless of PoK/TE settings
@@ -247,11 +223,11 @@ export default function DraftSimulator({ onNavigate }) {
     // Include when either US is enabled OR when dsOnly is enabled (to get DS tiles)
     const shouldIncludeUSTiles = (expansionsEnabled.us || expansionsEnabled.dsOnly) && 
                                   expansionsEnabled.ds && 
-                                  discordantStarsJSON?.tiles?.[category];
+                                  discordantStarsData?.tiles?.[category];
     
     const usTiles = shouldIncludeUSTiles
-      ? (Array.isArray(discordantStarsJSON.tiles[category])
-          ? discordantStarsJSON.tiles[category]
+      ? (Array.isArray(discordantStarsData.tiles[category])
+          ? discordantStarsData.tiles[category]
           : [])
           .filter(tile => !bannedComponents.has(tile.id || tile.name))
       : [];
@@ -324,7 +300,7 @@ export default function DraftSimulator({ onNavigate }) {
     
     // Get all available factions (names and icons only)
     // Get all available factions (names and icons only)
-    let allFactions = expansionsEnabled.dsOnly ? [] : factionsJSON.factions
+    let allFactions = expansionsEnabled.dsOnly ? [] : factionsData.factions
       .filter(f => !bannedFactions.has(f.name))
       .filter(f => expansionsEnabled.pok || !pokExclusions.factions.includes(f.name))
       .filter(f => expansionsEnabled.te || !teExclusions.factions.includes(f.name))
@@ -332,8 +308,8 @@ export default function DraftSimulator({ onNavigate }) {
       .filter(f => expansionsEnabled.br || !brExclusions.factions.includes(f.name))
       .map(f => ({ name: f.name, icon: f.icon }));
     
-    if (expansionsEnabled.ds && discordantStarsJSON?.factions) {
-      const dsFactions = discordantStarsJSON.factions
+    if (expansionsEnabled.ds && discordantStarsData?.factions) {
+      const dsFactions = discordantStarsData.factions
         .filter(f => !bannedFactions.has(f.name))
         .filter(f => expansionsEnabled.br || !brExclusions.factions.includes(f.name))
         .map(f => ({ name: f.name, icon: f.icon }));
@@ -934,7 +910,7 @@ setTimeout(() => {
     // Helper function to find full component data from JSON
     const findFullComponentData = (componentName, factionName, targetCategory) => {
       // First try to find in base factions
-      const baseFaction = factionsJSON.factions.find(f => f.name === factionName);
+      const baseFaction = factionsData.factions.find(f => f.name === factionName);
       if (baseFaction && baseFaction[targetCategory]) {
         const found = baseFaction[targetCategory].find(c => c.name === componentName);
         if (found) {
@@ -943,8 +919,8 @@ setTimeout(() => {
       }
       
       // Try DS factions
-      if (discordantStarsJSON?.factions) {
-        const dsFaction = discordantStarsJSON.factions.find(f => f.name === factionName);
+      if (discordantStarsData?.factions) {
+        const dsFaction = discordantStarsData.factions.find(f => f.name === factionName);
         if (dsFaction) {
           // Handle DS's different naming for home_systems
           let categoryData = dsFaction[targetCategory];
@@ -962,13 +938,13 @@ setTimeout(() => {
       }
       
       // If not found in factions, try tiles
-      if (factionsJSON.tiles[targetCategory]) {
-        const found = factionsJSON.tiles[targetCategory].find(t => t.name === componentName);
+      if (factionsData.tiles[targetCategory]) {
+        const found = factionsData.tiles[targetCategory].find(t => t.name === componentName);
         if (found) return { ...found };
       }
       
-      if (discordantStarsJSON?.tiles?.[targetCategory]) {
-        const found = discordantStarsJSON.tiles[targetCategory].find(t => t.name === componentName);
+      if (discordantStarsData?.tiles?.[targetCategory]) {
+        const found = discordantStarsData.tiles[targetCategory].find(t => t.name === componentName);
         if (found) return { ...found };
       }
       

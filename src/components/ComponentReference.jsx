@@ -1,16 +1,10 @@
 import React, { useState, useMemo } from "react";
-import factionsJSONRaw from "../data/factions.json";
-import discordantStarsJSONRaw from "../data/discordant-stars.json";
-import { processFactionData, ICON_MAP } from "../utils/dataProcessor.js";
-
-const factionsJSON = processFactionData(factionsJSONRaw);
-const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
+import { factionsData, discordantStarsData } from "../data/processedData";
+import { ICON_MAP } from "../utils/dataProcessor";
+import { isBlueReverieFaction } from "../utils/expansionFilters";
 
 const pokFactions = ["The Nomad", "The Vuil'Raith Cabal", "The Argent Flight", "The Titans of Ul", "The Mahact Gene-Sorcerers", "The Empyrean", "The Naaz-Rokha Alliance"];
 const teFactions  = ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Crimson Rebellion", "The Firmament", "The Obsidian"];
-const brFactions  = ["Atokera Legacy", "Belkosea Allied States", "Pharad'n Order", "Qhet Republic", "Toldar Concordat", "Uydai Conclave"];
-
-const isBlueReverieFaction = (name) => brFactions.includes(name);
 
 const EXPANSIONS = [
   { key: 'Base', label: 'Base' },
@@ -36,8 +30,8 @@ const getFactionSource = (faction, fromDS) => {
 };
 
 const ALL_FACTIONS = [
-  ...factionsJSON.factions.map(f => ({ ...f, source: getFactionSource(f, false) })),
-  ...(discordantStarsJSON?.factions || []).map(f => ({ ...f, source: getFactionSource(f, true) })),
+  ...factionsData.factions.map(f => ({ ...f, source: getFactionSource(f, false) })),
+  ...(discordantStarsData?.factions || []).map(f => ({ ...f, source: getFactionSource(f, true) })),
 ];
 
 const CATEGORIES = [

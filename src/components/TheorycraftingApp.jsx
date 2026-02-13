@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { createPortal } from "react-dom";
 import FactionSheet from "./FactionSheet.jsx";
 import Sidebar from "./Sidebar.jsx";
-import factionsJSONRaw from "../data/factions.json";
-import discordantStarsJSONRaw from "../data/discordant-stars.json";
-import { processFactionData, ICON_MAP } from "../utils/dataProcessor.js";
+import { factionsData, discordantStarsData } from "../data/processedData";
+import { ICON_MAP } from "../utils/dataProcessor";
 import { getSwapOptions, getExtraComponents, getSwapOptionsForTrigger } from "../data/undraftable-components.js";
 import { executeSwap, findFullComponentData } from "../utils/swapUtils.js";
+import { isBlueReverieFaction } from "../utils/expansionFilters.js";
 
 // Tech color icons mapping
 const TECH_ICONS = {
@@ -15,10 +15,6 @@ const TECH_ICONS = {
   green: ICON_MAP.techColors.Green,
   yellow: ICON_MAP.techColors.Yellow
 };
-
-// Process faction data for icons
-const factionsJSON = processFactionData(factionsJSONRaw);
-const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
 
 const baseFactionLimits = {
   blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
@@ -39,18 +35,6 @@ const CATEGORIES = [
   'starting_techs', 'starting_fleet', 'commodity_values', 'flagship', 'mech',
   'home_systems', 'breakthrough'
 ];
-
-const isBlueReverieFaction = (factionName) => {
-  const brFactions = [
-    "Atokera Legacy",
-    "Belkosea Allied States",
-    "Pharad'n Order",
-    "Qhet Republic",
-    "Toldar Concordat",
-    "Uydai Conclave"
-  ];
-  return brFactions.includes(factionName);
-};
 
 export default function TheorycraftingApp({ onNavigate }) {
   const [selectedFaction, setSelectedFaction] = useState("");
@@ -73,7 +57,6 @@ export default function TheorycraftingApp({ onNavigate }) {
     breakthrough: []
   });
   const [draftLimits, setDraftLimits] = useState(baseFactionLimits);
-  const [expandedCategory, setExpandedCategory] = useState(null);
   const [powerMode, setPowerMode] = useState(false);
   const [unlimitedMode, setUnlimitedMode] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -87,49 +70,16 @@ export default function TheorycraftingApp({ onNavigate }) {
   const headerRef = useRef(null);
 
   // Hover preview state for component popups
-  const [hoveredComponent, setHoveredComponent] = useState(null);
-  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
-  const hoverTimeoutRef = useRef(null);
+  const [hoveredComponent] = useState(null);
+  const [hoverPosition] = useState({ x: 0, y: 0 });
 
   const supportsHover =
     typeof window !== "undefined" &&
     window.matchMedia &&
     window.matchMedia("(hover: hover)").matches;
 
-  // Helper to clamp popup position to viewport
-  const clampToViewport = (x, y, width = 300, height = 420) => {
-    const padding = 12;
-    const maxX = window.innerWidth - width - padding;
-    const maxY = window.innerHeight - height - padding;
-
-    return {
-      x: Math.min(Math.max(padding, x), maxX),
-      y: Math.min(Math.max(padding, y), maxY)
-    };
-  };
-
   // FIXED: Explicitly list categories to ensure home_systems and breakthrough are included
   const categories = CATEGORIES;
-
-  // Helper function for better category display names
-  const getCategoryDisplayName = (category) => {
-    const nameMap = {
-      abilities: "Abilities",
-      faction_techs: "Faction Techs",
-      agents: "Agents",
-      commanders: "Commanders",
-      heroes: "Heroes",
-      promissory: "Promissory",
-      starting_techs: "Starting Techs",
-      starting_fleet: "Starting Fleet",
-      commodity_values: "Commodities",
-      flagship: "Flagship",
-      mech: "Mech",
-      home_systems: "Home System",
-      breakthrough: "Breakthrough"
-    };
-    return nameMap[category] || category.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase());
-  };
 
   const getAllComponents = (category) => {
     let baseComponents = [];
@@ -138,7 +88,7 @@ export default function TheorycraftingApp({ onNavigate }) {
 
     // Get base game components
     baseComponents = [
-      ...(factionsJSON.factions.flatMap(f =>
+      ...(factionsData.factions.flatMap(f =>
         (f[category] || []).map(item => {
           const isUnitUpgrade = item.tech_type === "Unit Upgrade";
 
@@ -160,12 +110,12 @@ export default function TheorycraftingApp({ onNavigate }) {
           };
         })
       )),
-      ...(factionsJSON.tiles[category] || [])
+      ...(factionsData.tiles[category] || [])
     ];
 
     // Get Discordant Stars components (excluding Blue Reverie)
     dsComponents = [
-      ...(discordantStarsJSON.factions
+      ...(discordantStarsData.factions
         .filter(f => !isBlueReverieFaction(f.name))
         .flatMap(f =>
           (f[category] || []).map(item => {
@@ -190,7 +140,7 @@ export default function TheorycraftingApp({ onNavigate }) {
             };
           })
         )),
-      ...(discordantStarsJSON.tiles[category] || []).map(item => ({
+      ...(discordantStarsData.tiles[category] || []).map(item => ({
         ...item,
         isDiscordantStars: true
       }))
@@ -198,7 +148,7 @@ export default function TheorycraftingApp({ onNavigate }) {
 
     // Get Blue Reverie components (from DS JSON)
     brComponents = [
-      ...(discordantStarsJSON.factions
+      ...(discordantStarsData.factions
         .filter(f => isBlueReverieFaction(f.name))
         .flatMap(f =>
           (f[category] || []).map(item => {
@@ -353,7 +303,7 @@ const availableComponentsForSidebar = useMemo(() => {
         // Find full component data from JSON
         const findFullComponentData = (componentName, factionName, targetCategory) => {
           // Try base factions first
-          const baseFaction = factionsJSON.factions.find(f => f.name === factionName);
+          const baseFaction = factionsData.factions.find(f => f.name === factionName);
           if (baseFaction && baseFaction[targetCategory]) {
             const found = baseFaction[targetCategory].find(c => c.name === componentName);
             if (found) {
@@ -362,8 +312,8 @@ const availableComponentsForSidebar = useMemo(() => {
           }
           
           // Try DS factions
-          if (discordantStarsJSON?.factions) {
-            const dsFaction = discordantStarsJSON.factions.find(f => f.name === factionName);
+          if (discordantStarsData?.factions) {
+            const dsFaction = discordantStarsData.factions.find(f => f.name === factionName);
             if (dsFaction) {
               let categoryData = dsFaction[targetCategory];
               if (!categoryData && targetCategory === 'home_systems') {
@@ -475,12 +425,12 @@ const availableComponentsForSidebar = useMemo(() => {
 
   const handleLoadFaction = (factionName) => {
     // Try to find in base factions first
-    let faction = factionsJSON.factions.find(f => f.name === factionName);
+    let faction = factionsData.factions.find(f => f.name === factionName);
     let factionSource = "Base";
     
     // If not found, try Discordant Stars
     if (!faction) {
-      faction = discordantStarsJSON.factions.find(f => f.name === factionName);
+      faction = discordantStarsData.factions.find(f => f.name === factionName);
       if (faction) {
         factionSource = isBlueReverieFaction(faction.name) ? "BR" : "DS";
       }
@@ -719,8 +669,8 @@ const availableComponentsForSidebar = useMemo(() => {
     return (customFaction.faction_techs || []).map(ft => {
       // Search in base and DS factions (includes BR)
       const original = [
-        ...factionsJSON.factions.flatMap(f => f.faction_techs || []),
-        ...discordantStarsJSON.factions.flatMap(f => f.faction_techs || [])
+        ...factionsData.factions.flatMap(f => f.faction_techs || []),
+        ...discordantStarsData.factions.flatMap(f => f.faction_techs || [])
       ].find(t => t.name === ft.name);
 
       if (!original) return ft;
@@ -746,11 +696,11 @@ const availableComponentsForSidebar = useMemo(() => {
 
   // Get combined faction list for dropdown
   const getAllFactionsList = React.useCallback(() => {
-    const baseFactions = factionsJSON.factions.map(f => ({ ...f, source: 'Base' }));
-    const dsFactions = discordantStarsJSON.factions
+    const baseFactions = factionsData.factions.map(f => ({ ...f, source: 'Base' }));
+    const dsFactions = discordantStarsData.factions
       .filter(f => !isBlueReverieFaction(f.name))
       .map(f => ({ ...f, source: 'DS' }));
-    const brFactions = discordantStarsJSON.factions
+    const brFactions = discordantStarsData.factions
       .filter(f => isBlueReverieFaction(f.name))
       .map(f => ({ ...f, source: 'BR' }));
     

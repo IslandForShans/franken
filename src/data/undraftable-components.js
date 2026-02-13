@@ -1,15 +1,3 @@
-// src/data/undraftable-components.js
-// Components that cannot be drafted but are available as swaps/additions
-/**
-Templates:
-
-{ name: "", faction: "", triggerComponent: "", type: "" }
-{ name: "", faction: "", reason: "Just Plain Garbage", type: "garbage" }
-{ name: "", faction: "", triggerComponent: "", type: "draftable_and_swap" }
-**/
-
-import { trim } from "lodash";
-
 export const undraftableComponents = {
   // Abilities that are gained/optionally swapped when drafting other components
   abilities: [
