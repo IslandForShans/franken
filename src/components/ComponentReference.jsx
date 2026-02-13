@@ -25,6 +25,7 @@ const CATEGORIES = [
   { key: 'commodity_values',label: 'Commodities' },
   { key: 'breakthrough',    label: 'Breakthrough' },
   { key: 'home_systems',    label: 'Home Systems' },
+  { key: 'other',           label: 'Other'}
 ];
 
 const TECH_ICONS = {
@@ -65,7 +66,6 @@ function ComponentCard({ component, category, faction }) {
   const isFleet    = category === 'starting_fleet';
   const isCommodity= category === 'commodity_values';
   const isStarting = category === 'starting_techs';
-  const isOther = category === 'other';
 
   // Commodity / starting fleet / starting tech are simple
   if (isCommodity) {
@@ -81,10 +81,6 @@ function ComponentCard({ component, category, faction }) {
   if (isFleet) {
     return (
       <div className="px-3 py-2 rounded-lg bg-gray-800/60 border border-gray-700">
-        <div className="flex items-center gap-1 mb-1">
-          {faction.icon && <img src={faction.icon} alt="" className="w-3 h-3 opacity-60" />}
-          <span className="text-xs text-white-500 italic">{faction.name}</span>
-        </div>
         <p className="text-sm text-white-200">{component.description}</p>
       </div>
     );
@@ -93,10 +89,6 @@ function ComponentCard({ component, category, faction }) {
   if (isStarting) {
     return (
       <div className="px-3 py-2 rounded-lg bg-gray-800/60 border border-gray-700">
-        <div className="flex items-center gap-1 mb-1">
-          {faction.icon && <img src={faction.icon} alt="" className="w-3 h-3 opacity-60" />}
-          <span className="text-xs text-white-500 italic">{faction.name}</span>
-        </div>
         {component.note && <p className="text-xs text-white-400 italic mb-1">{component.note}</p>}
         <div className="flex flex-wrap gap-1">
           {(component.techs || []).map((tech, i) => (
@@ -383,7 +375,7 @@ export default function ComponentReference({ onNavigate }) {
             placeholder="Search components, descriptions…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-white focus:outline-none focus:border-yellow-500 text-sm"
+            className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-white-600 focus:outline-none focus:border-yellow-500 text-sm"
           />
           <div className="flex flex-wrap gap-1.5">
             <button

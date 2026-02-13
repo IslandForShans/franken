@@ -834,8 +834,8 @@ const getAllAvailableSwaps = () => {
 };
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-      <div className="h-full flex">
+    <div className="min-h-[100dvh] w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <div className="min-h-[100dvh] flex">
     {!sidebarCollapsed && (
   <div className="sidebar open">
     {/* Sidebar Controls Header */}
@@ -1043,14 +1043,14 @@ const getAllAvailableSwaps = () => {
                 {onNavigate && (
                   <button
                     onClick={() => onNavigate('/')}
-                    className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors mobile-action-button"
                   >
                     ← Home
                   </button>
                 )}
                 <button
                   onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                  className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+                  className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors mobile-action-button"
                 >
                   {sidebarCollapsed ? '→ Show' : '← Hide'} Sidebar
                 </button>

@@ -1444,8 +1444,8 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-  <div className="flex h-screen">
+    <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+  <div className="flex min-h-[100dvh]">
         {showSidebar && (
           <>
             <Sidebar
@@ -1493,17 +1493,17 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
                     {onNavigate && (
                       <button
                         onClick={() => onNavigate('/')}
-                        className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+                        className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors mobile-action-button"
                       >
                         ← Home
                       </button>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap justify-end mobile-toolbar-actions">
                   <button 
                     onClick={() => setShowBanModal(true)} 
-                    className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-semibold transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-semibold transition-colors mobile-action-button"
                   > 
                     Manage Bans
                   </button>
@@ -1521,7 +1521,7 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
                   
                   {!draftStarted && (
                     <button 
-                      className="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors" 
+                      className="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors mobile-action-button" 
                       onClick={startDraftSolo}
                     >
                       Start Draft
@@ -1529,8 +1529,7 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
                   )}
                   
                   <button 
-                    className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-colors" 
-                    onClick={() => setShowSummary(s => !s)}
+                    className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-colors mobile-action-button"                     onClick={() => setShowSummary(s => !s)}
                   >
                     {showSummary ? "Hide" : "Show"} Summary
                   </button>
@@ -1538,15 +1537,14 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
                   {draftStarted && (
                     <button
                       onClick={() => setSettingsCollapsed(!settingsCollapsed)}
-                      className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
-                    >
+                      className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors mobile-action-button"                    >
                       {settingsCollapsed ? "Show" : "Hide"} Info
                     </button>
                   )}
                   {draftStarted && (
                     <button
                       onClick={cancelDraft}
-                      className="px-3 py-1.5 rounded-lg bg-red-700 hover:bg-red-600 text-white text-sm font-semibold transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-red-700 hover:bg-red-600 text-white text-sm font-semibold transition-colors mobile-action-button"
                     >
                       Cancel Draft
                     </button>
@@ -1613,7 +1611,7 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
           className="mr-2"
         />
         <span className="font-medium text-white text-sm">
-          Discordant Stars (DS, Unfinished)
+          Discordant Stars (DS)
         </span>
       </label>
       <div className="text-xs text-gray-200 ml-6">

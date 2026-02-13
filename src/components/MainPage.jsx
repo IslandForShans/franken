@@ -9,7 +9,7 @@ export default function MainPage({ onNavigate }) {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden overflow-y-auto">
+    <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-x-hidden overflow-y-auto">
       {/* Navigation Header */}
       <nav className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

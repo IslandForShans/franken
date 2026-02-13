@@ -4327,19 +4327,23 @@
       "other": [
         {
           "id": "axis_order1",
-          "name": "Axis Order [Dreadnought]: Cost, 3. Units Produced, 1. Orders Available, 2. Text: At the end of your turn: Exhaust this card to place 1 dreadnought from your reinforcements in a system that contains 1 or more of your ships and 1 of your command tokens. At the start of the status phase, if this card is exhausted, return it to the Axis player's reinforcements."
+          "name": "Axis Order [Dreadnought]",
+          "description": "Cost, 3. Units Produced, 1. Orders Available, 2. Text: At the end of your turn: Exhaust this card to place 1 dreadnought from your reinforcements in a system that contains 1 or more of your ships and 1 of your command tokens. At the start of the status phase, if this card is exhausted, return it to the Axis player's reinforcements."
         },
         {
           "id": "axis_order2",
-          "name": "Axis Order [Carrier]: Cost, 2. Units Produced, 1. Orders Available, 2. Text: At the end of your turn: Exhaust this card to place 1 carrier from your reinforcements in a system that contains 1 or more of your ships and 1 of your command tokens. At the start of the status phase, if this card is exhausted, return it to the Axis player's reinforcements."
+          "name": "Axis Order [Carrier]",
+          "description": "Cost, 2. Units Produced, 1. Orders Available, 2. Text: At the end of your turn: Exhaust this card to place 1 carrier from your reinforcements in a system that contains 1 or more of your ships and 1 of your command tokens. At the start of the status phase, if this card is exhausted, return it to the Axis player's reinforcements."
         },
         {
           "id": "axis_order3",
-          "name": "Axis Order [Cruiser]: Cost, 1. Units Produced, 1. Orders Available, 2. Text: At the end of your turn: Exhaust this card to place 1 cruiser from your reinforcements in a system that contains 1 or more of your ships and 1 of your command tokens. At the start of the status phase, if this card is exhausted, return it to the Axis player's reinforcements."
+          "name": "Axis Order [Cruiser]",
+          "description": "Cost, 1. Units Produced, 1. Orders Available, 2. Text: At the end of your turn: Exhaust this card to place 1 cruiser from your reinforcements in a system that contains 1 or more of your ships and 1 of your command tokens. At the start of the status phase, if this card is exhausted, return it to the Axis player's reinforcements."
         },
         {
           "id": "axis_order4",
-          "name": "Axis Order [Destroyer]: Cost, 1. Units Produced, 2. Orders Available, 2. Text: At the end of your turn: Exhaust this card to place 1 destroyer from your reinforcements in a system that contains 1 or more of your ships and 1 of your command tokens. At the start of the status phase, if this card is exhausted, return it to the Axis player's reinforcements."
+          "name": "Axis Order [Destroyer]",
+          "description": "Cost, 1. Units Produced, 2. Orders Available, 2. Text: At the end of your turn: Exhaust this card to place 1 destroyer from your reinforcements in a system that contains 1 or more of your ships and 1 of your command tokens. At the start of the status phase, if this card is exhausted, return it to the Axis player's reinforcements."
         }
       ]
     },
@@ -5593,27 +5597,27 @@
         {
           "id": "belkosea_sw1",
           "name": "Availyn",
-          "descripiton": "This system is a nebula. At any time, you may exhaust this card to produce up to 3 fighters in a system that contains your ships. PRODUCTION 3"
+          "description": "This system is a nebula. At any time, you may exhaust this card to produce up to 3 fighters in a system that contains your ships. PRODUCTION 3"
         },
         {
           "id": "belkosea_sw2",
           "name": "Caled",
-          "descripiton": "At any time, you may exhaust this card to destroy 1 of your opponent's ships in the active system if a line form this system to that system would cross only parallel non-anomaly borders."
+          "description": "At any time, you may exhaust this card to destroy 1 of your opponent's ships in the active system if a line form this system to that system would cross only parallel non-anomaly borders."
         },
         {
           "id": "belkosea_sw3",
           "name": "Glatison",
-          "descripiton": "At any time, you may exhaust this card to repair all of your damaged units. Other players' units in this system lose SUSTAIN DAMAGE. ANTI-FIGHTER BARRAGE 4(x2)"
+          "description": "At any time, you may exhaust this card to repair all of your damaged units. Other players' units in this system lose SUSTAIN DAMAGE. ANTI-FIGHTER BARRAGE 4(x2)"
         },
         {
           "id": "belkosea_sw4",
           "name": "Grom",
-          "descripiton": "At any time, you may exhaust this card to resolve ANTI-FIGHTER BARRAGE 4 against each fighter in 1 adjacent system (including your own). SPACE CANNON 4"
+          "description": "At any time, you may exhaust this card to resolve ANTI-FIGHTER BARRAGE 4 against each fighter in 1 adjacent system (including your own). SPACE CANNON 4"
         },
         {
           "id": "belkosea_sw5",
           "name": "Mors",
-          "descripiton": "At any time, you may exhaust this card to force each unit in 1 non-adjacent system to become damaged (including your own). PLANETARY SHIELD"
+          "description": "At any time, you may exhaust this card to force each unit in 1 non-adjacent system to become damaged (including your own). PLANETARY SHIELD"
         }
       ]
     },

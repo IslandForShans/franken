@@ -334,3 +334,29 @@ body {
     0% 70%, 0% 30%
   );
 }
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+@supports (height: 100dvh) {
+  body,
+  #root {
+    min-height: 100dvh;
+  }
+}
+
+@media (max-width: 767px) {
+  .mobile-toolbar-actions {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .mobile-action-button {
+    min-height: 2.5rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+}
