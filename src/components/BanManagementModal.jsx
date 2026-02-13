@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Component, useState } from "react";
 import { createPortal } from "react-dom";
 import factionsJSONRaw from "../data/factions.json";
 import discordantStarsJSONRaw from "../data/discordant-stars.json";
@@ -7,6 +7,133 @@ import './UnifiedStyles.css';
 
 const factionsJSON = processFactionData(factionsJSONRaw);
 const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
+
+const CARTER_CUT = [
+  "Hired Guns",
+  "Ambush",
+  "Mercenaries",
+  "Deep Mining",
+  "Orbital Foundries",
+  "Rule of Two",
+  "Conspirators",
+  "Iconoclasm",
+  "Connect",
+  "Information Brokers",
+  "Munitions Reserves",
+  "Starfall Gunnery",
+  "Plague Reservoir",
+  "Zeal",
+  "Illusory Prescence",
+  "Foresight",
+  "Cargo Raiders",
+  "Pillage",
+  "Technological Singularity",
+  "Classified Developments",
+  "Data Recovery",
+  "Honor-Bound",
+  "Prescience",
+  "Titans Starting Fleet",
+  "Edyn Starting Fleet",
+  "Nekro Starting Fleet",
+  "Winnu Starting Fleet",
+  "Dih-Mohn Starting Fleet",
+  "Ghoti Starting Fleet",
+  "Gledge Home System",
+  "Nokar Home System",
+  "Saar Home System",
+  "Ghemina Home System",
+  "Trilossa Aun Miric",
+  "I48S",
+  "Jgin Faru - Chancellor of Immigration",
+  "Viscount Unlenn",
+  "Davish S'norri - Labor Relations Specialist",
+  "Skarald & Torvar - Raid Heralds",
+  "Queen Lucrecia - Atonement and Punishment",
+  "Sal Gavda - Black Market Dealer",
+  "Evelyn Delouis",
+  "Suldhan Wraeg - Shrouded Advisor",
+  "Sai Seravus",
+  "Koryl Ferax - The Third Voice",
+  "Zelian B - The Hunter",
+  "Komat - Vibrant Blue",
+  "Issac of Sinci - Kinematics Specialist",
+  "Gila the Silvertongue",
+  "2RAM",
+  "Kadryn - Highest Grace",
+  "Silas Deriga - Necrosage",
+  "Knak Halfear - Grizzled Negotiator",
+  "S'ula Mentarion",
+  "M'Aban Ω",
+  "Sdallari Tvungovot - Marshall Engineer",
+  "The Oracle",
+  "Wonell the Silent - Grandmaster of the Order",
+  "Odlynn Myrr",
+  "Mathis Mathinus",
+  "Combinatorial Bypass",
+  "Rapid Excavation",
+  "Strike Wing Ambuscade",
+  "Ragh's Call",
+  "Carcinisation",
+  "Clan's Favor",
+  "Hyperkinetic Ordinance",
+  "Nokar Navigator",
+  "Stone Speakers",
+  "Scavenger Exos",
+  "Seeker Drones",
+  "Shard Volley",
+  "Fractal Plating",
+  "Psychoactive Armaments",
+  "Envoy Network",
+  "False Flag Operations",
+  "Voidwake Missiles",
+  "Rift Engines",
+  "Broker Network",
+  "Orbital Defense Grid",
+  "Pilgrimage Beacons",
+  "Voidflare Warden II",
+  "Brood Pod",
+  "Geosympathetic Impeller",
+  "Encrypted Trade Hub",
+  "Seidr Project",
+  "Vector Programs",
+  "Shrouded Skirmishers",
+  "Blackmail Programs",
+  "Merged Replicators",
+  "Indoctrination Team",
+  "Hegemonic Trade Policy",
+  "Salvage Operations",
+  "Impulse Core",
+  "Bioplasmosis",
+  "L4 Disruptors",
+  "Lazax Gate Folding",
+  "Spatial Conduit Cylinder",
+  "Supercharge",
+  "Transparasteel Plating",
+  "Genetic Recombination",
+  "Inheritance Systems",
+  "Navigation Relays",
+  "Nightingale V",
+  "Lithodax",
+  "Nexus",
+  "Richtyrian",
+  "Halberd",
+  "Eradica",
+  "Kaliburn",
+  "Annah Regia",
+  "Psyclobea Qarynx",
+  "Reckoning",
+  "Vox",
+  "World-Cracker",
+  "Nemsys",
+  "Eclipse",
+  "Autofabricator",
+  "Reanimator",
+  "Annihilator",
+  "Duuban",
+  "Omniopiares",
+  "Collider",
+  "Javelin"
+];
 
 export default function BanManagementModal({
   isOpen,
@@ -114,6 +241,8 @@ export default function BanManagementModal({
   };
 
   const allComponents = getAllComponentsForBanning();
+  const allComponentIds = Array.from(new Set(allComponents.map(comp => comp.name)));
+
   const filteredComponents = componentSearchTerm 
     ? allComponents.filter(comp => 
         comp.name.toLowerCase().includes(componentSearchTerm.toLowerCase()) ||
@@ -143,6 +272,19 @@ export default function BanManagementModal({
             <h4 className="ban-section-header">
               Banned Factions ({bannedFactions.size})
             </h4>
+            <button
+              type="button"
+              onClick={() => {
+                filteredFactions.forEach(faction => {
+                  if (!bannedFactions.has(faction.name)) {
+                    onBanFaction(faction.name);
+                  }
+                });
+              }}
+              className="btn btn-danger btn-sm mb-2"
+            >
+              Ban All
+            </button>
             <div className="ban-list">
               {filteredFactions.map(faction => {
                 const isBanned = bannedFactions.has(faction.name);
@@ -172,7 +314,20 @@ export default function BanManagementModal({
             <h4 className="ban-section-header">
               Component Bans ({bannedComponents.size})
             </h4>
-            
+            <button
+              type="button"
+              onClick={() => {
+                allComponentIds.forEach(componentId => {
+                  if (!bannedComponents.has(componentId)) {
+                    onBanComponent(componentId);
+                  }
+                });
+              }}
+              className="btn btn-danger btn-sm mb-3"
+              style={{width: '100%', flexShrink: 0}}
+            >
+              Ban All Components
+            </button>
             <input 
               type="text" 
               placeholder="Search components to ban..."
@@ -194,7 +349,7 @@ export default function BanManagementModal({
                     <button 
                       type="button"
                       onClick={() => {
-                        onBanComponent(comp.id || comp.name);
+                        onBanComponent(comp.name);
                         setComponentSearchTerm("");
                       }}
                       className="btn btn-danger btn-sm"
@@ -248,6 +403,17 @@ export default function BanManagementModal({
             className="btn btn-warning"
           >
             Clear All Bans
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              CARTER_CUT.forEach(c => {
+                if (!bannedComponents.has(c)) onBanComponent(c);
+              });
+            }}
+            className="btn btn-danger"
+          >
+            Carter Cut
           </button>
           <button 
             type="button"

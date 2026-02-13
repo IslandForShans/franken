@@ -5,7 +5,8 @@ import { ICON_MAP } from "../utils/dataProcessor";
 import factionsJSONRaw from "../data/factions.json";
 import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData } from "../utils/dataProcessor.js";
-import { isComponentUndraftable } from "../data/undraftable-components.js";
+import { isComponentUndraftable, getExtraComponents, getSwapOptionsForTrigger } from "../data/undraftable-components.js";
+import { findFullComponentData } from "../utils/swapUtils.js";
 
 const factionsJSON = processFactionData(factionsJSONRaw);
 const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
@@ -49,6 +50,8 @@ export default function Sidebar({
   // Hover preview state
   const [hoveredComponent, setHoveredComponent] = useState(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+  const hideTimeoutRef = useRef(null);
+  const isHoverOverPopupRef = useRef(false);
 
   // Auto-expand categories with matches when searching
 useEffect(() => {
@@ -73,6 +76,29 @@ useEffect(() => {
 }, [isSearching, availableComponents, categories, defaultCollapsed]);
 
   const hoverTimeoutRef = useRef(null);
+  const hoverCloseTimeoutRef = useRef(null);
+
+  const clearHoverTimers = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    if (hoverCloseTimeoutRef.current) {
+      clearTimeout(hoverCloseTimeoutRef.current);
+      hoverCloseTimeoutRef.current = null;
+    }
+  };
+
+  const scheduleHoverClose = () => {
+    if (hoverCloseTimeoutRef.current) clearTimeout(hoverCloseTimeoutRef.current);
+    hoverCloseTimeoutRef.current = setTimeout(() => {
+      setHoveredComponent(null);
+    }, 120);
+  };
+
+  useEffect(() => {
+    return () => clearHoverTimers();
+  }, []);
 
   const supportsHover =
     typeof window !== "undefined" &&
@@ -178,6 +204,7 @@ const toggleAllCategories = () => {
                     onClick={() => handleComponentClick('factions', faction)}
                     onMouseEnter={(e) => {
                       if (!supportsHover) return;
+                      clearHoverTimers();
                       const rect = e.currentTarget.getBoundingClientRect();
                       const pos = clampToViewport(rect.right + 12, rect.top);
                       hoverTimeoutRef.current = setTimeout(() => {
@@ -187,7 +214,7 @@ const toggleAllCategories = () => {
                     }}
                     onMouseLeave={() => {
                       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-                      setHoveredComponent(null);
+                      scheduleHoverClose();
                     }}
                   >
                     <div className="flex items-center gap-2">
@@ -217,6 +244,7 @@ const toggleAllCategories = () => {
                     onClick={() => handleComponentClick('blue_tiles', tile)}
                     onMouseEnter={(e) => {
                       if (!supportsHover) return;
+                      clearHoverTimers();
                       const rect = e.currentTarget.getBoundingClientRect();
                       const pos = clampToViewport(rect.right + 12, rect.top);
                       hoverTimeoutRef.current = setTimeout(() => {
@@ -226,7 +254,7 @@ const toggleAllCategories = () => {
                     }}
                     onMouseLeave={() => {
                       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-                      setHoveredComponent(null);
+                      scheduleHoverClose();
                     }}
                   >
                     <div className="flex items-center gap-2 font-medium">
@@ -272,6 +300,7 @@ const toggleAllCategories = () => {
                     onClick={() => handleComponentClick('red_tiles', tile)}
                     onMouseEnter={(e) => {
                       if (!supportsHover) return;
+                      clearHoverTimers();
                       const rect = e.currentTarget.getBoundingClientRect();
                       const pos = clampToViewport(rect.right + 12, rect.top);
                       hoverTimeoutRef.current = setTimeout(() => {
@@ -281,7 +310,7 @@ const toggleAllCategories = () => {
                     }}
                     onMouseLeave={() => {
                       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-                      setHoveredComponent(null);
+                      scheduleHoverClose();
                     }}
                   >
                     <div className="flex items-center gap-2 font-medium">
@@ -340,8 +369,12 @@ const toggleAllCategories = () => {
               padding: "1rem",
               boxShadow: "0 30px 70px rgba(0,0,0,0.85)",
               zIndex: 100000,
-              pointerEvents: "none"
+              pointerEvents: "auto"
             }}
+            onMouseEnter={() => {
+              if (hoverCloseTimeoutRef.current) clearTimeout(hoverCloseTimeoutRef.current);
+            }}
+            onMouseLeave={scheduleHoverClose}
           >
             <div
               className="font-bold mb-2 uppercase"
@@ -512,6 +545,7 @@ const toggleAllCategories = () => {
               onClick={() => !isDisabled && handleComponentClick(cat, component)}
               onMouseEnter={(e) => {
                 if (!supportsHover) return;
+                clearHoverTimers();
                 const rect = e.currentTarget.getBoundingClientRect();
                 const pos = clampToViewport(rect.right + 12, rect.top);
 
@@ -522,7 +556,7 @@ const toggleAllCategories = () => {
               }}
               onMouseLeave={() => {
                 if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-                setHoveredComponent(null);
+                scheduleHoverClose();
               }}
             >
               <div className="flex items-center gap-2 font-medium">
@@ -670,8 +704,12 @@ const toggleAllCategories = () => {
               padding: "1rem",
               boxShadow: "0 30px 70px rgba(0,0,0,0.85)",
               zIndex: 100000,
-              pointerEvents: "none"
+              pointerEvents: "auto"
             }}
+            onMouseEnter={() => {
+              if (hoverCloseTimeoutRef.current) clearTimeout(hoverCloseTimeoutRef.current);
+            }}
+            onMouseLeave={scheduleHoverClose}
           >
             <div
               className="font-bold mb-2 uppercase"
@@ -925,6 +963,46 @@ const toggleAllCategories = () => {
                 )}
               </>
             )}
+
+            {(() => {
+              const extras = getExtraComponents(hoveredComponent.component.name, hoveredComponent.component.faction);
+              const swaps = getSwapOptionsForTrigger(hoveredComponent.component.name, hoveredComponent.component.faction);
+              if (extras.length === 0 && swaps.length === 0) return null;
+              return (
+                <div className="mt-3 pt-3 border-t border-gray-700">
+                  {extras.length > 0 && (
+                    <div className="mb-2">
+                      <div className="font-semibold text-xs mb-1" style={{ color: "var(--accent-green)" }}>ALSO GAINS</div>
+                      {extras.map((extra, i) => {
+                        const comp = findFullComponentData(extra.name, extra.faction, extra.category) || extra;
+                        return (
+                          <div key={i} className="text-xs mb-2 p-2 rounded" style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)" }}>
+                            <div className="font-semibold text-white">{comp.name}</div>
+                            {comp.faction && <div className="text-xs" style={{ color: "var(--accent-blue)" }}>{comp.faction}</div>}
+                            {comp.description && <div className="text-gray-300 mt-1 italic">{comp.description}</div>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {swaps.length > 0 && (
+                    <div>
+                      <div className="font-semibold text-xs mb-1" style={{ color: "var(--accent-yellow)" }}>CAN SWAP</div>
+                      {swaps.map((swap, i) => {
+                        const comp = findFullComponentData(swap.name, swap.faction, swap.category) || swap;
+                        return (
+                          <div key={i} className="text-xs mb-2 p-2 rounded" style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)" }}>
+                            <div className="font-semibold text-white">{comp.name}</div>
+                            {comp.faction && <div className="text-xs" style={{ color: "var(--accent-blue)" }}>{comp.faction}</div>}
+                            {comp.description && <div className="text-gray-300 mt-1 italic">{comp.description}</div>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>,
           document.body
         )}

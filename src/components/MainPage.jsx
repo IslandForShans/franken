@@ -55,8 +55,7 @@ export default function MainPage({ onNavigate }) {
               Franken Draft Simulator
             </h3>
             <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8 sm:mb-12 px-4">
-              Create custom factions by drafting individual components from all TI4 factions. 
-              Perfect for balanced, unique gameplay experiences.
+              Create custom factions by drafting individual components from all TI4 factions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
               <button
@@ -88,8 +87,8 @@ export default function MainPage({ onNavigate }) {
             <div className="text-4xl mb-4">🎲</div>
             <h4 className="text-xl sm:text-2xl font-bold mb-3 text-blue-400">Draft Simulator</h4>
             <p className="text-gray-300 mb-4 text-sm sm:text-base">
-              Conduct multiplayer drafts with customizable settings. Support for Franken, 
-              Rotisserie, and Power modes.
+              Conduct drafts with customizable settings. Support for Franken, 
+              Rotisserie, Power, and FrankenDraz modes.
             </p>
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex items-start">
@@ -116,7 +115,7 @@ export default function MainPage({ onNavigate }) {
             <div className="text-4xl mb-4">🔧</div>
             <h4 className="text-xl sm:text-2xl font-bold mb-3 text-purple-400">Faction Builder</h4>
             <p className="text-gray-300 mb-4 text-sm sm:text-base">
-              Theorcraft custom factions by selecting components from any faction. 
+              Build custom factions by selecting components from any faction. 
               Test ideas before your draft.
             </p>
             <ul className="space-y-2 text-sm text-gray-400">
@@ -162,6 +161,10 @@ export default function MainPage({ onNavigate }) {
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">•</span>
+                <span>Blue Reverie (6 factions)</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-400 mr-2">•</span>
                 <span>Independent toggles</span>
               </li>
             </ul>
@@ -183,6 +186,10 @@ export default function MainPage({ onNavigate }) {
               <li className="flex items-start">
                 <span className="text-red-400 mr-2">•</span>
                 <span>Ban specific components</span>
+              </li>
+              <li classname="flex items-start">
+                <span className="text-red-400 mr-2">•</span>
+                <span>Carter Cut option</span>
               </li>
               <li className="flex items-start">
                 <span className="text-red-400 mr-2">•</span>

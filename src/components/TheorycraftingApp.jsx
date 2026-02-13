@@ -6,7 +6,7 @@ import factionsJSONRaw from "../data/factions.json";
 import discordantStarsJSONRaw from "../data/discordant-stars.json";
 import { processFactionData, ICON_MAP } from "../utils/dataProcessor.js";
 import { getSwapOptions, getExtraComponents, getSwapOptionsForTrigger } from "../data/undraftable-components.js";
-import { executeSwap } from "../utils/swapUtils.js";
+import { executeSwap, findFullComponentData } from "../utils/swapUtils.js";
 
 // Tech color icons mapping
 const TECH_ICONS = {
@@ -1448,6 +1448,46 @@ const getAllAvailableSwaps = () => {
                 )}
               </>
             )}
+
+            {(() => {
+              const extras = getExtraComponents(hoveredComponent.component.name, hoveredComponent.component.faction);
+              const swaps = getSwapOptionsForTrigger(hoveredComponent.component.name, hoveredComponent.component.faction);
+              if (extras.length === 0 && swaps.length === 0) return null;
+              return (
+                <div className="mt-3 pt-3 border-t border-gray-700">
+                  {extras.length > 0 && (
+                    <div className="mb-2">
+                      <div className="font-semibold text-xs mb-1" style={{ color: "var(--accent-green)" }}>ALSO GAINS</div>
+                      {extras.map((extra, i) => {
+                        const comp = findFullComponentData(extra.name, extra.faction, extra.category) || extra;
+                        return (
+                          <div key={i} className="text-xs mb-2 p-2 rounded" style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)" }}>
+                            <div className="font-semibold text-white">{comp.name}</div>
+                            {comp.faction && <div className="text-xs" style={{ color: "var(--accent-blue)" }}>{comp.faction}</div>}
+                            {comp.description && <div className="text-gray-300 mt-1 italic">{comp.description}</div>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {swaps.length > 0 && (
+                    <div>
+                      <div className="font-semibold text-xs mb-1" style={{ color: "var(--accent-yellow)" }}>CAN SWAP</div>
+                      {swaps.map((swap, i) => {
+                        const comp = findFullComponentData(swap.name, swap.faction, swap.category) || swap;
+                        return (
+                          <div key={i} className="text-xs mb-2 p-2 rounded" style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)" }}>
+                            <div className="font-semibold text-white">{comp.name}</div>
+                            {comp.faction && <div className="text-xs" style={{ color: "var(--accent-blue)" }}>{comp.faction}</div>}
+                            {comp.description && <div className="text-gray-300 mt-1 italic">{comp.description}</div>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>,
           document.body
         )}
