@@ -56,6 +56,10 @@ function ComponentCard({ component, category, faction }) {
 
   const isTech     = category === 'faction_techs';
   const isUnit     = category === 'flagship' || category === 'mech';
+  const isUnitLikeTech = isTech && ['cost', 'combat', 'move', 'capacity'].some(
+    (statKey) => component[statKey] !== undefined && component[statKey] !== null
+  );
+  const showUnitStats = isUnit || isUnitLikeTech;
   const isLeader   = ['agents','commanders','heroes'].includes(category);
   const isTile     = category === 'home_systems';
   const isFleet    = category === 'starting_fleet';
@@ -122,9 +126,9 @@ function ComponentCard({ component, category, faction }) {
       <div className="flex items-start gap-2 px-3 py-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-semibold text-white text-sm">{component.name}</span>
+            <span className="font-semibold text-yellow-400 text-sm">{component.name}</span>
             {/* Unit stats inline */}
-            {isUnit && (
+            {showUnitStats && (
               <div className="flex gap-1 flex-wrap">
                 <StatPill label="Cost" value={component.cost} />
                 <StatPill label="Combat" value={component.combat} />
@@ -141,11 +145,6 @@ function ComponentCard({ component, category, faction }) {
               ))}
             </div>
           )}
-          {/* Faction badge */}
-          <div className="flex items-center gap-1 mt-1">
-            {faction.icon && <img src={faction.icon} alt="" className="w-3 h-3 opacity-75" />}
-            <span className="text-xs text-white-500 italic">{faction.name}</span>
-          </div>
         </div>
         {hasMore && (
           <span className="text-white-500 text-xs mt-0.5 flex-shrink-0">{expanded ? '▲' : '▼'}</span>
@@ -156,10 +155,10 @@ function ComponentCard({ component, category, faction }) {
       {!expanded && (
         <div className="px-3 pb-3 border-t border-gray-700/50 pt-2 space-y-2">
           {/* Unit abilities list */}
-          {isUnit && component.abilities?.length > 0 && (
+          {showUnitStats && component.abilities?.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {component.abilities.map((ab, i) => (
-                <span key={i} className="px-2 py-0.5 rounded bg-gray-700 text-xs text-yellow-300">{ab}</span>
+                <span key={i} className="px-2 py-0.5 rounded bg-gray-700 text-xs text-purple-400">{ab}</span>
               ))}
             </div>
           )}
@@ -224,7 +223,7 @@ function ByFactionView({ factions, search, activeCategories }) {
               onClick={() => toggle(faction.name)}
             >
               {faction.icon && <img src={faction.icon} alt="" className="w-7 h-7" />}
-              <span className="font-bold text-yellow-400 text-base flex-1">{faction.name}</span>
+              <span className="font-bold text-white-400 text-base flex-1">{faction.name}</span>
               <span className="text-white-500 text-xs">{sections.reduce((a, s) => a + s.filtered.length, 0)} components</span>
               <span className="text-white-500 ml-2">{isCollapsed ? '▼' : '▲'}</span>
             </button>
@@ -233,7 +232,7 @@ function ByFactionView({ factions, search, activeCategories }) {
               <div className="px-4 py-3 bg-gray-900/50 space-y-4">
                 {sections.map(({ cat, filtered }) => (
                   <div key={cat.key}>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-white-400 mb-2 border-b border-gray-700/50 pb-1">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2 border-b border-gray-700/50 pb-1">
                       {cat.label}
                     </div>
                     <div className="space-y-1.5">
@@ -349,7 +348,7 @@ export default function ComponentReference({ onNavigate }) {
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3 flex-wrap">
           <button
             onClick={() => onNavigate('/')}
-            className="text-white-400 hover:text-white transition-colors text-sm flex items-center gap-1"
+            className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
           >
             ← Home
           </button>
@@ -375,7 +374,7 @@ export default function ComponentReference({ onNavigate }) {
         {/* Search + Category Filters */}
         <div className="max-w-6xl mx-auto px-4 pb-3 space-y-2">
           <input
-            type="text"
+            type="search"
             placeholder="Search components, descriptions…"
             value={search}
             onChange={e => setSearch(e.target.value)}

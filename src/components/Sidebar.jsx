@@ -35,7 +35,8 @@ export default function Sidebar({
   draftVariant = "franken",
   defaultCollapsed = false,
   isSearching = false,
-  noWrapper = false
+  noWrapper = false,
+  isOpen = true
 }) {
   const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
   const [showAllComponents, setShowAllComponents] = useState(false);
