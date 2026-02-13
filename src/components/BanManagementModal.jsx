@@ -148,7 +148,7 @@ export default function BanManagementModal({
   // Filter factions based on expansion settings
   const getFilteredFactions = () => {
     let factions = filterFactionsByExpansions(factionsData.factions, expansionsEnabled);
-    if (expansionsEnabled.ds && discordantStarsData?.facitons) {
+    if (expansionsEnabled.ds && discordantStarsData?.factions) {
       factions = [...factions, ...discordantStarsData.factions];
     }
     
