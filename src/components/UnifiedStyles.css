@@ -670,41 +670,57 @@ body {
 
 /* Mobile / small-screen sidebar behavior */
 @media (max-width: 767px) {
-  /* Make sidebar off-canvas so main content is visible by default when collapsed */
-  .sidebar {
-    position: fixed;
-    left: 0;
-    /* Position top at the bottom of the header so sidebar does not sit under it */
-    top: var(--header-height, 56px);
-    /* Make the sidebar fill the remaining viewport under the header */
-    height: calc(100vh - var(--header-height, 56px));
-    bottom: auto;
-    /* Fullscreen width on mobile when opened */
-    width: 100%;
-    max-width: none;
-    background: rgba(17, 24, 39, 0.99);
-    transform: translateX(-100%);
-    transition: transform var(--transition-normal, 300ms) ease;
-    z-index: 9999; /* above everything */
-    overflow-y: auto;
-    box-shadow: none;
+  /* Show sidebar close button on mobile */
+  .sidebar-close-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* Backdrop shown behind the sidebar on mobile when open */
-  .sidebar-backdrop {
-    position: fixed;
-    left: 0;
-    top: var(--header-height, 56px);
-    width: 100%;
-    height: calc(100vh - var(--header-height, 56px));
-    background: rgba(0,0,0,0.45);
-    z-index: 9998; /* below sidebar (9999) but above content */
-    backdrop-filter: blur(2px);
+  /* Make sidebar-header relative so close button positions correctly */
+  .sidebar-header {
+    position: relative;
+    padding-right: 2.5rem;
   }
 
-  /* When open, slide in */
-  .sidebar.open {
-    transform: translateX(0%);
+  /* Remove nested scroll containers in sidebar so the outer sidebar
+     can handle all scrolling — fixes "can't scroll to bottom" in theorycrafting */
+  .sidebar-category-content {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  /* FactionSheet: reduce padding and title size on mobile */
+  .faction-sheet {
+    padding: 0.75rem;
+  }
+
+  .faction-sheet-title {
+    font-size: 1.25rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* Prevent flex children from overflowing their grid cells */
+  .faction-component {
+    min-width: 0;
+  }
+
+  /* Allow long component names to wrap instead of pushing outside their box */
+  .faction-component-name {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Allow long description text to wrap */
+  .faction-component-description {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Allow DraftSimulator header button row to wrap on very small screens */
+  .app-header .flex.items-center.gap-2 {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
   }
 
   /* Mobile header: place the title above the controls so it doesn't get in the way */
@@ -758,11 +774,16 @@ body {
     align-items: center;
   }
 
-  .app-header .px-4 .flex .justify-between .flex.items-center.gap-3,
-  .app-header .px-4 .flex .justify-between .flex.items-center.gap-2 {
-    flex-wrap: nowrap;
-    align-items: center;
-  }
+  .app-header .px-4 .flex .justify-between .flex.items-center.gap-3 {
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.app-header .px-4 .flex .justify-between .flex.items-center.gap-2 {
+  flex-wrap: wrap;
+  row-gap: 0.25rem;
+  align-items: center;
+}
 
   /* Make the left header group able to shrink and keep the title from wrapping
      onto the next line in tighter spaces. */
@@ -904,6 +925,22 @@ body {
   color: #9ca3af;
   cursor: not-allowed;
   border-color: #e5e7eb;
+}
+
+/* Sidebar close button: only visible on mobile */
+.sidebar-close-button {
+  display: none;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  z-index: 1;
+  line-height: 1;
 }
 
 /* Desktop behavior */

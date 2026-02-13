@@ -194,7 +194,7 @@ export default function DraftSimulator({ onNavigate }) {
       .filter(f => expansionsEnabled.firmobs || !noFirmament.factions.includes(f.name))
       .filter(f => expansionsEnabled.br || !brExclusions.factions.includes(f.name))
       .flatMap(f => (f[category] || [])
-        .filter(comp => !bannedComponents.has(comp.id || comp.name))
+        .filter(comp => !bannedComponents.has(comp.name))
         .filter(comp => !isComponentUndraftable(comp.name, f.name))
         .map(item => ({ ...item, faction: f.name, factionIcon: f.icon, icon: f.icon }))
       );
@@ -213,7 +213,7 @@ export default function DraftSimulator({ onNavigate }) {
             
             if (!categoryData || !Array.isArray(categoryData)) return [];
             return categoryData
-              .filter(comp => !bannedComponents.has(comp.id || comp.name))
+              .filter(comp => !bannedComponents.has(comp.name))
               .filter(comp => !isComponentUndraftable(comp.name, f.name))
               .map(item => ({ ...item, faction: f.name, factionIcon: f.icon, icon: f.icon }));
           })

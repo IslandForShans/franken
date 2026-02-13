@@ -31,6 +31,7 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Detailed draft summary!
 - Export draft history!
 - Variants: Normal, Power, Rotisserie, FrankenDraz!
+- Component Reference!
 
 ## Adding/Fixing soon
 
@@ -40,7 +41,6 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Legendary icons not showing on legendary tiles
 
 ### High Priority
-- Make component preview on hover show any added/swapped components
 - Make draft summary show tech icons and anomaly/trait/legendary icons
 
 ### Low Priority
@@ -49,7 +49,6 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 
 ## Eventual Non-Franken features to add
 
-- Faction Reference
 - Lore Reference
 - Milty Draft
 - Map Builder

@@ -1009,5 +1009,5 @@ const toggleAllCategories = () => {
     </>
   );
 
-  return noWrapper ? content : <div className="sidebar">{content}</div>;
+  return noWrapper ? content : <div className={`sidebar${isOpen !== false ? ' open' : ''}`}>{content}</div>;
 }

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import MainPage from './components/MainPage';
 import DraftSimulator from './components/DraftSimulator';
 import TheorycraftingApp from './components/TheorycraftingApp';
+import ComponentReference from './components/ComponentReference';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -13,7 +14,9 @@ function App() {
       setCurrentPage('draft');
     } else if (path === '/theorycrafting') {
       setCurrentPage('theorycrafting');
-    } else {
+    } else if (path === '/reference') {
+  setCurrentPage('reference');
+} else {
       setCurrentPage('home');
     }
   };
@@ -24,6 +27,7 @@ function App() {
       {currentPage === 'home' && <MainPage onNavigate={handleNavigate} />}
       {currentPage === 'draft' && <DraftSimulator onNavigate={handleNavigate} />}
       {currentPage === 'theorycrafting' && <TheorycraftingApp onNavigate={handleNavigate} />}
+      {currentPage === 'reference' && <ComponentReference onNavigate={handleNavigate} />}
     </div>
   );
 }

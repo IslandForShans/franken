@@ -38,17 +38,17 @@ const CARTER_CUT = [
   "Winnu Starting Fleet",
   "Dih-Mohn Starting Fleet",
   "Ghoti Starting Fleet",
-  "Gledge Home System",
+  "GLEdge Home System",
   "Nokar Home System",
   "Saar Home System",
   "Ghemina Home System",
-  "Trilossa Aun Miric",
+  "Trillossa Aun Mirik",
   "I48S",
   "Jgin Faru - Chancellor of Immigration",
   "Viscount Unlenn",
-  "Davish S'norri - Labor Relations Specialist",
-  "Skarald & Torvar - Raid Heralds",
-  "Queen Lucrecia - Atonement and Punishment",
+  "Davish S'Norri - Labor Relations Specialist",
+  "Skarvald & Torvar - Raid Heralds",
+  "Queen Lucreia - Atonement and Punishment",
   "Sal Gavda - Black Market Dealer",
   "Evelyn Delouis",
   "Suldhan Wraeg - Shrouded Advisor",
@@ -63,8 +63,8 @@ const CARTER_CUT = [
   "Silas Deriga - Necrosage",
   "Knak Halfear - Grizzled Negotiator",
   "S'ula Mentarion",
-  "M'Aban Ω",
-  "Sdallari Tvungovot - Marshall Engineer",
+  "M'aban Ω",
+  "Sdallari Tvungovot - Marshal Engineer",
   "The Oracle",
   "Wonell the Silent - Grandmaster of the Order",
   "Odlynn Myrr",
@@ -328,6 +328,20 @@ export default function BanManagementModal({
             >
               Ban All Components
             </button>
+            <button
+            type="button"
+            onClick={() => {
+  CARTER_CUT.forEach(name => {
+    const match = allComponents.find(c => c.name === name);
+    const key = match ? (match.name) : name;
+    if (!bannedComponents.has(key)) onBanComponent(key);
+  });
+}}
+            className="btn btn-danger btn-sm mb-3"
+            style={{width: '100%', flexShrink: 0}}
+          >
+            Carter Cut
+          </button>
             <input 
               type="text" 
               placeholder="Search components to ban..."
@@ -394,27 +408,26 @@ export default function BanManagementModal({
         </div>
 
         <div className="modal-footer">
-          <button 
-            type="button"
-            onClick={() => {
-              Array.from(bannedFactions).forEach(f => onBanFaction(f));
-              Array.from(bannedComponents).forEach(c => onBanComponent(c));
-            }}
-            className="btn btn-warning"
-          >
-            Clear All Bans
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              CARTER_CUT.forEach(c => {
-                if (!bannedComponents.has(c)) onBanComponent(c);
-              });
-            }}
-            className="btn btn-danger"
-          >
-            Carter Cut
-          </button>
+          <div style={{display: 'flex', gap: '0.5rem'}}>
+    <button 
+      type="button"
+      onClick={() => {
+        Array.from(bannedFactions).forEach(f => onBanFaction(f));
+      }}
+      className="btn btn-warning"
+    >
+      Clear Faction Bans
+    </button>
+    <button 
+      type="button"
+      onClick={() => {
+        Array.from(bannedComponents).forEach(c => onBanComponent(c));
+      }}
+      className="btn btn-warning"
+    >
+      Clear Component Bans
+    </button>
+  </div>
           <button 
             type="button"
             onClick={onClose}

@@ -38,6 +38,12 @@ export default function MainPage({ onNavigate }) {
               >
                 Faction Builder
               </button>
+              <button
+                onClick={() => handleNavigation('/reference')}
+                className="w-full sm:w-auto px-8 py-4 rounded-lg bg-teal-600 hover:bg-teal-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-teal-900/50"
+              >
+                Component Reference
+              </button>
             </div>
           </div>
         )}
@@ -69,6 +75,12 @@ export default function MainPage({ onNavigate }) {
                 className="w-full sm:w-auto px-8 py-4 rounded-lg bg-purple-600 hover:bg-purple-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-purple-900/50"
               >
                 Build Faction
+              </button>
+              <button
+                onClick={() => handleNavigation('/reference')}
+                className="w-full sm:w-auto px-8 py-4 rounded-lg bg-teal-600 hover:bg-teal-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-teal-900/50"
+              >
+                Component Reference
               </button>
             </div>
           </div>
@@ -187,7 +199,7 @@ export default function MainPage({ onNavigate }) {
                 <span className="text-red-400 mr-2">•</span>
                 <span>Ban specific components</span>
               </li>
-              <li classname="flex items-start">
+              <li className="flex items-start">
                 <span className="text-red-400 mr-2">•</span>
                 <span>Carter Cut option</span>
               </li>
@@ -257,6 +269,32 @@ export default function MainPage({ onNavigate }) {
               </li>
             </ul>
           </div>
+
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 sm:p-8 border border-gray-700 hover:border-teal-500 transition-all hover:shadow-xl hover:shadow-teal-900/30">
+  <div className="text-4xl mb-4">📖</div>
+  <h4 className="text-xl sm:text-2xl font-bold mb-3 text-teal-400">Component Reference</h4>
+  <p className="text-gray-300 mb-4 text-sm sm:text-base">
+    Browse every component from every faction. Search, filter by category, and view by faction or component type.
+  </p>
+  <ul className="space-y-2 text-sm text-gray-400">
+    <li className="flex items-start">
+      <span className="text-teal-400 mr-2">•</span>
+      <span>All factions, no restrictions</span>
+    </li>
+    <li className="flex items-start">
+      <span className="text-teal-400 mr-2">•</span>
+      <span>By faction or by category</span>
+    </li>
+    <li className="flex items-start">
+      <span className="text-teal-400 mr-2">•</span>
+      <span>Full component details</span>
+    </li>
+    <li className="flex items-start">
+      <span className="text-teal-400 mr-2">•</span>
+      <span>Live search & filtering</span>
+    </li>
+  </ul>
+</div>
         </div>
       </div>
 
