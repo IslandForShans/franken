@@ -65,6 +65,7 @@ function ComponentCard({ component, category, faction }) {
   const isFleet    = category === 'starting_fleet';
   const isCommodity= category === 'commodity_values';
   const isStarting = category === 'starting_techs';
+  const isOther = category === 'other';
 
   // Commodity / starting fleet / starting tech are simple
   if (isCommodity) {
@@ -154,6 +155,10 @@ function ComponentCard({ component, category, faction }) {
       {/* Expanded body */}
       {!expanded && (
         <div className="px-3 pb-3 border-t border-gray-700/50 pt-2 space-y-2">
+          {/* Leader Note */}
+          {isLeader && (
+            <span>{component.note && <p className="text-s text-purple-300 mb-1">{component.note}</p>}</span>
+          )}
           {/* Unit abilities list */}
           {showUnitStats && component.abilities?.length > 0 && (
             <div className="flex flex-wrap gap-1">
