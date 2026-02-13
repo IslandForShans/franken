@@ -6,9 +6,38 @@ import { processFactionData, ICON_MAP } from "../utils/dataProcessor.js";
 const factionsJSON = processFactionData(factionsJSONRaw);
 const discordantStarsJSON = processFactionData(discordantStarsJSONRaw);
 
+const pokFactions = ["The Nomad", "The Vuil'Raith Cabal", "The Argent Flight", "The Titans of Ul", "The Mahact Gene-Sorcerers", "The Empyrean", "The Naaz-Rokha Alliance"];
+const teFactions  = ["The Council Keleres", "The Deepwrought Scholarate", "The Ral Nel Consortium", "Last Bastion", "The Crimson Rebellion", "The Firmament", "The Obsidian"];
+const brFactions  = ["Atokera Legacy", "Belkosea Allied States", "Pharad'n Order", "Qhet Republic", "Toldar Concordat", "Uydai Conclave"];
+
+const isBlueReverieFaction = (name) => brFactions.includes(name);
+
+const EXPANSIONS = [
+  { key: 'Base', label: 'Base' },
+  { key: 'PoK',  label: 'PoK'  },
+  { key: 'TE',   label: 'TE'   },
+  { key: 'DS',   label: 'DS'   },
+  { key: 'BR',   label: 'BR'   },
+];
+
+const CATEGORY_EXPANSION = {
+  agents:      'PoK',
+  commanders:  'PoK',
+  heroes:      'PoK',
+  mech:        'PoK',
+  breakthrough: 'TE',
+};
+
+const getFactionSource = (faction, fromDS) => {
+  if (fromDS) return isBlueReverieFaction(faction.name) ? 'BR' : 'DS';
+  if (pokFactions.includes(faction.name)) return 'PoK';
+  if (teFactions.includes(faction.name))  return 'TE';
+  return 'Base';
+};
+
 const ALL_FACTIONS = [
-  ...factionsJSON.factions,
-  ...(discordantStarsJSON?.factions || []),
+  ...factionsJSON.factions.map(f => ({ ...f, source: getFactionSource(f, false) })),
+  ...(discordantStarsJSON?.factions || []).map(f => ({ ...f, source: getFactionSource(f, true) })),
 ];
 
 const CATEGORIES = [
@@ -167,8 +196,8 @@ function ComponentCard({ component, category, faction }) {
             <div key={i} className="text-xs space-y-0.5 border-t border-gray-700/40 pt-2 first:border-t-0 first:pt-0">
               <div className="font-semibold text-white">{planet.name}</div>
               <div className="flex gap-3 text-white-300">
-                {planet.resource !== undefined && <span><span className="text-blue-400">R</span> {planet.resource}</span>}
-                {planet.influence !== undefined && <span><span className="text-yellow-400">I</span> {planet.influence}</span>}
+                {planet.resource !== undefined && <span><span className="text-blue-400">Resources:</span> {planet.resource}</span>}
+                {planet.influence !== undefined && <span><span className="text-yellow-400">Influence:</span> {planet.influence}</span>}
                 {planet.trait && <span className="text-green-400">{planet.trait}</span>}
               </div>
             </div>
@@ -249,13 +278,34 @@ function ByFactionView({ factions, search, activeCategories }) {
 }
 
 // ---- By Category View ----
-function ByCategoryView({ factions, search, activeCategories }) {
+function ByCategoryView({ factions, search, activeCategories, allCategories, toggleCategory, visibleCategories = [], expansionCategories = [] }) {
   const [collapsed, setCollapsed] = useState({});
   const toggle = (key) => setCollapsed(c => ({ ...c, [key]: !c[key] }));
 
   return (
     <div className="space-y-3">
-      {activeCategories.map(cat => {
+      <div className="flex flex-wrap gap-1.5 mb-2">
+        <button
+          onClick={() => allCategories.forEach(c => toggleCategory(c.key, activeCategories.size !== allCategories.length))}
+          className="px-2 py-0.5 rounded text-xs font-semibold bg-gray-700 hover:bg-gray-600 text-white-300 border border-gray-600 transition-colors"
+        >
+          {activeCategories.size === allCategories.length ? 'None' : 'All'}
+        </button>
+        {expansionCategories.map(cat => (
+          <button
+            key={cat.key}
+            onClick={() => toggleCategory(cat.key)}
+            className={`px-2 py-0.5 rounded text-xs font-semibold border transition-colors ${
+              activeCategories.has(cat.key)
+                ? 'bg-blue-700/60 border-blue-500 text-blue-200'
+                : 'bg-gray-800 border-gray-600 text-white-500'
+            }`}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+      {visibleCategories.map(cat => {
         const allItems = factions.flatMap(faction => {
           const raw = faction[cat.key];
           if (!raw) return [];
@@ -324,6 +374,15 @@ export default function ComponentReference({ onNavigate }) {
   const [view, setView]             = useState('faction'); // 'faction' | 'category'
   const [search, setSearch]         = useState('');
   const [activeCategories, setActiveCategories] = useState(new Set(CATEGORIES.map(c => c.key)));
+  const [activeExpansions, setActiveExpansions] = useState(new Set(EXPANSIONS.map(e => e.key)));
+  
+  const toggleExpansion = (key) => {
+    setActiveExpansions(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) { next.delete(key); } else { next.add(key); }
+      return next;
+    });
+  };
 
   const toggleCategory = (key) => {
     setActiveCategories(prev => {
@@ -334,12 +393,30 @@ export default function ComponentReference({ onNavigate }) {
   };
 
   const visibleCategories = useMemo(
-    () => CATEGORIES.filter(c => activeCategories.has(c.key)),
-    [activeCategories]
+    () => CATEGORIES.filter(c => {
+      if (!activeCategories.has(c.key)) return false;
+      const requiredExp = CATEGORY_EXPANSION[c.key];
+      if (requiredExp && !activeExpansions.has(requiredExp)) return false;
+      return true;
+    }),
+    [activeCategories, activeExpansions]
+  );
+
+  const expansionCategories = useMemo(
+    () => CATEGORIES.filter(c => {
+      const requiredExp = CATEGORY_EXPANSION[c.key];
+      return !requiredExp || activeExpansions.has(requiredExp);
+    }),
+    [activeExpansions]
+  );
+
+  const visibleFactions = useMemo(
+    () => ALL_FACTIONS.filter(f => activeExpansions.has(f.source)),
+    [activeExpansions]
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+    <div className="h-[100dvh] overflow-y-auto bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3 flex-wrap">
@@ -377,24 +454,19 @@ export default function ComponentReference({ onNavigate }) {
             onChange={e => setSearch(e.target.value)}
             className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-white-600 focus:outline-none focus:border-yellow-500 text-sm"
           />
+          {/* ADD expansion filter row: */}
           <div className="flex flex-wrap gap-1.5">
-            <button
-              onClick={() => setActiveCategories(activeCategories.size === CATEGORIES.length ? new Set() : new Set(CATEGORIES.map(c => c.key)))}
-              className="px-2 py-0.5 rounded text-xs font-semibold bg-gray-700 hover:bg-gray-600 text-white-300 border border-gray-600 transition-colors"
-            >
-              {activeCategories.size === CATEGORIES.length ? 'None' : 'All'}
-            </button>
-            {CATEGORIES.map(cat => (
+            {EXPANSIONS.map(exp => (
               <button
-                key={cat.key}
-                onClick={() => toggleCategory(cat.key)}
+                key={exp.key}
+                onClick={() => toggleExpansion(exp.key)}
                 className={`px-2 py-0.5 rounded text-xs font-semibold border transition-colors ${
-                  activeCategories.has(cat.key)
-                    ? 'bg-blue-700/60 border-blue-500 text-blue-200'
-                    : 'bg-gray-800 border-gray-600 text-white-500'
+                  activeExpansions.has(exp.key)
+                    ? 'bg-yellow-700/60 border-yellow-500 text-yellow-200'
+                    : 'bg-gray-800 border-gray-600 text-gray-500'
                 }`}
               >
-                {cat.label}
+                {exp.label}
               </button>
             ))}
           </div>
@@ -404,9 +476,9 @@ export default function ComponentReference({ onNavigate }) {
       {/* Content */}
       <div className="max-w-6xl mx-auto px-4 py-6">
         {view === 'faction' ? (
-          <ByFactionView factions={ALL_FACTIONS} search={search} activeCategories={visibleCategories} />
+          <ByFactionView factions={visibleFactions} search={search} activeCategories={visibleCategories} />
         ) : (
-          <ByCategoryView factions={ALL_FACTIONS} search={search} activeCategories={visibleCategories} />
+          <ByCategoryView factions={visibleFactions} search={search} activeCategories={activeCategories} allCategories={CATEGORIES} toggleCategory={toggleCategory} visibleCategories={visibleCategories} expansionCategories={expansionCategories} />
         )}
       </div>
     </div>

@@ -280,6 +280,19 @@ const toggleAllCategories = () => {
                         <img key={`anomaly-${i}`} src={icon} alt="anomaly" className="w-4 h-4" />
                       ))}
                     </div>
+                    {/* MOBILE INLINE DETAILS */}
+                    {!supportsHover && Array.isArray(tile.planets) && tile.planets.length > 0 && (
+                      <div className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                        {tile.planets.map((planet, pIdx) => (
+                          <div key={pIdx}>
+                            <span className="font-semibold text-green-400">{planet.name}:</span>{' '}
+                            <span className="text-blue-300">{planet.resources}R</span>{' '}
+                            <span className="text-yellow-300">{planet.influence}I</span>
+                            {planet.trait && <span> · {planet.trait}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -336,6 +349,19 @@ const toggleAllCategories = () => {
                         <img key={`anomaly-${i}`} src={icon} alt="anomaly" className="w-4 h-4" />
                       ))}
                     </div>
+                    {/* MOBILE INLINE DETAILS */}
+                    {!supportsHover && Array.isArray(tile.planets) && tile.planets.length > 0 && (
+                      <div className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                        {tile.planets.map((planet, pIdx) => (
+                          <div key={pIdx}>
+                            <span className="font-semibold text-green-400">{planet.name}:</span>{' '}
+                            <span className="text-blue-300">{planet.resources}R</span>{' '}
+                            <span className="text-yellow-300">{planet.influence}I</span>
+                            {planet.trait && <span> · {planet.trait}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -357,7 +383,7 @@ const toggleAllCategories = () => {
           <div
             style={{
               position: "fixed",
-              top: hoverPosition.y,
+              top: Math.min(hoverPosition.y, window.innerHeight - 520),
               left: hoverPosition.x,
               width: "300px",
               maxHeight: "500px",
@@ -679,6 +705,53 @@ const toggleAllCategories = () => {
                     );
                   })}
               </div>
+
+              {/* ===== MOBILE INLINE DETAILS (no hover on touch devices) ===== */}
+              {!supportsHover && (
+                <>
+                  {component.description && cat !== 'starting_techs' && (
+                    <div className="text-xs italic mt-1" style={{ color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                      {component.description}
+                    </div>
+                  )}
+                  {(component.cost !== undefined || component.combat !== undefined ||
+                    component.move !== undefined || component.capacity !== undefined) && (
+                    <div className="text-xs mt-1 flex gap-2 flex-wrap">
+                      {component.cost !== undefined && (
+                        <span><span className="font-semibold text-yellow-400">Cost:</span> {component.cost}</span>
+                      )}
+                      {component.combat !== undefined && (
+                        <span><span className="font-semibold text-red-400">Combat:</span> {component.combat}</span>
+                      )}
+                      {component.move !== undefined && (
+                        <span><span className="font-semibold text-blue-400">Move:</span> {component.move}</span>
+                      )}
+                      {component.capacity !== undefined && (
+                        <span><span className="font-semibold text-green-400">Cap:</span> {component.capacity}</span>
+                      )}
+                    </div>
+                  )}
+                  {Array.isArray(component.abilities) && component.abilities.length > 0 && (
+                    <div className="text-xs mt-1">
+                      <span className="font-semibold text-purple-400">Abilities:</span>{' '}
+                      {component.abilities.join(', ')}
+                    </div>
+                  )}
+                  {(cat === 'blue_tiles' || cat === 'red_tiles' || cat === 'home_systems') &&
+                    Array.isArray(component.planets) && component.planets.length > 0 && (
+                    <div className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                      {component.planets.map((planet, pIdx) => (
+                        <div key={pIdx}>
+                          <span className="font-semibold text-green-400">{planet.name}:</span>{' '}
+                          <span className="text-blue-300">{planet.resources}Resources:</span>{' '}
+                          <span className="text-yellow-300">{planet.influence}Influence:</span>
+                          {planet.trait && <span> · {planet.trait}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           );
         }) : [])
@@ -692,7 +765,7 @@ const toggleAllCategories = () => {
           <div
             style={{
               position: "fixed",
-              top: hoverPosition.y,
+              top: Math.min(hoverPosition.y, window.innerHeight - 520),
               left: hoverPosition.x,
               width: "300px",
               maxHeight: "500px",

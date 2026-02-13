@@ -1141,7 +1141,7 @@ const getAllAvailableSwaps = () => {
           <div
             style={{
               position: "fixed",
-              top: hoverPosition.y,
+              top: Math.min(hoverPosition.y, window.innerHeight - 520),
               left: hoverPosition.x,
               width: "300px",
               maxHeight: "500px",
