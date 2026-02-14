@@ -3873,30 +3873,31 @@
         }
       ],
       "other": [
-        {
-          "ocean_cards": [
             {
               "id": "oc1",
-              "name": "Deep Abyss"
+              "name": "Deep Abyss",
+              "description": "Resources: 1 / Influence: 1"
             },
             {
               "id": "oc2",
-              "name": "Brine Pool"
+              "name": "Brine Pool",
+              "description": "Resources: 1 / Influence: 1"
             },
             {
               "id": "oc3",
-              "name": "Coral Reef"
+              "name": "Coral Reef",
+              "description": "Resources: 1 / Influence: 1"
             },
             {
               "id": "oc4",
-              "name": "Ice Shelf"
+              "name": "Ice Shelf",
+              "description": "Resources: 1 / Influence: 1"
             },
             {
               "id": "oc5",
-              "name": "Lost Fleet"
+              "name": "Lost Fleet",
+              "description": "Resources: 1 / Influence: 1"
             }
-          ]
-        }
       ]
     },
     {
