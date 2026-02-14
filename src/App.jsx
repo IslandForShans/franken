@@ -4,6 +4,7 @@ import MainPage from './components/MainPage';
 import DraftSimulator from './components/DraftSimulator';
 import TheorycraftingApp from './components/TheorycraftingApp';
 import ComponentReference from './components/ComponentReference';
+import TI4MapBuilder from './components/TI4MapBuilder';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -16,6 +17,8 @@ function App() {
       setCurrentPage('theorycrafting');
     } else if (path === '/reference') {
   setCurrentPage('reference');
+} else if (path === '/mapbuilder') {
+  setCurrentPage('mapbuilder');
 } else {
       setCurrentPage('home');
     }
@@ -28,6 +31,7 @@ function App() {
       {currentPage === 'draft' && <DraftSimulator onNavigate={handleNavigate} />}
       {currentPage === 'theorycrafting' && <TheorycraftingApp onNavigate={handleNavigate} />}
       {currentPage === 'reference' && <ComponentReference onNavigate={handleNavigate} />}
+      {currentPage === 'mapbuilder' && <TI4MapBuilder onNavigate={handleNavigate} />}
     </div>
   );
 }

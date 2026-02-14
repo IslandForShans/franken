@@ -44,6 +44,12 @@ export default function MainPage({ onNavigate }) {
               >
                 Component Reference
               </button>
+              <button
+  onClick={() => handleNavigation('/mapbuilder')}
+  className="w-full px-4 py-3 rounded-lg bg-orange-600 hover:bg-orange-500 transition-colors font-semibold text-center"
+>
+  Map Builder
+</button>
             </div>
           </div>
         )}
@@ -82,6 +88,12 @@ export default function MainPage({ onNavigate }) {
               >
                 Component Reference
               </button>
+              <button
+  onClick={() => handleNavigation('/mapbuilder')}
+  className="w-full sm:w-auto px-8 py-4 rounded-lg bg-orange-600 hover:bg-orange-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-orange-900/50"
+>
+  Map Builder
+</button>
             </div>
           </div>
         </div>
@@ -292,6 +304,33 @@ export default function MainPage({ onNavigate }) {
     <li className="flex items-start">
       <span className="text-teal-400 mr-2">•</span>
       <span>Live search & filtering</span>
+    </li>
+  </ul>
+</div>
+
+{/* Map Builder Card */}
+<div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 sm:p-8 border border-gray-700 hover:border-orange-500 transition-all hover:shadow-xl hover:shadow-orange-900/30">
+  <div className="text-4xl mb-4">🗺️</div>
+  <h4 className="text-xl sm:text-2xl font-bold mb-3 text-orange-400">Map Builder</h4>
+  <p className="text-gray-300 mb-4 text-sm sm:text-base">
+    Drag and drop tiles onto a standard 3-ring hex grid to design your game map.
+  </p>
+  <ul className="space-y-2 text-sm text-gray-400">
+    <li className="flex items-start">
+      <span className="text-orange-400 mr-2">•</span>
+      <span>Drag tiles from sidebar</span>
+    </li>
+    <li className="flex items-start">
+      <span className="text-orange-400 mr-2">•</span>
+      <span>Swap tiles between slots</span>
+    </li>
+    <li className="flex items-start">
+      <span className="text-orange-400 mr-2">•</span>
+      <span>Generates map string</span>
+    </li>
+    <li className="flex items-start">
+      <span className="text-orange-400 mr-2">•</span>
+      <span>Standard 3-ring layout</span>
     </li>
   </ul>
 </div>

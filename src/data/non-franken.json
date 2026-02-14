@@ -1,0 +1,245 @@
+{
+    "explores": [
+        {
+            "cultural": [
+                {
+                    "name": "Demilitarized Zone",
+                    "amount": 1,
+                    "description": "Return all structure on this planet to your reinforcements. Then, return all ground forces on this planet to the space area. ATTACH: Units cannot be committed to, produced on or placed on this planet. During the agenda phase, this planet's planet card can be traded as part of a transaction."
+                },
+                {
+                    "name": "Dyson Sphere",
+                    "amount": 1,
+                    "description": "ATTACH: This planet's resource value is increased by 2 and its influence value is increased by 1."
+                },
+                {
+                    "name": "Freelancers",
+                    "amount": 3,
+                    "description": "You may produce 1 unit in this system; you may spend influence as if it were resources to produce this unit."
+                },
+                {
+                    "name": "Gamme Wormhole",
+                    "amount": 1,
+                    "description": "Place a gamma wormhole token in this system. Then, purge this card."
+                },
+                {
+                    "name": "Mercenary Outfit",
+                    "amount": 3,
+                    "description": "You may place 1 infantry from your reinforcements on this planet."
+                },
+                {
+                    "name": "Paradise World",
+                    "amount": 1,
+                    "description": "ATTACH: This planet's influence value is increased by 2."
+                },
+                {
+                    "name": "Tomb of Emphidia",
+                    "amount": 1,
+                    "description": "ATTACH: This planet's influence value is increased by 1. If the player who has the 'Crown of Emphidia' Relic has control of this planet, they can use that relic to gain 1 Victory Point."
+                },
+                {
+                    "name": "Cultural Relic Fragment",
+                    "amount": 9,
+                    "description": "ACTION: Purge 3 of your cultural relic fragments to gain 1 Relic."
+                }
+            ]
+        },
+        {
+            "hazardous": [
+                {
+                    "name": "Core Mine",
+                    "amount": 3,
+                    "description": "If you have at least 1 mech on this planet, or if you remove 1 infantry form this planet, gain 1 trade good."
+                },
+                {
+                    "name": "Expedition",
+                    "amount": 3,
+                    "description": "If oyu have at least 1 mech on this planet, or if you remove 1 infantry from this , ready this planet."
+                },
+                {
+                    "name": "Lazax Survivors",
+                    "amount": 1,
+                    "description": "ATTACH: This planet's resource value is increased by 1 and its influence value is increased by 2."
+                },
+                {
+                    "name": "Mining World",
+                    "amount": 1,
+                    "description": "ATTACH: This planet's resource value is increased by 2."
+                },
+                {
+                    "name": "Rich World",
+                    "amount": 1,
+                    "description": "ATTACH: This planet's resource value is increased by 1."
+                },
+                {
+                    "name": "Volatile Fuel Source",
+                    "amount": 3,
+                    "description": "If you have at least 1 mech on this planet, or if you remove 1 infantry form this planet, gain 1 command token."
+                },
+                {
+                    "name": "Warfare Research Facility",
+                    "amount": 1,
+                    "description": "ATTACH: This planet has a red technology specialty; if this planet already has a technology specialty, this planet's resource and influence values are each increased by 1 instead."
+                },
+                {
+                    "name": "Hazardous Relic Fragment",
+                    "amount": 7,
+                    "description": "ACTION: Purge 3 of your hazardous relic fragments to gain 1 Relic."
+                }
+            ]
+        },
+        {
+            "industrial": [
+                {
+                    "name": "Abandoned Warehouses",
+                    "amount": 4,
+                    "description": "You may gain 2 commodities, or you may convert up to 2 of your commodities to trade goods."
+                },
+                {
+                    "name": "Biotic Research Facility",
+                    "amount": 1,
+                    "description": "ATTACH: This planet has a green technology specialty; if this planet already has a technology specialty, this planet's resource and influence values are each increased by 1 instead."
+                },
+                {
+                    "name": "Cybernetic Research Facility",
+                    "amount": 1,
+                    "description": "ATTACH: This planet has a yellow technology specialty; if this planet already has a technology specialty, this planet's resource and influence values are each increased by 1 instead."
+                },
+                {
+                    "name": "Funcitoning Base",
+                    "amount": 4,
+                    "description": "You may gian 1 commodity, or you may spend 1 trade good or 1 commodity to draw 1 action card."
+                },
+                {
+                    "name": "Local Fabricators",
+                    "amount": 4,
+                    "description": "You may gian 1 commodity, or you may spend 1 trade good or 1 commodity to place 1 mech from your reinforcements on this planet."
+                },
+                {
+                    "name": "Propulsion Research Facility",
+                    "amount": 1,
+                    "description": "ATTACH: This planet has a blue technology specialty; if this planet already has a technology specialty, this planet's resource and influence values are each increased by 1 instead."
+                },
+                {
+                    "name": "Industrial Relic Fragment",
+                    "amount": 5,
+                    "description": "ACTION: Purge 3 of your industrial relic fragments to gain 1 Relic."
+                }
+            ]
+        },
+        {
+            "frontier": [
+                {
+                    "name": "Derelict Vessel",
+                    "amount": 2,
+                    "description": "Draw 1 secret objective."
+                },
+                {
+                    "name": "Enigmatic Device",
+                    "amount": 2,
+                    "description": "Place this card face up in your play area. ACTIONL You may spend 6 resources and purge this card to research 1 technology."
+                },
+                {
+                    "name": "Gamma Relay",
+                    "amount": 1,
+                    "description": "Place a gamma wormhole token in this system. Then, purge this card."
+                },
+                {
+                    "name": "Ion Storm",
+                    "amount": 1,
+                    "description": "Place the ion storm token in this system with either side face up. Then, place this card in the common play area. At the end of a 'Move Ships' or 'Retreat' sub-step of a tactical action during which 1 or more of your ships use the ion storm wormhole, flip the ion storm token to its opposing side."
+                },
+                {
+                    "name": "Lost Crew",
+                    "amount": 2,
+                    "description": "Draw 2 Action Cards."
+                },
+                {
+                    "name": "Merchant Station",
+                    "amount": 2,
+                    "description": "You may replenish your commodities, or you may convert your commodities to trade goods."
+                },
+                {
+                    "name": "Mirage",
+                    "amount": 1,
+                    "description": "Place the Mirage planet token in this system. Gain the Mirage planet card and ready it. Then, purge this card."
+                },
+                {
+                    "name": "Unknown Relic Fragment",
+                    "amount": 3,
+                    "description": "This card counts as a relic fragment of any type."
+                },
+                {
+                    "name": "Dead World",
+                    "amount": 1,
+                    "description": "Draw 1 relic."
+                },
+                {
+                    "name": "Entropic Field",
+                    "amount": 1,
+                    "description": "Gain 1 command token and 2 trade goods."
+                },
+                {
+                    "name": "Keleres Ship",
+                    "amount": 2,
+                    "description": "Gain 2 command tokens."
+                },
+                {
+                    "name": "Major Entropic Field",
+                    "amount": 1,
+                    "description": "Gain 1 command token and 3 trade goods."
+                },
+                {
+                    "name": "Minor Entropic Field",
+                    "amount": 1,
+                    "description": "Gain 1 command token and 1 trade good."
+                }
+            ]
+        }
+    ],
+    "relics": [
+        {
+            
+        }
+    ],
+    "action_cards": [
+        {
+
+        }
+    ],
+    "agendas": [
+        {
+
+        }
+    ],
+    "technologies": [
+        {
+            "Biotic": [
+                {
+
+                }
+            ]
+        },
+        {
+            "Cybernetic": [
+                {
+
+                }
+            ]
+        },
+        {
+            "Propulsion": [
+                {
+
+                }
+            ]
+        },
+        {
+            "Warfare": [
+                {
+
+                }
+            ]
+        }
+    ]
+}
