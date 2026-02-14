@@ -46,7 +46,7 @@ const ALL_TILES = ALL_TILE_KEYS.map(buildTileMeta);
 const HOME_TILE_CODES = new Set(Array.from({ length: 17 }, (_, i) => String(i + 1).padStart(2, "0")));
 const HOME_TILES = ALL_TILES.filter((tile) => HOME_TILE_CODES.has(tile.code));
 const NON_HOME_TILES = ALL_TILES.filter((tile) => !HOME_TILE_CODES.has(tile.code));
-const DEFAULT_CENTER_TILE = ALL_TILES.find((tile) => tile.code === "18")?.key || "18_MR";
+const DEFAULT_CENTER_TILE = ALL_TILES.find((tile) => tile.code === "112")?.key || "112_Mecatol";
 
 function HexTile({ tile, size }) {
   const w = size * 2;
@@ -105,7 +105,8 @@ export default function TI4MapBuilder({ onNavigate }) {
   const [placed, setPlaced] = useState({ "000": DEFAULT_CENTER_TILE });
   const [dragOver, setDragOver] = useState(null);
   const [section, setSection] = useState("systems");
-  const [mapScale, setMapScale] = useState(1);
+  const [fitScale, setFitScale] = useState(1);
+  const [zoomLevel, setZoomLevel] = useState(1);
   const dragRef = useRef(null);
   const mapViewportRef = useRef(null);
 
@@ -119,7 +120,7 @@ export default function TI4MapBuilder({ onNavigate }) {
 
       const horizontalScale = (width - 24) / CANVAS_W;
       const verticalScale = (height - 24) / CANVAS_H;
-      setMapScale(Math.min(1, horizontalScale, verticalScale));
+      setFitScale(Math.min(1, horizontalScale, verticalScale));
     };
 
     updateScale();
@@ -131,6 +132,7 @@ export default function TI4MapBuilder({ onNavigate }) {
 
   const activeTiles = section === "home" ? HOME_TILES : NON_HOME_TILES;
   const placedSet = useMemo(() => new Set(Object.values(placed)), [placed]);
+  const mapScale = fitScale * zoomLevel;
 
   const mapString = ["000", ...MAP_POSITIONS.slice(1).map((p) => p.label)]
     .map((lbl) => (placed[lbl] ? buildTileMeta(placed[lbl]).code : "0"))
@@ -180,6 +182,16 @@ export default function TI4MapBuilder({ onNavigate }) {
       return next;
     });
   }, []);
+
+  const onZoom = useCallback((delta) => {
+    setZoomLevel((current) => Math.max(0.5, Math.min(2.5, Number((current + delta).toFixed(2)))));
+  }, []);
+
+  const onWheelZoom = useCallback((e) => {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.1 : -0.1;
+    onZoom(delta);
+  }, [onZoom]);
 
   return (
     <div style={{ display: "flex", height: "100dvh", background: "linear-gradient(to bottom right, #0a0e1a, #1a1f2e, #000000)", color: "#c8dde8", fontFamily: "system-ui,sans-serif", overflow: "hidden" }}>
@@ -258,6 +270,11 @@ export default function TI4MapBuilder({ onNavigate }) {
               )}
               <h2 className="text-xl font-bold text-yellow-400">Map Builder</h2>
               <span className="text-xs text-gray-400 font-semibold tracking-widest uppercase hidden sm:inline">3-Ring Standard</span>
+              <div className="ml-2 flex items-center gap-1 rounded-md border border-gray-600 bg-gray-800 px-1 py-0.5">
+                <button onClick={() => onZoom(-0.1)} className="px-1.5 text-gray-200 hover:text-white" title="Zoom out">−</button>
+                <button onClick={() => setZoomLevel(1)} className="px-1.5 text-xs text-gray-300 hover:text-white" title="Reset zoom">{Math.round(zoomLevel * 100)}%</button>
+                <button onClick={() => onZoom(0.1)} className="px-1.5 text-gray-200 hover:text-white" title="Zoom in">+</button>
+              </div>
             </div>
             <button
               onClick={() => setPlaced({ "000": DEFAULT_CENTER_TILE })}
@@ -268,9 +285,8 @@ export default function TI4MapBuilder({ onNavigate }) {
           </div>
         </div>
 
-        <div ref={mapViewportRef} style={{ flex: 1, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
+        <div ref={mapViewportRef} onWheel={onWheelZoom} style={{ flex: 1, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
           <div style={{ position: "relative", width: CANVAS_W, height: CANVAS_H, flexShrink: 0, transform: `scale(${mapScale})`, transformOrigin: "center" }}>
-            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, #111827 0%, #030712 75%)", borderRadius: 6 }} />
             {MAP_POSITIONS.map(({ label, x, y }) => {
               const key = placed[label];
               const tile = key ? buildTileMeta(key) : null;
