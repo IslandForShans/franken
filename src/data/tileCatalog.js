@@ -76,8 +76,6 @@ export const ALL_TILE_KEYS = [
   "49_Void",
   "50_Void",
   "51_Creuss",
-  "51h_Creuss",
-  "51r_Creuss",
   "52_Ixth",
   "53_Arcturus",
   "54_Acheron",

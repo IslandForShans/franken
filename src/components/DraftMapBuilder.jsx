@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
-import { ALL_TILE_KEYS } from "../data/tileCatalog";
+import { ALL_TILE_KEYS, TILE_CODE_TO_JSON_ID } from "../data/tileCatalog";
 import { HS_POSITIONS, SLICE_ORDER, ALL_SLICE_LABELS } from "../utils/sliceDefinitions";
 import { shuffleArray } from "../utils/shuffle";
 import { calculateOptimalResources } from "../utils/resourceCalculator";
@@ -48,12 +48,26 @@ function buildAdjacency3Ring() {
 }
 const ADJACENCY = buildAdjacency3Ring();
 
+const HOME_SYSTEM_ID_TO_TILE_KEY = new Map([
+  ["barony_hs", "10_ArcPime"],
+  ["dws_hs", "95_Deepwrought"],
+  ["bastion_hs", "92_Bastion"],
+  ["rn_hs", "93_RalNel"],
+  ["crimson_hs", "118_Crimson"],
+  ["firmament_hs", "96a_Firmament"],
+  ["obsidian_hs", "96b_Obsidian"],
+  ["ghoti_hs", "D11_Void"],
+  ["belkosea_hs", "BR5_Belkosea"],
+  ["toldar_hs", "BR6_Toldar"],
+]);
+
 // ── Tile key lookup ─────────────────────────────────────────────────────────
 const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
 
 // Build two lookup maps at module level for O(1) lookups
 const TILE_KEY_BY_NAME = new Map();   // normalized name → key
 const TILE_KEY_BY_CODE = new Map();   // numeric code string → key (e.g. "19" → "19_Wellon")
+const TILE_KEY_BY_JSON_ID = new Map(); // json tile id string → key (e.g. "4253" → "d100")
 ALL_TILE_KEYS.forEach(key => {
   const parts = key.split("_");
   const code = parts[0];
@@ -61,6 +75,12 @@ ALL_TILE_KEYS.forEach(key => {
   TILE_KEY_BY_NAME.set(norm(name), key);
   if (!TILE_KEY_BY_CODE.has(code)) TILE_KEY_BY_CODE.set(code, key);
 });
+Object.entries(TILE_CODE_TO_JSON_ID).forEach(([code, jsonId]) => {
+  const tileKey = TILE_KEY_BY_CODE.get(code);
+  if (tileKey) TILE_KEY_BY_JSON_ID.set(String(jsonId), tileKey);
+});
+
+TILE_KEY_BY_NAME.set("arcprime", "10_ArcPime");
 
 function findTileKey(tileObjOrName) {
   if (!tileObjOrName) return null;
@@ -73,9 +93,18 @@ function findTileKey(tileObjOrName) {
     if (byName) return byName;
   }
 
-  // 2. Numeric id field (works for tiles with id like "19", "35")
+  if (isObj && tileObjOrName.id) {
+  const mapped = HOME_SYSTEM_ID_TO_TILE_KEY.get(String(tileObjOrName.id));
+  if (mapped) return mapped;
+}
+
+  // 2. Numeric id field (works for tiles with id like "19", "35" and DS JSON ids like "4253")
   if (isObj && tileObjOrName.id) {
     const rawId = String(tileObjOrName.id);
+
+    const byJsonId = TILE_KEY_BY_JSON_ID.get(rawId);
+    if (byJsonId) return byJsonId;
+
     const numericId = rawId.replace(/\D/g, '');
     if (numericId) {
       const byCode = TILE_KEY_BY_CODE.get(numericId);
@@ -160,6 +189,45 @@ function EmptyHex({ size, highlight, label, color }) {
 }
 
 const PLAYER_COLORS = ["#f59e0b","#60a5fa","#4ade80","#f472b6","#a78bfa","#fb923c"];
+
+const HOME_CLOCKWISE = ["301", "304", "307", "310", "313", "316"];
+const CLOCKWISE_SHIFT_BY_HOME = {
+  "301": { from: "202", to: "203" },
+  "304": { from: "204", to: "205" },
+  "307": { from: "206", to: "207" },
+  "310": { from: "208", to: "209" },
+  "313": { from: "210", to: "211" },
+  "316": { from: "212", to: "201" },
+};
+
+function applyClockwiseGapShift(basePlaced, players) {
+  if (!players.length) return basePlaced;
+
+  const occupiedHomes = new Set(players.map(p => p.hsLabel).filter(Boolean));
+  const next = { ...basePlaced };
+
+  players.forEach(player => {
+    if (!player.hsLabel) return;
+
+    const hsIdx = HOME_CLOCKWISE.indexOf(player.hsLabel);
+    if (hsIdx === -1) return;
+
+    const nextHsClockwise = HOME_CLOCKWISE[(hsIdx + 1) % HOME_CLOCKWISE.length];
+    if (occupiedHomes.has(nextHsClockwise)) return;
+
+    const shiftRule = CLOCKWISE_SHIFT_BY_HOME[player.hsLabel];
+    if (!shiftRule) return;
+
+    const sourceTile = next[shiftRule.from];
+    if (!sourceTile) return;
+    if (next[shiftRule.to]) return;
+
+    delete next[shiftRule.from];
+    next[shiftRule.to] = sourceTile;
+  });
+
+  return next;
+}
 
 // ── Main component ──────────────────────────────────────────────────────────
 export default function DraftMapBuilder({ onNavigate, draftData }) {
@@ -248,13 +316,69 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
   };
 
   const doFillRemaining = () => {
-    const next = { ...placed };
+    const next = applyClockwiseGapShift(placed, players);
     const remaining = shuffleArray([...fillPool]);
     let ri = 0;
     MAP_3RING.forEach(({ label }) => {
       if (label === "000" || next[label]) return;
       if (remaining[ri]) next[label] = remaining[ri++];
     });
+    setPlaced(next);
+    setFillDone(true);
+  };
+
+  // ── NEW: hyperlane fill ────────────────────────────────────────────────
+  const doFillHyperlanes = () => {
+    const next = { ...placed };
+    const HS_ALL = ["301", "304", "307", "310", "313", "316"];
+    const occupiedHS = new Set(players.map(p => p.hsLabel).filter(Boolean));
+
+    // Build a hyperlane tile key: code + angle (omit angle suffix when 0)
+    const hl = (code, baseAngle, rotDeg) => {
+      const angle = (baseAngle + rotDeg) % 360;
+      return `${code}${angle === 0 ? '' : angle}_Hyperlane`;
+    };
+
+    // Helper to build a map-position label for a given ring and 0-based index
+    const r1lbl = (i) => `1${String((i % 6) + 1).padStart(2, '0')}`;
+    const r2lbl = (i) => `2${String((i % 12) + 1).padStart(2, '0')}`;
+    const r3lbl = (i) => `3${String((i % 18) + 1).padStart(2, '0')}`;
+
+    HS_ALL.forEach((hsLabel, k) => {
+      if (occupiedHS.has(hsLabel)) return; // skip — player is here
+
+      // Clockwise neighbour: if it has no player, push the ring-2 left tile one step further
+      const nextHasPlayer = occupiedHS.has(HS_ALL[(k + 1) % 6]);
+      const pushLeft = !nextHasPlayer;
+
+      // rotSteps: how many 60° turns away from the base pattern (k=3, position 310)
+      const rotSteps = ((k - 3) + 6) % 6;
+      const rotDeg   = rotSteps * 60;
+
+      // Base ring indices (defined at k=3 / 310):
+      //   ring1 spoke:        index 3  → 104
+      //   ring2 right:        index 6  → 207
+      //   ring2 left normal:  index 7  → 208
+      //   ring2 left pushed:  index 8  → 209
+      //   ring3 left of HS:   index 8  → 309
+      //   ring3 HS slot:      index 9  → 310
+      //   ring3 right of HS:  index 10 → 311
+      const r2LeftIdx = pushLeft ? 8 : 7;
+
+      const placements = [
+        [r1lbl(3  + rotSteps),         hl('86a', 0,   rotDeg)],
+        [r2lbl(5  + 2*rotSteps),       hl('88a', 0,   rotDeg)],
+        [r2lbl(r2LeftIdx + 2*rotSteps),hl('88a', 240, rotDeg)],
+        [r3lbl(8  + 3*rotSteps),       hl('84a', 300, rotDeg)],
+        [r3lbl(9  + 3*rotSteps),       hl('85a', 0,   rotDeg)],
+        [r3lbl(10 + 3*rotSteps),       hl('84a', 0,   rotDeg)],
+      ];
+
+      placements.forEach(([label, key]) => {
+        if (!next[label]) next[label] = key; // only fill empty slots
+      });
+    });
+
     setPlaced(next);
     setFillDone(true);
   };
@@ -374,15 +498,20 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
   }, [players]);
 
   // ── Render ─────────────────────────────────────────────────────────────
+  const placedForExport = useMemo(() => {
+    return applyClockwiseGapShift(placed, players);
+  }, [placed, players]);
+
+
   const mapString = useMemo(() => {
     return ["000", ...MAP_3RING.slice(1).map(p => p.label)]
       .map(lbl => {
-        const key = placed[lbl];
+        const key = placedForExport[lbl];
         if (!key) return "0";
         const code = key.split("_")[0];
         return code;
       }).join(" ");
-  }, [placed]);
+  }, [placedForExport]);
 
   const [copied, setCopied] = useState(false);
   const copyMap = () => {
@@ -436,7 +565,8 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
           {mode === "random" && !fillDone && (
             <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
               <button onClick={doRandomPlace} className="px-3 py-2 rounded-lg bg-blue-800 hover:bg-blue-700 text-white text-xs font-semibold transition-colors">↺ Re-randomize</button>
-              <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">Fill Empty Slots</button>
+              <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">🎲 Fill with Random Tiles</button>
+<button onClick={doFillHyperlanes} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Fill with Hyperlanes</button>
             </div>
           )}
 
@@ -447,7 +577,8 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
           {mode === "mantis" && mantisInfo?.done && !fillDone && (
             <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
               <div style={{ fontSize:11, color:"#4ade80", fontWeight:700 }}>✓ All tiles placed!</div>
-              <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">Fill Empty Slots</button>
+              <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">🎲 Fill with Random Tiles</button>
+<button onClick={doFillHyperlanes} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Fill with Hyperlanes</button>
             </div>
           )}
 

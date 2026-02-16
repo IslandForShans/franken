@@ -156,8 +156,7 @@ export default function DraftSimulator({ onNavigate }) {
   }, [showSidebar]);
 
   // PERFORMANCE: Memoize getFilteredComponents with useCallback
-  const getFilteredComponents = useCallback((category) => {
-    const effectivePlayerCount = playerCount;
+  const getFilteredComponents = useCallback((category, effectivePlayerCount = playerCount) => {
     if (category === 'table_position') {
       const suffixes = ['1st','2nd','3rd','4th','5th','6th','7th','8th'];
       return Array.from({ length: effectivePlayerCount }, (_, i) => ({
@@ -254,13 +253,29 @@ export default function DraftSimulator({ onNavigate }) {
   }, [bannedFactions, bannedComponents, expansionsEnabled]);
 
   // PERFORMANCE: useCallback for createBagsWithUniqueDistribution
-  const createBagsWithUniqueDistribution = useCallback(() => {
-    const bags = Array.from({ length: playerCount }, () => ({}));
+  const createBagsWithUniqueDistribution = useCallback((effectivePlayerCount = playerCount) => {
+    const bags = Array.from({ length: effectivePlayerCount }, () => ({}));
     
-    console.log(`Creating ${playerCount} bags for ${playerCount} players`);
+    console.log(`Creating ${effectivePlayerCount} bags for ${effectivePlayerCount} players`);
     
     categories.forEach(category => {
-      const allComponents = getFilteredComponents(category, playerCount);
+      const allComponents = getFilteredComponents(category, effectivePlayerCount);
+
+      // Table positions should always be exactly one unique position per player,
+      // randomized across bags (1st..N based on player count).
+      if (category === 'table_position') {
+        const validPositions = allComponents
+          .filter(position => position.position >= 1 && position.position <= effectivePlayerCount)
+          .slice(0, effectivePlayerCount);
+        const shuffledPositions = shuffleArray([...validPositions]);
+
+        for (let playerIdx = 0; playerIdx < effectivePlayerCount; playerIdx++) {
+          bags[playerIdx][category] = shuffledPositions[playerIdx]
+            ? [shuffledPositions[playerIdx]]
+            : [];
+        }
+        return;
+      }
       
       // Skip categories with no components
       if (allComponents.length === 0) {
@@ -274,7 +289,7 @@ export default function DraftSimulator({ onNavigate }) {
       const bagSize = draftLimits[category];
       
       let distributionPool = [];
-      const totalNeeded = playerCount * bagSize;
+      const totalNeeded = effectivePlayerCount * bagSize;
       
       if (totalNeeded <= allComponents.length) {
         distributionPool = shuffleArray([...allComponents]);
@@ -289,7 +304,7 @@ export default function DraftSimulator({ onNavigate }) {
       }
       
       let componentIndex = 0;
-      for (let playerIdx = 0; playerIdx < playerCount; playerIdx++) {
+      for (let playerIdx = 0; playerIdx < effectivePlayerCount; playerIdx++) {
         bags[playerIdx][category] = [];
         for (let i = 0; i < bagSize && componentIndex < distributionPool.length; i++) {
           bags[playerIdx][category].push(distributionPool[componentIndex]);
@@ -302,14 +317,14 @@ export default function DraftSimulator({ onNavigate }) {
     return bags;
   }, [playerCount, categories, getFilteredComponents, draftLimits]);
 
-  const createBagsForFrankenDraz = useCallback(() => {
-    const bags = Array.from({ length: playerCount }, () => ({
+  const createBagsForFrankenDraz = useCallback((effectivePlayerCount = playerCount) => {
+    const bags = Array.from({ length: effectivePlayerCount }, () => ({
       factions: [],
       blue_tiles: [],
       red_tiles: []
     }));
     
-    console.log(`Creating ${playerCount} FrankenDraz bags`);
+    console.log(`Creating ${effectivePlayerCount} FrankenDraz bags`);
     
     // Get all available factions (names and icons only)
     // Get all available factions (names and icons only)
@@ -336,7 +351,7 @@ export default function DraftSimulator({ onNavigate }) {
     // Distribute factions
     const { factionsPerBag } = frankenDrazSettings;
     let factionPool = shuffleArray([...allFactions]);
-    const totalFactionsNeeded = playerCount * factionsPerBag;
+    const totalFactionsNeeded = effectivePlayerCount * factionsPerBag;
     
     // Repeat factions if needed
     while (factionPool.length < totalFactionsNeeded) {
@@ -345,7 +360,7 @@ export default function DraftSimulator({ onNavigate }) {
     factionPool = shuffleArray(factionPool);
     
     let factionIndex = 0;
-    for (let playerIdx = 0; playerIdx < playerCount; playerIdx++) {
+    for (let playerIdx = 0; playerIdx < effectivePlayerCount; playerIdx++) {
       for (let i = 0; i < factionsPerBag && factionIndex < factionPool.length; i++) {
         bags[playerIdx].factions.push(factionPool[factionIndex]);
         factionIndex++;
@@ -355,7 +370,7 @@ export default function DraftSimulator({ onNavigate }) {
     // Distribute blue tiles
     const { blueTilesPerBag } = frankenDrazSettings;
     let bluePool = shuffleArray([...blueTiles]);
-    const totalBlueNeeded = playerCount * blueTilesPerBag;
+    const totalBlueNeeded = effectivePlayerCount * blueTilesPerBag;
     
     while (bluePool.length < totalBlueNeeded) {
       bluePool = [...bluePool, ...shuffleArray([...blueTiles].map(t => ({ ...t, copyIndex: (bluePool.length / blueTiles.length) })))];
@@ -363,7 +378,7 @@ export default function DraftSimulator({ onNavigate }) {
     bluePool = shuffleArray(bluePool);
     
     let blueIndex = 0;
-    for (let playerIdx = 0; playerIdx < playerCount; playerIdx++) {
+    for (let playerIdx = 0; playerIdx < effectivePlayerCount; playerIdx++) {
       for (let i = 0; i < blueTilesPerBag && blueIndex < bluePool.length; i++) {
         bags[playerIdx].blue_tiles.push(bluePool[blueIndex]);
         blueIndex++;
@@ -373,7 +388,7 @@ export default function DraftSimulator({ onNavigate }) {
     // Distribute red tiles
     const { redTilesPerBag } = frankenDrazSettings;
     let redPool = shuffleArray([...redTiles]);
-    const totalRedNeeded = playerCount * redTilesPerBag;
+    const totalRedNeeded = effectivePlayerCount * redTilesPerBag;
     
     while (redPool.length < totalRedNeeded) {
       redPool = [...redPool, ...shuffleArray([...redTiles].map(t => ({ ...t, copyIndex: (redPool.length / redTiles.length) })))];
@@ -381,7 +396,7 @@ export default function DraftSimulator({ onNavigate }) {
     redPool = shuffleArray(redPool);
     
     let redIndex = 0;
-    for (let playerIdx = 0; playerIdx < playerCount; playerIdx++) {
+    for (let playerIdx = 0; playerIdx < effectivePlayerCount; playerIdx++) {
       for (let i = 0; i < redTilesPerBag && redIndex < redPool.length; i++) {
         bags[playerIdx].red_tiles.push(redPool[redIndex]);
         redIndex++;
@@ -393,9 +408,12 @@ export default function DraftSimulator({ onNavigate }) {
   }, [playerCount, getFilteredComponents, bannedFactions, expansionsEnabled, frankenDrazSettings]);
 
   const initializeDraft = useCallback((settings) => {
-    const { variant, playerCount, players } = settings;
+    const { variant, playerCount: rawPlayerCount, players } = settings;
+    const effectivePlayerCount = Number(rawPlayerCount) || 4;
 
-    const emptyFactions = Array.from({ length: playerCount }, (_, i) => {
+    setPlayerCount(effectivePlayerCount);
+
+    const emptyFactions = Array.from({ length: effectivePlayerCount }, (_, i) => {
         const playerName = players?.[i]?.name || `Player ${i + 1}`;
         const f = { name: playerName };
         categories.forEach(cat => { f[cat] = []; });
@@ -403,7 +421,7 @@ export default function DraftSimulator({ onNavigate }) {
     });
     setFactions(emptyFactions);
 
-    setPlayerProgress(Array.from({ length: playerCount }, () => {
+    setPlayerProgress(Array.from({ length: effectivePlayerCount }, () => {
         const p = {};
         categories.forEach(cat => { p[cat] = 0; });
         return p;
@@ -412,16 +430,16 @@ export default function DraftSimulator({ onNavigate }) {
     if (variant === "rotisserie") {
         const pool = {};
         categories.forEach(cat => {
-        pool[cat] = getFilteredComponents(cat);
+        pool[cat] = getFilteredComponents(cat, effectivePlayerCount);
         });
         setRotisseriePool(pool);
         setPlayerBags([]);
     } else if (variant === "frankendraz") {
-        const bags = createBagsForFrankenDraz();
+        const bags = createBagsForFrankenDraz(effectivePlayerCount);
         setPlayerBags(bags);
         setRotisseriePool({});
     } else {
-        const bags = createBagsWithUniqueDistribution();
+        const bags = createBagsWithUniqueDistribution(effectivePlayerCount);
         setPlayerBags(bags);
         setRotisseriePool({});
     }
@@ -436,7 +454,7 @@ export default function DraftSimulator({ onNavigate }) {
     setIsPickingPhase(true);
     
     setTimeout(() => {
-        checkAndAdvanceIfNeeded(emptyFactions, Array.from({ length: playerCount }, () => {
+        checkAndAdvanceIfNeeded(emptyFactions, Array.from({ length: effectivePlayerCount }, () => {
             const p = {};
             categories.forEach(cat => { p[cat] = 0; });
             return p;
@@ -1847,7 +1865,7 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
           <div className="mb-4 p-6 bg-gradient-to-r from-green-900/40 to-blue-900/40 rounded-xl border-2 border-green-500 shadow-xl">
             <div className="flex items-center gap-3 mb-3">
               <span className="text-4xl">🎉</span>
-              <h3 className="font-bold text-green-400 text-2xl">Draft Complete!</h3>
+              <h3 className="font-bold text-green-400 text-2xl">Draft Complete! Click 'Export Draft' before pressing 'Build Map' to save selections!</h3>
             </div>
             <p className="text-green-300 mb-4">
               All factions have been finalized with extra components added. Review your custom factions below.
