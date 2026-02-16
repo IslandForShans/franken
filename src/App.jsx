@@ -1,4 +1,3 @@
-// src/App.jsx
 import { useState } from 'react';
 import MainPage from './components/MainPage';
 import DraftSimulator from './components/DraftSimulator';
@@ -6,6 +5,7 @@ import TheorycraftingApp from './components/TheorycraftingApp';
 import ComponentReference from './components/ComponentReference';
 import TI4MapBuilder from './components/TI4MapBuilder';
 import DraftMapBuilder from './components/DraftMapBuilder';
+import MiltyDraftPage from './components/MiltyDraftPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -17,13 +17,15 @@ function App() {
       setCurrentPage('mapbuilder-draft');
     } else if (path === '/draft') {
       setCurrentPage('draft');
+    } else if (path === '/milty') {
+      setCurrentPage('milty');
     } else if (path === '/theorycrafting') {
       setCurrentPage('theorycrafting');
     } else if (path === '/reference') {
-  setCurrentPage('reference');
-} else if (path === '/mapbuilder') {
-  setCurrentPage('mapbuilder');
-} else {
+      setCurrentPage('reference');
+    } else if (path === '/mapbuilder') {
+      setCurrentPage('mapbuilder');
+    } else {
       setCurrentPage('home');
     }
   };
@@ -33,12 +35,13 @@ function App() {
     <div className="min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto">
       {currentPage === 'home' && <MainPage onNavigate={handleNavigate} />}
       {currentPage === 'draft' && <DraftSimulator onNavigate={handleNavigate} />}
+      {currentPage === 'milty' && <MiltyDraftPage onNavigate={handleNavigate} />}
       {currentPage === 'theorycrafting' && <TheorycraftingApp onNavigate={handleNavigate} />}
       {currentPage === 'reference' && <ComponentReference onNavigate={handleNavigate} />}
       {currentPage === 'mapbuilder' && <TI4MapBuilder onNavigate={handleNavigate} />}
       {currentPage === 'mapbuilder-draft' && mapBuilderDraftData && (
-  <DraftMapBuilder onNavigate={handleNavigate} draftData={mapBuilderDraftData} />
-)}
+        <DraftMapBuilder onNavigate={handleNavigate} draftData={mapBuilderDraftData} />
+      )}
     </div>
   );
 }

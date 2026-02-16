@@ -16,7 +16,7 @@ export default function MainPage({ onNavigate }) {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <h1 className="text-xl sm:text-2xl font-bold text-yellow-400 tracking-wide">
-                TI4 Franken Draft
+                TI4 Tools
               </h1>
             </div>
           </div>
@@ -30,7 +30,7 @@ export default function MainPage({ onNavigate }) {
                 onClick={() => handleNavigation('/draft')}
                 className="w-full px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 transition-colors font-semibold text-center"
               >
-                Draft Simulator
+                Franken Draft
               </button>
               <button
                 onClick={() => handleNavigation('/theorycrafting')}
@@ -50,6 +50,12 @@ export default function MainPage({ onNavigate }) {
 >
   Map Builder
 </button>
+<button
+  onClick={() => handleNavigation('/milty')}
+  className="w-full px-4 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition-colors font-semibold text-center"
+>
+  Milty Draft
+</button>
             </div>
           </div>
         )}
@@ -64,17 +70,14 @@ export default function MainPage({ onNavigate }) {
               Twilight Imperium 4
             </h2>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-400 mb-4 sm:mb-6">
-              Franken Draft Simulator
+              Tools and Player Aides
             </h3>
-            <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8 sm:mb-12 px-4">
-              Create custom factions by drafting individual components from all TI4 factions.
-            </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
               <button
                 onClick={() => handleNavigation('/draft')}
                 className="w-full sm:w-auto px-8 py-4 rounded-lg bg-blue-600 hover:bg-blue-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-blue-900/50"
               >
-                Start Drafting
+                Start Franken Draft
               </button>
               <button
                 onClick={() => handleNavigation('/theorycrafting')}
@@ -93,6 +96,12 @@ export default function MainPage({ onNavigate }) {
   className="w-full sm:w-auto px-8 py-4 rounded-lg bg-orange-600 hover:bg-orange-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-orange-900/50"
 >
   Map Builder
+</button>
+<button
+  onClick={() => handleNavigation('/milty')}
+  className="w-full sm:w-auto px-8 py-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-indigo-900/50"
+>
+  Milty Draft
 </button>
             </div>
           </div>

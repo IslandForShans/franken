@@ -205,6 +205,7 @@ function applyClockwiseGapShift(basePlaced, players) {
 
   const occupiedHomes = new Set(players.map(p => p.hsLabel).filter(Boolean));
   const next = { ...basePlaced };
+  let changed = false;
 
   players.forEach(player => {
     if (!player.hsLabel) return;
@@ -224,9 +225,10 @@ function applyClockwiseGapShift(basePlaced, players) {
 
     delete next[shiftRule.from];
     next[shiftRule.to] = sourceTile;
+    changed = true;
   });
 
-  return next;
+  return changed ? next : basePlaced;
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
@@ -238,7 +240,7 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
   // Compute player order (sorted by table position) and their HS labels
   const players = useMemo(() => {
     const hsPositions = HS_POSITIONS[playerCount] ?? HS_POSITIONS[6];
-    return factions
+    const basePlayers = factions
       .map((f, idx) => {
         const tablePos = f.table_position?.[0];
         const position = tablePos?.position ?? null;
@@ -253,8 +255,29 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
         ].map(t => findTileKey(t)).filter(Boolean);
         const hsObj = f.home_systems?.[0];
         const hsKey = hsObj ? findTileKey(hsObj) : null;
-        return { factionIdx: idx, name: f.name, positionLabel, position, hsLabel, sliceTiles, draftedKeys, hsKey };
+        const hsStats = calculateOptimalResources(hsObj?.planets ?? []);
+        return { factionIdx: idx, name: f.name, positionLabel, position, hsLabel, sliceTiles, draftedKeys, hsKey, hsStats };
       }).sort((a, b) => a.position - b.position);
+
+      const occupiedHomes = new Set(basePlayers.map(p => p.hsLabel).filter(Boolean));
+
+    return basePlayers.map(player => {
+      if (!player.hsLabel) return player;
+
+      const hsIdx = HOME_CLOCKWISE.indexOf(player.hsLabel);
+      if (hsIdx === -1) return player;
+
+      const nextHsClockwise = HOME_CLOCKWISE[(hsIdx + 1) % HOME_CLOCKWISE.length];
+      if (occupiedHomes.has(nextHsClockwise)) return player;
+
+      const shiftRule = CLOCKWISE_SHIFT_BY_HOME[player.hsLabel];
+      if (!shiftRule) return player;
+
+      return {
+        ...player,
+        sliceTiles: player.sliceTiles.map(label => label === shiftRule.from ? shiftRule.to : label),
+      };
+    });
   }, [factions, playerCount]);
 
   const allDraftedKeySet = useMemo(() => {
@@ -296,7 +319,9 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
           changed = true;
         }
       });
-      return changed ? next : prev;
+      const shifted = applyClockwiseGapShift(next, players);
+      if (shifted !== next) changed = true;
+      return changed ? shifted : prev;
     });
   }, [players]);
   const [fillDone, setFillDone] = useState(false);
@@ -616,8 +641,16 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
                   {isHS && key && (() => {
                     const player = players.find(p => p.hsLabel === label);
                     return (
-                      <div style={{ position:"absolute", inset:0, clipPath:HEX_CLIP, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none", zIndex:3, background:"rgba(0,0,0,0.55)" }}>
+                      <div style={{ position:"absolute", inset:0, clipPath:HEX_CLIP, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", pointerEvents:"none", zIndex:3, background:"rgba(0,0,0,0.55)", gap:2 }}>
                         <span style={{ fontSize:S*0.18, fontWeight:700, color: PLAYER_COLORS[player?.position-1], textAlign:"center", textShadow:"0 1px 3px #000" }}>{player?.positionLabel}</span>
+                         <div style={{ fontSize:S*0.14, fontWeight:800, letterSpacing:0.3, lineHeight:1.1, textShadow:"0 1px 2px #000" }}>
+                          <span style={{ color:"#fbbf24" }}>{player?.hsStats?.optimalResource ?? 0}R</span>
+                          <span style={{ color:"#6b7280", margin:"0 4px" }}>/</span>
+                          <span style={{ color:"#60a5fa" }}>{player?.hsStats?.optimalInfluence ?? 0}I</span>
+                        </div>
+                        <div style={{ fontSize:S*0.11, color:"#9ca3af", fontWeight:600, lineHeight:1.1, textShadow:"0 1px 2px #000" }}>
+                          ({player?.hsStats?.totalResource ?? 0}R/{player?.hsStats?.totalInfluence ?? 0}I)
+                        </div>
                       </div>
                     );
                   })()}
