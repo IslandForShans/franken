@@ -9,6 +9,7 @@ import {
   makeSnakeTurnQueue,
   toDraftMapBuilderPayload,
 } from "../utils/miltyDraftUtils";
+import { ALL_TILE_KEYS } from "../data/tileCatalog";
 
 const BASE_URL = import.meta.env.BASE_URL;
 
@@ -36,6 +37,29 @@ const DEFAULT_CONSTRAINTS = {
 
 const CATEGORIES = ["faction", "slice", "position"];
 
+const TILE_CODE_TO_KEY = new Map(
+  ALL_TILE_KEYS.map((key) => {
+    const [code] = key.split("_");
+    return [code.toLowerCase(), key];
+  })
+);
+
+function tileToTileKey(tile) {
+  if (!tile) return null;
+
+  if (typeof tile === "string") {
+    const directMatch = TILE_CODE_TO_KEY.get(tile.toLowerCase());
+    return directMatch ?? tile;
+  }
+
+  const keyLike = tile.key ?? tile.tile_key;
+  if (typeof keyLike === "string" && keyLike.length > 0) return keyLike;
+
+  const id = String(tile.id ?? "").toLowerCase();
+  if (!id) return null;
+  return TILE_CODE_TO_KEY.get(id) ?? null;
+}
+
 function SliceMiniMap({ slice }) {
   // Snapshot-style layout (matches a cropped map view in 310 orientation)
   // Uses the same flat-top hex proportions as your map builder.
@@ -46,9 +70,6 @@ function SliceMiniMap({ slice }) {
   // Slice tile order (same semantics used elsewhere):
   // [R1, R3-first, R2-spoke, R3-second, R2-left]
   const tiles = slice?.tiles ?? [];
-
-  // IMPORTANT: use a robust tile->image-key mapper in real code.
-  // See optional helper in section 5 (`tileToTileKey`).
   const tileKeys = (slice?.tiles ?? []).map(tileToTileKey);
 
   // Coordinates are relative to an H (home) placeholder and emulate
