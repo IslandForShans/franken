@@ -16,22 +16,24 @@ import FrankenDrazBuilder from "./FrankenDrazBuilder.jsx";
 const baseFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 3, faction_techs: 2, agents: 1,
   commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
-  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1, breakthrough: 1
+  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1, breakthrough: 1, table_position: 1
 };
 
 const powerFactionLimits = {
   blue_tiles: 3, red_tiles: 2, abilities: 4, faction_techs: 3, agents: 2,
   commanders: 2, heroes: 2, promissory: 1, starting_techs: 1, starting_fleet: 1,
-  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1, breakthrough: 1
+  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1, breakthrough: 1, table_position: 1
 };
 
-const defaultDraftLimits = Object.fromEntries(
-  Object.entries(baseFactionLimits).map(([key, value]) => [key, value + 1])
-);
+const defaultDraftLimits = {
+  ...Object.fromEntries(Object.entries(baseFactionLimits).map(([key, value]) => [key, value + 1])),
+  table_position: 1,
+};
 
-const powerDraftLimits = Object.fromEntries(
-  Object.entries(powerFactionLimits).map(([key, value]) => [key, value + 1])
-);
+const powerDraftLimits = {
+  ...Object.fromEntries(Object.entries(powerFactionLimits).map(([key, value]) => [key, value + 1])),
+  table_position: 1,
+};
 
 export default function DraftSimulator({ onNavigate }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -88,6 +90,7 @@ export default function DraftSimulator({ onNavigate }) {
   // PERFORMANCE: Memoize active categories computation
   const categories = useMemo(() => {
     const baseCategories = [
+      'table_position',
       'abilities', 'faction_techs', 'promissory', 'flagship',
       'starting_techs', 'starting_fleet', 'commodity_values',
       'blue_tiles', 'red_tiles', 'home_systems'
@@ -154,6 +157,16 @@ export default function DraftSimulator({ onNavigate }) {
 
   // PERFORMANCE: Memoize getFilteredComponents with useCallback
   const getFilteredComponents = useCallback((category) => {
+    const effectivePlayerCount = playerCount;
+    if (category === 'table_position') {
+      const suffixes = ['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+      return Array.from({ length: effectivePlayerCount }, (_, i) => ({
+        name: suffixes[i] ?? `${i+1}th`,
+        position: i + 1,
+        id: `table_position_${i+1}`,
+      }));
+    }
+
     console.log(`Getting filtered components for category: ${category}`, {
       dsOnly: expansionsEnabled.dsOnly,
       ds: expansionsEnabled.ds,
@@ -247,7 +260,7 @@ export default function DraftSimulator({ onNavigate }) {
     console.log(`Creating ${playerCount} bags for ${playerCount} players`);
     
     categories.forEach(category => {
-      const allComponents = getFilteredComponents(category);
+      const allComponents = getFilteredComponents(category, playerCount);
       
       // Skip categories with no components
       if (allComponents.length === 0) {
@@ -1907,6 +1920,13 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
                 className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
               >
                 🔄 New Draft
+              </button>
+
+              <button
+                onClick={() => onNavigate('/mapbuilder-draft', { factions, playerCount })}
+                className="px-4 py-2 bg-orange-700 hover:bg-orange-600 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
+              >
+                🗺️ Build Map
               </button>
             </div>
           </div>

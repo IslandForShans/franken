@@ -221,6 +221,7 @@ const handleCancelSwap = () => {
     { key: 'starting_fleet', col: 3 },
     { key: 'commodity_values', col: 2 },
     { key: 'breakthrough', col: 3 },
+    { key: 'table_position', col: 1 },
     { key: 'home_systems', col: 1 },
     { key: 'blue_tiles', col: 2 },
     { key: 'red_tiles', col: 3 },
