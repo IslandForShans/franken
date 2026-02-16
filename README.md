@@ -16,7 +16,7 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - **Franken**: Each player gets a bag of components, picks items, then passes bags
 - **Rotisserie**: All components in shared pools, players pick in turn order
 - **Power**: Like Franken but with higher component limits
-- **Draz**: Draft 6 full factions and build your faction from them (not available yet)
+- **Draz**: Draft 6 full factions and build your faction from them
 
 ## Key Features
 
@@ -33,29 +33,26 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 - Variants: Normal, Power, Rotisserie, FrankenDraz!
 - Component Reference!
 - Map Build after Draft! Mantis style or random placement!
+- Milty Draft!
 
 ## Adding/Fixing soon
 
 ### Known Bugs
-- On mobile, sidebar doesn't scroll properly and boxes are out O.O.B.
-- Refuse swap button is confusing, need to remove from swap modal main menu
-- Legendary icons not showing on legendary tiles
+- Sices don't show proper icons for what is in them.
 
 ### High Priority
-- Make draft summary show tech icons and anomaly/trait/legendary icons
-- Milty draft map build won't update res/inf calculations
-- Need better styling on Milty draft slice images
-- Need the slices to be placed, no mantis or random buttons.
+- Try to brighten milty slices so they don't look so dulled down.
 
 ### Low Priority
+- Nucleus Draft
 - Creating custom Non-Draft Components
 - Make draft actually start with local multiayer
 
 ## Eventual Non-Franken features to add
 
 - Lore Reference
-- Milty Draft
-- Map Builder
+- Game Reference
+- L.R.R.
 
 
 

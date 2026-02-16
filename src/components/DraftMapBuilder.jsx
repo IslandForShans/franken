@@ -3,6 +3,7 @@ import { ALL_TILE_KEYS, TILE_CODE_TO_JSON_ID } from "../data/tileCatalog";
 import { HS_POSITIONS, SLICE_ORDER, ALL_SLICE_LABELS } from "../utils/sliceDefinitions";
 import { shuffleArray } from "../utils/shuffle";
 import { calculateOptimalResources } from "../utils/resourceCalculator";
+import { factionsData, discordantStarsData } from "../data/processedData";
 
 // ── Hex geometry (self-contained, no coupling to TI4MapBuilder) ─────────────
 const S = 62;
@@ -47,6 +48,23 @@ function buildAdjacency3Ring() {
   return adj;
 }
 const ADJACENCY = buildAdjacency3Ring();
+
+// ── Tile planet lookup (for res/inf overlay) ───────────────────────────────
+const DMB_TILE_LOOKUP = new Map();
+(factionsData?.tiles?.blue_tiles ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
+(factionsData?.tiles?.red_tiles ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
+(factionsData?.tiles?.home_systems ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
+(discordantStarsData?.tiles?.blue_tiles ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
+(discordantStarsData?.tiles?.red_tiles ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
+
+function getTilePlanets(key) {
+  if (!key) return [];
+  const code = key.split("_")[0];
+  const jsonId = TILE_CODE_TO_JSON_ID[code] !== undefined
+    ? String(TILE_CODE_TO_JSON_ID[code])
+    : (!isNaN(parseInt(code, 10)) ? String(parseInt(code, 10)) : null);
+  return DMB_TILE_LOOKUP.get(jsonId)?.planets ?? [];
+}
 
 const HOME_SYSTEM_ID_TO_TILE_KEY = new Map([
   ["barony_hs", "10_ArcPime"],
@@ -308,6 +326,27 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
   const [mode, setMode] = useState(null); // null | "random" | "mantis"
   const [placed, setPlaced] = useState({ "000": "112_Mecatol" });
 
+  const fromMilty = !!draftData?.fromMilty;
+
+  // Auto-place all slice tiles when coming from Milty draft
+  useEffect(() => {
+    if (!fromMilty || players.length === 0) return;
+    setPlaced(prev => {
+      const next = { ...prev };
+      players.forEach(p => {
+        if (p.hsLabel && p.hsKey) next[p.hsLabel] = p.hsKey;
+        p.sliceTiles.forEach((label, idx) => {
+          const key = p.draftedKeys[idx];
+          if (key && label) next[label] = key;
+        });
+      });
+      return next;
+    });
+    setMode("random");
+    setFillDone(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromMilty, players.length > 0]);
+
   // Place HS tiles whenever players data resolves
   useEffect(() => {
     setPlaced(prev => {
@@ -502,12 +541,16 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
       const planets = [];
       (ADJACENCY[p.hsLabel] ?? []).forEach(n => {
         const key = placed[n];
-        if (key && key !== "112_MecatolRex") {
-          // Simple planet extraction from key name; real data via buildTileMeta would be better
-          // but we keep DraftMapBuilder decoupled from processedData
+        if (key && key !== "112_Mecatol") {
+          getTilePlanets(key).forEach(planet => planets.push(planet));
         }
       });
-      stats[p.hsLabel] = { playerName: p.name, color: PLAYER_COLORS[p.position - 1] };
+      const resInf = calculateOptimalResources(planets);
+      stats[p.hsLabel] = {
+        playerName: p.name,
+        color: PLAYER_COLORS[p.position - 1],
+        ...resInf,
+      };
     });
     return stats;
   }, [players, placed]);
@@ -579,7 +622,7 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
           ))}
 
           {/* Mode buttons */}
-          {!mode && (
+          {!mode && !fromMilty && (
             <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
               <div style={{ fontSize:10, fontWeight:700, color:"#fcd34d", textTransform:"uppercase", letterSpacing:1 }}>Placement Mode</div>
               <button onClick={doRandomPlace} className="px-3 py-2 rounded-lg bg-blue-800 hover:bg-blue-700 text-white text-sm font-semibold transition-colors">🎲 Random</button>
@@ -650,6 +693,34 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
                         </div>
                         <div style={{ fontSize:S*0.11, color:"#9ca3af", fontWeight:600, lineHeight:1.1, textShadow:"0 1px 2px #000" }}>
                           ({player?.hsStats?.totalResource ?? 0}R/{player?.hsStats?.totalInfluence ?? 0}I)
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {homeStats[label] && (() => {
+                    const s = homeStats[label];
+                    return (
+                      <div style={{
+                        position:"absolute", inset:0,
+                        clipPath:"polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+                        display:"flex", flexDirection:"column",
+                        alignItems:"center", justifyContent:"center",
+                        pointerEvents:"none", zIndex:6,
+                        background:"rgba(0,0,0,0.72)",
+                      }}>
+                        <div style={{ textAlign:"center", lineHeight:1.3 }}>
+                          <div style={{ fontSize:S*0.27, fontWeight:900 }}>
+                            <span style={{ color:"#fbbf24" }}>{s.optimalResource}R</span>
+                            <span style={{ color:"#6b7280", margin:"0 3px" }}>/</span>
+                            <span style={{ color:"#60a5fa" }}>{s.optimalInfluence}I</span>
+                          </div>
+                          <div style={{ fontSize:S*0.16, color:"#9ca3af" }}>
+                            ({s.totalResource}R/{s.totalInfluence}I)
+                          </div>
+                          {s.flexValue > 0 && (
+                            <div style={{ fontSize:S*0.15, color:"#86efac" }}>{s.flexValue} flex</div>
+                          )}
                         </div>
                       </div>
                     );

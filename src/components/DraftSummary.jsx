@@ -1,5 +1,6 @@
 import React from "react";
 import { calculateOptimalResources } from "../utils/resourceCalculator.js";
+import { ICON_MAP } from "../utils/dataProcessor";
 
 export default function DraftSummary({ factions }) {
   return (
@@ -118,32 +119,37 @@ export default function DraftSummary({ factions }) {
                 {allTiles.map((tile, idx) => (
                   <li key={idx} className="mb-2">
                     <div className="font-medium">{tile.name}</div>
-                    {tile.wormhole && (
-                      <span className="text-purple-600 text-xs">Wormhole: {tile.wormhole}</span>
-                    )}
-                    {tile.anomalies && tile.anomalies.length > 0 && (
-                      <span className="text-red-600 text-xs ml-2">
-                        Anomalies: {tile.anomalies.join(", ")}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-1 flex-wrap">
+                      {tile.wormhole && (
+                        ICON_MAP.wormholes[tile.wormhole]
+                          ? <img src={ICON_MAP.wormholes[tile.wormhole]} alt={tile.wormhole} title={`Wormhole: ${tile.wormhole}`} className="w-4 h-4" />
+                          : <span className="text-purple-400 text-xs">WH: {tile.wormhole}</span>
+                      )}
+                      {(tile.anomalies ?? []).map((a, i) => (
+                        ICON_MAP.anomalies[a]
+                          ? <img key={i} src={ICON_MAP.anomalies[a]} alt={a} title={a} className="w-4 h-4" />
+                          : <span key={i} className="text-red-400 text-xs">{a}</span>
+                      ))}
+                    </div>
                     {tile.planets && tile.planets.map(p => (
-                      <div key={p.name} className="ml-4 text-xs text-white">
-                        • {p.name}: {p.resource}R/{p.influence}I
-                        {p.traits && p.traits.length > 0 && (
-                          <span className="text-purple-600 ml-1">
-                            [{p.traits.join(", ")}]
-                          </span>
-                        )}
-                        {p.technology_specialty && p.technology_specialty.length > 0 && (
-                          <span className="text-orange-600 ml-1">
-                            Tech: {p.technology_specialty.join(", ")}
-                          </span>
-                        )}
+                      <div key={p.name} className="ml-4 text-xs text-white flex flex-wrap items-center gap-1 mb-0.5">
+                        <span className="text-gray-400">•</span>
+                        <span className="font-medium">{p.name}</span>
+                        <span className="text-yellow-400">{p.resource ?? 0}R</span>
+                        <span className="text-blue-400">{p.influence ?? 0}I</span>
                         {p.legendary_ability && (
-                          <div className="text-yellow-700 ml-2 italic">
-                            Legendary: {p.legendary_ability}
-                          </div>
+                          <img src={ICON_MAP.legendary} alt="legendary" title={p.legendary_ability} className="w-3.5 h-3.5" />
                         )}
+                        {(p.traits ?? []).map((trait, i) => (
+                          ICON_MAP.traits[trait]
+                            ? <img key={i} src={ICON_MAP.traits[trait]} alt={trait} title={trait} className="w-3.5 h-3.5" />
+                            : <span key={i} className="text-purple-400 text-xs">{trait}</span>
+                        ))}
+                        {(p.technology_specialty ?? []).map((tech, i) => (
+                          ICON_MAP.techColors[tech]
+                            ? <img key={i} src={ICON_MAP.techColors[tech]} alt={tech} title={`${tech} tech`} className="w-3.5 h-3.5" />
+                            : <span key={i} className="text-orange-400 text-xs">{tech}</span>
+                        ))}
                       </div>
                     ))}
                   </li>

@@ -177,13 +177,19 @@ export function generateSlicePool({
   }
 
   const unique = new Map();
+  const usedIds = new Set(); // globally tracks tile ids used across all slices
   let attempts = 0;
 
   while (unique.size < size && attempts < maxAttempts) {
     attempts += 1;
 
-    const bluePick = sampleUnique(blue, 3);
-    const redPick = sampleUnique(red, 2);
+    const availBlue = blue.filter(t => !usedIds.has(String(t.id ?? t.name)));
+    const availRed = red.filter(t => !usedIds.has(String(t.id ?? t.name)));
+
+    if (availBlue.length < 3 || availRed.length < 2) break;
+
+    const bluePick = sampleUnique(availBlue, 3);
+    const redPick = sampleUnique(availRed, 2);
     const tiles = [...bluePick, ...redPick];
 
     const stats = calculateSliceStats(tiles);
@@ -191,6 +197,7 @@ export function generateSlicePool({
 
     const sig = makeSliceSignature(tiles);
     if (!unique.has(sig)) {
+      tiles.forEach(t => usedIds.add(String(t.id ?? t.name)));
       unique.set(sig, {
         id: `slice_${unique.size + 1}`,
         tiles,
@@ -256,5 +263,5 @@ export function toDraftMapBuilderPayload({ players, playerCount }) {
     };
   });
 
-  return { factions, playerCount };
+  return { factions, playerCount, fromMilty: true };
 }

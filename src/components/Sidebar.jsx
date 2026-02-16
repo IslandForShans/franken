@@ -272,6 +272,14 @@ const toggleAllCategories = () => {
                       {Array.isArray(tile.anomaly_icons) && tile.anomaly_icons.map((icon, i) => (
                         <img key={`anomaly-${i}`} src={icon} alt="anomaly" className="w-4 h-4" />
                       ))}
+                      {Array.isArray(tile.planets) && tile.planets.some(p => p.legendary_icon) && (
+                        <img
+                          src={tile.planets.find(p => p.legendary_icon)?.legendary_icon}
+                          alt="legendary"
+                          title="Legendary Planet"
+                          className="w-4 h-4"
+                        />
+                      )}
                     </div>
                     {/* MOBILE INLINE DETAILS */}
                     {!supportsHover && Array.isArray(tile.planets) && tile.planets.length > 0 && (
@@ -341,6 +349,14 @@ const toggleAllCategories = () => {
                       {Array.isArray(tile.anomaly_icons) && tile.anomaly_icons.map((icon, i) => (
                         <img key={`anomaly-${i}`} src={icon} alt="anomaly" className="w-4 h-4" />
                       ))}
+                      {Array.isArray(tile.planets) && tile.planets.some(p => p.legendary_icon) && (
+                        <img
+                          src={tile.planets.find(p => p.legendary_icon)?.legendary_icon}
+                          alt="legendary"
+                          title="Legendary Planet"
+                          className="w-4 h-4"
+                        />
+                      )}
                     </div>
                     {/* MOBILE INLINE DETAILS */}
                     {!supportsHover && Array.isArray(tile.planets) && tile.planets.length > 0 && (
@@ -641,6 +657,17 @@ const toggleAllCategories = () => {
                       className="w-4 h-4"
                     />
                   ))}
+
+                  {(cat === "red_tiles" || cat === "blue_tiles") &&
+                  Array.isArray(component.planets) &&
+                  component.planets.some(p => p.legendary_icon) && (
+                    <img
+                      src={component.planets.find(p => p.legendary_icon)?.legendary_icon}
+                      alt="legendary"
+                      title="Legendary Planet"
+                      className="w-4 h-4"
+                    />
+                  )}
 
                 {cat === "faction_techs" &&
                   Array.isArray(component.prerequisites) &&

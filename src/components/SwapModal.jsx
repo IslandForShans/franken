@@ -22,6 +22,7 @@ export default function SwapModal({
 }) {
   const [step, setStep] = useState("chooseSwap"); // "chooseSwap" or "chooseReplace"
   const [selectedSwap, setSelectedSwap] = useState(null);
+  const [refusedNames, setRefusedNames] = useState(new Set());
 
   if (!isOpen) return null;
 
@@ -44,13 +45,12 @@ export default function SwapModal({
   };
 
   const handleRefuse = () => {
-    if (selectedSwap) {
-      onRefuse(selectedSwap);
-    } else if (swapOptions.length > 0) {
-      onRefuse(swapOptions[0]);
-    }
-    setStep("chooseSwap");
+    if (!selectedSwap) return;
+    onRefuse(selectedSwap);
+    const newRefused = new Set(refusedNames).add(`${selectedSwap.name}|${selectedSwap.faction}`);
+    setRefusedNames(newRefused);
     setSelectedSwap(null);
+    setStep("chooseSwap");
   };
 
   const renderComponentDetails = (component) => (
@@ -262,7 +262,7 @@ export default function SwapModal({
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {swapOptions.map((option, idx) => (
+              {swapOptions.filter(o => !refusedNames.has(`${o.name}|${o.faction}`)).map((option, idx) => (
                 <div key={idx} className="swap-option">
                   <div className="swap-option-header">
                     <div style={{ flex: 1 }}>
@@ -337,9 +337,11 @@ export default function SwapModal({
 )}
 
         <div className="swap-modal-footer">
-          <button onClick={handleRefuse} className="btn btn-warning">
-            REFUSE SWAP
-          </button>
+          {step === "chooseReplace" && (
+            <button onClick={handleRefuse} className="btn btn-warning">
+              REFUSE SWAP
+            </button>
+          )}
           <button onClick={handleCancel} className="btn btn-secondary">
             CANCEL
           </button>
