@@ -151,7 +151,7 @@ function SliceMiniMap({ slice }) {
         flexShrink: 0,
         overflow: "hidden",
         borderRadius: 6,
-        background: "#1a2540",
+        background: "#ffffffff",
         border: "1px solid #3a5a8f",
       }}>
         {positions.map((pos, i) => (
@@ -577,13 +577,6 @@ export default function MiltyDraftPage({ onNavigate }) {
                   </div>
                 ))}
               </div>
-            </div>
-
-            <div className="bg-gray-900/60 border border-gray-700 rounded-lg p-4">
-              <h3 className="font-bold mb-2">Discarded leftovers</h3>
-              <div className="text-sm text-gray-300">Factions: {draftState.discarded.faction.length}</div>
-              <div className="text-sm text-gray-300">Slices: {draftState.discarded.slice.length}</div>
-              <div className="text-sm text-gray-300">Positions: {draftState.discarded.position.length}</div>
             </div>
 
             <div className="flex gap-2">
