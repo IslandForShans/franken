@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useLayoutEffect, useMemo } from "react";
+import { useState, useCallback, useRef, useLayoutEffect, useMemo, useEffect } from "react";
 import { ALL_TILE_KEYS, TILE_CODE_TO_JSON_ID } from "../data/tileCatalog";
 import { factionsData, discordantStarsData } from "../data/processedData";
 import { calculateOptimalResources } from "../utils/resourceCalculator";
@@ -341,12 +341,15 @@ export default function TI4MapBuilder({ onNavigate }) {
   const placedSet = useMemo(() => new Set(Object.values(placed)), [placed]);
   const mapScale = fitScale * zoomLevel;
 
-  const mapString = useMemo(() =>
-    ["000", ...mapPositions.slice(1).map((p) => p.label)]
-      .map((lbl) => (placed[lbl] ? buildTileMeta(placed[lbl]).code : "0"))
-      .join(" "),
-    [placed, mapPositions]
-  );
+  const mapString = useMemo(() => {
+  const tokens = ["000", ...MAP_POSITIONS.slice(1).map(p => p.label)]
+    .map(lbl => {
+      const key = placed[lbl];
+      if (!key) return "0";
+      return key.split("_")[0];
+    });
+  return `{${tokens[0]}} ${tokens.slice(1).join(" ")}`;
+}, [placed]);
 
   const homeStats = useMemo(() => {
     if (!generatedHomeLabels) return null;
@@ -424,6 +427,13 @@ export default function TI4MapBuilder({ onNavigate }) {
     const delta = e.deltaY < 0 ? 0.1 : -0.1;
     onZoom(delta);
   }, [onZoom]);
+
+  useEffect(() => {
+  const el = mapViewportRef.current;
+  if (!el) return;
+  el.addEventListener("wheel", onWheelZoom, { passive: false });
+  return () => el.removeEventListener("wheel", onWheelZoom);
+}, [onWheelZoom]);
 
   const onViewportMouseDown = (e) => {
     if (e.button !== 0) return;
@@ -864,7 +874,7 @@ export default function TI4MapBuilder({ onNavigate }) {
               {/* Map String */}
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 10, letterSpacing: 1, color: "#9ca3af", textTransform: "uppercase", flexShrink: 0 }}>Map String</span>
-                <div style={{ flex: 1, background: "#030712", border: "1px solid #4b5563", borderRadius: 6, padding: "6px 8px", fontSize: 11, color: "#d1d5db", fontFamily: "monospace", overflowX: "auto", whiteSpace: "nowrap" }}>{`{${mapString}}`}</div>
+                <div style={{ flex: 1, background: "#030712", border: "1px solid #4b5563", borderRadius: 6, padding: "6px 8px", fontSize: 11, color: "#d1d5db", fontFamily: "monospace", overflowX: "auto", whiteSpace: "nowrap" }}>{mapString}</div>
                 <button onClick={onCopyMapString} style={{ background: copied ? "#166534" : "#374151", border: `1px solid ${copied ? "#4ade80" : "#6b7280"}`, borderRadius: 6, color: "#f3f4f6", fontSize: 11, fontWeight: 600, padding: "5px 12px", cursor: "pointer", textTransform: "uppercase", flexShrink: 0 }}>{copied ? "Copied!" : "Copy"}</button>
               </div>
 
@@ -941,7 +951,6 @@ export default function TI4MapBuilder({ onNavigate }) {
 
         <div
           ref={mapViewportRef}
-          onWheel={onWheelZoom}
           onMouseDown={onViewportMouseDown}
           onMouseMove={onViewportMouseMove}
           onMouseUp={onViewportMouseUp}

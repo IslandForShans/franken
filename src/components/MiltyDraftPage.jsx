@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import {
   clampInt,
   getFilteredFactionPool,
@@ -100,83 +100,93 @@ function SliceMiniMap({ slice }) {
 
   const tileKeys = (slice?.tiles ?? []).map(tileToTileKey);
   const stats = slice?.stats;
+  const tiles = slice?.tiles ?? [];
 
-  // The 5 slice tile centers relative to a phantom home at (0,0).
-  // Bounding box of all tile edges: x in [-2.5S, 2.5S], y in [-2.5D, 0]
-  // So content is exactly 5S wide and 2.5D tall. Add padding.
   const PAD = 6;
   const W = Math.ceil(5 * S) + PAD * 2;
   const H_CANVAS = Math.ceil(2.5 * D) + PAD * 2;
 
-  // Place phantom home just below the bottom edge so bottom tiles sit flush.
   const ox = W / 2;
   const oy = H_CANVAS - PAD;
 
   const positions = [
-    { x: ox,            y: oy - 2 * D },       // R1: straight up
-    { x: ox,            y: oy - 1 * D },       // R2: center spoke
-    { x: ox - 1.5 * S, y: oy - 1.5 * D },     // R2: upper-left
-    { x: ox + 1.5 * S, y: oy - 0.5 * D },     // R3: lower-right
-    { x: ox - 1.5 * S, y: oy - 0.5 * D },     // R2: lower-left
+    { x: ox,            y: oy - 2 * D },
+    { x: ox,            y: oy - 1 * D },
+    { x: ox - 1.5 * S, y: oy - 1.5 * D },
+    { x: ox + 1.5 * S, y: oy - 0.5 * D },
+    { x: ox - 1.5 * S, y: oy - 0.5 * D },
   ];
+
+  const containerRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const ro = new ResizeObserver(entries => setContainerWidth(entries[0].contentRect.width));
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  const scale = containerWidth > 0 ? containerWidth / W : 1;
+
+  // Collect actual icons from tile data
+  const tileIcons = tiles.flatMap(tile => {
+    const icons = [];
+    if (tile?.wormhole && ICON_MAP.wormholes[tile.wormhole])
+      icons.push({ src: ICON_MAP.wormholes[tile.wormhole], alt: tile.wormhole });
+    (tile?.anomalies ?? []).forEach(anomaly => {
+      if (ICON_MAP.anomalies[anomaly]) icons.push({ src: ICON_MAP.anomalies[anomaly], alt: anomaly });
+    });
+    (tile?.planets ?? []).forEach(planet => {
+      (planet?.technology_specialty ?? []).forEach(tech => {
+        if (ICON_MAP.techColors[tech]) icons.push({ src: ICON_MAP.techColors[tech], alt: `${tech} tech` });
+      });
+      if (planet?.legendary_ability) icons.push({ src: ICON_MAP.legendary, alt: "Legendary" });
+    });
+    return icons;
+  });
 
   const TileHex = ({ tileKey, x, y }) => (
     <div style={{
       position: "absolute",
-      left: x - S,
-      top: y - D / 2,
-      width: S * 2,
-      height: D,
+      left: x - S, top: y - D / 2,
+      width: S * 2, height: D,
       clipPath: HEX_CLIP,
       overflow: "hidden",
-      background: "#2a3f5f",
+      background: "#1a2a4a",
     }}>
-      {tileKey
-        ? <img
-            src={`${BASE_URL}tiles/${tileKey}.png`}
-            alt="tile"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "brightness(1.35) saturate(1.15)" }}
-          />
-        : null
-      }
+      {tileKey && <img src={`${BASE_URL}tiles/${tileKey}.png`} alt="tile"
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "brightness(1.35) saturate(1.4) contrast(1.2)" }} />}
     </div>
   );
 
   return (
-    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-      <div style={{
-        position: "relative",
-        width: W,
-        height: H_CANVAS,
-        flexShrink: 0,
-        overflow: "hidden",
-        borderRadius: 6,
-        background: "#ffffffff",
-        border: "1px solid #3a5a8f",
-      }}>
-        {positions.map((pos, i) => (
-          <TileHex key={i} tileKey={tileKeys[i]} x={pos.x} y={pos.y} />
-        ))}
+    <div style={{ display: "flex", flexDirection: "column", width: "100%", gap: 6 }}>
+      <div ref={containerRef} style={{ width: "100%", height: H_CANVAS * scale, position: "relative", overflow: "hidden" }}>
+        <div style={{
+          position: "absolute", top: 0, left: 0,
+          width: W, height: H_CANVAS,
+          transform: `scale(${scale})`, transformOrigin: "top left",
+          borderRadius: 6, background: "transparent",
+          border: "1px solid #3a5a8f", overflow: "hidden",
+        }}>
+          {positions.map((pos, i) => <TileHex key={i} tileKey={tileKeys[i]} x={pos.x} y={pos.y} />)}
+        </div>
       </div>
       {stats && (
-        <div style={{ fontSize: 11, lineHeight: 1.7, color: "#cbd5e1", minWidth: 78 }}>
-          <div><span style={{ color: "#fbbf24" }}>{stats.optimalResource}R</span> / <span style={{ color: "#60a5fa" }}>{stats.optimalInfluence}I</span></div>
-          <div style={{ color: "#9ca3af", fontSize: 10 }}>({stats.totalResource}R / {stats.totalInfluence}I)</div>
-          {stats.flexValue > 0 && <div style={{ color: "#86efac", fontSize: 10 }}>{stats.flexValue} flex</div>}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 4 }}>
-            {stats.legendaryCount > 0 && Array.from({ length: stats.legendaryCount }).map((_, i) => (
-              <img key={`leg-${i}`} src={ICON_MAP.legendary} alt="legendary" title="Legendary" style={{ width: 16, height: 16 }} />
-            ))}
-            {stats.wormholeCount > 0 && Array.from({ length: stats.wormholeCount }).map((_, i) => (
-              <img key={`wh-${i}`} src={ICON_MAP.wormholes.Alpha} alt="wormhole" title="Wormhole" style={{ width: 16, height: 16 }} />
-            ))}
-            {stats.anomalyCount > 0 && Array.from({ length: stats.anomalyCount }).map((_, i) => (
-              <img key={`anom-${i}`} src={ICON_MAP.anomalies["Asteroid Field"]} alt="anomaly" title="Anomaly" style={{ width: 16, height: 16 }} />
-            ))}
-            {stats.techSpecCount > 0 && Array.from({ length: stats.techSpecCount }).map((_, i) => (
-              <img key={`tech-${i}`} src={ICON_MAP.techColors.Blue} alt="tech specialty" title="Tech Specialty" style={{ width: 16, height: 16 }} />
-            ))}
+  <div style={{ fontSize: 11, color: "#cbd5e1", background: "rgba(15,23,42,0.75)", borderRadius: 5, padding: "4px 6px", marginTop: 2 }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <span><span style={{ color: "#fbbf24" }}>{stats.optimalResource}R</span> / <span style={{ color: "#60a5fa" }}>{stats.optimalInfluence}I</span></span>
+            <span style={{ color: "#9ca3af", fontSize: 10 }}>({stats.totalResource}R/{stats.totalInfluence}I)</span>
+            {stats.flexValue > 0 && <span style={{ color: "#86efac", fontSize: 10 }}>{stats.flexValue} flex</span>}
           </div>
+          {tileIcons.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 4 }}>
+              {tileIcons.map((icon, i) => (
+                <img key={i} src={icon.src} alt={icon.alt} title={icon.alt} style={{ width: 16, height: 16 }} />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -230,6 +240,8 @@ export default function MiltyDraftPage({ onNavigate }) {
     return draftState.turnQueue[draftState.turnIndex] ?? null;
   }, [draftState]);
 
+  const currentPlayerPicks = draftState?.players[currentTurn?.playerId]?.picks ?? {};
+
   const startDraft = () => {
     const pc = clampInt(playerCount, 2, 8, 6);
     const factionCount = clampInt(factionPoolSize, pc, 40, 12);
@@ -261,7 +273,7 @@ export default function MiltyDraftPage({ onNavigate }) {
     const positionPool = generateTablePositionPool(pc);
 
     const order = randomPlayerOrder(pc);
-    const turnQueue = makeSnakeTurnQueue(order, CATEGORIES);
+    const turnQueue = makeSnakeTurnQueue(order, CATEGORIES.length);
 
     const players = playerRows.map(p => ({ ...p, picks: {} }));
 
@@ -287,53 +299,60 @@ export default function MiltyDraftPage({ onNavigate }) {
   };
 
   const pickItem = (item) => {
-    setDraftState(prev => {
-      if (!prev) return prev;
+  setDraftState(prev => {
+    if (!prev) return prev;
 
-      const turn = prev.turnQueue[prev.turnIndex];
-      if (!turn) return prev;
+    const turn = prev.turnQueue[prev.turnIndex];
+    if (!turn) return prev;
 
-      const { playerId, category } = turn;
-      const pool = prev.pools[category] ?? [];
+    const { playerId } = turn;
 
-      const idx = pool.findIndex(p => {
-        if (category === "slice") return p.id === item.id;
-        return (p.id ?? p.name) === (item.id ?? item.name);
-      });
-      if (idx < 0) return prev;
-
-      const picked = pool[idx];
-      const nextPool = [...pool.slice(0, idx), ...pool.slice(idx + 1)];
-
-      const players = prev.players.map((pl, i) => {
-        if (i !== playerId) return pl;
-        return { ...pl, picks: { ...pl.picks, [category]: picked } };
-      });
-
-      const nextState = {
-        ...prev,
-        players,
-        pools: {
-          ...prev.pools,
-          [category]: nextPool,
-        },
-        turnIndex: prev.turnIndex + 1,
-      };
-
-      if (nextState.turnIndex >= nextState.turnQueue.length) {
-        // draft complete, discard leftovers
-        nextState.discarded = {
-          faction: nextState.pools.faction,
-          slice: nextState.pools.slice,
-          position: nextState.pools.position,
-        };
-      }
-
-      return nextState;
+    // Infer category from which pool contains this item
+    const category = CATEGORIES.find(cat => {
+      const pool = prev.pools[cat] ?? [];
+      if (cat === "slice") return pool.some(p => p.id === item.id);
+      return pool.some(p => (p.id ?? p.name) === (item.id ?? item.name));
     });
-  };
+    if (!category) return prev;
 
-  const finishToMapBuilder = () => {
+    // Don't allow picking a category this player already has
+    if (prev.players[playerId]?.picks?.[category]) return prev;
+
+    const pool = prev.pools[category] ?? [];
+    const idx = pool.findIndex(p => {
+      if (category === "slice") return p.id === item.id;
+      return (p.id ?? p.name) === (item.id ?? item.name);
+    });
+    if (idx < 0) return prev;
+
+    const picked = pool[idx];
+    const nextPool = [...pool.slice(0, idx), ...pool.slice(idx + 1)];
+
+    const players = prev.players.map((pl, i) => {
+      if (i !== playerId) return pl;
+      return { ...pl, picks: { ...pl.picks, [category]: picked } };
+    });
+
+    const nextState = {
+      ...prev,
+      players,
+      pools: { ...prev.pools, [category]: nextPool },
+      turnIndex: prev.turnIndex + 1,
+    };
+
+    if (nextState.turnIndex >= nextState.turnQueue.length) {
+      nextState.discarded = {
+        faction: nextState.pools.faction,
+        slice: nextState.pools.slice,
+        position: nextState.pools.position,
+      };
+    }
+
+    return nextState;
+  });
+};
+
+const finishToMapBuilder = () => {
     if (!draftState) return;
 
     const payload = toDraftMapBuilderPayload({
@@ -500,7 +519,7 @@ export default function MiltyDraftPage({ onNavigate }) {
               <div>
                 <div className="text-xs uppercase text-gray-400">Current Turn</div>
                 <div className="text-lg font-bold text-indigo-300">
-                  {draftState.players[currentTurn.playerId]?.name} picks {currentTurn.category}
+                  {draftState.players[currentTurn.playerId]?.name}'s pick — choose any remaining pool
                 </div>
               </div>
               <div className="text-sm text-gray-300">
@@ -510,13 +529,13 @@ export default function MiltyDraftPage({ onNavigate }) {
 
             {/* Faction + Position side by side */}
             <div className="grid grid-cols-2 gap-4">
-              <div className={`bg-gray-900/60 border rounded-lg p-3 ${currentTurn.category === "faction" ? "border-indigo-400" : "border-gray-700"}`}>
+              <div className={`bg-gray-900/60 border rounded-lg p-3 ${!currentPlayerPicks.faction ? "border-indigo-400" : "border-gray-700"}`}>
                 <h3 className="font-bold mb-2">Faction Pool ({draftState.pools.faction.length})</h3>
                 <div className="space-y-2 max-h-[320px] overflow-auto pr-1">
                   {draftState.pools.faction.map((f) => (
                     <button
                       key={f.name}
-                      disabled={currentTurn.category !== "faction"}
+                      disabled={!!currentPlayerPicks.faction}
                       onClick={() => pickItem(f)}
                       className="w-full text-left px-3 py-2 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -526,13 +545,13 @@ export default function MiltyDraftPage({ onNavigate }) {
                 </div>
               </div>
 
-              <div className={`bg-gray-900/60 border rounded-lg p-3 ${currentTurn.category === "position" ? "border-indigo-400" : "border-gray-700"}`}>
+              <div className={`bg-gray-900/60 border rounded-lg p-3 ${!currentPlayerPicks.position ? "border-indigo-400" : "border-gray-700"}`}>
                 <h3 className="font-bold mb-2">Table Positions ({draftState.pools.position.length})</h3>
                 <div className="space-y-2 max-h-[320px] overflow-auto pr-1">
                   {draftState.pools.position.map((pos) => (
                     <button
                       key={pos.id}
-                      disabled={currentTurn.category !== "position"}
+                      disabled={!!currentPlayerPicks.position}
                       onClick={() => pickItem(pos)}
                       className="w-full text-left px-3 py-2 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -544,15 +563,15 @@ export default function MiltyDraftPage({ onNavigate }) {
             </div>
 
             {/* Slices — full width, 3-per-row grid, no height cap */}
-            <div className={`bg-gray-900/60 border rounded-lg p-4 ${currentTurn.category === "slice" ? "border-indigo-400" : "border-gray-700"}`}>
+            <div className={`bg-gray-900/60 border rounded-lg p-4 ${!currentPlayerPicks.slice ? "border-indigo-400" : "border-gray-700"}`}>
               <h3 className="font-bold mb-3">Slice Pool ({draftState.pools.slice.length})</h3>
               <div className="grid grid-cols-2 gap-3">
                 {draftState.pools.slice.map((s) => (
                   <button
                     key={s.id}
-                    disabled={currentTurn.category !== "slice"}
+                    disabled={!!currentPlayerPicks.slice}
                     onClick={() => pickItem(s)}
-                    className="text-left rounded-lg bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed p-3 border border-gray-700 hover:border-indigo-500 transition-colors"
+                    className="text-left rounded-lg bg-slate-800/90 hover:bg-slate-700/90 disabled:opacity-50 disabled:cursor-not-allowed p-3 border border-slate-600 hover:border-indigo-400 transition-colors shadow-md"
                   >
                     <div className="font-semibold text-sm text-indigo-300 mb-2">{s.id}</div>
                     <SliceMiniMap slice={s} />

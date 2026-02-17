@@ -572,18 +572,18 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
 
 
   const mapString = useMemo(() => {
-    return ["000", ...MAP_3RING.slice(1).map(p => p.label)]
+    const tokens = ["000", ...MAP_3RING.slice(1).map(p => p.label)]
       .map(lbl => {
         const key = placedForExport[lbl];
         if (!key) return "0";
-        const code = key.split("_")[0];
-        return code;
-      }).join(" ");
+        return key.split("_")[0];
+      });
+    return `{${tokens[0]}} ${tokens.slice(1).join(" ")}`;
   }, [placedForExport]);
 
   const [copied, setCopied] = useState(false);
   const copyMap = () => {
-    navigator.clipboard?.writeText(`{${mapString}}`);
+    navigator.clipboard?.writeText(mapString);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -599,7 +599,7 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
           </div>
           <div className="flex items-center gap-2">
             <div style={{ fontSize:11, color:"#9ca3af", fontFamily:"monospace", background:"#030712", border:"1px solid #374151", borderRadius:5, padding:"3px 8px", maxWidth:300, overflow:"hidden", whiteSpace:"nowrap", textOverflow:"ellipsis" }}>
-              {`{${mapString}}`}
+              {mapString}
             </div>
             <button onClick={copyMap} className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">
               {copied ? "Copied!" : "Copy"}

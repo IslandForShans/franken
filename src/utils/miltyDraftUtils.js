@@ -223,14 +223,12 @@ export function generateTablePositionPool(playerCount) {
   }));
 }
 
-export function makeSnakeTurnQueue(playerOrder, categories) {
+export function makeSnakeTurnQueue(playerOrder, numRounds) {
   const queue = [];
-  categories.forEach((cat, roundIdx) => {
-    const order = roundIdx % 2 === 0 ? playerOrder : [...playerOrder].reverse();
-    order.forEach(playerId => {
-      queue.push({ playerId, category: cat });
-    });
-  });
+  for (let round = 0; round < numRounds; round++) {
+    const order = round % 2 === 0 ? playerOrder : [...playerOrder].reverse();
+    order.forEach(playerId => queue.push({ playerId }));
+  }
   return queue;
 }
 

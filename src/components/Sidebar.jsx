@@ -605,6 +605,12 @@ const toggleAllCategories = () => {
                 )}
                 <span>{component.name}</span>
 
+                {cat === "commodity_values" && component.description !== undefined && (
+    <span className="ml-auto text-sm font-bold opacity-40" style={{ color: '#fcd34d' }}>
+      {component.description}
+    </span>
+  )}
+
                 {/* ===== TILE PLANET TRAIT + TECH SPECIALTY ICONS ===== */}
                 {(cat === "red_tiles" || cat === "blue_tiles") &&
                   Array.isArray(component.planets) &&

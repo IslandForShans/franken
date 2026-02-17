@@ -4,7 +4,7 @@ import FactionSheet from "./FactionSheet.jsx";
 import Sidebar from "./Sidebar.jsx";
 import { factionsData, discordantStarsData } from "../data/processedData";
 import { ICON_MAP } from "../utils/dataProcessor";
-import { getSwapOptions, getExtraComponents, getSwapOptionsForTrigger } from "../data/undraftable-components.js";
+import { getSwapOptions, getExtraComponents, getSwapOptionsForTrigger, isComponentUndraftable } from "../data/undraftable-components.js";
 import { executeSwap, findFullComponentData } from "../utils/swapUtils.js";
 import { isBlueReverieFaction } from "../utils/expansionFilters.js";
 
@@ -236,6 +236,9 @@ const availableComponentsForSidebar = useMemo(() => {
   const components = {};
   categories.forEach(cat => {
     let all = getAllComponents(cat);
+
+    // Filter out undraftable components
+    all = all.filter(item => !isComponentUndraftable(item.name, item.faction));
 
     // Hide unit-upgrade faction techs that are "I" or "V1"
     if (cat === "faction_techs") {
