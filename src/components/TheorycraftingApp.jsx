@@ -238,7 +238,10 @@ const availableComponentsForSidebar = useMemo(() => {
     let all = getAllComponents(cat);
 
     // Filter out undraftable components
-    all = all.filter(item => !isComponentUndraftable(item.name, item.faction));
+    all = all.filter(item => {
+  const undraftable = isComponentUndraftable(item.name, item.faction);
+  return !undraftable || undraftable.type === "draftable_and_swap";
+});
 
     // Hide unit-upgrade faction techs that are "I" or "V1"
     if (cat === "faction_techs") {
