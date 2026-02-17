@@ -126,7 +126,6 @@ export const undraftableComponents = {
     { name: "Plane Splitter (Flipped)", faction: "The Obsidian", triggerComponent: "Plane Splitter", type: "gain_extra" },
     { name: "Neural Parasite (Flipped)", faction: "The Obsidian", triggerComponent: "Neural Parasite", type: "gain_extra" },
     //DS
-    { name: "Voidflare Warden II", faction: "The Nivyn Star Kings", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Zhrgar Stimulants", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
     { name: "ATS Armaments", faction: "The Lanefir Remnants", reason: "Just Plain Garbage", type: "garbage" },
     //BR
