@@ -353,7 +353,9 @@ export default function MainPage({ onNavigate }) {
             TI4 Franken Draft Simulator - Community tool for Twilight Imperium 4th Edition
           </p>
           <p className="text-xs sm:text-sm mt-2">
-            Not affiliated with Fantasy Flight Games
+            Disclaimer:
+This tool is an unofficial fan project and is not affiliated with, endorsed by, or approved by Fantasy Flight Games or Asmodee. All game content, including faction names, component names, artwork references, and other intellectual property, belongs to Fantasy Flight Games and Asmodee. This project exists purely as a fan resource for the Twilight Imperium community and is not intended for commercial use.
+This site may be taken down at any time upon request from Fantasy Flight Games, Asmodee, or any of their representatives. If you are a rights holder and would like this content removed, please contact sendit2isaiah@gmail.com.
           </p>
         </div>
       </footer>

@@ -38,10 +38,8 @@ A React application for drafting custom Twilight Imperium 4 factions using the F
 ## Adding/Fixing soon
 
 ### Known Bugs
-- Sices don't show proper icons for what is in them.
 
 ### High Priority
-- Try to brighten milty slices so they don't look so dulled down.
 
 ### Low Priority
 - Nucleus Draft
