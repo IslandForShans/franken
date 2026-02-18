@@ -164,7 +164,7 @@
         {
           "id": "bentor_fortune_seekers",
           "name": "Fortune Seekers",
-          "description": "Once per action, after you explore a planet or frontier token, you main gain 1 commodity."
+          "description": "Once per action, after you explore a planet or frontier token, you may gain 1 commodity."
         
         },
         {
@@ -519,7 +519,7 @@
           "id": "celdauri_hero",
           "name": "Titus Flavius - Councilman",
           "note": "TRADER MOBILIZATION ACT - MERCHANT REARAMENT",
-          "description": "After aplayer activates a system other than Mecatol Rex: You may place 1 space dock on a planet you control in the active system, convert each of your commodities to a trade good, and use the PRODUCTION ability of each of your units in the active system. Then, purge this card."
+          "description": "After a player activates a system other than Mecatol Rex: You may place 1 space dock on a planet you control in the active system, convert each of your commodities to a trade good, and use the PRODUCTION ability of each of your units in the active system. Then, purge this card."
         }
       ],
       "promissory": [
@@ -1461,7 +1461,7 @@
           "id": "ghemina_hero1",
           "name": "Korela - The Lady",
           "note": "RAZE ORDER - FEAR AND ASH",
-          "description": "ACTION: Purge this card to destroy all units on a non-home planet other than Mecatol Rex that is adjacen to a system that contains 1 of your flagships."
+          "description": "ACTION: Purge this card to destroy all units on a non-home planet other than Mecatol Rex that is adjacent to a system that contains 1 of your flagships."
         },
         {
           "id": "ghemina_hero2",
@@ -1633,7 +1633,7 @@
         {
           "id": "ghoti_pn",
           "name": "Ghoti Relay",
-          "description": "At the start of yout turn: Place this card in your play area to produce up to 2 ships in a system that contains 1 or more of your ships. At the start of the status phase, return this card to the Ghoti player."
+          "description": "At the start of your turn: Place this card in your play area to produce up to 2 ships in a system that contains 1 or more of your ships. At the start of the status phase, return this card to the Ghoti player."
         }
       ],
       "flagship": [
@@ -1655,7 +1655,7 @@
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
-          "description": "This unit can be blockaded. When producing ships in your home sysem, place up to 1 of those units in this system's space area if it is not blockaded."
+          "description": "This unit can be blockaded. When producing ships in your home system, place up to 1 of those units in this system's space area if it is not blockaded."
         }
       ],
       "starting_techs": [
@@ -1710,7 +1710,7 @@
               "secondary": "Blue"
             }
           ],
-          "description": "After this card enters play, place 1 ingress token in an empty system. Your units may retreat to any empoty system that does not contain another player's ships."
+          "description": "After this card enters play, place 1 ingress token in an empty system. Your units may retreat to any empty system that does not contain another player's ships."
         }
       ]
     },
@@ -1720,7 +1720,7 @@
         {
           "id": "gledge_mc",
           "name": "Mantle Cracking",
-          "description": "ACTION: Place 1 'Core' token on a non-home planet you controlother than Mecatol Rex that does not contain a Core token to gain up to 4 trade goods."
+          "description": "ACTION: Place 1 'Core' token on a non-home planet you control other than Mecatol Rex that does not contain a Core token to gain up to 4 trade goods."
         },
         {
           "id": "gledge_cr",
@@ -2998,7 +2998,7 @@
         {
           "id": "mirveda_agent",
           "name": "Logic Machina - Weapons Development",
-          "description": "After a player gains a unit upgrade technology: You may exhaust this card to allow that player to spend 1 command token form their strategy pool to research 1 technology of the same color as any 1 of that unit upgrade's prerequisites."
+          "description": "After a player gains a unit upgrade technology: You may exhaust this card to allow that player to spend 1 command token from their strategy pool to research 1 technology of the same color as any 1 of that unit upgrade's prerequisites."
         }
       ],
       "commanders": [
@@ -3433,7 +3433,7 @@
         {
           "id": "nivyn_agent",
           "name": "Suldhan Wraeg - Shrouded Advisor",
-          "description": "When a player would use 1 unit's non-PRODUCTION unit ability in a system that contains or is adjacent ot an anomaly, you may exhaust this card to prevent that unit from using that unit ability."
+          "description": "When a player would use 1 unit's non-PRODUCTION unit ability in a system that contains or is adjacent to an anomaly, you may exhaust this card to prevent that unit from using that unit ability."
         }
       ],
       "commanders": [
@@ -3624,7 +3624,7 @@
         {
           "id": "nokar_pn",
           "name": "Nokar Navigator",
-          "description": "At the start of a space combat: During this combat, the active system is djacent to each system that contains a planet you control for the purposes of announcing and resolving retreats. At the end of this combat, return this card ot the Nokar player."
+          "description": "At the start of a space combat: During this combat, the active system is adjacent to each system that contains a planet you control for the purposes of announcing and resolving retreats. At the end of this combat, return this card to the Nokar player."
         }
       ],
       "flagship": [
@@ -3646,7 +3646,7 @@
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
-          "description": "You may treat this system as adjacent to the active system for the purposes of declaring and reoslving retreats."
+          "description": "You may treat this system as adjacent to the active system for the purposes of declaring and resolving retreats."
         }
       ],
       "starting_techs": [
@@ -4228,7 +4228,7 @@
           "id": "axis_commander",
           "name": "Designer TckVsk - Dilligent Retro-Engineer",
           "note": "[UNLOCK: Have 4 Axis Order cards of different unit types in 1 or more players' play areas.]",
-          "description": "After aplayer resolves an Axis Order card: You may spend 6 resources to gain the corresponding unit's unit upgrade technology."
+          "description": "After a player resolves an Axis Order card: You may spend 6 resources to gain the corresponding unit's unit upgrade technology."
         }
       ],
       "heroes": [
@@ -4421,7 +4421,7 @@
         {
           "id": "tnelis_pn",
           "name": "Plots Within Plots",
-          "description": "When you draw 1 or more secret objective cards: Draw 1 addition secret objective card. Then, return 1 secret objective card to the secret objective deck; shuffle that deck. Then, return this card to the Tnelis player."
+          "description": "When you draw 1 or more secret objective cards: Draw 1 additional secret objective card. Then, return 1 secret objective card to the secret objective deck; shuffle that deck. Then, return this card to the Tnelis player."
         }
       ],
       "flagship": [
@@ -5967,7 +5967,7 @@
           "name": "Emergency Modifications",
           "tech_type": "Blue",
           "prerequisites": ["Blue"],
-          "description": "After a player activate a system, choose 1 unit on the game board; apply +2 to that unit's Capacity value, if it has one, until the end of this tactical action."
+          "description": "After a player activates a system, choose 1 unit on the game board; apply +2 to that unit's Capacity value, if it has one, until the end of this tactical action."
         },
         {
           "id": "toldar_virt",
@@ -6004,7 +6004,7 @@
         {
           "id": "toldar_pn",
           "name": "Concordat Allegiant",
-          "description": "ACTION: Place this card face up in your play area. Once per action, when you win a combat against a player with more victory points than you, gain 3 commodities. If you activate a system that contains 1 or more of the Toldar player's units, pyrge 1 command token from your reinforcements and return this card to that player."
+          "description": "ACTION: Place this card face up in your play area. Once per action, when you win a combat against a player with more victory points than you, gain 3 commodities. If you activate a system that contains 1 or more of the Toldar player's units, purge 1 command token from your reinforcements and return this card to that player."
         }
       ],
       "flagship": [
@@ -6016,7 +6016,7 @@
           "move": 1,
           "capacity": 3,
           "abilities": ["Sustain Damage"],
-          "description": "Other player must spend 1 command token from their command sheet to remove a command token from this system."
+          "description": "Other players must spend 1 command token from their command sheet to remove a command token from this system."
         }
       ],
       "mech": [

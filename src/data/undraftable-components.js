@@ -55,7 +55,7 @@ export const undraftableComponents = {
     { name: "Fine Print", faction: "The Vaden Banking Clans", triggerComponent: "Putriv Sirvonsk - Clanmaster Prime", type: "gain_extra" },
     { name: "Binding Debts", faction: "The Vaden Banking Clans", triggerComponent: "Putriv Sirvonsk - Clanmaster Prime", type: "gain_extra" },
     { name: "Holding Company", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
-    { name: "Targeted Aquisition", faction: "The Veldyr Sovereignty", reason: "Just Plain Garbage", type: "garbage" },
+    { name: "Targeted Acquisition", faction: "The Veldyr Sovereignty", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Biophobic", faction: "The Zelian Purifier", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Paranoia", faction: "The Zelian Purifier", triggerComponent: "Zelian Home System", type: "gain_extra" },
     { name: "Ancient Blueprints", faction: "The Bentor Conglomerate", triggerComponent: "C.O.O. Mgur - Deft Tradesperson", type: "gain_extra" },
@@ -79,8 +79,8 @@ export const undraftableComponents = {
     { name: "Ancient Empire", faction: "Pharad'n Order", triggerComponent: "Immortal II", type: "gain_extra" },
     { name: "Mark of Pharad'n", faction: "Pharad'n Order", triggerComponent: "Immortal II", type: "gain_extra" },
     { name: "Black Ops", faction: "Qhet Republic", triggerComponent: "Data Recovery", type: "gain_extra" },
-    { name: "Pride", faction: "Toldar Concordat", triggerComponent: "Honor_Bound", type: "gain_extra" },
-    { name: "The Code", faction: "Toldar Concordat", triggerComponent: "Honor_Bound", type: "gain_extra" },
+    { name: "Pride", faction: "Toldar Concordat", triggerComponent: "Honor-Bound", type: "gain_extra" },
+    { name: "The Code", faction: "Toldar Concordat", triggerComponent: "Honor-Bound", type: "gain_extra" },
     { name: "The Starlit Path", faction: "Uydai Conclave", triggerComponent: "Prescience", type: "gain_extra" },
     { name: "Narrow Way", faction: "Uydai Conclave", triggerComponent: "Prescience", type: "gain_extra" }
   ],
@@ -112,7 +112,7 @@ export const undraftableComponents = {
     { name: "Malevolency", faction: "The Obsidian", triggerComponent: "Black Ops", type: "gain_extra" },
     //DS
     { name: "Read the Fates", faction: "The Augurs of Ilyxum", triggerComponent: "Oracle AI", type: "optional_swap" },
-    { name: "Branch Office - Tax haven", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
+    { name: "Branch Office - Tax Haven", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
     { name: "Branch Office - Broadcast Hub", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
     { name: "Branch Office - Reserve Bank", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
     { name: "Branch Office - Orbital Shipyard", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
@@ -143,8 +143,8 @@ export const undraftableComponents = {
     { name: "Suffi An", faction: "The Mentak Coalition", triggerComponent: "Pillage", type: "optional_swap" },
     { name: "Doctor Carrina", faction: "The Deepwrought Scholarate", triggerComponent: "Oceanbound", type: "optional_swap" },
     { name: "Dame Briar", faction: "Last Bastion", triggerComponent: "Phoenix Standard", type: "optional_swap" },
-    { name: "Myrus Voss", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
-    { name: "Voss Hollow", faction: "The Obsidian", triggerComponent: "Myru Voss", type: "gain_extra" },
+    { name: "Myru Vos", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
+    { name: "Vos Hollow", faction: "The Obsidian", triggerComponent: "Myru Vos", type: "gain_extra" },
     //DS
     { name: "Lactarius Indigo - Omen Caller", faction: "The Myko-Mentori", triggerComponent: "Prescient Memories", type: "optional_swap" },
     { name: "Merkismathr Asvand - Marshal of Trade", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
@@ -227,8 +227,8 @@ export const undraftableComponents = {
     { name: "Hil Colish", faction: "The Ghosts of Creuss", triggerComponent: "any component w/ delta WH", type: "optional_swap" },
     { name: "Quietus", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "optional_swap" },
     { name: "D.W.S. Luminous", faction: "The Deepwrought Scholarate", triggerComponent: "Oceanbound", type: "optional_swap" },
-    { name: "Heavan's Eye", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
-    { name: "Heavan's Hollow", faction: "The Obsidian", triggerComponent: "Heaven's Eye", type: "gain_extra" },
+    { name: "Heaven's Eye", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
+    { name: "Heaven's Hollow", faction: "The Obsidian", triggerComponent: "Heaven's Eye", type: "gain_extra" },
     //DS
     { name: "Hulgade's Hammer", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
     { name: "All Mother", faction: "The Ghoti Wayfarers", triggerComponent: "Ghoti Starting Fleet", type: "draftable_and_swap" }
