@@ -51,14 +51,16 @@ export const undraftableComponents = {
     { name: "Orbital Foundries", faction: "Roh-Dhna Mechatronics", triggerComponent: "Terrafactory II", type: "gain_extra" },
     { name: "Stealth Insertion", faction: "The Tnelis Syndicate", triggerComponent: "Daedalon", type: "gain_extra" },
     { name: "Fine Print", faction: "The Vaden Banking Clans", triggerComponent: "Collateralized Loans", type: "gain_extra" },
-    { name: "Fine Print", faction: "The Vaden Banking Clans", triggerComponent: "Komdar Borodin", type: "gain_extra" },
-    { name: "Fine Print", faction: "The Vaden Banking Clans", triggerComponent: "Acula Network", type: "gain_extra" },
-    { name: "Binding Debts", faction: "The Vaden Banking Clans", triggerComponent: "Acula Network", type: "gain_extra" },
+    { name: "Fine Print", faction: "The Vaden Banking Clans", triggerComponent: "Komdar Borodin - Banker", type: "gain_extra" },
+    { name: "Fine Print", faction: "The Vaden Banking Clans", triggerComponent: "Putriv Sirvonsk - Clanmaster Prime", type: "gain_extra" },
+    { name: "Binding Debts", faction: "The Vaden Banking Clans", triggerComponent: "Putriv Sirvonsk - Clanmaster Prime", type: "gain_extra" },
     { name: "Holding Company", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
     { name: "Targeted Aquisition", faction: "The Veldyr Sovereignty", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Biophobic", faction: "The Zelian Purifier", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Paranoia", faction: "The Zelian Purifier", triggerComponent: "Zelian Home System", type: "gain_extra" },
     { name: "Ancient Blueprints", faction: "The Bentor Conglomerate", triggerComponent: "C.O.O. Mgur - Deft Tradesperson", type: "gain_extra" },
+    { name: "Ancient Blueprints", faction: "The Bentor Conglomerate", triggerComponent: "Wayfinder", type: "gain_extra" },
+    { name: "Ancient Blueprints", faction: "The Bentor Conglomerate", triggerComponent: "Auctioneer", type: "gain_extra" },
     { name: "Byssus", faction: "The Cheiran Hordes", triggerComponent: "Operator Kkavras - Subspace Grapple", type: "gain_extra" },
     { name: "Decree", faction: "The Edyn Mandate", triggerComponent: "Rune Bearer", type: "optional_swap" },
     { name: "Radiance", faction: "The Edyn Mandate", triggerComponent: "Rune Bearer", type: "optional_swap" },
@@ -66,7 +68,7 @@ export const undraftableComponents = {
     { name: "Abyssal Embrace", faction: "The Ghoti Wayfarers", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Celestial Reclamation", faction: "The GLEdge Union", triggerComponent: "Mantle Cracking", type: "gain_extra" },
     { name: "Heroism", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
-    { name: "Valor", faction: "The Berserkers of Kjalengard", triggerComponent: "GLory", type: "gain_extra" },
+    { name: "Valor", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "gain_extra" },
     { name: "Plague Reservoir", faction: "The Kyro Sodality", triggerComponent: "Contagion", type: "gain_extra" },
     { name: "Subversive", faction: "The Kyro Sodality", triggerComponent: "Contagion", type: "gain_extra" },
     { name: "A New Edifice", faction: "The Lanefir Remnants", reason: "Just Plain Garbage", type: "garbage" },
@@ -113,7 +115,8 @@ export const undraftableComponents = {
     { name: "Branch Office - Tax haven", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
     { name: "Branch Office - Broadcast Hub", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
     { name: "Branch Office - Reserve Bank", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
-    { name: "Branch Office - Orbital Shipyard", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" }
+    { name: "Branch Office - Orbital Shipyard", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
+    { name: "Parallel Production", faction: "The Ghoti Wayfarers", triggerComponent: "Secrets of the Weave", type: "gain_extra" }
   ],
 
   // Faction techs
@@ -143,7 +146,7 @@ export const undraftableComponents = {
     { name: "Myrus Voss", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
     { name: "Voss Hollow", faction: "The Obsidian", triggerComponent: "Myru Voss", type: "gain_extra" },
     //DS
-    { name: "Lactarius Indigo", faction: "The Myko-Mentori", triggerComponent: "Prescient Memories", type: "optional_swap" },
+    { name: "Lactarius Indigo - Omen Caller", faction: "The Myko-Mentori", triggerComponent: "Prescient Memories", type: "optional_swap" },
     { name: "Merkismathr Asvand - Marshal of Trade", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
     //BR
     { name: "Magruda - Orator", faction: "Atokera Legacy", triggerComponent: "Ordagka - Maker", type: "optional_swap" },
@@ -155,18 +158,18 @@ export const undraftableComponents = {
     { name: "Il Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
     { name: "That Which Molds Flesh", faction: "The Vuil'Raith Cabal", triggerComponent: "Dimensional Tear II", type: "optional_swap" },
     { name: "Ahk Siever", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "optional_swap" },
-    { name: "Aello", faction: "The Deepwrought Scholarate", triggerComponent: "optional_swap", type: "" },
+    { name: "Aello", faction: "The Deepwrought Scholarate", triggerComponent: "Oceanbound", type: "optional_swap" },
     { name: "Nip and Tuck", faction: "Last Bastion", triggerComponent: "Phoenix Standard", type: "optiona_swap" },
     { name: "Captain Aroz", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
     { name: "Aroz Hollow", faction: "The Obsidian", triggerComponent: "Captain Aroz", type: "gain_extra" },
     //DS
-    { name: "Designer TckVsk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
+    { name: "Designer TckVsk - Dilligent Retro-Engineer", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
     { name: "Jarl Vel & Jarl Jotrun - Raid Leaders", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
-    { name: "Dhume Tathu", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
-    { name: "Vera Khage", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "optional_swap" },
+    { name: "Dhume Tathu - Ruthless Strategist", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
+    { name: "Vera Khage - Chief Legal Officer", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "optional_swap" },
     { name: "C.M.O. Ranc - Marketing Guru", faction: "The Bentor Conglomerate", triggerComponent: "C.O.O. Mgur - Deft Tradesperson", type: "optional_swap" },
     { name: "Sdallari Tvungovot - Marshal Engineer", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
-    { name: "Jack Hallard", faction: "The Nokar Sellships", triggerComponent: "Hired Guns", type: "optional_swap" },
+    { name: "Jack Hallard - The Commodore", faction: "The Nokar Sellships", triggerComponent: "Hired Guns", type: "optional_swap" },
     //BR
     { name: "Ciphus Gault - Mercenary Demon", faction: "Belkosea Allied States", triggerComponent: "Classified Developments", type: "optional_swap" },
     { name: "Avhkan - The Crow", faction: "Pharad'n Order", triggerComponent: "Immortal II", type: "optional_swap" },
@@ -180,14 +183,14 @@ export const undraftableComponents = {
     { name: "Sharsiss", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
     { name: "Sharsiss Hollow", faction: "The Obsidian", triggerComponent: "Sharsiss", type: "gain_extra" },
     //DS
-    { name: "Demi-Queen Mdcksssk", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
+    { name: "Demi-Queen Mdcksssk - Commissioner of Profits", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "optional_swap" },
     { name: "Korela - The Lady", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
     { name: "Kantrus - The Lord", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "optional_swap" },
     { name: "Atropha - Weaver", faction: "The Augurs of Ilyxum", triggerComponent: "Oracle AI", type: "optional_swap" },
-    { name: "Khaz-Rin Li", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
-    { name: "Singularity Cradle", faction: "The Nivyn Star Kings", triggerComponent: "Voidflare Warden II", type: "optional_swap" },
-    { name: "Shadow Council", faction: "The Olradin League", triggerComponent: "Policies", type: "optional_swap" },
-    { name: "Auberon Elyrin", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "optional_swap" },
+    { name: "Khaz-Rin Li-Zho - Empress", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
+    { name: "Krill Drakkon - Star-Crowned King", faction: "The Nivyn Star Kings", triggerComponent: "Voidflare Warden II", type: "optional_swap" },
+    { name: "Pahn Silverfur - Council Speaker", faction: "The Olradin League", triggerComponent: "Policies", type: "optional_swap" },
+    { name: "Auberon Elyrin - Chairman", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "optional_swap" },
     { name: "Ygegnad The Thunder - Honorary Skald", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
     //BR
     { name: "Pharad'n the Immortal", faction: "Pharad'n Order", triggerComponent: "Immortal II", type: "optional_swap" }
@@ -211,8 +214,8 @@ export const undraftableComponents = {
     { name: "Liberator", faction: "The Free Systems Compact", triggerComponent: "Rally to the Cause", type: "optional_swap" },
     { name: "Oro-Zhin Elite", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap" },
     { name: "Exemplar", faction: "The Olradin League", triggerComponent: "Policies", type: "optional_swap" },
-    { name: "Autofabricator", faction: "Roh'Dhna Mechatronics", triggerComponent: "Recycled Materials", type: "optional_swap" },
-    { name: "The Collector", faction: "The Vaden Banking Clans", triggerComponent: "Acula Network", type: "optional_swap" },
+    { name: "Autofabricator", faction: "The Roh'Dhna Mechatronics", triggerComponent: "Recycled Materials", type: "optional_swap" },
+    { name: "Collector", faction: "The Vaden Banking Clans", triggerComponent: "Putriv Sirvonsk - Clanmaster Prime", type: "optional_swap" },
     { name: "Skald", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
     //BR
     { name: "Paladin", faction: "Toldar Concordat", triggerComponent: "Honor-Bound", type: "optional_swap" }
@@ -262,7 +265,7 @@ export const undraftableComponents = {
     { name: "Gauss Cannon I", faction: "The Mirveda Protectorate", type: "base_unit" },
     { name: "Mycelium Ring I", faction: "The Myko-Mentori", type: "base_unit" },
     { name: "Voidflare Warden I", faction: "The Nivyn Star Kings", type: "base_unit" },
-    { name: "Terrafactory I", faction: "Roh'Dhna Mechatronics", type: "base_unit" },
+    { name: "Terrafactory I", faction: "The Roh'Dhna Mechatronics", type: "base_unit" },
     { name: "Blockade Runner I", faction: "The Tnelis Syndicate", type: "base_unit" },
     { name: "Raider I", faction: "The Vaylerian Scourge", type: "base_unit" },
     { name: "Lancer Dreadnought I", faction: "The Veldyr Sovereignty", type: "base_unit" },
@@ -287,7 +290,7 @@ export const undraftableComponents = {
   //Starting Fleets
   starting_fleets: [
     //DS
-    { name: "L'tokk Khrask Starting Fleet", faction: "L'tokk Khrask", triggerComponent: "Shattered Sky II", type: "optional_swap" }
+    { name: "L'tokk Khrask Starting Fleet", faction: "The L'tokk Khrask", triggerComponent: "Shattered Sky II", type: "optional_swap" }
   ],
   
   //Commodities
@@ -301,6 +304,18 @@ export const undraftableComponents = {
   breakthrough: [
     // Base + PoK + TE
     { name: "The Reaping", faction: "The Obsidian", triggerComponent: "The Sowing", type: "gain_extra" },
+    //DS
+    { name: "Professional Intrigue", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap"},
+    { name: "Mended Grove", faction: "The L'tokk Khrask", triggerComponent: "Meteor Slings", type: "optional_swap"},
+    { name: "Stabilization Arrays", faction: "The Mirveda Protectorate", triggerComponent: "Gauss Cannon II", type: "gain_extra"},
+    { name: "Dreamwalkers", faction: "The Myko-Mentori", triggerComponent: "Mycelium-Ring II", type: "gain_extra"},
+    { name: "Anomaly Stabilization", faction: "The Nivyn Star Kings", triggerComponent: "Voidflare Warden I", type: "gain_extra"},
+    { name: "Insurrectionist Networking", faction: "The Olradin League", triggerComponent: "Policies", type: "optional_swap"},
+    { name: "The Prodigy's Triumph", faction: "The Roh-Dhna Mechatronics", triggerComponent: "Terrafactory II", type: "optional_swap"},
+    { name: "Strongarm Banking", faction: "The Vaden Banking Clans", triggerComponent: "Putriv Sirvonsk - Clanmaster Prime", type: "optional_swap"},
+    { name: "Dhonraz Installations", faction: "The GLEdge Union", triggerComponent: "Mantle Cracking", type: "optional_swap"},
+    { name: "Bannerhalls", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap"},
+    { name: "Mercenary Captains", faction: "The Nokar Sellships", triggerComponent: "Hired Guns", type: "gain_extra"},
     //BR
     { name: "Trinity Stockpile", faction: "Belkosea Allied States", triggerComponent: "Classified Developments", type: "optional_swap" },
     { name: "Hidden Vaults", faction: "Pharad'n Order", triggerComponent: "Immortal II", type: "optional_swap" },
