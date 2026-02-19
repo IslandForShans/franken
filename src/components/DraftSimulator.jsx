@@ -11,6 +11,9 @@ import { isComponentUndraftable, getSwapOptionsForTrigger, getExtraComponents } 
 import BanManagementModal from "./BanManagementModal.jsx";
 import { executeSwap } from "../utils/swapUtils.js";
 import FrankenDrazBuilder from "./FrankenDrazBuilder.jsx";
+import { useWebRTCMultiplayer } from '../hooks/useWebRTCMultiplayer';
+import MultiplayerPanel from './MultiplayerPanel';
+import MultiplayerGuestView from './MultiplayerGuestView';
 
 // PERFORMANCE: Define constants outside component to avoid recreation on every render
 const baseFactionLimits = {
@@ -56,6 +59,26 @@ export default function DraftSimulator({ onNavigate }) {
   const [pendingPicks, setPendingPicks] = useState([]);
   const [isPickingPhase, setIsPickingPhase] = useState(true);
   const [pendingSwaps, setPendingSwaps] = useState([]);
+
+  // ─── MULTIPLAYER ────────────────────────────────────────────────────────────
+const mpCollectedPicks = useRef({});
+const mpCollectedFactions = useRef({});
+const onPeerMessageRef = useRef(null);
+const mpBroadcastedStart = useRef(false);
+const [mpGuestState, setMpGuestState] = useState(null);
+
+const multiplayer = useWebRTCMultiplayer({
+  onStateReceived: (state) => setMpGuestState(state),
+  onPeerMessage: (slotId, msg) => onPeerMessageRef.current?.(slotId, msg),
+});
+
+const { role: mpRole, broadcastState, sendToHost } = multiplayer;
+const isMultiplayerHost = mpRole === 'host';
+const isMultiplayerGuest = mpRole === 'guest';
+const myPlayerIndex = multiplayer.mySlotId
+  ? parseInt(multiplayer.mySlotId.replace('player_', ''), 10) - 1
+  : 0;
+// ────────────────────────────────────────────────────────────────────────────
 
   // Ban system
   const [bannedFactions, setBannedFactions] = useState(new Set());
@@ -154,6 +177,20 @@ export default function DraftSimulator({ onNavigate }) {
       setSidebarCollapsed(true);
     }
   }, [showSidebar]);
+
+  // Broadcast to guests once the draft starts and bags are populated
+useEffect(() => {
+  if (draftStarted && isMultiplayerHost && !mpBroadcastedStart.current && playerBags.length > 0) {
+    mpBroadcastedStart.current = true;
+    broadcastState({
+      factions, playerBags, round, draftPhase, draftStarted: true,
+      draftVariant, firstRoundPickCount, subsequentRoundPickCount,
+      playerCount, categories, draftLimits, draftHistory, pendingSwaps, expansionsEnabled,
+    });
+  }
+  if (!draftStarted) mpBroadcastedStart.current = false;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [draftStarted, playerBags.length, isMultiplayerHost]);
 
   // PERFORMANCE: Memoize getFilteredComponents with useCallback
   const getFilteredComponents = useCallback((category, effectivePlayerCount = playerCount) => {
@@ -651,6 +688,25 @@ export default function DraftSimulator({ onNavigate }) {
   }, []);
 
   const handleSubmitPicks = () => {
+    // ── MULTIPLAYER HOST: collect and wait for all guests ──
+  if (isMultiplayerHost) {
+    const maxPicks = getMaxPicksForRound();
+    if (draftVariant === 'rotisserie') {
+      if (pendingPicks.length !== 1) { alert('You must pick exactly 1 component.'); return; }
+    } else {
+      if (pendingPicks.length < maxPicks) {
+        alert(`You must pick ${maxPicks} component${maxPicks !== 1 ? 's' : ''} this round.`);
+        return;
+      }
+    }
+    const picksSnapshot = [...pendingPicks];
+    setPendingPicks([]);
+    setIsPickingPhase(false);
+    mpCheckAndApplyAllPicks(0, picksSnapshot);
+    return;
+  }
+  // ── END MULTIPLAYER HOST ──
+
     const maxPicks = getMaxPicksForRound();
     
     if (draftVariant === "rotisserie") {
@@ -1077,6 +1133,212 @@ setTimeout(() => {
     return baseFactionLimits;
   }, [draftVariant, frankenDrazSettings.blueTilesPerBag, frankenDrazSettings.redTilesPerBag]);
 
+  // ─── MULTIPLAYER FUNCTIONS ───────────────────────────────────────────────────
+
+// Collect triggered swaps across all factions
+const collectAllSwaps = (factionList) => {
+  const allSwaps = [];
+  factionList.forEach((faction, playerIdx) => {
+    categories.forEach(cat => {
+      (faction[cat] || []).forEach((item, itemIdx) => {
+        const triggered = getSwapOptionsForTrigger(item.name, item.faction);
+        if (triggered?.length > 0) {
+          triggered.forEach(swap => allSwaps.push({
+            playerIndex: playerIdx, triggerComponent: item,
+            triggerCategory: cat, triggerIndex: itemIdx, swapOption: swap,
+          }));
+        }
+      });
+    });
+  });
+  return allSwaps;
+};
+
+// Build a full broadcast payload, allowing specific fields to be overridden
+const buildBroadcastPayload = (overrides = {}) => ({
+  factions, playerBags, round, draftPhase, draftStarted: true,
+  draftVariant, firstRoundPickCount, subsequentRoundPickCount,
+  playerCount, categories, draftLimits, draftHistory, pendingSwaps, expansionsEnabled,
+  ...overrides,
+});
+
+// Called when all players have submitted picks for a round
+const mpCheckAndApplyAllPicks = (incomingPlayerIndex, incomingPicks) => {
+  mpCollectedPicks.current[incomingPlayerIndex] = incomingPicks;
+  if (Object.keys(mpCollectedPicks.current).length < playerCount) return;
+
+  const collected = { ...mpCollectedPicks.current };
+  mpCollectedPicks.current = {};
+
+  // Apply all picks to factions and remove from bags
+  const newFactions = factions.map(f => ({ ...f }));
+  const newBags = playerBags.map(b => ({ ...b }));
+  const newHistory = [...draftHistory];
+
+  Object.entries(collected).forEach(([piStr, picks]) => {
+    const pi = parseInt(piStr, 10);
+    picks.forEach(({ category, component }) => {
+      newFactions[pi][category] = [...(newFactions[pi][category] || []), component];
+      const compId = component.id || component.name;
+      newBags[pi] = { ...newBags[pi] };
+      newBags[pi][category] = (newBags[pi][category] || []).filter(c => (c.id || c.name) !== compId);
+      newHistory.push({ playerIndex: pi, category, item: component, round, componentId: compId });
+    });
+  });
+
+  // Rotate bags (last bag moves to front)
+  const rotatedBags = newBags.length > 1
+    ? [newBags[newBags.length - 1], ...newBags.slice(0, newBags.length - 1)]
+    : newBags;
+
+  const newRound = round + 1;
+
+  // FrankenDraz: check if all bags are empty → go to build phase
+  if (draftVariant === 'frankendraz') {
+    const allEmpty = rotatedBags.every(bag =>
+      (!bag.factions || bag.factions.length === 0) &&
+      (!bag.blue_tiles || bag.blue_tiles.length === 0) &&
+      (!bag.red_tiles || bag.red_tiles.length === 0)
+    );
+    if (allEmpty) {
+      setFactions(newFactions);
+      setPlayerBags(rotatedBags);
+      setDraftHistory(newHistory);
+      setDraftPhase('build');
+      setPendingPicks([]);
+      setIsPickingPhase(true);
+      broadcastState(buildBroadcastPayload({
+        factions: newFactions, playerBags: rotatedBags,
+        round: newRound, draftPhase: 'build', draftHistory: newHistory,
+      }));
+      return;
+    }
+  }
+
+  // Standard: check if all players have met their draft limits
+  const allLimitsMet = newFactions.every(faction =>
+    categories.every(cat => (faction[cat]?.length || 0) >= (draftLimits[cat] || 0))
+  );
+
+  if (allLimitsMet) {
+    const factionLimits = getCurrentFactionLimits();
+    const needsReduction = newFactions.some(faction =>
+      categories.some(cat => (faction[cat]?.length || 0) > (factionLimits[cat] ?? Infinity))
+    );
+
+    setFactions(newFactions);
+    setPlayerBags(rotatedBags);
+    setDraftHistory(newHistory);
+    setPendingPicks([]);
+    setIsPickingPhase(true);
+
+    if (needsReduction) {
+      setDraftPhase('reduction');
+      broadcastState(buildBroadcastPayload({
+        factions: newFactions, playerBags: rotatedBags,
+        round: newRound, draftPhase: 'reduction', draftHistory: newHistory,
+      }));
+    } else {
+      const allSwaps = collectAllSwaps(newFactions);
+      if (allSwaps.length > 0) {
+        setPendingSwaps(allSwaps);
+        setDraftPhase('swap');
+        broadcastState(buildBroadcastPayload({
+          factions: newFactions, playerBags: rotatedBags,
+          round: newRound, draftPhase: 'swap', pendingSwaps: allSwaps, draftHistory: newHistory,
+        }));
+      } else {
+        const withExtras = addAllExtraComponents(newFactions);
+        setFactions(withExtras);
+        setDraftPhase('complete');
+        broadcastState(buildBroadcastPayload({
+          factions: withExtras, playerBags: rotatedBags,
+          round: newRound, draftPhase: 'complete', draftHistory: newHistory,
+        }));
+      }
+    }
+    return;
+  }
+
+  // Continue drafting
+  setFactions(newFactions);
+  setPlayerBags(rotatedBags);
+  setRound(newRound);
+  setDraftHistory(newHistory);
+  setPendingPicks([]);
+  setIsPickingPhase(true);
+  broadcastState(buildBroadcastPayload({
+    factions: newFactions, playerBags: rotatedBags,
+    round: newRound, draftPhase: 'draft', draftHistory: newHistory,
+  }));
+};
+
+// Called when all players have submitted their faction for a non-draft phase
+const mpCheckAndApplyAllFactions = (phase) => {
+  if (Object.keys(mpCollectedFactions.current).length < playerCount) return;
+
+  const collected = { ...mpCollectedFactions.current };
+  mpCollectedFactions.current = {};
+
+  // Merge: prefer collected version, fall back to existing
+  const merged = factions.map((f, i) => collected[i] ? { ...collected[i] } : { ...f });
+  const factionLimits = getCurrentFactionLimits();
+
+  if (phase === 'reduction') {
+    const allSwaps = collectAllSwaps(merged);
+    if (allSwaps.length > 0) {
+      setFactions(merged);
+      setPendingSwaps(allSwaps);
+      setDraftPhase('swap');
+      broadcastState(buildBroadcastPayload({ factions: merged, draftPhase: 'swap', pendingSwaps: allSwaps }));
+    } else {
+      const withExtras = addAllExtraComponents(merged);
+      setFactions(withExtras);
+      setDraftPhase('complete');
+      broadcastState(buildBroadcastPayload({ factions: withExtras, draftPhase: 'complete', pendingSwaps: [] }));
+    }
+  } else if (phase === 'swap') {
+    const withExtras = addAllExtraComponents(merged);
+    setFactions(withExtras);
+    setDraftPhase('complete');
+    broadcastState(buildBroadcastPayload({ factions: withExtras, draftPhase: 'complete', pendingSwaps: [] }));
+  } else if (phase === 'build') {
+    // Strip the drafted factions pool (same as handleCompleteBuildPhase)
+    const cleaned = merged.map(faction => {
+      const { factions: _, ...rest } = faction;
+      return rest;
+    });
+    const needsReduction = cleaned.some(faction =>
+      categories.some(cat => (faction[cat]?.length || 0) > (factionLimits[cat] ?? Infinity))
+    );
+    setFactions(cleaned);
+    if (needsReduction) {
+      setDraftPhase('reduction');
+      broadcastState(buildBroadcastPayload({ factions: cleaned, draftPhase: 'reduction' }));
+    } else {
+      const allSwaps = collectAllSwaps(cleaned);
+      if (allSwaps.length > 0) {
+        setPendingSwaps(allSwaps);
+        setDraftPhase('swap');
+        broadcastState(buildBroadcastPayload({ factions: cleaned, draftPhase: 'swap', pendingSwaps: allSwaps }));
+      } else {
+        const withExtras = addAllExtraComponents(cleaned);
+        setFactions(withExtras);
+        setDraftPhase('complete');
+        broadcastState(buildBroadcastPayload({ factions: withExtras, draftPhase: 'complete', pendingSwaps: [] }));
+      }
+    }
+  }
+};
+
+// Host submits their own faction (index 0) for a phase
+const handleHostFactionSubmit = (phase) => {
+  mpCollectedFactions.current[0] = factions[0];
+  mpCheckAndApplyAllFactions(phase);
+};
+
+// ────────────────────────────────────────────────────────────────────────────
+
 const handleSwap = (playerIndex, swapCategory, componentIndex, swapOption, triggerComponent) => {
   const { updatedFactions, swapComponent } = executeSwap({
     factions,
@@ -1450,7 +1712,28 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
     );
   };
 
+  onPeerMessageRef.current = (slotId, msg) => {
+    if (msg.type === 'PICK') {
+      const { playerIndex, picks } = msg;
+      mpCheckAndApplyAllPicks(playerIndex, picks);
+    }
+    if (msg.type === 'FACTION_UPDATE') {
+      const { playerIndex, faction, phase } = msg;
+      mpCollectedFactions.current[playerIndex] = faction;
+      mpCheckAndApplyAllFactions(phase);
+    }
+  };
+
   return (
+    isMultiplayerGuest ? (
+      <MultiplayerGuestView
+        mpState={mpGuestState}
+        myPlayerIndex={myPlayerIndex}
+        onSubmitPicks={(picks) => sendToHost({ type: 'PICK', playerIndex: myPlayerIndex, picks })}
+        onSubmitFaction={(faction, phase) => sendToHost({ type: 'FACTION_UPDATE', playerIndex: myPlayerIndex, faction, phase })}
+        onNavigate={onNavigate}
+      />
+    ) : ( 
     <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black">
   <div className="flex min-h-[100dvh]">
         {showSidebar && (
@@ -1724,6 +2007,7 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
             frankenDrazSettings={frankenDrazSettings}
             setFrankenDrazSettings={setFrankenDrazSettings}
           />
+          <MultiplayerPanel playerCount={playerCount} multiplayer={multiplayer} />
         </>
       )}
 
@@ -1751,125 +2035,134 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
         />
       );
    } else if (draftStarted && draftPhase === "build") {
-      console.log("Rendering build phase");
-      return (
-        <>
-          <div className="mb-4 p-4 bg-purple-900/30 rounded-lg border border-purple-600">
-            <h3 className="font-bold text-purple-400 text-lg mb-2">Build Phase</h3>
-            <p className="text-purple-300 text-sm mb-2">
-              Build your factions from the components you drafted. Click on components to add them to your build.
-            </p>
-            <p className="text-purple-300 text-sm mb-3">
-              You must stay within the standard faction limits. Your drafted blue and red tiles are already included.
-            </p>
-            <button
-              onClick={handleCompleteBuildPhase}
-              className="mt-2 px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-bold transition-colors shadow-lg"
-            >
-              Complete Build Phase & Continue
-            </button>
-          </div>
-          
-          <div className="space-y-6">
-            {factions.map((f, i) => (
-              <FrankenDrazBuilder
-                key={i}
-                playerIndex={i}
-                draftedItems={f}
-                builtFaction={f}
-                onAddComponent={(category, component) => handleAddComponentToBuild(i, category, component)}
-                onRemoveComponent={(category, index) => handleRemoveComponentFromBuild(i, category, index)}
-                factionLimits={getCurrentFactionLimits()}
-                expansionsEnabled={expansionsEnabled}
-                activeCategories={categories}
-                bannedComponents={bannedComponents}
-              />
-            ))}
-          </div>
-        </>
-      );
-    } else if (draftStarted && draftPhase === "reduction") {
-      console.log("Rendering reduction phase for", factions.length, "factions");
-      return (
-        <>
-          <div className="mb-4 p-4 bg-orange-900/30 rounded-lg border border-orange-600">
-            <h3 className="font-bold text-orange-400 text-lg mb-2">Reduction Phase</h3>
-            <p className="text-orange-300 text-sm">
-              Remove excess components from each faction to meet the faction limits. Click any component to remove it.
-            </p>
-          </div>
-          {factions.map((f, i) => {
-            console.log(`Rendering faction ${i}:`, f.name);
-            return (
-              <FactionSheet
-                key={i}
-                drafted={f}
-                onRemove={(cat, idx) => {
-                  console.log(`onRemove called for player ${i}, category ${cat}, index ${idx}`);
-                  handleReduction(i, cat, idx);
-                }}
-                onSwapComponent={(playerIdx, category, componentIdx, swapOption, triggerComponent) => 
-                  handleSwap(playerIdx, category, componentIdx, swapOption, triggerComponent)
-                }
-                draftLimits={getCurrentFactionLimits()}
-                title={`Player ${i + 1} - Remove Excess Components`}
-                showReductionHelper={true}
-                showRemoveButton={true}
-                playerIndex={i}
-              />
-            );
-          })}
-        </>
-      );
-    } else if (draftStarted && draftPhase === "swap") {
-    console.log("Rendering swap phase");
-    return (
-      <>
-        <div className="mb-4 p-4 bg-blue-900/30 rounded-lg border border-blue-600">
-          <h3 className="font-bold text-blue-400 text-lg mb-2">Swap Phase</h3>
-          <p className="text-blue-300 text-sm">
-            Review available component swaps. You can choose to swap components or refuse the swap.
-          </p>
-          <p className="text-blue-300 text-sm mt-2">
-            Pending swaps: {pendingSwaps.length}
-          </p>
-        </div>
-        {factions.map((f, i) => {
-          const playerSwaps = pendingSwaps.filter(s => s.playerIndex === i);
-          console.log(`Rendering faction ${i} with ${playerSwaps.length} swaps:`, f.name);
+  const visibleFactions = isMultiplayerHost ? [factions[0]] : factions;
+  return (
+    <>
+      <div className="mb-4 p-4 bg-purple-900/30 rounded-lg border border-purple-600">
+        <h3 className="font-bold text-purple-400 text-lg mb-2">Build Phase</h3>
+        <p className="text-purple-300 text-sm mb-2">
+          Build your factions from the components you drafted. Click on components to add them to your build.
+        </p>
+        <p className="text-purple-300 text-sm mb-3">
+          You must stay within the standard faction limits. Your drafted blue and red tiles are already included.
+        </p>
+        <button
+          onClick={isMultiplayerHost ? () => handleHostFactionSubmit('build') : handleCompleteBuildPhase}
+          className="mt-2 px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-bold transition-colors shadow-lg"
+        >
+          {isMultiplayerHost ? 'Complete My Build' : 'Complete Build Phase & Continue'}
+        </button>
+      </div>
+      <div className="space-y-6">
+        {visibleFactions.map((f, i) => {
+          const actualIndex = isMultiplayerHost ? 0 : i;
           return (
-            <FactionSheet
-              key={i}
-              drafted={f}
-              onRemove={() => {}}
-              onSwapComponent={(playerIdx, category, componentIdx, swapOption, triggerComponent) => 
-                handleSwap(playerIdx, category, componentIdx, swapOption, triggerComponent)
-              }
-              onRefuseSwap={(playerIdx, triggerComponent, swapOption) =>
-                handleRefuseSwap(playerIdx, triggerComponent, swapOption)
-              }
-              draftLimits={{}}
-              title={`Player ${i + 1} - Review Swaps`}
-              showSwapHelper={true}
-              availableSwaps={playerSwaps}
-              playerIndex={i}
+            <FrankenDrazBuilder
+              key={actualIndex}
+              playerIndex={actualIndex}
+              draftedItems={f}
+              builtFaction={f}
+              onAddComponent={(category, component) => handleAddComponentToBuild(actualIndex, category, component)}
+              onRemoveComponent={(category, index) => handleRemoveComponentFromBuild(actualIndex, category, index)}
+              factionLimits={getCurrentFactionLimits()}
+              expansionsEnabled={expansionsEnabled}
+              activeCategories={categories}
+              bannedComponents={bannedComponents}
             />
           );
         })}
-      </>
-    );
+      </div>
+    </>
+  );
+    } else if (draftStarted && draftPhase === "reduction") {
+  const visibleFactions = isMultiplayerHost ? [factions[0]] : factions;
+  return (
+    <>
+      <div className="mb-4 p-4 bg-orange-900/30 rounded-lg border border-orange-600">
+        <h3 className="font-bold text-orange-400 text-lg mb-2">Reduction Phase</h3>
+        <p className="text-orange-300 text-sm">
+          Remove excess components from each faction to meet the faction limits. Click any component to remove it.
+        </p>
+        {isMultiplayerHost && (
+          <button
+            onClick={() => handleHostFactionSubmit('reduction')}
+            className="mt-3 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-semibold transition-colors"
+          >
+            Done with Reductions
+          </button>
+        )}
+      </div>
+      {visibleFactions.map((f, i) => {
+        const actualIndex = isMultiplayerHost ? 0 : i;
+        return (
+          <FactionSheet
+            key={actualIndex}
+            drafted={f}
+            onRemove={(cat, idx) => handleReduction(actualIndex, cat, idx)}
+            onSwapComponent={(playerIdx, category, componentIdx, swapOption, triggerComponent) =>
+              handleSwap(actualIndex, category, componentIdx, swapOption, triggerComponent)}
+            draftLimits={getCurrentFactionLimits()}
+            title={isMultiplayerHost ? 'Your Faction — Remove Excess' : `Player ${actualIndex + 1} - Remove Excess Components`}
+            showReductionHelper={true}
+            showRemoveButton={true}
+            playerIndex={actualIndex}
+          />
+        );
+      })}
+    </>
+  );
+    } else if (draftStarted && draftPhase === "swap") {
+  const visibleFactions = isMultiplayerHost ? [factions[0]] : factions;
+  return (
+    <>
+      <div className="mb-4 p-4 bg-blue-900/30 rounded-lg border border-blue-600">
+        <h3 className="font-bold text-blue-400 text-lg mb-2">Swap Phase</h3>
+        <p className="text-blue-300 text-sm">
+          Review available component swaps. You can choose to swap components or refuse the swap.
+        </p>
+        {isMultiplayerHost && (
+          <button
+            onClick={() => handleHostFactionSubmit('swap')}
+            className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-semibold transition-colors"
+          >
+            Done with Swaps
+          </button>
+        )}
+      </div>
+      {visibleFactions.map((f, i) => {
+        const actualIndex = isMultiplayerHost ? 0 : i;
+        const playerSwaps = pendingSwaps.filter(s => s.playerIndex === actualIndex);
+        return (
+          <FactionSheet
+            key={actualIndex}
+            drafted={f}
+            onRemove={() => {}}
+            onSwapComponent={(playerIdx, category, componentIdx, swapOption, triggerComponent) =>
+              handleSwap(actualIndex, category, componentIdx, swapOption, triggerComponent)}
+            onRefuseSwap={(playerIdx, triggerComponent, swapOption) =>
+              handleRefuseSwap(actualIndex, triggerComponent, swapOption)}
+            draftLimits={{}}
+            title={isMultiplayerHost ? 'Your Faction — Review Swaps' : `Player ${actualIndex + 1} - Review Swaps`}
+            showSwapHelper={true}
+            availableSwaps={playerSwaps}
+            playerIndex={actualIndex}
+          />
+        );
+      })}
+    </>
+  );
   } else if (draftStarted && draftPhase === "complete") {
-      console.log("Rendering complete phase");
-      return (
-        <>
-          <div className="mb-4 p-6 bg-gradient-to-r from-green-900/40 to-blue-900/40 rounded-xl border-2 border-green-500 shadow-xl">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-4xl">🎉</span>
-              <h3 className="font-bold text-green-400 text-2xl">Draft Complete! Click 'Export Draft' before pressing 'Build Map' to save selections!</h3>
-            </div>
-            <p className="text-green-300 mb-4">
-              All factions have been finalized with extra components added. Review your custom factions below.
-            </p>
+  const visibleFactions = isMultiplayerHost ? [factions[0]] : factions;
+  return (
+    <>
+      <div className="mb-4 p-6 bg-gradient-to-r from-green-900/40 to-blue-900/40 rounded-xl border-2 border-green-500 shadow-xl">
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-4xl">🎉</span>
+          <h3 className="font-bold text-green-400 text-2xl">Draft Complete! Click 'Export Draft' before pressing 'Build Map' to save selections!</h3>
+        </div>
+        <p className="text-green-300 mb-4">
+          All factions have been finalized with extra components added. Review your custom factions below.
+        </p>
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => setShowSummary(true)}
@@ -1948,19 +2241,21 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
               </button>
             </div>
           </div>
-          
-          {factions.map((f, i) => (
-            <FactionSheet
-              key={i}
-              drafted={f}
-              onRemove={() => {}}
-              draftLimits={getCurrentFactionLimits()}
-              title={`${f.name} - Final Faction`}
-              playerIndex={i}
-            />
-          ))}
-        </>
-      );
+      {visibleFactions.map((f, i) => {
+        const actualIndex = isMultiplayerHost ? 0 : i;
+        return (
+          <FactionSheet
+            key={actualIndex}
+            drafted={f}
+            onRemove={() => {}}
+            draftLimits={getCurrentFactionLimits()}
+            title={`${f.name} - Final Faction`}
+            playerIndex={actualIndex}
+          />
+        );
+      })}
+    </>
+  );
     } else {
       console.log("Rendering default/waiting state");
       return factions.length > 0 ? (
@@ -1989,5 +2284,6 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
         </div>
       </div>
     </div>
+    )
   );
 }
