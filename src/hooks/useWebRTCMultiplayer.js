@@ -181,7 +181,7 @@ async function retrieveData(code) {
       await pc.setLocalDescription(answer);
       await waitForICE(pc);
 
-      return encode({ sdp: pc.localDescription, slotId });
+      return await storeData({ sdp: pc.localDescription, slotId });
     } catch (e) {
       setPhase('idle');
       setError(`Failed to join: ${e.message}`);
