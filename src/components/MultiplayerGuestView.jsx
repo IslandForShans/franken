@@ -12,6 +12,7 @@ export default function MultiplayerGuestView({
   onSubmitFaction,
   onNavigate,
 }) {
+  // ── ALL hooks at the top, unconditionally ────────────────────────────
   const [pendingPicks, setPendingPicks] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [phaseSubmitted, setPhaseSubmitted] = useState(false);
@@ -22,7 +23,6 @@ export default function MultiplayerGuestView({
   const prevPhaseRef = useRef(null);
   const prevRoundRef = useRef(null);
 
-  // Reset local state whenever the host broadcasts a new phase or round
   useEffect(() => {
     const newPhase = mpState?.draftPhase;
     const newRound = mpState?.round;
@@ -49,19 +49,7 @@ export default function MultiplayerGuestView({
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  // ── Waiting for host to start ────────────────────────────────────────
-  if (!mpState?.draftStarted) {
-    return (
-      <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
-        <div className="text-center text-gray-400">
-          <div className="text-4xl mb-4">⏳</div>
-          <div className="text-lg font-semibold">Waiting for host to start the draft...</div>
-          <div className="text-sm mt-2 text-gray-500">You are connected as Player {myPlayerIndex + 1}</div>
-        </div>
-      </div>
-    );
-  }
-
+  // Destructure mpState safely — default everything so hooks below don't break
   const {
     factions = [],
     playerBags = [],
@@ -72,18 +60,28 @@ export default function MultiplayerGuestView({
     subsequentRoundPickCount = 2,
     categories = [],
     draftLimits = {},
+    factionLimits = {},
+    frankenDrazSettings = { blueTilesPerBag: 3, redTilesPerBag: 2 },
     draftHistory = [],
     pendingSwaps = [],
     playerCount = 2,
     expansionsEnabled = {},
-  } = mpState;
+  } = mpState ?? {};
 
   const myFaction = localFaction ?? factions[myPlayerIndex] ?? {};
   const myBag = playerBags[myPlayerIndex] ?? {};
-  const maxPicks = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
+  const maxPicks = (() => {
+  if (draftVariant === 'frankendraz') {
+    const base = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
+    const myBagCategories = ['factions', 'blue_tiles', 'red_tiles']
+      .filter(cat => myBag[cat]?.length > 0).length;
+    return Math.min(base, myBagCategories);
+  }
+  if (draftVariant === 'rotisserie') return 1;
+  return round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
+})();
   const myPendingSwaps = pendingSwaps.filter(s => s.playerIndex === myPlayerIndex);
 
-  // playerProgress for the Sidebar — counts items already in the faction per category
   const myProgress = {};
   categories.forEach(cat => { myProgress[cat] = myFaction[cat]?.length ?? 0; });
 
@@ -103,6 +101,8 @@ export default function MultiplayerGuestView({
     }
   }, [pendingPicks, maxPicks, submitted, draftPhase]);
 
+  // ── All hooks done. Early returns are safe from here down ────────────
+
   const handleSubmitPicks = () => {
     if (pendingPicks.length < maxPicks) {
       alert(`You must pick ${maxPicks} component${maxPicks !== 1 ? 's' : ''}.`);
@@ -117,6 +117,19 @@ export default function MultiplayerGuestView({
     onSubmitFaction(myFaction, phase);
   };
 
+  // ── Waiting screen ───────────────────────────────────────────────────
+  if (!mpState?.draftStarted) {
+    return (
+      <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
+        <div className="text-center text-gray-400">
+          <div className="text-4xl mb-4">⏳</div>
+          <div className="text-lg font-semibold">Waiting for host to start the draft...</div>
+          <div className="text-sm mt-2 text-gray-500">You are connected as Player {myPlayerIndex + 1}</div>
+        </div>
+      </div>
+    );
+  }
+
   // ── Shared header ────────────────────────────────────────────────────
   const renderHeader = (showBagToggle = false) => (
     <div ref={headerRef} className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg app-header">
@@ -129,14 +142,6 @@ export default function MultiplayerGuestView({
               className="sidebar-toggle-button px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
             >
               {sidebarCollapsed ? '→ Bag' : '← Hide'}
-            </button>
-          )}
-          {draftPhase === 'complete' && onNavigate && (
-            <button
-              onClick={() => onNavigate('/mapbuilder-draft', { factions, playerCount })}
-              className="px-4 py-2 bg-orange-700 hover:bg-orange-600 text-white rounded-lg font-semibold text-sm transition-colors"
-            >
-              🗺️ Build Map
             </button>
           )}
         </div>
@@ -168,12 +173,9 @@ export default function MultiplayerGuestView({
               onClick={() => setSidebarCollapsed(true)}
             />
           )}
-
           <div className="flex-1 flex flex-col">
             {renderHeader(true)}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-
-              {/* Status / submit bar */}
               <div className={`p-3 rounded-lg border ${submitted
                 ? 'bg-yellow-900/30 border-yellow-600'
                 : 'bg-blue-900/30 border-blue-600'}`}>
@@ -182,7 +184,6 @@ export default function MultiplayerGuestView({
                     ? `✓ Picks submitted — waiting for other players... (Round ${round})`
                     : `Round ${round} — Choose ${maxPicks} component${maxPicks !== 1 ? 's' : ''} from your bag`}
                 </h3>
-
                 {!submitted && pendingPicks.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {pendingPicks.map((pick, idx) => (
@@ -197,7 +198,6 @@ export default function MultiplayerGuestView({
                     ))}
                   </div>
                 )}
-
                 {!submitted && (
                   <button
                     onClick={handleSubmitPicks}
@@ -216,7 +216,6 @@ export default function MultiplayerGuestView({
                 title={myFaction.name || `Player ${myPlayerIndex + 1}`}
                 playerIndex={myPlayerIndex}
               />
-
               <DraftHistory history={draftHistory} />
             </div>
           </div>
@@ -247,7 +246,6 @@ export default function MultiplayerGuestView({
               <div className="text-xs text-yellow-400 font-semibold">✓ Submitted — waiting for other players...</div>
             )}
           </div>
-
           <FactionSheet
             drafted={myFaction}
             onRemove={(cat, idx) => {
@@ -258,7 +256,7 @@ export default function MultiplayerGuestView({
                 return updated;
               });
             }}
-            draftLimits={draftLimits}
+            draftLimits={factionLimits}
             title={myFaction.name || `Player ${myPlayerIndex + 1}`}
             playerIndex={myPlayerIndex}
             showReductionHelper={true}
@@ -291,7 +289,6 @@ export default function MultiplayerGuestView({
               <div className="text-xs text-yellow-400 font-semibold">✓ Submitted — waiting for other players...</div>
             )}
           </div>
-
           <FactionSheet
             drafted={myFaction}
             onRemove={() => {}}
@@ -308,7 +305,7 @@ export default function MultiplayerGuestView({
               if (updatedFactions[0]) setLocalFaction(updatedFactions[0]);
             }}
             onRefuseSwap={() => {}}
-            draftLimits={draftLimits}
+            draftLimits={factionLimits}
             title={myFaction.name || `Player ${myPlayerIndex + 1}`}
             playerIndex={myPlayerIndex}
             showSwapHelper={!phaseSubmitted}
@@ -319,7 +316,7 @@ export default function MultiplayerGuestView({
     );
   }
 
-  // ── BUILD PHASE (FrankenDraz only) ───────────────────────────────────
+  // ── BUILD PHASE ──────────────────────────────────────────────────────
   if (draftPhase === 'build') {
     return (
       <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex flex-col">
@@ -341,7 +338,6 @@ export default function MultiplayerGuestView({
               <div className="text-xs text-yellow-400 font-semibold">✓ Submitted — waiting for other players...</div>
             )}
           </div>
-
           <FrankenDrazBuilder
             playerIndex={myPlayerIndex}
             draftedItems={myFaction}
@@ -361,7 +357,7 @@ export default function MultiplayerGuestView({
                 return updated;
               });
             }}
-            factionLimits={draftLimits}
+            factionLimits={factionLimits}
             expansionsEnabled={expansionsEnabled}
             activeCategories={categories}
           />
@@ -380,17 +376,15 @@ export default function MultiplayerGuestView({
             <span className="text-4xl">🎉</span>
             <h3 className="font-bold text-green-400 text-2xl">Draft Complete!</h3>
           </div>
-          <p className="text-green-300">Your faction has been finalized. Review it below.</p>
+          <p className="text-green-300">Your faction has been finalized. The host will move everyone to the map builder.</p>
         </div>
-
         <FactionSheet
           drafted={myFaction}
           onRemove={() => {}}
-          draftLimits={draftLimits}
+          draftLimits={factionLimits}
           title={`${myFaction.name || `Player ${myPlayerIndex + 1}`} — Final Faction`}
           playerIndex={myPlayerIndex}
         />
-
         <DraftHistory history={draftHistory} />
       </div>
     </div>

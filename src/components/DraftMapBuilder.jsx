@@ -152,7 +152,7 @@ function findTileKey(tileObjOrName) {
 }
 
 // ── Eligible fill tiles (tiles not used by any player) ──────────────────────
-const INELIGIBLE_CODES = new Set(["00","18","17","17r","51","51h","51r","82a","82ah","82b","82bh","118","94"]);
+const INELIGIBLE_CODES = new Set(["00","18","17","17r","51","51h","51r","82a","82ah","82b","82bh","81a","81b","83a","83b","84a","84b","85a","86b","87a","87b","88a","88b","89a","89b","90a","90b","91a","91b","96a","96b","118","94"]);
 const HOME_CODES_SET = new Set([
   ...Array.from({length:17}, (_,i) => String(i+1).padStart(2,"0")),
   ...Array.from({length:9}, (_,i) => `D${String(i+1).padStart(2,"0")}`),
@@ -250,10 +250,17 @@ function applyClockwiseGapShift(basePlaced, players) {
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
-export default function DraftMapBuilder({ onNavigate, draftData }) {
+export default function DraftMapBuilder({ onNavigate, draftData, multiplayer, onPeerMessageRef }) {
   const { factions, playerCount } = draftData;
   const viewportRef = useRef(null);
   const [fitScale, setFitScale] = useState(1);
+  const isMapHost = multiplayer?.role === 'host';
+const isMapGuest = multiplayer?.role === 'guest';
+const myMapPlayerIndex = multiplayer?.mySlotId
+  ? parseInt(multiplayer.mySlotId.replace('player_', ''), 10) - 1
+  : 0;
+// In multiplayer: guests get their player index, host is always index 0
+const myPlayerIndex = isMapGuest ? myMapPlayerIndex : 0;
 
   // Compute player order (sorted by table position) and their HS labels
   const players = useMemo(() => {
@@ -364,6 +371,42 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
     });
   }, [players]);
   const [fillDone, setFillDone] = useState(false);
+
+  useEffect(() => {
+  if (!onPeerMessageRef) return;
+  onPeerMessageRef.current = (slotId, msg) => {
+    if (msg.type === 'MANTIS_STATE') {
+      setMantis(msg.mantis);
+      setPlaced(msg.placed);
+      if (msg.mode) setMode(msg.mode);
+    }
+    if (msg.type === 'MANTIS_ACTION') {
+      // Host receives guest action and applies it
+      if (!isMapHost) return;
+      if (msg.action === 'DRAW') {
+        mantisDraw();
+      } else if (msg.action === 'PLACE') {
+        mantisPlace();
+      } else if (msg.action === 'MULLIGAN') {
+        mantisMulligan();
+      } else if (msg.action === 'DRAW_AFTER_MULLIGAN') {
+        mantisDrawAfterMulligan();
+      }
+    }
+  };
+}, [onPeerMessageRef, isMapHost, mantisDraw, mantisPlace, mantisMulligan, mantisDrawAfterMulligan]);
+
+useEffect(() => {
+  if (!isMapHost || !mantis || !multiplayer) return;
+  Object.keys(multiplayer.peers).forEach(slotId => {
+    multiplayer.sendToPeer(slotId, {
+      type: 'MANTIS_STATE',
+      mantis,
+      placed,
+      mode,
+    });
+  });
+}, [mantis, placed]);
 
   // ── Random mode ────────────────────────────────────────────────────────
   const doRandomPlace = () => {
@@ -759,31 +802,58 @@ export default function DraftMapBuilder({ onNavigate, draftData }) {
                 </div>
               )}
 
-              {/* Action buttons */}
-              <div style={{ display:"flex", gap:8 }}>
-                {!mantis.drawnTile && !mantis.isMulligan && (
-                  <button onClick={mantisDraw} className="flex-1 px-4 py-2 rounded-lg bg-yellow-700 hover:bg-yellow-600 text-white text-sm font-bold transition-colors">
-                    Draw Tile
-                  </button>
-                )}
-                {mantis.isMulligan && (
-                  <button onClick={mantisDrawAfterMulligan} className="flex-1 px-4 py-2 rounded-lg bg-orange-700 hover:bg-orange-600 text-white text-sm font-bold transition-colors">
-                    Draw Again (Mulligan)
-                  </button>
-                )}
-                {mantis.drawnTile && !mantis.isMulligan && (
-                  <>
-                    <button onClick={mantisPlace} className="flex-1 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-colors">
-                      Place Tile
-                    </button>
-                    {!mantis.mulligansUsed[mantis.turnNumber % players.length] && (
-                      <button onClick={mantisMulligan} className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">
-                        Mulligan
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
+              {/* Determine if it's this player's turn */}
+{(() => {
+  const isMyTurn = !multiplayer || isMapHost
+    ? mantisInfo.pidx === 0 || !isMapHost  // solo or host: always show
+    : mantisInfo.pidx === myPlayerIndex;   // guest: only on their turn
+
+  // For multiplayer guests, actions send to host instead of applying locally
+  const onDraw = isMapGuest
+    ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'DRAW' })
+    : mantisDraw;
+  const onPlace = isMapGuest
+    ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'PLACE' })
+    : mantisPlace;
+  const onMulligan = isMapGuest
+    ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'MULLIGAN' })
+    : mantisMulligan;
+  const onDrawAfterMulligan = isMapGuest
+    ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'DRAW_AFTER_MULLIGAN' })
+    : mantisDrawAfterMulligan;
+
+  return (
+    <div style={{ display:"flex", gap:8 }}>
+      {!mantis.drawnTile && !mantis.isMulligan && isMyTurn && (
+        <button onClick={onDraw} className="flex-1 px-4 py-2 rounded-lg bg-yellow-700 hover:bg-yellow-600 text-white text-sm font-bold transition-colors">
+          Draw Tile
+        </button>
+      )}
+      {!mantis.drawnTile && !mantis.isMulligan && !isMyTurn && (
+        <div style={{ flex:1, textAlign:'center', color:'#6b7280', fontSize:12, padding:'8px 0' }}>
+          Waiting for {mantisInfo.player?.name}...
+        </div>
+      )}
+      {mantis.isMulligan && isMyTurn && (
+        <button onClick={onDrawAfterMulligan} className="flex-1 px-4 py-2 rounded-lg bg-orange-700 hover:bg-orange-600 text-white text-sm font-bold transition-colors">
+          Draw Again (Mulligan)
+        </button>
+      )}
+      {mantis.drawnTile && !mantis.isMulligan && isMyTurn && (
+        <>
+          <button onClick={onPlace} className="flex-1 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-colors">
+            Place Tile
+          </button>
+          {!mantis.mulligansUsed[mantis.turnNumber % players.length] && (
+            <button onClick={onMulligan} className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">
+              Mulligan
+            </button>
+          )}
+        </>
+      )}
+    </div>
+  );
+})()}
             </div>
           )}
         </div>

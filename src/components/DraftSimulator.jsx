@@ -11,7 +11,6 @@ import { isComponentUndraftable, getSwapOptionsForTrigger, getExtraComponents } 
 import BanManagementModal from "./BanManagementModal.jsx";
 import { executeSwap } from "../utils/swapUtils.js";
 import FrankenDrazBuilder from "./FrankenDrazBuilder.jsx";
-import { useWebRTCMultiplayer } from '../hooks/useWebRTCMultiplayer';
 import MultiplayerPanel from './MultiplayerPanel';
 import MultiplayerGuestView from './MultiplayerGuestView';
 
@@ -38,7 +37,7 @@ const powerDraftLimits = {
   table_position: 1,
 };
 
-export default function DraftSimulator({ onNavigate }) {
+export default function DraftSimulator({ onNavigate, multiplayer, onStateReceivedRef, onPeerMessageRef }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [playerCount, setPlayerCount] = useState(4);
   const [factions, setFactions] = useState([]);
@@ -63,15 +62,8 @@ export default function DraftSimulator({ onNavigate }) {
   // ─── MULTIPLAYER ────────────────────────────────────────────────────────────
 const mpCollectedPicks = useRef({});
 const mpCollectedFactions = useRef({});
-const onPeerMessageRef = useRef(null);
 const mpBroadcastedStart = useRef(false);
 const [mpGuestState, setMpGuestState] = useState(null);
-
-const multiplayer = useWebRTCMultiplayer({
-  onStateReceived: (state) => setMpGuestState(state),
-  onPeerMessage: (slotId, msg) => onPeerMessageRef.current?.(slotId, msg),
-});
-
 const { role: mpRole, broadcastState, sendToHost } = multiplayer;
 const isMultiplayerHost = mpRole === 'host';
 const isMultiplayerGuest = mpRole === 'guest';
@@ -186,11 +178,18 @@ useEffect(() => {
       factions, playerBags, round, draftPhase, draftStarted: true,
       draftVariant, firstRoundPickCount, subsequentRoundPickCount,
       playerCount, categories, draftLimits, draftHistory, pendingSwaps, expansionsEnabled,
+      factionLimits: getCurrentFactionLimits(),
+      frankenDrazSettings,                    // ← add this
     });
   }
   if (!draftStarted) mpBroadcastedStart.current = false;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [draftStarted, playerBags.length, isMultiplayerHost]);
+
+useEffect(() => {
+  if (onStateReceivedRef) {
+    onStateReceivedRef.current = (state) => setMpGuestState(state);
+  }
+}, [onStateReceivedRef]);
 
   // PERFORMANCE: Memoize getFilteredComponents with useCallback
   const getFilteredComponents = useCallback((category, effectivePlayerCount = playerCount) => {
@@ -1159,6 +1158,8 @@ const buildBroadcastPayload = (overrides = {}) => ({
   factions, playerBags, round, draftPhase, draftStarted: true,
   draftVariant, firstRoundPickCount, subsequentRoundPickCount,
   playerCount, categories, draftLimits, draftHistory, pendingSwaps, expansionsEnabled,
+  factionLimits: getCurrentFactionLimits(),
+  frankenDrazSettings,                        // ← add this
   ...overrides,
 });
 
@@ -2234,11 +2235,23 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
               </button>
 
               <button
-                onClick={() => onNavigate('/mapbuilder-draft', { factions, playerCount })}
-                className="px-4 py-2 bg-orange-700 hover:bg-orange-600 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
-              >
-                🗺️ Build Map
-              </button>
+  onClick={() => {
+    // In multiplayer, tell all guests to navigate too
+    if (isMultiplayerHost) {
+      multiplayer.broadcastState(null); // flush any pending state
+      Object.keys(multiplayer.peers).forEach(slotId => {
+        multiplayer.sendToPeer(slotId, {
+          type: 'NAVIGATE_MAP_BUILDER',
+          data: { factions, playerCount },
+        });
+      });
+    }
+    onNavigate('/mapbuilder-draft', { factions, playerCount });
+  }}
+  className="px-4 py-2 bg-orange-700 hover:bg-orange-600 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-lg"
+>
+  🗺️ Build Map
+</button>
             </div>
           </div>
       {visibleFactions.map((f, i) => {
