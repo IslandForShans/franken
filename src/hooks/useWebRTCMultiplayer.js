@@ -152,7 +152,10 @@ async function retrieveData(code) {
         const channel = e.channel;
         hostRef.current.channel = channel;
 
-        channel.onopen = () => setPhase('connected');
+        channel.onopen = () => {
+            setRole('guest');
+            setPhase('connected');
+        };
         channel.onclose = () => {
           setPhase('idle');
           setError('Disconnected from host.');
@@ -178,7 +181,6 @@ async function retrieveData(code) {
       await pc.setLocalDescription(answer);
       await waitForICE(pc);
 
-      setRole('guest');
       return encode({ sdp: pc.localDescription, slotId });
     } catch (e) {
       setPhase('idle');
