@@ -1708,6 +1708,21 @@
           "id": "mahact_hubris",
           "name": "Hubris",
           "description": "During setup, purge your 'Alliance' promissory note. Other players cannot give you their 'Alliance' promissory note."
+        },
+        {
+          "id": "mahact_primacy",
+          "name": "Primacy",
+          "description": "When you win a combat, place 1 owner token from your opponent on this ability if it does not already contain one of that players tokens."
+        },
+        {
+          "id": "mahact_edict_y",
+          "name": "Edict Y",
+          "description": "[Franken Only] Each owner token on your PRIMACY ability increases your fleet limit by 1."
+        },
+        {
+          "id": "mahact_imperia_y",
+          "name": "Imperia Y",
+          "description": "[Franken Only] While another players owner token is on your PRIMACY ability, you can use the abilities of that player's commanders, if they are unlocked."
         }
       ],
       "faction_techs": [
@@ -1748,6 +1763,12 @@
           "name": "Il Na Viroset",
           "note": "[UNLOCK: Have 2 other factions' command tokens in your fleet pool.]",
           "description": "During your tactical actions, you can activate systems that contain your command tokens. If you do, return both command tokens to your reinforcements and end your turn."
+        },
+        {
+          "id": "mahact_commander_y",
+          "name": "Il Na Viroset Y",
+          "note": "[UNLOCK: Have an owner token from 3 other players on your PRIMACY ability.]",
+          "description": "During your tactical actions, you can activate systems that contain your command tokens. If you do, return both command tokens to your reinforcements."
         }
       ],
       "heroes": [
@@ -1785,6 +1806,14 @@
           "combat": 6,
           "abilities": ["Sustain Damage"],
           "description": "After a player whose command token is in your fleet pool activates this system, you may spend their token from your fleet pool to end their turn; they gain that token."
+        },
+        {
+          "id": "mahact_mech_y",
+          "name": "Starlancer Y",
+          "cost": 2,
+          "combat": 6,
+          "abilities": ["Sustain Damage"],
+          "description": "After a player activates this system, you may spend their owner token from your PRIMACY ability to have them end their turn and they gain 1 command token."
         }
       ],
       "starting_techs": [
@@ -4403,7 +4432,7 @@
       "promissory": [
         {
           "id": "firmament_pn",
-          "name": "Black Ops",
+          "name": "Black Ops (Firmament)",
           "description": "When you receive this card: If you are not The Firmament, the firmament player may place 1 facedown plot card in their play area with your control token on it. The, gain 2 command tokens, gain 2 trade goods, and purge this card."
         }
       ],

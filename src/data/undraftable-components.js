@@ -9,6 +9,8 @@ export const undraftableComponents = {
     { name: "Fragile", faction: "The Universities of Jol-Nar", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Mitosis", faction: "The Arborec", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Hubris", faction: "The Mahact Gene-Sorcerers", reason: "Just Plain Garbage", type: "garbage" },
+    { name: "Edict", faction: "The Mahact Gene-Sorcerers", reason: "Just Plain Garbage", type: "garbage" },
+    { name: "Imperia", faction: "The Mahact Gene-Sorcerers", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Propagation", faction: "The Nekro Virus", reason: "Just Plain Garbage", type:"garbage" },
     { name: "Nocturne", faction: "The Obsidian", reason: "Just Plain Garbage", type: "garbage" },
     { name: "The Blade's Orchestra", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
@@ -32,6 +34,11 @@ export const undraftableComponents = {
     { name: "Plots Within Plots", faction: "The Firmament", triggerComponent: "Viper EX-23", type: "gain_extra" },
     { name: "Marionettes", faction: "The Obsidian", reason: "Not Draftable", type: "garbage" },
     { name: "Miniaturization", faction: "The Ral Nel Consortium", triggerComponent: "Linkship II", tpye: "gain_extra" },
+    { name: "Scheming", faction: "The Yssaril Tribes", triggerComponent: "Crafty", type: "gain_extra"},
+    { name: "Primacy", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Edict Y", type: "gain_extra"},
+    { name: "Primacy", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia Y", type: "gain_extra"},
+    { name: "Primacy", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Il Na Viroset Y", type: "gain_extra"},
+    { name: "Primacy", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Starlancer Y", type: "gain_extra"},
     // Discordant Stars
     { name: "Arms Dealer", faction: "The Shipwrights of Axis", triggerComponent: "Military Industrial Complex", type: "gain_extra" },
     { name: "Cybernetic Madness", faction: "The Savages of Cymiae", triggerComponent: "Autonetic Memory", type: "gain_extra" },
@@ -108,8 +115,8 @@ export const undraftableComponents = {
     { name: "Dark Pact", faction: "The Empyrean", triggerComponent: "Dark Whispers", type: "gain_extra" },
     { name: "Promise of Protection", faction: "The Mentak Coalition", triggerComponent: "Pillage", type: "optional_swap" },
     { name: "Antivirus", faction: "The Nekro Virus", triggerComponent: "Tech Singularity", type: "optional_swap" },
-    { name: "Black Ops", faction: "The Firmament", triggerComponent: "Firmament Home System", type: "gain_extra" },
-    { name: "Malevolency", faction: "The Obsidian", triggerComponent: "Black Ops", type: "gain_extra" },
+    { name: "Black Ops (Firmament)", faction: "The Firmament", triggerComponent: "Firmament Home System", type: "gain_extra" },
+    { name: "Malevolency", faction: "The Obsidian", triggerComponent: "Black Ops (Firmament)", type: "gain_extra" },
     //DS
     { name: "Read the Fates", faction: "The Augurs of Ilyxum", triggerComponent: "Oracle AI", type: "optional_swap" },
     { name: "Branch Office - Tax Haven", faction: "The Veldyr Sovereignty", triggerComponent: "Corporate Entity", type: "gain_extra" },
@@ -145,6 +152,7 @@ export const undraftableComponents = {
     { name: "Dame Briar", faction: "Last Bastion", triggerComponent: "Phoenix Standard", type: "optional_swap" },
     { name: "Myru Vos", faction: "The Firmament", triggerComponent: "Plots Within Plots", type: "optional_swap" },
     { name: "Vos Hollow", faction: "The Obsidian", triggerComponent: "Myru Vos", type: "gain_extra" },
+    { name: "Field Marshal Mercer", faction: "The Nomad", triggerComponent: "The Company", type: "optional_swap"},
     //DS
     { name: "Lactarius Indigo - Omen Caller", faction: "The Myko-Mentori", triggerComponent: "Prescient Memories", type: "optional_swap" },
     { name: "Merkismathr Asvand - Marshal of Trade", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
@@ -155,7 +163,7 @@ export const undraftableComponents = {
   
   commanders: [
     //Base + PoK + TE
-    { name: "Il Na Viroset", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Imperia", type: "optional_swap" },
+    { name: "Il Na Viroset", faction: "The Mahact Gene-Sorcerers", reason: "Just Plain Garbage", type: "garbage" },
     { name: "That Which Molds Flesh", faction: "The Vuil'Raith Cabal", triggerComponent: "Dimensional Tear II", type: "optional_swap" },
     { name: "Ahk Siever", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "optional_swap" },
     { name: "Aello", faction: "The Deepwrought Scholarate", triggerComponent: "Oceanbound", type: "optional_swap" },
@@ -205,7 +213,7 @@ export const undraftableComponents = {
     { name: "Moyin's Ashes", faction: "The Yin Brotherhood", triggerComponent: "Indoctrination", type: "optional_swap" },
     { name: "Mordred", faction: "The Nekro Virus", triggerComponent: "Valefar Assimilator X", type: "optional_swap" },
     { name: "Mordred", faction: "The Nekro Virus", triggerComponent: "Valefar Assimilator Y", type: "optional_swap" },
-    { name: "Starlancer", faction: "The Mahact Gene-Sorcerers", triggerComponent: "Edict", type: "optional_swap" },
+    { name: "Starlancer", faction: "The Mahact Gene-Sorcerers", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Shield Paling", faction: "The Universities of Jol-Nar", reason: "Just Plain Garbage", type: "garbage" },
     { name: "Revenant", faction: "The Crimson Rebellion", triggerComponent: "Resonance Generator", type: "optional_swap" },
     { name: "A3 Valiance", faction: "Last Bastion", triggerComponent: "Phoenix Standard", type: "optional_swap" },
@@ -305,6 +313,12 @@ export const undraftableComponents = {
   breakthrough: [
     // Base + PoK + TE
     { name: "The Reaping", faction: "The Obsidian", triggerComponent: "The Sowing", type: "gain_extra" },
+    { name: "Stellar Genesis", faction: "The Embers of Muaat", triggerComponent: "Star Forge", type: "optional_swap"},
+    { name: "Mindsieve", faction: "The Naalu Collective", triggerComponent: "The Oracle", type: "gain_extra"},
+    { name: "Valefar Assimilator Z", faction: "The Nekro Virus", triggerComponent: "Galactic Threat", type: "gain_extra"},
+    { name: "Deepgloom Executable", faction: "The Yssaril Tribes", triggerComponent: "Crafty", type: "gain_extra"},
+    { name: "Thunder's Paradox", faction: "The Nomad", triggerComponent: "The Company", type: "optional_swap"},
+    { anme: "Slumberstate Computing", faction: "The Titans of Ul", triggerComponent: "Terragenesis", type: "optional_swap"},
     //DS
     { name: "Professional Intrigue", faction: "The Li-Zho Dynasty", triggerComponent: "Cunning", type: "optional_swap"},
     { name: "Mended Grove", faction: "The L'tokk Khrask", triggerComponent: "Meteor Slings", type: "optional_swap"},
