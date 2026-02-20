@@ -104,13 +104,26 @@ export default function MultiplayerGuestView({
   // ── All hooks done. Early returns are safe from here down ────────────
 
   const handleSubmitPicks = () => {
-    if (pendingPicks.length < maxPicks) {
-      alert(`You must pick ${maxPicks} component${maxPicks !== 1 ? 's' : ''}.`);
-      return;
-    }
-    setSubmitted(true);
-    onSubmitPicks(pendingPicks);
-  };
+  // Count how many pickable items are actually available in the bag
+  const availableInBag = draftVariant === 'frankendraz'
+    ? ['factions', 'blue_tiles', 'red_tiles'].filter(cat => myBag[cat]?.length > 0).length
+    : categories.reduce((count, cat) => {
+        const inBag = myBag[cat]?.length ?? 0;
+        const alreadyInFaction = myFaction[cat]?.length ?? 0;
+        const limit = draftLimits[cat] ?? 0;
+        const canPickInCat = Math.max(0, Math.min(inBag, limit - alreadyInFaction));
+        return count + (canPickInCat > 0 ? 1 : 0);
+      }, 0);
+
+  const effectiveMax = Math.min(maxPicks, availableInBag);
+
+  if (pendingPicks.length < effectiveMax) {
+    alert(`You must pick ${effectiveMax} component${effectiveMax !== 1 ? 's' : ''}.`);
+    return;
+  }
+  setSubmitted(true);
+  onSubmitPicks(pendingPicks);
+};
 
   const handleSubmitPhase = (phase) => {
     setPhaseSubmitted(true);
@@ -200,12 +213,21 @@ export default function MultiplayerGuestView({
                 )}
                 {!submitted && (
                   <button
-                    onClick={handleSubmitPicks}
-                    disabled={pendingPicks.length < maxPicks}
-                    className="mt-2 px-4 py-2 bg-green-600 hover:bg-green-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold text-sm transition-colors"
-                  >
-                    Submit Picks ({pendingPicks.length}/{maxPicks})
-                  </button>
+  onClick={handleSubmitPicks}
+  disabled={submitted || pendingPicks.length < Math.min(maxPicks, (() => {
+    return draftVariant === 'frankendraz'
+      ? ['factions', 'blue_tiles', 'red_tiles'].filter(cat => myBag[cat]?.length > 0).length
+      : categories.reduce((count, cat) => {
+          const inBag = myBag[cat]?.length ?? 0;
+          const alreadyInFaction = myFaction[cat]?.length ?? 0;
+          const limit = draftLimits[cat] ?? 0;
+          return count + (Math.max(0, Math.min(inBag, limit - alreadyInFaction)) > 0 ? 1 : 0);
+        }, 0);
+  })())}
+  className="mt-2 px-4 py-2 bg-green-600 hover:bg-green-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold text-sm transition-colors"
+>
+  Submit Picks ({pendingPicks.length}/{maxPicks})
+</button>
                 )}
               </div>
 

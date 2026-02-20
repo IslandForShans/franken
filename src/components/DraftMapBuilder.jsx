@@ -372,42 +372,6 @@ const myPlayerIndex = isMapGuest ? myMapPlayerIndex : 0;
   }, [players]);
   const [fillDone, setFillDone] = useState(false);
 
-  useEffect(() => {
-  if (!onPeerMessageRef) return;
-  onPeerMessageRef.current = (slotId, msg) => {
-    if (msg.type === 'MANTIS_STATE') {
-      setMantis(msg.mantis);
-      setPlaced(msg.placed);
-      if (msg.mode) setMode(msg.mode);
-    }
-    if (msg.type === 'MANTIS_ACTION') {
-      // Host receives guest action and applies it
-      if (!isMapHost) return;
-      if (msg.action === 'DRAW') {
-        mantisDraw();
-      } else if (msg.action === 'PLACE') {
-        mantisPlace();
-      } else if (msg.action === 'MULLIGAN') {
-        mantisMulligan();
-      } else if (msg.action === 'DRAW_AFTER_MULLIGAN') {
-        mantisDrawAfterMulligan();
-      }
-    }
-  };
-}, [onPeerMessageRef, isMapHost, mantisDraw, mantisPlace, mantisMulligan, mantisDrawAfterMulligan]);
-
-useEffect(() => {
-  if (!isMapHost || !mantis || !multiplayer) return;
-  Object.keys(multiplayer.peers).forEach(slotId => {
-    multiplayer.sendToPeer(slotId, {
-      type: 'MANTIS_STATE',
-      mantis,
-      placed,
-      mode,
-    });
-  });
-}, [mantis, placed]);
-
   // ── Random mode ────────────────────────────────────────────────────────
   const doRandomPlace = () => {
     const next = { ...placed };
@@ -564,6 +528,41 @@ useEffect(() => {
     });
   };
 
+  useEffect(() => {
+  if (!onPeerMessageRef) return;
+  onPeerMessageRef.current = (slotId, msg) => {
+    if (msg.type === 'MANTIS_STATE') {
+      setMantis(msg.mantis);
+      setPlaced(msg.placed);
+      if (msg.mode) setMode(msg.mode);
+    }
+    if (msg.type === 'MANTIS_ACTION') {
+      if (!isMapHost) return;
+      if (msg.action === 'DRAW') {
+        mantisDraw();
+      } else if (msg.action === 'PLACE') {
+        mantisPlace();
+      } else if (msg.action === 'MULLIGAN') {
+        mantisMulligan();
+      } else if (msg.action === 'DRAW_AFTER_MULLIGAN') {
+        mantisDrawAfterMulligan();
+      }
+    }
+  };
+}, [onPeerMessageRef, isMapHost, mantisDraw, mantisPlace, mantisMulligan, mantisDrawAfterMulligan]);
+
+useEffect(() => {
+  if (!isMapHost || !mantis || !multiplayer) return;
+  Object.keys(multiplayer.peers).forEach(slotId => {
+    multiplayer.sendToPeer(slotId, {
+      type: 'MANTIS_STATE',
+      mantis,
+      placed,
+      mode,
+    });
+  });
+}, [mantis, placed]);
+
   // Mantis derived values
   const mantisInfo = useMemo(() => {
     if (!mantis) return null;
@@ -656,13 +655,23 @@ useEffect(() => {
         <div style={{ width:200, minWidth:200, background:"#0f172a", borderRight:"1px solid #4b5563", overflowY:"auto", padding:"12px 8px", display:"flex", flexDirection:"column", gap:8 }}>
           <div style={{ fontSize:10, fontWeight:700, letterSpacing:1.2, color:"#fcd34d", textTransform:"uppercase", marginBottom:4 }}>Players</div>
           {players.map((p, i) => (
-            <div key={i} style={{ padding:"8px", borderRadius:6, background:"#1e293b", border:`1px solid ${PLAYER_COLORS[p.position-1]}44` }}>
-              <div style={{ fontSize:11, fontWeight:700, color: PLAYER_COLORS[p.position-1] }}>{p.positionLabel}</div>
-              <div style={{ fontSize:10, color:"#d1d5db", marginTop:1 }}>{p.name}</div>
-              <div style={{ fontSize:10, color:"#9ca3af", marginTop:2 }}>HS: {p.hsLabel ?? "—"}</div>
-              <div style={{ fontSize:10, color:"#6b7280", marginTop:2 }}>{p.draftedKeys.length} tiles</div>
-            </div>
-          ))}
+  <div key={i} style={{ padding:"8px", borderRadius:6, background:"#1e293b", border:`1px solid ${PLAYER_COLORS[p.position-1]}44` }}>
+    <div style={{ fontSize:11, fontWeight:700, color: PLAYER_COLORS[p.position-1] }}>{p.name}</div>
+    <div style={{ fontSize:10, color:"#9ca3af", marginTop:3, display:"flex", justifyContent:"space-between" }}>
+      <span style={{ color:"#fcd34d" }}>Draft Order:</span>
+      <span style={{ color:"#d1d5db", fontWeight:600 }}>{p.positionLabel}</span>
+    </div>
+    <div style={{ fontSize:10, color:"#9ca3af", marginTop:2, display:"flex", justifyContent:"space-between" }}>
+      <span style={{ color:"#fcd34d" }}>Map Seat:</span>
+      <span style={{ color:"#d1d5db", fontWeight:600 }}>{p.position ?? "—"}</span>
+    </div>
+    <div style={{ fontSize:10, color:"#9ca3af", marginTop:2, display:"flex", justifyContent:"space-between" }}>
+      <span>HS:</span>
+      <span>{p.hsLabel ?? "—"}</span>
+    </div>
+    <div style={{ fontSize:10, color:"#6b7280", marginTop:2 }}>{p.draftedKeys.length} tiles</div>
+  </div>
+))}
 
           {/* Mode buttons */}
           {!mode && !fromMilty && (
@@ -673,7 +682,7 @@ useEffect(() => {
             </div>
           )}
 
-          {mode === "random" && !fillDone && (
+          {mode === "random" && !fillDone && (!multiplayer || isMapHost) && (
             <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
               <button onClick={doRandomPlace} className="px-3 py-2 rounded-lg bg-blue-800 hover:bg-blue-700 text-white text-xs font-semibold transition-colors">↺ Re-randomize</button>
               <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">🎲 Fill with Random Tiles</button>
@@ -681,11 +690,11 @@ useEffect(() => {
             </div>
           )}
 
-          {mode === "random" && fillDone && (
+          {mode === "random" && !fillDone && (!multiplayer || isMapHost) && (
             <div style={{ marginTop:8, fontSize:10, color:"#4ade80", fontWeight:600 }}>✓ Map complete</div>
           )}
 
-          {mode === "mantis" && mantisInfo?.done && !fillDone && (
+          {mode === "mantis" && mantisInfo?.done && !fillDone && (!multiplayer || isMapHost) && (
             <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
               <div style={{ fontSize:11, color:"#4ade80", fontWeight:700 }}>✓ All tiles placed!</div>
               <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">🎲 Fill with Random Tiles</button>
@@ -728,7 +737,8 @@ useEffect(() => {
                     const player = players.find(p => p.hsLabel === label);
                     return (
                       <div style={{ position:"absolute", inset:0, clipPath:HEX_CLIP, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", pointerEvents:"none", zIndex:3, background:"rgba(0,0,0,0.55)", gap:2 }}>
-                        <span style={{ fontSize:S*0.18, fontWeight:700, color: PLAYER_COLORS[player?.position-1], textAlign:"center", textShadow:"0 1px 3px #000" }}>{player?.positionLabel}</span>
+                        <span style={{ fontSize:S*0.15, fontWeight:700, color: PLAYER_COLORS[player?.position-1], textAlign:"center", textShadow:"0 1px 3px #000" }}>Seat {player?.position}</span>
+                        <span style={{ fontSize:S*0.12, fontWeight:600, color:"#fcd34d", textAlign:"center", textShadow:"0 1px 3px #000" }}>Draft: {player?.positionLabel}</span>
                          <div style={{ fontSize:S*0.14, fontWeight:800, letterSpacing:0.3, lineHeight:1.1, textShadow:"0 1px 2px #000" }}>
                           <span style={{ color:"#fbbf24" }}>{player?.hsStats?.optimalResource ?? 0}R</span>
                           <span style={{ color:"#6b7280", margin:"0 4px" }}>/</span>
@@ -804,9 +814,13 @@ useEffect(() => {
 
               {/* Determine if it's this player's turn */}
 {(() => {
-  const isMyTurn = !multiplayer || isMapHost
-    ? mantisInfo.pidx === 0 || !isMapHost  // solo or host: always show
-    : mantisInfo.pidx === myPlayerIndex;   // guest: only on their turn
+  const myPlayersArrayIndex = !multiplayer
+  ? -1  // solo: isMyTurn will be overridden below
+  : players.findIndex(p => p.factionIdx === myMapPlayerIndex);
+
+const isMyTurn = !multiplayer  // solo always shows buttons
+  ? true
+  : mantisInfo.pidx === myPlayersArrayIndex;  // guest: only on their turn
 
   // For multiplayer guests, actions send to host instead of applying locally
   const onDraw = isMapGuest
