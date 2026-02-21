@@ -149,16 +149,16 @@ function findTileKey(tileObjOrName) {
 // ── Eligible fill tiles (tiles not used by any player) ──────────────────────
 const INELIGIBLE_CODES = new Set(["00","18","17","17r","51","51h","51r","82a","82ah","82b","82bh","81a","81b","83a","83b","84a","84b","85a","86b","87a","87b","88a","88b","89a","89b","90a","90b","91a","91b","96a","96b","118","94"]);
 const HOME_CODES_SET = new Set([
-  ...Array.from({length:17}, (_,i) => String(i+1).padStart(2,"0")),
-  ...Array.from({length:9}, (_,i) => `D${String(i+1).padStart(2,"0")}`),
-  ...Array.from({length:6}, (_,i) => `BR${i+1}`),
-  "92","92new","93","93new","94","94new","17r","51h",
+  ...Array.from({ length: 17 }, (_, i) => String(i + 1).padStart(2, "0")),
+  "D01","D02","D03","D04","D05","D06","D07","D08","D09","D10","D11","D12","D13","D14","D15","D16","D17","D18","D19","D20","D21","D22","D23","D24","D25","D26","D27","D28","D29","D30","D31","D32","D33","D34",
+  "BR1","BR2","BR3","BR4","BR5","BR6",
+  "51", "51r", "52", "53", "54", "55", "56", "57", "58", "118", "92", "93", "94", "95", "96a", "96b"
 ]);
 const ALL_ELIGIBLE_KEYS = ALL_TILE_KEYS.filter(key => {
   const [code] = key.split("_");
   return !INELIGIBLE_CODES.has(code) && !HOME_CODES_SET.has(code)
     && !key.startsWith("00_") && !key.includes("xmas") && !key.includes("SorrowWH")
-    && !key.includes("hyperlane");
+    && !key.includes("Hyperlane");
 });
 
 // ── Small rendering helpers ─────────────────────────────────────────────────
@@ -201,7 +201,7 @@ function EmptyHex({ size, highlight, label, color }) {
   );
 }
 
-const PLAYER_COLORS = ["#f59e0b","#60a5fa","#4ade80","#f472b6","#a78bfa","#fb923c"];
+const PLAYER_COLORS = ["#f59e0b","#60a5fa","#4ade80","#f472b6","#a78bfa","#fb923c","#f87171","#34d399"];
 
 const HOME_CLOCKWISE = ["301", "304", "307", "310", "313", "316"];
 const CLOCKWISE_SHIFT_BY_HOME = {
@@ -417,23 +417,6 @@ const isMapGuest = multiplayer?.role === 'guest';
   const doFillHyperlanes = () => {
     const next = { ...placed };
 
-    if (isLargeGalaxy && playerCount === 7) {
-      const sevenPlayerGapHyperlanes = {
-        "412": "86a_Hyperlane",
-        "310": "88a_Hyperlane",
-        "414": "88a240_Hyperlane",
-        "309": "84a300_Hyperlane",
-        "311": "84a_Hyperlane",
-      };
-      Object.entries(sevenPlayerGapHyperlanes).forEach(([label, key]) => {
-        if (!next[label]) next[label] = key;
-      });
-      setPlaced(next);
-      setFillDone(true);
-      return;
-    }
-
-
     const HS_ALL = ["301", "304", "307", "310", "313", "316"];
     const occupiedHS = new Set(players.map(p => p.hsLabel).filter(Boolean));
 
@@ -483,6 +466,31 @@ const isMapGuest = multiplayer?.role === 'guest';
       });
     });
 
+    setPlaced(next);
+    setFillDone(true);
+  };
+
+  const doFillHyperlanesAndRandom = () => {
+    const next = applyClockwiseGapShift({ ...placed }, players);
+    // Place 413 gap hyperlanes — same tile types/rotations as small-galaxy base case (k=3/310),
+    // shifted one ring outward: ring-1→ring-2, ring-2→ring-3, ring-3→ring-4.
+    const gapHyperlanes = {
+      "207": "86a_Hyperlane",
+      "309": "88a_Hyperlane",
+      "311": "88a240_Hyperlane",
+      "412": "84a300_Hyperlane",
+      "413": "85a_Hyperlane",
+      "414": "84a_Hyperlane",
+    };
+    Object.entries(gapHyperlanes).forEach(([label, key]) => {
+      if (!next[label]) next[label] = key;
+    });
+    const remaining = shuffleArray([...fillPool]);
+    let ri = 0;
+    mapPositions.forEach(({ label }) => {
+      if (label === "000" || next[label]) return;
+      if (remaining[ri]) next[label] = remaining[ri++];
+    });
     setPlaced(next);
     setFillDone(true);
   };
@@ -715,25 +723,35 @@ useEffect(() => {
             </div>
           )}
 
-          {mode === "random" && !fillDone && (!multiplayer || isMapHost) && (
+          {mode === "random" && !fillDone && !isMapGuest && (
             <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
               <button onClick={doRandomPlace} className="px-3 py-2 rounded-lg bg-blue-800 hover:bg-blue-700 text-white text-xs font-semibold transition-colors">↺ Re-randomize</button>
               <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">🎲 Fill with Random Tiles</button>
-<button onClick={doFillHyperlanes} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Fill with Hyperlanes</button>
+{!isLargeGalaxy && (
+  <button onClick={doFillHyperlanes} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Fill with Hyperlanes</button>
+)}
+{isLargeGalaxy && playerCount === 7 && (
+  <button onClick={doFillHyperlanesAndRandom} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Hyperlanes + Random Fill</button>
+)}
             </div>
           )}
 
-          {mode === "random" && !fillDone && (!multiplayer || isMapHost) && (
+          {mode === "random" && !fillDone && !isMapGuest && (
             <div style={{ marginTop:8, fontSize:10, color:"#4ade80", fontWeight:600 }}>✓ Map complete</div>
           )}
 
-          {mode === "mantis" && mantisInfo?.done && !fillDone && (!multiplayer || isMapHost) && (
-            <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
-              <div style={{ fontSize:11, color:"#4ade80", fontWeight:700 }}>✓ All tiles placed!</div>
-              <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">🎲 Fill with Random Tiles</button>
-<button onClick={doFillHyperlanes} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Fill with Hyperlanes</button>
-            </div>
-          )}
+          {mode === "mantis" && mantisInfo?.done && !fillDone && !isMapGuest && (
+  <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
+    <div style={{ fontSize:11, color:"#4ade80", fontWeight:700 }}>✓ All tiles placed!</div>
+    <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">🎲 Fill with Random Tiles</button>
+    {!isLargeGalaxy && (
+  <button onClick={doFillHyperlanes} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Fill with Hyperlanes</button>
+)}
+{isLargeGalaxy && playerCount === 7 && (
+  <button onClick={doFillHyperlanesAndRandom} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Hyperlanes + Random Fill</button>
+)}
+  </div>
+)}
 
           {mode === "mantis" && fillDone && (
             <div style={{ marginTop:8, fontSize:10, color:"#4ade80", fontWeight:600 }}>✓ Map complete</div>
@@ -851,7 +869,7 @@ useEffect(() => {
   ? -1  // solo: isMyTurn will be overridden below
   : players.findIndex(p => p.multiplayerSlotId === multiplayer.mySlotId);
 
-const isMyTurn = !multiplayer  // solo always shows buttons
+const isMyTurn = !isMapGuest  // solo and host always show buttons
   ? true
   : mantisInfo.pidx === myPlayersArrayIndex;  // guest: only on their turn
 
