@@ -465,16 +465,32 @@ export default function TI4MapBuilder({ onNavigate }) {
   3: [0, 2, 4],        // 301, 307, 313
   4: [1, 2, 4, 5],     // 304, 307, 313, 316
   5: [1, 2, 3, 4, 5],  // 304, 307, 310, 313, 316
-  6: [0, 1, 2, 3, 4, 5], // all 6 corners
-};
+  6: [0, 1, 2, 3, 4, 5],
+  };
+
+  const HOME_LABELS_BY_PLAYER_COUNT = {
+    7: ["401", "404", "407", "410", "416", "419", "422"],
+    8: ["401", "404", "407", "410", "413", "416", "419", "422"],
+  };
+
+  useEffect(() => {
+    if (playerCount >= 7 && ringCount < 4) {
+      setRingCount(4);
+      setPlaced({ "000": DEFAULT_CENTER_TILE });
+      setGeneratedHomeLabels(null);
+    }
+  }, [playerCount, ringCount]);
 
   const generateMap = useCallback(() => {
     const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
     const cornerPicks = HOME_CORNER_PICKS[playerCount];
-    if (!cornerPicks) { alert("Player count not supported for generation yet."); return; }
+    const explicitHomeLabels = HOME_LABELS_BY_PLAYER_COUNT[playerCount] ?? null;
+    if (!cornerPicks && !explicitHomeLabels) { alert("Player count not supported for generation yet."); return; }
 
     const outerRing = mapPositions.filter(p => p.ring === ringCount);
-    const homePositions = cornerPicks.map(i => outerRing[i * ringCount]).filter(Boolean);
+    const homePositions = explicitHomeLabels
+      ? explicitHomeLabels.map(lbl => mapPositions.find(p => p.label === lbl)).filter(Boolean)
+      : cornerPicks.map(i => outerRing[i * ringCount]).filter(Boolean);
     const homeLabels = new Set(homePositions.map(p => p.label));
     const fillPositions = mapPositions.filter(p => p.label !== "000" && !homeLabels.has(p.label));
     const fillCount = fillPositions.length;

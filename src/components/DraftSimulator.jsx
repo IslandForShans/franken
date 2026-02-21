@@ -2239,12 +2239,20 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
     // In multiplayer, tell all guests to navigate too
     if (isMultiplayerHost) {
       multiplayer.broadcastState(null); // flush any pending state
+      const factionsForMapBuilder = factions.map((faction, idx) => ({
+        ...faction,
+        multiplayerSlotId: `player_${idx + 1}`,
+      }));
+
       Object.keys(multiplayer.peers).forEach(slotId => {
         multiplayer.sendToPeer(slotId, {
           type: 'NAVIGATE_MAP_BUILDER',
-          data: { factions, playerCount },
+          data: { factions: factionsForMapBuilder, playerCount },
         });
       });
+
+      onNavigate('/mapbuilder-draft', { factions: factionsForMapBuilder, playerCount });
+      return;
     }
     onNavigate('/mapbuilder-draft', { factions, playerCount });
   }}

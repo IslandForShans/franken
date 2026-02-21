@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
 import { ALL_TILE_KEYS, TILE_CODE_TO_JSON_ID } from "../data/tileCatalog";
-import { HS_POSITIONS, SLICE_ORDER, ALL_SLICE_LABELS } from "../utils/sliceDefinitions";
+import { HS_POSITIONS, LARGE_GALAXY_HS_POSITIONS, SLICE_ORDER, ALL_SLICE_LABELS } from "../utils/sliceDefinitions";
 import { shuffleArray } from "../utils/shuffle";
 import { calculateOptimalResources } from "../utils/resourceCalculator";
 import { factionsData, discordantStarsData } from "../data/processedData";
@@ -10,15 +10,11 @@ const S = 62;
 const D = Math.sqrt(3) * S;
 const HEX_CLIP = "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)";
 const PAD = S * 1.2;
-const CANVAS_W = 9 * S + PAD * 2;
-const CANVAS_H = 7 * D + PAD * 2;
-const OX = CANVAS_W / 2;
-const OY = CANVAS_H / 2;
 
-const MAP_3RING = (() => {
+function generateMapPositions(rings) {
   const dirs = [[1.5*S,D/2],[0,D],[-1.5*S,D/2],[-1.5*S,-D/2],[0,-D],[1.5*S,-D/2]];
   const pos = [{ label:"000", x:0, y:0, ring:0 }];
-  for (let r = 1; r <= 3; r++) {
+  for (let r = 1; r <= rings; r++) {
     let cx = 0, cy = -r*D, num = 1;
     pos.push({ label:`${r}${String(num).padStart(2,"0")}`, x:cx, y:cy, ring:r });
     for (let d = 0; d < 6; d++) {
@@ -30,24 +26,23 @@ const MAP_3RING = (() => {
     }
   }
   return pos;
-})();
+}
 
-function buildAdjacency3Ring() {
+function buildAdjacency(positions) {
   const adj = {};
-  MAP_3RING.forEach(p => { adj[p.label] = []; });
-  for (let i = 0; i < MAP_3RING.length; i++) {
-    for (let j = i + 1; j < MAP_3RING.length; j++) {
-      const dx = Math.abs(MAP_3RING[i].x - MAP_3RING[j].x);
-      const dy = Math.abs(MAP_3RING[i].y - MAP_3RING[j].y);
+  positions.forEach(p => { adj[p.label] = []; });
+  for (let i = 0; i < positions.length; i++) {
+    for (let j = i + 1; j < positions.length; j++) {
+      const dx = Math.abs(positions[i].x - positions[j].x);
+      const dy = Math.abs(positions[i].y - positions[j].y);
       if ((Math.abs(dx - 1.5*S) < 0.5 && Math.abs(dy - D/2) < 0.5) || (dx < 0.5 && Math.abs(dy - D) < 0.5)) {
-        adj[MAP_3RING[i].label].push(MAP_3RING[j].label);
-        adj[MAP_3RING[j].label].push(MAP_3RING[i].label);
+        adj[positions[i].label].push(positions[j].label);
+        adj[positions[j].label].push(positions[i].label);
       }
     }
   }
   return adj;
 }
-const ADJACENCY = buildAdjacency3Ring();
 
 // ── Tile planet lookup (for res/inf overlay) ───────────────────────────────
 const DMB_TILE_LOOKUP = new Map();
@@ -252,19 +247,24 @@ function applyClockwiseGapShift(basePlaced, players) {
 // ── Main component ──────────────────────────────────────────────────────────
 export default function DraftMapBuilder({ onNavigate, draftData, multiplayer, onPeerMessageRef }) {
   const { factions, playerCount } = draftData;
+  const isLargeGalaxy = playerCount >= 6;
+  const mapRingCount = isLargeGalaxy ? 4 : 3;
+  const mapPositions = useMemo(() => generateMapPositions(mapRingCount), [mapRingCount]);
+  const adjacency = useMemo(() => buildAdjacency(mapPositions), [mapPositions]);
+  const canvasW = useMemo(() => 3 * mapRingCount * S + PAD * 2, [mapRingCount]);
+  const canvasH = useMemo(() => (2 * mapRingCount + 1) * D + PAD * 2, [mapRingCount]);
+  const OX = canvasW / 2;
+  const OY = canvasH / 2;
   const viewportRef = useRef(null);
   const [fitScale, setFitScale] = useState(1);
   const isMapHost = multiplayer?.role === 'host';
 const isMapGuest = multiplayer?.role === 'guest';
-const myMapPlayerIndex = multiplayer?.mySlotId
-  ? parseInt(multiplayer.mySlotId.replace('player_', ''), 10) - 1
-  : 0;
-// In multiplayer: guests get their player index, host is always index 0
-const myPlayerIndex = isMapGuest ? myMapPlayerIndex : 0;
 
   // Compute player order (sorted by table position) and their HS labels
   const players = useMemo(() => {
-    const hsPositions = HS_POSITIONS[playerCount] ?? HS_POSITIONS[6];
+    const hsPositions = isLargeGalaxy
+      ? (LARGE_GALAXY_HS_POSITIONS[playerCount] ?? LARGE_GALAXY_HS_POSITIONS[6])
+      : (HS_POSITIONS[playerCount] ?? HS_POSITIONS[6]);
     const basePlayers = factions
       .map((f, idx) => {
         const tablePos = f.table_position?.[0];
@@ -281,8 +281,23 @@ const myPlayerIndex = isMapGuest ? myMapPlayerIndex : 0;
         const hsObj = f.home_systems?.[0];
         const hsKey = hsObj ? findTileKey(hsObj) : null;
         const hsStats = calculateOptimalResources(hsObj?.planets ?? []);
-        return { factionIdx: idx, name: f.name, positionLabel, position, hsLabel, sliceTiles, draftedKeys, hsKey, hsStats };
-      }).sort((a, b) => a.position - b.position);
+        return {
+          factionIdx: idx,
+          multiplayerSlotId: f.multiplayerSlotId ?? `player_${idx + 1}`,
+          name: f.name,
+          positionLabel,
+          position,
+          hsLabel,
+          sliceTiles,
+          draftedKeys,
+          hsKey,
+          hsStats,
+        };
+      }).sort((a, b) => {
+        const aPos = Number.isFinite(a.position) ? a.position : Number.POSITIVE_INFINITY;
+        const bPos = Number.isFinite(b.position) ? b.position : Number.POSITIVE_INFINITY;
+        return aPos - bPos;
+      });
 
       const occupiedHomes = new Set(basePlayers.map(p => p.hsLabel).filter(Boolean));
 
@@ -303,7 +318,7 @@ const myPlayerIndex = isMapGuest ? myMapPlayerIndex : 0;
         sliceTiles: player.sliceTiles.map(label => label === shiftRule.from ? shiftRule.to : label),
       };
     });
-  }, [factions, playerCount]);
+  }, [factions, isLargeGalaxy, playerCount]);
 
   const allDraftedKeySet = useMemo(() => {
     const s = new Set();
@@ -321,13 +336,13 @@ const myPlayerIndex = isMapGuest ? myMapPlayerIndex : 0;
     if (!el) return;
     const update = () => {
       const { width, height } = el.getBoundingClientRect();
-      if (width && height) setFitScale(Math.min((width - 24) / CANVAS_W, (height - 24) / CANVAS_H));
+      if (width && height) setFitScale(Math.min((width - 24) / canvasW, (height - 24) / canvasH));
     };
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [canvasH, canvasW]);
 
   // ── Mode selection state ────────────────────────────────────────────────
   const [mode, setMode] = useState(null); // null | "random" | "mantis"
@@ -390,7 +405,7 @@ const myPlayerIndex = isMapGuest ? myMapPlayerIndex : 0;
     const next = applyClockwiseGapShift(placed, players);
     const remaining = shuffleArray([...fillPool]);
     let ri = 0;
-    MAP_3RING.forEach(({ label }) => {
+    mapPositions.forEach(({ label }) => {
       if (label === "000" || next[label]) return;
       if (remaining[ri]) next[label] = remaining[ri++];
     });
@@ -401,6 +416,24 @@ const myPlayerIndex = isMapGuest ? myMapPlayerIndex : 0;
   // ── NEW: hyperlane fill ────────────────────────────────────────────────
   const doFillHyperlanes = () => {
     const next = { ...placed };
+
+    if (isLargeGalaxy && playerCount === 7) {
+      const sevenPlayerGapHyperlanes = {
+        "412": "86a_Hyperlane",
+        "310": "88a_Hyperlane",
+        "414": "88a240_Hyperlane",
+        "309": "84a300_Hyperlane",
+        "311": "84a_Hyperlane",
+      };
+      Object.entries(sevenPlayerGapHyperlanes).forEach(([label, key]) => {
+        if (!next[label]) next[label] = key;
+      });
+      setPlaced(next);
+      setFillDone(true);
+      return;
+    }
+
+
     const HS_ALL = ["301", "304", "307", "310", "313", "316"];
     const occupiedHS = new Set(players.map(p => p.hsLabel).filter(Boolean));
 
@@ -581,7 +614,7 @@ useEffect(() => {
     players.forEach(p => {
       if (!p.hsLabel) return;
       const planets = [];
-      (ADJACENCY[p.hsLabel] ?? []).forEach(n => {
+      (adjacency[p.hsLabel] ?? []).forEach(n => {
         const key = placed[n];
         if (key && key !== "112_Mecatol") {
           getTilePlanets(key).forEach(planet => planets.push(planet));
@@ -595,7 +628,7 @@ useEffect(() => {
       };
     });
     return stats;
-  }, [players, placed]);
+  }, [adjacency, players, placed]);
 
   // Which labels are each player's slice (for coloring empty slots)
   const sliceOwner = useMemo(() => {
@@ -614,14 +647,14 @@ useEffect(() => {
 
 
   const mapString = useMemo(() => {
-    const tokens = ["000", ...MAP_3RING.slice(1).map(p => p.label)]
+    const tokens = ["000", ...mapPositions.slice(1).map(p => p.label)]
       .map(lbl => {
         const key = placedForExport[lbl];
         if (!key) return "0";
         return key.split("_")[0];
       });
     return `{${tokens[0]}} ${tokens.slice(1).join(" ")}`;
-  }, [placedForExport]);
+  }, [mapPositions, placedForExport]);
 
   const [copied, setCopied] = useState(false);
   const copyMap = () => {
@@ -709,8 +742,8 @@ useEffect(() => {
 
         {/* Map viewport */}
         <div ref={viewportRef} style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", padding:12, position:"relative" }}>
-          <div style={{ position:"relative", width:CANVAS_W, height:CANVAS_H, flexShrink:0, transform:`scale(${fitScale})`, transformOrigin:"center" }}>
-            {MAP_3RING.map(({ label, x, y }) => {
+          <div style={{ position:"relative", width:canvasW, height:canvasH, flexShrink:0, transform:`scale(${fitScale})`, transformOrigin:"center" }}>
+            {mapPositions.map(({ label, x, y }) => {
               const key = placed[label];
               const cx = OX + x, cy = OY + y;
               const hexH = D;
@@ -816,7 +849,7 @@ useEffect(() => {
 {(() => {
   const myPlayersArrayIndex = !multiplayer
   ? -1  // solo: isMyTurn will be overridden below
-  : players.findIndex(p => p.factionIdx === myMapPlayerIndex);
+  : players.findIndex(p => p.multiplayerSlotId === multiplayer.mySlotId);
 
 const isMyTurn = !multiplayer  // solo always shows buttons
   ? true
