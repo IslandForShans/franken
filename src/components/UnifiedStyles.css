@@ -670,6 +670,25 @@ body {
 
 /* Mobile / small-screen sidebar behavior */
 @media (max-width: 767px) {
+  /* Allow component item inner row to wrap so icons don't crush the name */
+.sidebar-component-item .flex {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Let the name span grow and wrap instead of overflowing */
+.sidebar-component-item .flex > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Keep icons from shrinking */
+.sidebar-component-item .flex > img {
+  flex-shrink: 0;
+}
+
   /* Off-canvas sidebar on mobile */
   .sidebar {
     position: fixed;
