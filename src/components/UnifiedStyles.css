@@ -671,22 +671,33 @@ body {
 /* Mobile / small-screen sidebar behavior */
 @media (max-width: 767px) {
   /* Allow component item inner row to wrap so icons don't crush the name */
-.sidebar-component-item .flex {
-  flex-wrap: wrap;
-  align-items: center;
+.sidebar-component-item {
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Let the name span grow and wrap instead of overflowing */
-.sidebar-component-item .flex > span {
+/* Force the inner flex row to fill available width and stay on one line */
+.sidebar-component-item .flex.items-center {
+  width: 100%;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+/* Name span: grow to fill space, truncate with ellipsis if too long */
+.sidebar-component-item .flex.items-center > span {
   flex: 1 1 auto;
   min-width: 0;
-  word-break: break-word;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Keep icons from shrinking */
-.sidebar-component-item .flex > img {
+/* Keep icons at their intended size, never shrink them */
+.sidebar-component-item .flex.items-center > img {
   flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  min-width: 1.25rem;
 }
 
   /* Off-canvas sidebar on mobile */
