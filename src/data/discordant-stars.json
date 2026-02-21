@@ -6,6 +6,7 @@
         {
           "id": "augurs_oracle",
           "name": "Oracle AI",
+          "tier": "D",
           "description": "After the speaker reveals an unrevealed public objective, choose 1 unrevealed public objective card and place that card on your faction sheet. You may look at the card on your faction sheet at any time."
         
         },
@@ -26,6 +27,7 @@
         {
           "id": "augurs_psychographics",
           "name": "Psychographics",
+          "tier": "D",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green", "Green"],
           "description": "During the status phase, you may score 1 additional public objective instead of a secret objective."
@@ -33,6 +35,7 @@
         {
           "id": "augurs_sdp",
           "name": "Sentient Datapool",
+          "tier": "A",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "At the start of the status phase, you may spend 3 trade goods to research 1 technology."
@@ -42,6 +45,7 @@
         {
           "id": "augurs_agent",
           "name": "Clodho - Speaker",
+          "tier": "D",
           "description": "After a player explores a legendary planet or a plane that has a technology specialty, you may exhaust this card to allow that player to gain 2 trade goods."
         }
       ],
@@ -49,6 +53,7 @@
         {
           "id": "augurs_commander",
           "name": "Lachis - Reader",
+          "tier": "C",
           "note": "[UNLOCK: Win a combat in a system that contains a legendary planet or a planet that has a technology specialty.]",
           "description": "This card satisfies a yellow technology prerequisite. When you cast at least 1 vote, cast 1 additional vote for every 2 technologies you own."
         }
@@ -72,6 +77,7 @@
         {
           "id": "augurs_fs",
           "name": "Nemsys",
+          "tier": "C",
           "cost": 8,
           "combat": 5,
           "move": 1,
@@ -84,6 +90,7 @@
         {
           "id": "augurs_mech",
           "name": "Iledrith",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -94,6 +101,7 @@
         {
           "id": "augurs_starting_tech",
           "name": "Augurs Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Scanlink Drone Network",
@@ -110,6 +118,7 @@
         {
           "id": "augurs_starting_fleet",
           "name": "Augurs Starting Flet",
+          "tier": "C",
           "description": "1 Carrier, 2 Destroyers, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -117,6 +126,7 @@
         {
           "id": "augurs_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": "3"
         }
       ],
@@ -124,6 +134,7 @@
         {
           "id": "augurs_hs",
           "name": "Augurs Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Chrion",
@@ -142,6 +153,7 @@
         {
           "id": "augurs_bt",
           "name": "Cryptic Insights",
+          "tier": "B",
           "synergy": [
             {
               "primary": "Green",
@@ -158,12 +170,14 @@
         {
           "id": "bentor_sm",
           "name": "Secret Maps",
+          "tier": "D",
           "description": "At the end of your tactical actions, you may explore 1 planet in the active system that is or contains 1 or more of your units with PRODUCTION that you did not explore during that tactical action."
         
         },
         {
           "id": "bentor_fortune_seekers",
           "name": "Fortune Seekers",
+          "tier": "A",
           "description": "Once per action, after you explore a planet or frontier token, you may gain 1 commodity."
         
         },
@@ -178,6 +192,7 @@
         {
           "id": "bentor_bn",
           "name": "Broker Network",
+          "tier": "C",
           "tech_type": "Green",
           "prerequisites": ["Green"],
           "description": "Each planet you control that has a technology specialty or an attachment gains the PRODUCTION 1 ability as if it were a unit."
@@ -194,6 +209,7 @@
         {
           "id": "bentor_agent",
           "name": "C.O.O. Mgur - Deft Tradesperson",
+          "tier": "A",
           "description": "ACTION: Exhaust this card and choose 1 player. For each Fragment token on your faction sheet, that player gains 1 commodity. For each commodity they would gain in excess of their commodity value, they gain 1 trade good instead."
         }
       ],
@@ -209,6 +225,7 @@
         {
           "id": "bentor_hero",
           "name": "C.E.O. Tucc - Visionary Explorer",
+          "tier": "C",
           "note": "PRIMORDIAL DATA CORE - GRAND REVEAL",
           "description": "ACTION: Purge this card to explore each planet you control, in any order."
         }
@@ -217,6 +234,7 @@
         {
           "id": "bentor_pn",
           "name": "Encryption Key",
+          "tier": "C",
           "description": "ACTION: Attach this card to a non-home planet you control. This planet has 1 technology specialty of any color."
         }
       ],
@@ -224,6 +242,7 @@
         {
           "id": "bentor_fs",
           "name": "Wayfinder",
+          "tier": "B",
           "cost": 8,
           "combat": "9(x2)",
           "move": 1,
@@ -236,6 +255,7 @@
         {
           "id": "bentor_mech",
           "name": "Auctioneer",
+          "tier": "A",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -246,6 +266,7 @@
         {
           "id": "bentor_starting_tech",
           "name": "Bentor Starting Tech",
+          "tier": "A",
           "choose_count": 2,
           "techs": [
             {
@@ -267,6 +288,7 @@
         {
           "id": "bentor_starting_fleet",
           "name": "Bentor Starting Fleet",
+          "tier": "C",
           "description": "1 Carrier, 2 Cruisers, 3 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -274,6 +296,7 @@
         {
           "id": "bentor_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": "2"
         }
       ],
@@ -281,6 +304,7 @@
         {
           "id": "bentor_hs",
           "name": "Bentor Home System",
+          "tier": "D",
           "planets": [
             {
               "name": "Benc",
@@ -299,6 +323,7 @@
         {
           "id": "bentor_bt",
           "name": "Historian Conclave",
+          "tier": "A",
           "synergy": [
             {
               "primary": "Green",
@@ -315,6 +340,7 @@
         {
           "id": "berserkers_glory",
           "name": "Glory",
+          "tier": "A",
           "description": "After you win a combat, you may place or move a Glory token into the active system, or spend 1 token from your strategy pool to research a unit upgrade technology of the same type as 1 of your units that participated in that combat."
         },
         {
@@ -348,6 +374,7 @@
         {
           "id": "berserkers_sd2",
           "name": "Star Dragon II",
+          "tier": "B",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Blue", "Blue"],
           "cost": 3,
@@ -413,6 +440,7 @@
         {
           "id": "berserkers_starting_tech",
           "name": "Berserkers Starting Tech",
+          "tier": "C",
           "description": "Choose one non-faction unit upgrade technology."
         }
       ],
@@ -420,6 +448,7 @@
         {
           "id": "berserkers_starting_fleet",
           "name": "Berserkers Starting Fleet",
+          "tier": "A",
           "description": "2 Carriers, 1 Destroyer, 4 fighters, 4 infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -427,6 +456,7 @@
         {
           "id": "berserkers_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": "3"
         }
       ],
@@ -434,6 +464,7 @@
         {
           "id": "berserkers_hs",
           "name": "Berserkers Home System",
+          "tier": "C",
           "planets": [
             {
               "name": "Kjalengard",
@@ -468,11 +499,13 @@
         {
           "id": "celdauri_pop",
           "name": "Projection of Power",
+          "tier": "D",
           "description": "At the start of any space combat in a system that is adjacent to or contains 1 or more of your space docks, choose up to 1 ship in that system to gain ANTI-FIGHTER BARRAGE 6 during that combat."
         },
         {
           "id": "celdauri_industrialists",
           "name": "Industrialists",
+          "tier": "D",
           "description": "During setup, place 1 additional space dock in your reinforcements."
         }
       ],
@@ -480,6 +513,7 @@
         {
           "id": "celdauri_emp",
           "name": "Emergency Mobilization Protocols",
+          "tier": "C",
           "tech_type": "Red",
           "prerequisites": ["Red", "Red"],
           "description": "At the end of your turn, you may exhaust this card and spend 1 token from your strategy pool to remove a command token from a system that contains 1 or more of your space docks."
@@ -493,6 +527,7 @@
         {
           "id": "celdauri_tp2",
           "name": "Trade Port II",
+          "tier": "B",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Yellow", "Yellow"],
           "abilities": ["Anti-Fighter Barrage 6(x2)", "PRODUCTION X+4"],
@@ -503,6 +538,7 @@
         {
           "id": "celdauri_agent",
           "name": "George Nobin - Esteemed Merchantman",
+          "tier": "C",
           "description": "At the end of a player's tactical action: You may exhaust this card to allow that player to spend 2 trade goods or 2 commodities to place 1 spacedock from their reinforcements on a planet they control in the active system."
         }
       ],
@@ -510,6 +546,7 @@
         {
           "id": "celdauri_commander",
           "name": "Henry Storcher - Starbase Commander",
+          "tier": "C",
           "note": "[UNLOCK: Have 1 space dock on the game board that is not adjacent to your home system.]",
           "description": "After you activate a system that contains 1 or more of your space docks, gain 1 commodity. Your ships may treat systems that contain 1 or more of your space docks as adjacent to each other."
         }
@@ -518,6 +555,7 @@
         {
           "id": "celdauri_hero",
           "name": "Titus Flavius - Councilman",
+          "tier": "D",
           "note": "TRADER MOBILIZATION ACT - MERCHANT REARAMENT",
           "description": "After a player activates a system other than Mecatol Rex: You may place 1 space dock on a planet you control in the active system, convert each of your commodities to a trade good, and use the PRODUCTION ability of each of your units in the active system. Then, purge this card."
         }
@@ -526,6 +564,7 @@
         {
           "id": "celdauri_pn",
           "name": "Trade Alliance",
+          "tier": "B",
           "description": "When you receive this card, if you are not the Celdauri player, you must place it face up in your play area. While this card is in your play area, you can use the Celdauri player's commander ability, if it is unlocked. If you activate a system that contains 1 or more of the Celdauri player's units, return this card to the Celdauri player."
         }
       ],
@@ -533,6 +572,7 @@
         {
           "id": "celdauri_fs",
           "name": "Supremacy",
+          "tier": "B",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -545,6 +585,7 @@
         {
           "id": "celdauri_mech",
           "name": "Minuteman",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -555,6 +596,7 @@
         {
           "id": "celdauri_starting_tech",
           "name": "Celdauri Starting Tech",
+          "tier": "A",
           "choose_count": 2,
           "techs": [
             {
@@ -576,6 +618,7 @@
         {
           "id": "celdauri_starting_fleet",
           "name": "Celdauri Starting Fleet",
+          "tier": "B",
           "description": "2 Carriers, 1 Destroyer, 4 Fighters, 3 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -583,6 +626,7 @@
         {
           "id": "celdauri_comms",
           "name": "Commodities", 
+          "tier": "A",
           "description": "4"
         }
       ],
@@ -590,6 +634,7 @@
         {
           "id": "celdauri_hs",
           "name": "Celdauri Home System",
+          "tier": "C",
           "planets": [
             {
               "name": "Louk",
@@ -608,6 +653,7 @@
         {
           "id": "celdauri_bt",
           "name": "Trade Protectorate",
+          "tier": "S",
           "synergy": [
             {
               "primary": "Yellow",
@@ -624,11 +670,13 @@
         {
           "id": "cheiran_teeming",
           "name": "Teeming",
+          "tier": "C",
           "description": "During setup, place 2 additional dreadnoughts and 1 additional mech in your reinforcements."
         },
         {
           "id": "cheiran_moult",
           "name": "Moult",
+          "tier": "B",
           "description": "After you win a space combat as the defender, you may produce 1 ship in the active system, reducing the cost by 1 for each of your non-fighter ships destroyed during that combat."
         },
         {
@@ -658,6 +706,7 @@
         {
           "id": "cheiran_ch2",
           "name": "Chitin Hulk II",
+          "tier": "C",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Blue", "Blue", "Yellow"],
           "cost": 4,
@@ -672,6 +721,7 @@
         {
           "id": "cheiran_agent",
           "name": "Operator Kkavras - Subspace Grapple",
+          "tier": "A",
           "description": "At the end of a player's turn: Exhaust this card to allow that player to remove 1 of their command tokens from the game board and place that token in an adjacent system that contains 1 or more of their structures and none of their command tokens."
         }
       ],
@@ -679,6 +729,7 @@
         {
           "id": "cheiran_commander",
           "name": "Spc. Phquaiset - Alloyed Carapace",
+          "tier": "C",
           "note": "[UNLOCK: Have 4 structures on non-home planets.]",
           "description": "While you are the defender during ground combat: After your opponent produces 1 or more hits against your units, you may spend 1 commodity or 1 trade good to cancel 1 of those hits."
         }
@@ -687,6 +738,7 @@
         {
           "id": "cheiran_hero",
           "name": "Thakt Clqua - Polemarch",
+          "tier": "A",
           "note": "CONTINGENCY PLAN - BIOMASS EVENT",
           "description": "ACTION: Gather units from your reinforcements up to equal to your starting units. Place these units, in any combination, in the space area of any systems that contain 1 of your structures and no other players' ships, or on planets you control. Then, purge this card."
         }
@@ -695,6 +747,7 @@
         {
           "id": "cheiran_pn",
           "name": "Carcinisation",
+          "tier": "D",
           "description": "When 1 of your non-fighter ships is destroyed during combat in a system: You may place 2 fighters from your reinforcements in the space area of that system. At the end of that combat, return this card to the Cheiran Hordes player."
         }
       ],
@@ -702,6 +755,7 @@
         {
           "id": "cheiran_fs",
           "name": "Lithodax",
+          "tier": "C",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -714,6 +768,7 @@
         {
           "id": "cheiran_mech",
           "name": "Nauplius",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -724,6 +779,7 @@
         {
           "id": "cheiran_starting_tech",
           "name": "Cheiran Starting Tech",
+          "tier": "C",
           "choose_count": 1,
           "techs": [
             {
@@ -741,6 +797,7 @@
         {
           "id": "cheiran_starting_fleet",
           "name": "Cheiran Starting Fleet",
+          "tier": "B",
           "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 2 fighters, 2 infantry, 1 Mech, 1 Space Dock"
         }
       ],
@@ -773,6 +830,7 @@
         {
           "id": "cheiran_bt",
           "name": "Matriphagy",
+          "tier": "B",
           "synergy": [
             {
               "primary": "Blue",
@@ -789,11 +847,13 @@
         {
           "id": "dih-mohn_cf",
           "name": "Capital Fleet",
+          "tier": "D",
           "description": "Destroyers count as 1/2 of a ship against oyur fleet pool."
         },
         {
           "id": "dih-mohn_me",
           "name": "Migrant Explorers",
+          "tier": "D",
           "description": "After you explore a frontier token in any system, you may explore a planet you control that is adjacent to that system."
         },
         {
@@ -806,6 +866,7 @@
         {
           "id": "dih-mohn_ip",
           "name": "Impressment Programs",
+          "tier": "B",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "When you explore a planet, you may produce 1 ship in that planet's system. ACTION: Exhaust this card and 1 planet you control to explore that planet."
@@ -823,6 +884,7 @@
         {
           "id": "dih-mohn_a2",
           "name": "Aegis II",
+          "tier": "C",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Blue", "Blue", "Yellow"],
           "cost": 4,
@@ -844,6 +906,7 @@
         {
           "id": "dih-mohn_commander",
           "name": "Clona Bathru - Founder of Bathru Robotics",
+          "tier": "C",
           "note": "[UNLOCK: Research a ship unit upgrade technology.]",
           "description": "This card satisfies a red tehcnology prerequisite. At the start of a space combat in a system that contains 3 or more different types of your non-fighter ships, produce 1 hit against your opponent's ships."
         }
@@ -860,6 +923,7 @@
         {
           "id": "dih-mohn_pn",
           "name": "Combat Drills",
+          "tier": "C",
           "description": "When 1 of your ships would be destroyed: Instead of destroying that ship, place this card face up in your play area. Return this card to the Dih-Mohn player at the start of the status phase."
         }
       ],
@@ -867,6 +931,7 @@
         {
           "id": "dih-mohn_fs",
           "name": "Maximus",
+          "tier": "A",
           "cost": 8,
           "combat": "5(x2)",
           "move": 1,
@@ -879,6 +944,7 @@
         {
           "id": "dih-mohn_mech",
           "name": "Repairitor",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -889,6 +955,7 @@
         {
           "id": "dih-mohn_starting_tech",
           "name": "Dih-Mohn Starting Tech",
+          "tier": "A",
           "techs": [
             {
               "name": "Dark Energy Tap",
@@ -905,6 +972,7 @@
         {
           "id": "dih-mohn_starting_fleet",
           "name": "Dih-Mohn Starting Fleet",
+          "tier": "D",
           "description": "2 Dreadnoughts, 2 Destroyers, 2 Fighters, 2 Infantry, 1 Mech, 1 Space Dock"
         }
       ],
@@ -912,6 +980,7 @@
         {
           "id": "di-mohn_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": "2"
         }
       ],
@@ -919,6 +988,7 @@
         {
           "id": "dih-mohn_hs",
           "name": "Dih-Mohn Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Abyssus",
@@ -932,6 +1002,7 @@
         {
           "id": "dih-mohn_bt",
           "name": "Exodus Engineering",
+          "tier": "A",
           "synergy": [
             {
               "primary": "Blue",
@@ -948,6 +1019,7 @@
         {
           "id": "edyn_grace",
           "name": "Grace",
+          "tier": "A",
           "description": "Once per action phase, after you resolve the primary ability of a strategy card, you may resolve the secondary ability of 1 readied or unchosen strategy card with a lower printed initiative number than that strategy card."
         },
         {
@@ -965,6 +1037,7 @@
         {
           "id": "edyn_ua",
           "name": "Unity Algorithm",
+          "tier": "D",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green", "Green"],
           "description": "Once per agenda phase, after an agenda is revealed, you may predict aloud an outcome of that agenda. If your prediction is correct, you may score 1 public objective if you fulfill its requirements; each other player who voted for that outcome draws 1 secret objective."
@@ -972,6 +1045,7 @@
         {
           "id": "edyn_eth",
           "name": "Encrypted Trade Hub",
+          "tier": "C",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "You may exhaust this card to allow a player to exchange 1 of their relocs or agendas as part of a transaction. You always vote last during the agenda phase. When an outcome you voted for or predicted is resolved, each player who voted for that outcome gains 1 commodity."
@@ -981,6 +1055,7 @@
         {
           "id": "edyn_agent",
           "name": "Allant - Elder Voice",
+          "tier": "D",
           "description": "After a player passes: You may exhaust this card to choose 1 player; that player may perform up to 1 action. Then, look at the top card of the agenda deck; you may discard that agenda card."
         }
       ],
@@ -988,6 +1063,7 @@
         {
           "id": "edyn_commander",
           "name": "Kadryn - Highest Grace",
+          "tier": "D",
           "note": "[UNLOCK: Have 1 or more laws in play.]",
           "description": "When any game effect would allow you to score a public objective, you may instead draw 1 secret objective."
         }
@@ -996,6 +1072,7 @@
         {
           "id": "edyn_hero",
           "name": "Midir - Living Will",
+          "tier": "B",
           "note": "[Franken Only] GOLDEN ORDER - PEACE ETERNAL",
           "description": "ACTION: For each system with at least one of your mechs on the game board, draw 1 agenda. Reveal and resolve each agenda in any order as if you had cast 1 vote for an outcome of your choice. Other players cannot resolve abilities during this action. Then, purge this card."
         }
@@ -1004,6 +1081,7 @@
         {
           "id": "edyn_pn",
           "name": "Edyn Rider",
+          "tier": "C",
           "description": "After an agenda is revealed: You cannot vote on this agenda. Predict aloud the outcome of this agenda. If your prediction is correct, place 1 command token from another player's reinforcements in a system that contains your units. Then, return this card to the Edyn player,"
         }
       ],
@@ -1011,6 +1089,7 @@
         {
           "id": "edyn_fs",
           "name": "Kaliburn",
+          "tier": "C",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -1023,6 +1102,7 @@
         {
           "id": "edyn_mech",
           "name": "Rune Bearer",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -1033,6 +1113,7 @@
         {
           "id": "edyn_starting_tech",
           "name": "Edyn Starting Tech",
+          "tier": "A",
           "description": "Choose any 3 technologies that have different colors and no prerequisites."
         }
       ],
@@ -1040,13 +1121,15 @@
         {
           "id": "edyn_starting_fleet",
           "name": "Edyn Starting Fleet",
+          "tier": "D",
           "description": "1 Carrier, 2 Destroyers, 4 Fighters, 3 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
       "commodity_values": [
         {
           "id": "edyn_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
+          "tier": "C", 
           "description": "3"
         }
       ],
@@ -1054,6 +1137,7 @@
         {
           "id": "edyn_hs",
           "name": "Edyn Home System",
+          "tier": "A",
           "planets": [
             {
               "name": "Edyn",
@@ -1077,6 +1161,7 @@
         {
           "id": "edyn_bt",
           "name": "Celestial Ambassadors",
+          "tier": "D",
           "synergy": [
             {
               "primary": "Green",
@@ -1093,16 +1178,19 @@
         {
           "id": "florzen_merc",
           "name": "Mercenaries",
+          "tier": "D",
           "description": "At the start of a space combat, you may remove up to 2 fighters you control in a system adjacent to the active system. Then, choose 1 player participating in that combat; that player places the same number of fighters from their reinforcements in the active system."
         },
         {
           "id": "florzen_dl",
           "name": "Data Leak",
+          "tier": "D",
           "description": "When you would gain a relic, you may draw 1 additional card; choose 1 to gain and return the rest to the relic deck. The, shuffle the relic deck."
         },
         {
           "id": "florzen_sm",
           "name": "Shadow Markets",
+          "tier": "C",
           "description": "When you explore a planet, you may treat that planet as if it had the same trat as another planet you control."
         }
       ],
@@ -1126,6 +1214,7 @@
         {
           "id": "florzen_c2",
           "name": "Corsair II",
+          "tier": "B",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Green", "Blue"],
           "cost": "1(x2)",
@@ -1146,6 +1235,7 @@
         {
           "id": "florzen_commander",
           "name": "Quaxdol Junitas - The Unseen Hand",
+          "tier": "A",
           "note": "[UNLOCK: Have the outcome you voted for or predicted on an agenda resolved.]",
           "description": "After the second agenda is revealed during the agenda phase: You may ready 1 planet you control; explore that planet, if able."
         }
@@ -1154,6 +1244,7 @@
         {
           "id": "florzen_hero",
           "name": "Banua Gowen - Administrator of Minds",
+          "tier": "D",
           "note": "SLEEPER CELLS - SHADY ACQUISITIONS",
           "description": "ACTION: Place 2 fighters from your reinforcements in each system that contains 1 or more planets you control and no other player's ships. Then, you may remove 1 attachment from any planet in a system hat contains 1 or more of your ships and attach it to 1 planet in your home system. Then, purge this card."
         }
@@ -1162,6 +1253,7 @@
         {
           "id": "flrozen_pn",
           "name": "Underground Market",
+          "tier": "C",
           "description": "When you would gain a relic: You may draw 1 additional card; choose 1 to gain and return the rest to the relic deck. Then, shuffle the relic deck. Then, return this card to the Florzen player."
         }
       ],
@@ -1169,6 +1261,7 @@
         {
           "id": "florzen_fs",
           "name": "Man O' War",
+          "tier": "D",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -1191,6 +1284,7 @@
         {
           "id": "florzen_starting_tech",
           "name": "Florzen Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Scanlink Drone Network",
@@ -1207,6 +1301,7 @@
         {
           "id": "florzen_starting_fleet",
           "name": "Florzen Starting Fleet",
+          "tier": "B",
           "description": "2 Carriers, 4 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -1214,6 +1309,7 @@
         {
           "id": "florzen_comms",
           "name": "Commodities", 
+          "tier": "A",
           "description": "4"
         }
       ],
@@ -1221,6 +1317,7 @@
         {
           "id": "florzen_hs",
           "name": "Florzen Home System",
+          "tier": "D",
           "planets": [
             {
               "name": "Delmor",
@@ -1239,6 +1336,7 @@
         {
           "id": "florzen_bt",
           "name": "Reverie Implants",
+          "tier": "B",
           "synergy": [
             {
               "primary": "Green",
@@ -1255,11 +1353,13 @@
         {
           "id": "fsc_rttc",
           "name": "Rally to the Cause",
+          "tier": "B",
           "description": "Once per action, after you produce 1 or more ships in your home system, you may produce up to 2 ships in a system that contains a cultural, hazardous, or industrial planet and does not contain a legendary planet or other players' units."
         },
         {
           "id": "fsc_diplomats",
           "name": "Diplomats",
+          "tier": "S",
           "description": "Once per action, you may exhaust 1 uncontrolled planet's planet card that is on the game board to spend its resources or influence."
         },
         {
@@ -1295,6 +1395,7 @@
         {
           "id": "fsc_commander",
           "name": "President Cyhn - Crisis Leader",
+          "tier": "C",
           "note": "[UNLOCK: Each non-legendary planet on the game board is controlled.]",
           "description": "After you gain control of a non-home planet during a tactical action: if you have 1 or more ships in the active system, you may produce 1 ship in that system."
         }
@@ -1303,6 +1404,7 @@
         {
           "id": "fsc_hero",
           "name": "Count Otto P'may - Inspiring Rhetorician",
+          "tier": "D",
           "note": "HEART OF REBELLION - FREEDOM OR DEATH",
           "description": "ACTION: Ready a non-home planet other than Mecatol Rex that you control, remove all units on that planet and attach this card to it. Units cannot be committed to, produced on, or placed on this planet."
         }
@@ -1311,6 +1413,7 @@
         {
           "id": "fsc_pn",
           "name": "Broadcast Teams",
+          "tier": "D",
           "description": "When you gain control of a planet during a tactical action: If the active system does not contain another player's ships you may produce up to 2 ships in that system. Then, return this card to the Free Systems player."
         }
       ],
@@ -1340,6 +1443,7 @@
         {
           "id": "fsc_starting_tech",
           "name": "Free Systems Compact Starting Tech",
+          "tier": "D",
           "techs": [
             {
               "name": "Psychoarchaeology",
@@ -1352,6 +1456,7 @@
         {
           "id": "fsc_starting_fleet",
           "name": "Free Systems Compact Starting Fleet",
+          "tier": "C",
           "description": "1 Carrier, 2 Cruisers, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -1359,6 +1464,7 @@
         {
           "id": "fsc_comms",
           "name": "Commodities", 
+          "tier": "A",
           "description": "4"
         }
       ],
@@ -1389,6 +1495,7 @@
         {
           "id": "fsc_bt",
           "name": "Galactic Movement",
+          "tier": "D",
           "synergy": [
             {
               "primary": "Green",
@@ -1405,11 +1512,13 @@
         {
           "id": "ghemina_tlatl",
           "name": "The Lady & The Lord",
+          "tier": "B",
           "description": "[Franken Only] During setup, place the Lady flagship token in your reinforcements with your chosen drafted flagship and place both drafted Heroes next to your faction sheet. The Lady flagship token is a second flagship unit with the abilities and attributes listed on the Lady Flagship card. You have 2 Heroes."
         },
         {
           "id": "ghemina_rot",
           "name": "Rule of Two",
+          "tier": "D",
           "description": "During a round of combat in a system that contains exactly 2 of your non-fighter ships, if those ships have the same unit type, apply +2 to the result of each of those unit's combat rolls."
         }
       ],
@@ -1417,6 +1526,7 @@
         {
           "id": "ghemina_wsi",
           "name": "War Song Implants",
+          "tier": "C",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green", "Green"],
           "description": "After you win a combat, you may ready 1 planet you control."
@@ -1432,6 +1542,7 @@
         {
           "id": "ghemina_ct2",
           "name": "Combat Transport II",
+          "tier": "A",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Blue", "Blue"],
           "cost": 3,
@@ -1474,6 +1585,7 @@
         {
           "id": "ghemina_pn",
           "name": "Raid Leaders",
+          "tier": "C",
           "description": "After you activate a system: Choose 1 non-fighter ship you control; during this action, that unit gains BOMBARDMENT 5(x2) and a capacity of 2. Return this card to the Ghemina player at the end of this action."
         }
       ],
@@ -1491,6 +1603,7 @@
         {
           "id": "ghemina_fs2",
           "name": "The Lord",
+          "tier": "A",
           "cost": 6,
           "combat": "7(x2)",
           "move": 2,
@@ -1503,6 +1616,7 @@
         {
           "id": "ghemina_mech",
           "name": "Jotun",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -1513,6 +1627,7 @@
         {
           "id": "ghemina_starting_tech",
           "name": "Ghemina Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Dark Energy Tap",
@@ -1529,6 +1644,7 @@
         {
           "id": "ghemina_starting_fleet",
           "name": "Ghemina Starting Fleet",
+          "tier": "A",
           "description": "2 Carriers, 1 Destroyer, 3 Fighters, 3 Infantry, 2 Space Docks"
         }
       ],
@@ -1536,6 +1652,7 @@
         {
           "id": "ghemina_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": "2"
         }
       ],
@@ -1543,6 +1660,7 @@
         {
           "id": "ghemina_hs",
           "name": "Ghemina Home System",
+          "tier": "D",
           "planets": [
             {
               "name": "Drah",
@@ -1561,6 +1679,7 @@
         {
           "id": "ghemina_bt",
           "name": "Raiding Parties",
+          "tier": "B",
           "synergy": [
             {
               "primary": "Green",
@@ -1587,6 +1706,7 @@
         {
           "id": "ghoti_sg",
           "name": "Spawning Grounds",
+          "tier": "S+",
           "description": "During setup, gain and ready the Ghoti planet card and its planet ability card; you cannot lose those cards."
         }
       ],
@@ -1594,6 +1714,7 @@
         {
           "id": "ghoti_nc",
           "name": "Networked Command",
+          "tier": "D",
           "tech_type": "Green",
           "prerequisites": ["Green"],
           "description": "Up to 3 ships in your home system do not count against your fleet pool. When you cast 1 or more votes, you may exhaust this card to cast an additional number of votes equal to the number of command tokens in your fleet pool."
@@ -1601,6 +1722,7 @@
         {
           "id": "ghoti_pp",
           "name": "Parallel Production",
+          "tier": "D",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow"],
           "description": "When you produce 1 or more units, you may produce 1 additional unit in each of 2 systems that contain 1 or more of your ships and 1 of your command tokens."
@@ -1610,6 +1732,7 @@
         {
           "id": "ghoti_agent",
           "name": "Becece - Caretaker of Worlds",
+          "tier": "C",
           "description": "When a player produces 1 or more units: You may exhaust this card to allow that player to either produce 2 additional units or gain 1 trade good."
         }
       ],
@@ -1617,6 +1740,7 @@
         {
           "id": "ghoti_commander",
           "name": "Ceie Doleegueaunm - Abyssal Queen",
+          "tier": "C",
           "note": "[UNLOCK: Have units in 3 systems that do not contain planets.]",
           "description": "After you activate a system: You may treat systems that contain no planets as adjacent to each other during this tactical action."
         }
@@ -1625,6 +1749,7 @@
         {
           "id": "ghoti_hero",
           "name": "Nmenmede - Ghoti All Mother",
+          "tier": "D",
           "note": "TRANSCENDENCE - THE GHOTI ARISE",
           "description": "ACTION: For each system that contains 1 or more of your non-fighter ships, you may replace 1 of your non-fighter ships in that system with a ship from your reinforcements that has a cost value of up to 2 greater than the cost value of that ship. Then, purge this card."
         }
@@ -1633,13 +1758,15 @@
         {
           "id": "ghoti_pn",
           "name": "Ghoti Relay",
+          "tier": "B",
           "description": "At the start of your turn: Place this card in your play area to produce up to 2 ships in a system that contains 1 or more of your ships. At the start of the status phase, return this card to the Ghoti player."
         }
       ],
       "flagship": [
         {
           "id": "ghoti_fs",
-          "name": "All Mother",
+          "name": "All-Mother",
+          "tier": "S+",
           "cost": 6,
           "combat": "7(x2)",
           "move": 1,
@@ -1652,6 +1779,7 @@
         {
           "id": "ghoti_mech",
           "name": "Tioleombp",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -1662,6 +1790,7 @@
         {
           "id": "ghoti_starting_tech",
           "name": "Ghoti Starting Tech",
+          "tier": "A",
           "choose_count": 1,
           "techs": [
             {
@@ -1679,6 +1808,7 @@
         {
           "id": "ghoti_starting_fleet",
           "name": "Ghoti Starting Fleet",
+          "tier": "S",
           "description": "1 Flagship, 1 Cruiser, 2 Fighters, 3 Infantry"
         }
       ],
@@ -1686,6 +1816,7 @@
         {
           "id": "ghoti_comms",
           "name": "Commodities", 
+          "tier": "A",
           "description": "4"
         }
       ],
@@ -1704,6 +1835,7 @@
         {
           "id": "ghoti_bt",
           "name": "Cult of the All-Mother",
+          "tier": "C",
           "synergy": [
             {
               "primary": "Green",
@@ -1720,6 +1852,7 @@
         {
           "id": "gledge_mc",
           "name": "Mantle Cracking",
+          "tier": "S",
           "description": "ACTION: Place 1 'Core' token on a non-home planet you control other than Mecatol Rex that does not contain a Core token to gain up to 4 trade goods."
         },
         {
@@ -1737,6 +1870,7 @@
         {
           "id": "gledge_ld",
           "name": "Lightning Drives",
+          "tier": "D",
           "tech_type": "Blue",
           "prerequisites": ["Blue", "Blue", "Blue"],
           "description": "During movement, you may increase the move value of each of your non-fighter ships not transporting any fighters or infantry by 1."
@@ -1750,6 +1884,7 @@
         {
           "id": "gledge_op2",
           "name": "Orion Platform II",
+          "tier": "D",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Red", "Yellow"],
           "abilities": ["Planetary Shield", "Space Cannon 5"],
@@ -1760,6 +1895,7 @@
         {
           "id": "gledge_agent",
           "name": "Durran - Ember of the Union",
+          "tier": "C",
           "description": "When 1 or more of a player's units use PRODUCTION: You may exhaust this card to apply +3 to the total PRODUCTION value of that player's units."
         }
       ],
@@ -1767,6 +1903,7 @@
         {
           "id": "gledge_commander",
           "name": "Voldun - Forge Lord",
+          "tier": "C",
           "note": "[UNLOCK: Control non-fighter ships with a cost of at least 10 in 1 system.]",
           "description": "When you use the PRODUCTION of 1 or more of your units, you may increase the total PRODUCTION value of those units by 1 for each space dock you control."
         }
@@ -1775,6 +1912,7 @@
         {
           "id": "gledge_hero",
           "name": "Gorthrim - Chief of Expeditions",
+          "tier": "D",
           "note": "MAGNUM OPUS - WORLD SHAPERS",
           "description": "ACTION: Reveal cards from any non-frontier exploration decks until you reveal up to 3 attachments, if able; attach those cards to any planets you control of the corresponding planet type, and discard the rest. Then, purge this card."
         }
@@ -1783,6 +1921,7 @@
         {
           "id": "gledge_pn",
           "name": "GLEdge Base",
+          "tier": "C",
           "description": "ACTION: Attach this card to a non-home planet you control. This planet's resource value is increased by 2."
         }
       ],
@@ -1790,6 +1929,7 @@
         {
           "id": "gledge_fs",
           "name": "Beg Bersha",
+          "tier": "C",
           "cost": 8,
           "combat": 7,
           "move": 1,
@@ -1802,6 +1942,7 @@
         {
           "id": "gledge_mech",
           "name": "Exodriller",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -1812,6 +1953,7 @@
         {
           "id": "gledge_starting_tech",
           "name": "GLEdge Starting Tech",
+          "tier": "A",
           "choose_count": 2,
           "techs": [
             {
@@ -1833,6 +1975,7 @@
         {
           "id": "gledge_starting_fleet",
           "name": "GLEdge Starting Fleet",
+          "tier": "B",
           "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 3 Fighters, 2 Infantry, 1 Mech, 1 Space Dock"
         }
       ],
@@ -1840,6 +1983,7 @@
         {
           "id": "gledge_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": "2"
         }
       ],
@@ -1847,6 +1991,7 @@
         {
           "id": "gledge_hs",
           "name": "GLEdge Home System",
+          "tier": "D",
           "planets": [
             {
               "name": "Last Stop",
@@ -1876,6 +2021,7 @@
         {
           "id": "glimmer_facsimile",
           "name": "Facsimile",
+          "tier": "C",
           "description": "At the start of a space combat while you are the defender, you may spend influence equal to the cost value of 1 of your opponent's ships in the active system to place 1 unit of that type from your reinforcements in that system."
         },
         {
@@ -1895,6 +2041,7 @@
         {
           "id": "glimmer_fg",
           "name": "Fabrication Grid",
+          "tier": "C",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "Each system that contains 1 or more of your ships and no planets gains PRODUCTION 2 as if it were a unit you control."
@@ -1904,6 +2051,7 @@
         {
           "id": "glimmer_agent",
           "name": "Walik - Dull Green",
+          "tier": "D",
           "description": "When a player produces 1 or mroe units in a system: You may exhaust this card to allow that player to place 1 of the produced units in the space area of an adjacent system that does not contain another player's ships."
         }
       ],
@@ -1911,6 +2059,7 @@
         {
           "id": "glimmer_commander",
           "name": "Komat - Vibrant Blue",
+          "tier": "D",
           "note": "[UNLOCK: Have ships in 3 or more system not adjacent to or including your home system.]",
           "description": "At the start of a space combat while you are not the active player: Choose 1 of your non-fighter ships in the active system to gain SUSTAIN DAMAGE until the end of combat."
         }
@@ -1919,6 +2068,7 @@
         {
           "id": "glimmer_hero",
           "name": "Bayan - Deep Magenta",
+          "tier": "C",
           "note": "WEAVELINK REPLICATOR - TWO BY TWO",
           "description": "ACTION: Purge this card to choose 1 ship you control in each system; for each of those units, you may place 1 unit of that type from your reinforcements in the space area of that unit's system, if able."
         }
@@ -1927,6 +2077,7 @@
         {
           "id": "glimmer_pn",
           "name": "Secrets of the Weave",
+          "tier": "D",
           "description": "At the start of a space combat while you are the defender: You may spend influence equal to the cost value of 1 of your opponent's ships in the active system to place 1 unit of that type from your reinforcements in that system. Then, return this card to the Mortheus player."
         }
       ],
@@ -1934,6 +2085,7 @@
         {
           "id": "glimmer_fs",
           "name": "Particle Sieve",
+          "tier": "C",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -1946,6 +2098,7 @@
         {
           "id": "glimmer_mech",
           "name": "Duuban",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -1956,6 +2109,7 @@
         {
           "id": "glimmer_starting_tech",
           "name": "Glimmer Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Dark Energy Tap",
@@ -1972,6 +2126,7 @@
         {
           "id": "glimmer_starting_fleet",
           "name": "Glimmer Starting Fleet",
+          "tier": "C",
           "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 2 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -1979,6 +2134,7 @@
         {
           "id": "glimmer_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": "3"
         }
       ],
@@ -1986,6 +2142,7 @@
         {
           "id": "glimmer_hs",
           "name": "Glimmer Home System",
+          "tier": "A",
           "planets": [
             {
               "name": "Biaheo",
@@ -2005,6 +2162,7 @@
         {
           "id": "glimmer_bt",
           "name": "Mirage Craft",
+          "tier": "C",
           "synergy": [
             {
               "primary": "Yellow",
@@ -2021,6 +2179,7 @@
         {
           "id": "kyro_contagion",
           "name": "Contagion",
+          "tier": "B",
           "description": "After you resolve the primary or secondary ability of the 'Politics' strategy card. Commit 1 infantry from your reinforcements to a planet that is in or adjacent to a system that contains a planet you control; resolve invasion on that planet."
         },
         {
@@ -2045,6 +2204,7 @@
         {
           "id": "kyro_vp",
           "name": "Vector Programs",
+          "tier": "D",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow"],
           "description": "At the start of the strategy phase, you may place any number of your trade goods on any combination of strategy cards. Then, place 2 trade goods from the supply on 1 strategy card."
@@ -2054,6 +2214,7 @@
         {
           "id": "kyro_agent",
           "name": "Tox - Plague Queen",
+          "tier": "B",
           "description": "After a player loses or draws a ground combat: You may exhaust this card to allow that player to replenish their commodities; place a number of infantry equal to 1 less than their commodity value on a planet you control."
         }
       ],
@@ -2061,6 +2222,7 @@
         {
           "id": "kyro_commander",
           "name": "Silas Deriga - Necrosage",
+          "tier": "D",
           "note": "[UNLOCK: Have 6 infantry and 6 fighters on the game board.]",
           "description": "When you cast votes: Remove up to 4 of your infantry from the game board to cast 1 additional vote for each infantry removed."
         }
@@ -2077,6 +2239,7 @@
         {
           "id": "kyro_pn",
           "name": "Kyro Rider",
+          "tier": "B",
           "description": "After an agenda is revealed: You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, place 3 infantry form your reinforcements on a planet you contrl. Then, return this card to the Kyro player."
         }
       ],
@@ -2084,6 +2247,7 @@
         {
           "id": "kyro_fs",
           "name": "Auriga",
+          "tier": "B",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -2096,6 +2260,7 @@
         {
           "id": "kyro_mech",
           "name": "Pustule",
+          "tier": "A",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -2106,6 +2271,7 @@
         {
           "id": "kyro_starting_tech",
           "name": "Kyro Starting Tech",
+          "tier": "D",
           "note": "Choose 1 of the following:",
           "techs": [
             {
@@ -2123,6 +2289,7 @@
         {
           "id": "kyro_starting_fleet",
           "name": "Kyro Starting Fleet",
+          "tier": "C",
           "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -2130,6 +2297,7 @@
         {
           "id": "kyro_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": 2
         }
       ],
@@ -2137,6 +2305,7 @@
         {
           "id": "kyro_hs",
           "name": "Kyro Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Avicenna",
@@ -2150,6 +2319,7 @@
         {
           "id": "kyro_bt",
           "name": "Strain Dispersa",
+          "tier": "B",
           "synergy": [
             {
               "primary": "Yellow",
@@ -2166,11 +2336,13 @@
         {
           "id": "kortali_zealous",
           "name": "Zealous",
+          "tier": "B",
           "description": "When you spend a command token to resolve the secondary ability of the 'Warfare' strategy card, you may resolve the primary ability instead."
         },
         {
           "id": "kortali_ruthless",
           "name": "Ruthless",
+          "tier": "C",
           "description": "At the start of a ground combat on an exhausted planet you do not control, you may produce 1 hit and assign it to 1 of your opponent's ground forces on that planet."
         }
       ],
@@ -2178,6 +2350,7 @@
         {
           "id": "kortali_td",
           "name": "Tempest Drive",
+          "tier": "A",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green"],
           "description": "After you win a combat in a system, you may exhaust this card to remove 1 command token from that system."
@@ -2185,6 +2358,7 @@
         {
           "id": "kortali_de",
           "name": "Deliverance Engine",
+          "tier": "C",
           "tech_type": "Red",
           "prerequisites": ["Red", "Red"],
           "description": "Once per space combat, after 1 of your non-fighter ships is destroyed, you may produce 1 hit and assign it to 1 of your opponent's non-carrier ships."
@@ -2201,6 +2375,7 @@
         {
           "id": "kortali_commander",
           "name": "Queen Lorena - Compassion and Destruction",
+          "tier": "C",
           "note": "[UNLOCK: Destroy the last of a player's units in a system.]",
           "description": "During the first round of ground combat, you may cancel 1 hit produced against your units."
         }
@@ -2209,6 +2384,7 @@
         {
           "id": "kortali_hero",
           "name": "Queen Nadalia - Life and Death",
+          "tier": "A",
           "note": "CALLING OF THE QUEENS - MOTHER GODDESSES",
           "description": "When you win a combat: You may purge this card to choose and take up to 1 of your opponent's relics. Then, for each planet you control that is a legendary planet or has a technology specialty, gain 1 command token."
         }
@@ -2216,7 +2392,8 @@
       "promissory": [
         {
           "id": "kortali_pn",
-          "name": "Blessing of the Queen",
+          "name": "Blessing of the Queens",
+          "tier": "B",
           "description": "ACTION: Place this card faceup in your play area and remove 1 of your command tokens from the game board. At the start of the status phase, return this card to the Kortali player."
         }
       ],
@@ -2224,6 +2401,7 @@
         {
           "id": "kortali_fs",
           "name": "Magistrate",
+          "tier": "A",
           "cost": 8,
           "combat": "5(x2)",
           "move": 1,
@@ -2236,6 +2414,7 @@
         {
           "id": "kortali_mech",
           "name": "Justicar",
+          "tier": "B",
           "cost": 2,
           "combat": 5,
           "abilities": ["Planetary Shield", "Sustain Damage"],
@@ -2246,6 +2425,7 @@
         {
           "id": "kortali_starting_tech",
           "name": "Kortali Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Plasma Scoring",
@@ -2262,6 +2442,7 @@
         {
           "id": "kortali_starting_fleet",
           "name": "Kortali Starting Fleet",
+          "tier": "C",
           "description": "2 Carriers, 1 Cruiser, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -2269,6 +2450,7 @@
         {
           "id": "kortali_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": 3
         }
       ],
@@ -2276,6 +2458,7 @@
         {
           "id": "kortali_hs",
           "name": "Kortali Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Ogdun",
@@ -2294,6 +2477,7 @@
         {
           "id": "kortali_bt",
           "name": "The Queen's Wrath",
+          "tier": "A",
           "synergy": [
             {
               "primary": "Blue",
@@ -2310,6 +2494,7 @@
         {
           "id": "kollec_cf",
           "name": "Cloaked Fleets",
+          "tier": "B",
           "description": "After you produce 1 or more ships, you may place up to 2 of those ships on your faction sheet, those ships are captured."
         },
         {
@@ -2320,6 +2505,7 @@
         {
           "id": "kollec_th",
           "name": "Treasure Hunters",
+          "tier": "D",
           "description": "At the start of your turn, you may look at the top card of the cultural, hazardous, or industrial exploration deck. Then, look at the top card of the relic deck."
         }
       ],
@@ -2327,6 +2513,7 @@
         {
           "id": "kollec_sd",
           "name": "Seeker Drones",
+          "tier": "D",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "ACTION: Exhaust this card to choose 1 of your neighbors that has 1 or more relic fragments. That player gains 2 trade goods and msut give you 1 of those relic fragments of your choice."
@@ -2334,6 +2521,7 @@
         {
           "id": "kollec_ss",
           "name": "Shroud Skirmishers",
+          "tier": "D",
           "tech_type": "Blue",
           "prerequisites": ["Blue"],
           "description": "At the start of space combat, you may choose 1 of your ships in the active system that did not begin this action in that system; roll a die. On a result equal to or greater than that ship's combat value, produce 1 hit; your opponent must assign it to 1 of their ships."
@@ -2343,6 +2531,7 @@
         {
           "id": "kollec_agent",
           "name": "Captain Dust - Artifact Broker",
+          "tier": "C",
           "description": "At the start of a player's turn: You may exhaust this card to allow that player to reveal the top 2 cards on an exploration deck that matches a planet they control; they gain any relic fragments that they revealed and discard the rest."
         }
       ],
@@ -2350,6 +2539,7 @@
         {
           "id": "kollec_commander",
           "name": "Kado S'mah-Qar - Coordinator",
+          "tier": "C",
           "note": "[UNLOCK: Have 4 relic fragments.]",
           "description": "This card satisfies a blue technology prerequisite. When you retreat, if the active systemdoes not contain 1 of your command tokens, you do not place a command token in the system your ships retreated to."
         }
@@ -2358,6 +2548,7 @@
         {
           "id": "kollec_hero",
           "name": "Dorrahn Griphyn - The Collector",
+          "tier": "B",
           "note": "SHADOWCASTER - STEALTH EXPEDITION",
           "description": "ACTION: Draw a number of relic cards equal to the number of players in the game, choose 1 to gain, and return the rest to the relic deck. Then, shuffle that deck and purge this card."
         }
@@ -2366,6 +2557,7 @@
         {
           "id": "kollec_pn",
           "name": "AI Survey",
+          "tier": "D",
           "description": "At the start of your turn: You may look at either the top card of the cultural, hazardous, and industrial exploration decks, or the top card of the relic deck. Then, return this card to the Kollec player."
         }
       ],
@@ -2373,6 +2565,7 @@
         {
           "id": "kollec_fs",
           "name": "Nightingale V",
+          "tier": "C",
           "cost": 8,
           "combat": "5(x2)",
           "move": 1,
@@ -2385,6 +2578,7 @@
         {
           "id": "kollec_mech",
           "name": "Nightshade Vanguard",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -2395,6 +2589,7 @@
         {
           "id": "kollec_starting_tech",
           "name": "Kollec Starting Tech",
+          "tier": "D",
           "techs": [
             {
               "name": "Scanlink Drone Network",
@@ -2407,6 +2602,7 @@
         {
           "id": "kollec_starting_fleet",
           "name": "Kollec Starting Fleet",
+          "tier": "D",
           "description": "2 Carriers, 1 Cruiser, 2 FIghters, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -2414,6 +2610,7 @@
         {
           "id": "kollec_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": 3
         }
       ],
@@ -2421,6 +2618,7 @@
         {
           "id": "kollec_hs",
           "name": "Kollec Home System",
+          "tier": "A",
           "planets": [
             {
               "name": "Susuros",
@@ -2434,13 +2632,14 @@
         {
           "id": "kollec_bt",
           "name": "The Collector's Museum",
+          "tier": "B",
           "synergy": [
             {
               "primary": "Green",
               "secondary": "Blue"
             }
           ],
-          "description": "When you explore a planet, you may exhaus this card to resolve a card from that exploration deck's discard pile instead; if you would discard that card, instead shuffle it into the corresponding exploration deck."
+          "description": "When you explore a planet, you may exhaust this card to resolve a card from that exploration deck's discard pile instead; if you would discard that card, instead shuffle it into the corresponding exploration deck."
         }
       ]
     },
@@ -2455,11 +2654,13 @@
         {
           "id": "lanefir_iconoclasm",
           "name": "Iconoclasm",
+          "tier": "D",
           "description": "When researching a non-unit upgrade technology, you may purge 1 of your relic fragments to ignore 1 prerequisite on the technology you are researching."
         },
         {
           "id": "lanefir_ws",
           "name": "War Stories",
+          "tier": "A",
           "description": "Once per action, after you win a combat, you may explore 1 planet you control, or if the active system does not contain any planets, the frontier exploration deck in the active system."
         }
       ],
@@ -2467,6 +2668,7 @@
         {
           "id": "lanefir_st",
           "name": "Spark Thrusters",
+          "tier": "B",
           "tech_type": "Blue",
           "prerequisites": ["Blue", "Blue"],
           "description": "ACTION: Spend 1 command token form your strategy pool or purge 1 relic fragment to move 1 of your ships to an adjacent system that contains no other player's ships. If you spent a command token, exhaust this card."
@@ -2483,6 +2685,7 @@
         {
           "id": "lanefir_agent",
           "name": "Vassa Hagi - Plunderer of Lost Arks",
+          "tier": "D",
           "description": "When a player explores, you may exhaust this card to allow that player to discard 1 exploration card they drew and draw another."
         }
       ],
@@ -2490,6 +2693,7 @@
         {
           "id": "lanefir_commander",
           "name": "Master Halbert - Quartermaster",
+          "tier": "D",
           "note": "[UNLOCK: 7 relic fragments have been purged.]",
           "description": "After you explore a planet: You may place 1 infantry form your reinforcements on that planet."
         }
@@ -2498,6 +2702,7 @@
         {
           "id": "lanefir_hero",
           "name": "The Venerable - Keeper of Myths",
+          "tier": "B",
           "note": "RESONANCE CASCADE - BROKEN LEGACY",
           "description": "ACTION: Draw and reveal up to 3 relics. For each relic that started this action in a player's play area, gain 1 command token; you may swap that relic for 1 of the revealed relics or a relic in a player's play area. Then, shuffle the remaining relics into the relic deck and purge this card."
         }
@@ -2506,6 +2711,7 @@
         {
           "id": "lanefir_pn",
           "name": "Spoils of War",
+          "tier": "B",
           "description": "After you win a combat: Place this card face-up in your play area to explore 1 planet you control. At the start of the Lanefir player's turn, return this card to the Lanefir player."
         }
       ],
@@ -2513,6 +2719,7 @@
         {
           "id": "lanefir_fs",
           "name": "Memory of Dusk",
+          "tier": "C",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -2525,6 +2732,7 @@
         {
           "id": "lanefir_mech",
           "name": "Troubadour",
+          "tier": "A",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -2535,6 +2743,7 @@
         {
           "id": "lanefir_starting_tech",
           "name": "Lanefir Starting Tech",
+          "tier": "A",
           "note":"Choose 2 of the following:",
           "techs": [
             {
@@ -2556,6 +2765,7 @@
         {
           "id": "lanefir_starting_fleet",
           "name": "Lanefir Starting Fleet",
+          "tier": "B",
           "description": "2 Carriers, 1 Destroyer, 2 Fighters, 3 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -2563,6 +2773,7 @@
         {
           "id": "lanefir_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": 2
         }
       ],
@@ -2570,6 +2781,7 @@
         {
           "id": "lanefir_hs",
           "name": "Lanefir Home System",
+          "tier": "A",
           "planets": [
             {
               "name": "Aysis' Rest",
@@ -2588,6 +2800,7 @@
         {
           "id": "lanefir_bt",
           "name": "Erasure Corps.",
+          "tier": "S",
           "synergy": [
             {
               "primary": "Green",
@@ -2604,6 +2817,7 @@
         {
           "id": "lz_cunning",
           "name": "Cunning",
+          "tier": "D",
           "description": "After you perform a tactical action in a system, you may attach 1 'Trap' card from your reinforcements to a planet in that system that contains 1 or more of your infantry units."
         },
         {
@@ -2616,6 +2830,7 @@
         {
           "id": "lz_we",
           "name": "Wraith Engine",
+          "tier": "C",
           "tech_type": "Blue",
           "prerequisites": ["Blue", "Blue"],
           "description": "After you activate a non-home system, you may exhaust this card to choose 1 ship you control; you may treat that ship as adjacent to the active system until the end of this tactical action."
@@ -2630,6 +2845,7 @@
         {
           "id": "lz_hb2",
           "name": "Heavy Bomber II",
+          "tier": "C",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Green", "Blue"],
           "cost": "1(x2)",
@@ -2643,6 +2859,7 @@
         {
           "id": "lz_agent",
           "name": "Vasra Ivo - Intelligence Officer",
+          "tier": "D",
           "description": "At the end of a player's turn: You may exhaust this card to allow that player to place 2 fighters from their reinforcements in the space area of a system that contains 1 or more of their ships."
         }
       ],
@@ -2666,6 +2883,7 @@
         {
           "id": "lz_pn",
           "name": "Trusted Counselor",
+          "tier": "B",
           "description": "At the start of a space combat you are participating in: You may place up to 2 fighters from your reinforcements into the space area of the active system. Then, return this card to the Li-Zho player."
         }
       ],
@@ -2673,6 +2891,7 @@
         {
           "id": "lz_fs",
           "name": "Silence of Stars",
+          "tier": "C",
           "cost": 8,
           "combat": "5(x2)",
           "move": 1,
@@ -2695,6 +2914,7 @@
         {
           "id": "lz_starting_tech",
           "name": "Li-Zho Starting Tech",
+          "tier": "A",
           "techs": [
             {
               "name": "Psychoarchaeology",
@@ -2711,6 +2931,7 @@
         {
           "id": "lz_starting_fleet",
           "name": "Li-Zho Starting Fleet",
+          "tier": "A",
           "description": "2 Carriers, 1 Destroyer, 3 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -2718,6 +2939,7 @@
         {
           "id": "lz_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": 3
         }
       ],
@@ -2725,6 +2947,7 @@
         {
           "id": "lz_hs",
           "name": "Li-Zho Home System",
+          "tier": "D",
           "planets": [
             {
               "name": "Pax",
@@ -2801,11 +3024,13 @@
         {
           "id": "lk_gw",
           "name": "Garden Worlds",
+          "tier": "B",
           "description": "Apply +1 to the resource values of your planets that do not contain 1 or more ground forces."
         },
         {
           "id": "lk_ms",
           "name": "Meteor Slings",
+          "tier": "B",
           "description": "When your units use BOMBARDMENT against a planet another player controls, you may cancel any number of hits you produce to place that many infantry from your reinforcements onto that planet. Those units participate in ground combat, if able."
         }
       ],
@@ -2813,6 +3038,7 @@
         {
           "id": "lk_se",
           "name": "Stone's Embrace",
+          "tier": "A",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green"],
           "description": "When you would spend a token form your strategy pool, you may exhaust 1 planet you control to spend 1 token from your reinforcements instead."
@@ -2829,6 +3055,7 @@
         {
           "id": "lk_ss2",
           "name": "Shattered Sky II",
+          "tier": "A",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Red", "Yellow", "Green"],
           "cost": 2,
@@ -2842,6 +3069,7 @@
         {
           "id": "lk_agent",
           "name": "Udosh B'rtul - Grove Tender",
+          "tier": "D",
           "description": "When a player would spend influence: You may exhaust this card to allow that player to spend the resources of 1 non-home planet they control as influence, in additional to its influence."
         }
       ],
@@ -2849,6 +3077,7 @@
         {
           "id": "lk_commander",
           "name": "Hkot Tokal - Crystal Druid",
+          "tier": "D",
           "note": "[UNLOCK: Win a ground combat on a planet you do not control.]",
           "description": "At the start of invasion in a system that contains 1 or more planets: You may place 1 infantry from your reinforcements in that system's space area if you have unused capacity in that system."
         }
@@ -2857,6 +3086,7 @@
         {
           "id": "lk_hero",
           "name": "Vehl-Tikar - Arch Druis",
+          "tier": "D",
           "note": "CRYSTAL CHORUS - WORLDS AWAKEN",
           "description": "ACTION: Purge this card to choose up to 4 planets; exhaust or ready each of those planets."
         }
@@ -2865,6 +3095,7 @@
         {
           "id": "lk_pn",
           "name": "Stone Speakers",
+          "tier": "D",
           "description": "During a tactical action, when you produce 1 or more hits during a BOMBARDMENT roll: For each hit you produced, you may instead place 1 infantry from your reinforcements on the planet being bombarded. Then, return this card to the L'tokk Khrask player."
         }
       ],
@@ -2872,6 +3103,7 @@
         {
           "id": "lk_fs",
           "name": "Splintering Gale",
+          "tier": "B",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -2884,6 +3116,7 @@
         {
           "id": "lk_mech",
           "name": "Megalith",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -2894,6 +3127,7 @@
         {
           "id": "lk_starting_tech",
           "name": "L'tokk Khrask Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Scanlink Drone Network",
@@ -2917,6 +3151,7 @@
         {
           "id": "lk_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": 2
         }
       ],
@@ -2924,6 +3159,7 @@
         {
           "id": "lk_hs",
           "name": "L'tokk Khrask Home System",
+          "tier": "C",
           "planets": [
             {
               "name": "Bohl-Dhur",
@@ -2965,6 +3201,7 @@
         {
           "id": "mirveda_cd",
           "name": "Combat Drones",
+          "tier": "A",
           "description": "Your space docks cannot produce infantry. At the start of invasion, you may replace each of your fighters in the active system with 1 infantry unit. During invasion, your infantry in the space area of the active system do not count against your ships' capacity."
         }
       ],
@@ -2972,6 +3209,7 @@
         {
           "id": "mirveda_odg",
           "name": "Orbital Defense Grid",
+          "tier": "D",
           "tech_type": "Red",
           "prerequisites": ["Red", "Red"],
           "description": "At the start of invasion, choose up to 1 unit you control in the active system; that unit gains PLANETARY SHIELD. When a player commits a unit to land on a planet you control, you may exhaust this card to destroy that unit."
@@ -2986,6 +3224,7 @@
         {
           "id": "mirveda_gc2",
           "name": "Gauss Cannon II",
+          "tier": "B",
           "tech_type":"Unit Upgrade",
           "prerequisites": ["Red", "Yellow"],
           "move": 2,
@@ -2998,6 +3237,7 @@
         {
           "id": "mirveda_agent",
           "name": "Logic Machina - Weapons Development",
+          "tier": "A",
           "description": "After a player gains a unit upgrade technology: You may exhaust this card to allow that player to spend 1 command token from their strategy pool to research 1 technology of the same color as any 1 of that unit upgrade's prerequisites."
         }
       ],
@@ -3005,6 +3245,7 @@
         {
           "id": "mirveda_commander",
           "name": "Assault Machina - Delta Shield",
+          "tier": "C",
           "note": "[UNLOCK: Own 2 unit upgrade technologies.]",
           "description": "During Movement, for each infantry you transport, you may replace that unit with 1 fighter. You may use the SPACE CANNON of 1 of your units against units that are adjacent to that unit's system."
         }
@@ -3013,6 +3254,7 @@
         {
           "id": "mirveda_hero",
           "name": "Wrath Machina - AI Mainframe",
+          "tier": "D",
           "note": "DHOR'S HAMMER - PEACE AT LAST",
           "description": "ACTION: Place up to 3 PDS units from your reinforcements on planets you control and choose 1 system; your PDS units may use their SPACE CANNON on ships in that system, and BOMBARDMENT against units on 1 planet in that system. Then, purge this card."
         }
@@ -3028,6 +3270,7 @@
         {
           "id": "mirveda_fs",
           "name": "Nexus",
+          "tier": "C",
           "cost": 8,
           "combat": "9(x2)",
           "move": 1,
@@ -3040,6 +3283,7 @@
         {
           "id": "mirveda_mech",
           "name": "Javelin",
+          "tier": "D",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -3050,6 +3294,7 @@
         {
           "id": "mirveda_starting_tech",
           "name": "Mirveda Starting Tech",
+          "tier": "D",
           "techs": [
             {
               "name": "AI Development Algorithm",
@@ -3062,6 +3307,7 @@
         {
           "id": "mirveda_starting_fleet",
           "name": "Mirveda Starting Fleet",
+          "tier": "C",
           "description": "2 Carriers, 1 Cruiser, 5 Fighters, 2 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -3069,6 +3315,7 @@
         {
           "id": "mirveda_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": 3
         }
       ],
@@ -3076,6 +3323,7 @@
         {
           "id": "mirveda_hs",
           "name": "Mirveda Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Aldra",
@@ -3110,16 +3358,19 @@
         {
           "id": "kolume_sg",
           "name": "Starfall Gunnery",
+          "tier": "D",
           "description": "During movement, while you are not the active player, you may only use 1 of your unit's SPACE CANNON. During each of your actions, up to 3 of your non-fighter ships gain SPACE CANNON 8."
         },
         {
           "id": "kolume_da",
           "name": "Deliberate Action",
+          "tier": "B",
           "description": "You cnanot redistribute command tokens during the status phase. When you pass, you may place 1 command token from your reinforcements in 1 pool on your command sheet that contains no command tokens."
         },
         {
           "id": "kolume_meditation",
           "name": "Meditation",
+          "tier": "D",
           "description": "ACTION: Spend 1 command token form your strategy pool to ready 1 of your technologies."
         }
       ],
@@ -3127,6 +3378,7 @@
         {
           "id": "kolume_ab",
           "name": "Applied Biothermics",
+          "tier": "A",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green"],
           "description": "When you pass, you may gain 1 commodity for each other player who has already passed. ACTION: Exhaust this card."
@@ -3134,6 +3386,7 @@
         {
           "id": "kolume_of",
           "name": "Omniscience Field",
+          "tier": "C",
           "tech_type": "Red",
           "prerequisites": ["Red", "Red", "Red"],
           "description": "After a system is activated, you may exhaust this card to choose 1 player. Apply +1 or -1 to all rolls that player makes during this tactical action."
@@ -3143,6 +3396,7 @@
         {
           "id": "kolume_agent",
           "name": "Disciple Fran - Meditative Prodigy",
+          "tier": "C",
           "description": "ACTION: Exhaust this card to allow a player to redistribute 1 of their command tokens on their command sheet."
         }
       ],
@@ -3173,6 +3427,7 @@
         {
           "id": "kolume_fs",
           "name": "Halberd",
+          "tier": "D",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -3185,6 +3440,7 @@
         {
           "id": "kolume_mech",
           "name": "Rook",
+          "tier": "D",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage", "Space Cannon 8(x2)"],
@@ -3212,6 +3468,7 @@
         {
           "id": "kolume_starting_fleet",
           "name": "Kolume Starting Fleet",
+          "tier": "B",
           "description": "2 Carriers, 1 Cruiser, 2 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -3219,6 +3476,7 @@
         {
           "id": "kolume_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": 3
         }
       ],
@@ -3226,6 +3484,7 @@
         {
           "id": "kolume_hs",
           "name": "Kolume Home System",
+          "tier": "D",
           "planets": [
             {
               "name": "Alesna",
@@ -3244,6 +3503,7 @@
         {
           "id": "kolume_bt",
           "name": "Synchronicity VI",
+          "tier": "S",
           "synergy": [
             {
               "primary": "Blue",
@@ -3260,6 +3520,7 @@
         {
           "id": "mm_pm",
           "name": "Prescient Memories",
+          "tier": "B",
           "description": "You have 4 'Omen' Dice. At the start of the strategy phase, roll all 4 Omen dice and place them near your faction sheet."
         },
         {
@@ -3270,6 +3531,7 @@
         {
           "id": "mm_necrophage",
           "name": "Necrophage",
+          "tier": "A",
           "description": "Apply +1 to your commodity value for each space dock you control. After the first round of combat, gain 1 commodity or convert 1 of your commodities to a trade good."
         }
       ],
@@ -3290,6 +3552,7 @@
         {
           "id": "mm_mr2",
           "name": "Mycelium Ring II",
+          "tier": "A",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Yellow", "Yellow"],
           "abilities": ["Planetary Shield", "PRODUCTION X+5"],
@@ -3307,6 +3570,7 @@
         {
           "id": "mm_commander",
           "name": "Amanita Muscaria - Rampant Growth",
+          "tier": "B",
           "note": "[UNLOCK: Have 4 commodities on your faction sheet.]",
           "description": "After another player produces 1 or more hits against your units during space combat, you may spend 1 commodity or 1 trade good to cancel 1 of those hits."
         }
@@ -3315,6 +3579,7 @@
         {
           "id": "mm_hero",
           "name": "Coprinus Comatus - Necromancer",
+          "tier": "A",
           "note": "SOUL CAGE - RISE AGAIN",
           "description": "When another player's hero would be purged, instead attach it to this card. You may resolve this card as if it had the text of any single hero attached to this card. When this card is purged, purge each of its attachments as well."
         }
@@ -3323,6 +3588,7 @@
         {
           "id": "mm_pn",
           "name": "Gift of Insight",
+          "tier": "C",
           "description": "ACTION: Place this card face up in your play area. While this card is in your play area, once per turn, after you roll a die, you may reroll that die. If you activate a system that contains 1 or more of the Myko-Mentori player's units, return this card to the Myko-Mentori player."
         }
       ],
@@ -3330,6 +3596,7 @@
         {
           "id": "mm_fs",
           "name": "Psyclobea Qarynx",
+          "tier": "C",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -3352,6 +3619,7 @@
         {
           "id": "mm_starting_tech",
           "name": "Myko-Mentori Starting Tech",
+          "tier": "D",
           "techs": [
             {
               "name": "Predictive Intelligence",
@@ -3364,6 +3632,7 @@
         {
           "id": "mm_starting_fleet",
           "name": "Myko-Mentori Starting Fleet",
+          "tier": "A",
           "description": "2 Carriers, 1 Cruiser, 1 Fighter, 6 Infantry, 1 Space Dock"
         }
       ],
@@ -3378,6 +3647,7 @@
         {
           "id": "mm_hs",
           "name": "Myko-Mentori Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Shi-Halaum",
@@ -3407,6 +3677,7 @@
         {
           "id": "nivyn_cg",
           "name": "Celestial Guides",
+          "tier": "B",
           "description": "Your units do not roll for gravity rifts. You may ignore the movement effect of anomalies in systems that contain or are adjacent to 1 or more of your structures."
         },
         {
@@ -3417,6 +3688,7 @@
         {
           "id": "nivyn_voidsailors",
           "name": "Voidsailors",
+          "tier": "C",
           "description": "When you explore a frontier token, you may draw 1 additional card; choose 1 to resolve and return the rest to the frontier exploration deck. Then, shuffle that deck."
         }
       ],
@@ -3424,6 +3696,7 @@
         {
           "id": "nivyn_vm",
           "name": "Voidwake Missiles",
+          "tier": "D",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow"],
           "description": "After 1 or more of your units with SUSTAIN DAMAGE makes a combat roll, you may choose 1 of those units to become damaged to reroll its combat roll."
@@ -3440,6 +3713,7 @@
         {
           "id": "nivyn_commander",
           "name": "Thussad Krath - High Inquisitor",
+          "tier": "B",
           "note": "[UNLOCK: Have units in 2 different non-home anomalies.]",
           "description": "When 1 or more of your damaged units make a combat roll, up to 2 of those units may roll an additional combat die."
         }
@@ -3456,6 +3730,7 @@
         {
           "id": "nivyn_pn",
           "name": "Nivyn Guidance",
+          "tier": "B",
           "description": "After you activate a system: During this activation, you may ignore the effects of each anomaly. Return this card to the Nivyn player at the end of this activation."
         }
       ],
@@ -3463,6 +3738,7 @@
         {
           "id": "nivyn_fs",
           "name": "Eradica",
+          "tier": "D",
           "cost": 8,
           "combat": "5(x2)",
           "move": 1,
@@ -3483,6 +3759,7 @@
         {
           "id": "nivyn_vw2",
           "name": "Voidflare Warden II",
+          "tier": "A",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Blue", "Yellow", "Red"],
           "cost": 2,
@@ -3495,6 +3772,7 @@
         {
           "id": "nivyn_starting_tech",
           "name": "Nivyn Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Dark Energy Tap",
@@ -3511,6 +3789,7 @@
         {
           "id": "nivyn_starting_fleet",
           "name": "Nivyn Starting Fleet",
+          "tier": "A",
           "description": "1 Carrier, 1 Cruiser, 3 Fighters, 3 Infantry, 1 Mech, 1 PDS"
         }
       ],
@@ -3518,6 +3797,7 @@
         {
           "id": "nivyn_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": 3
         }
       ],
@@ -3555,11 +3835,13 @@
         {
           "id": "nokar_hg",
           "name": "Hired Guns",
+          "tier": "S",
           "description": "After a system is activated, you may choose up to 3 of your ships. Those ships are also treated as the active player's and participate in combat as their units. At the end of this tactical action, that player may replace each of those ships in the active system with their own of the same unit type. Then, remove the rest form the game board."
         },
         {
           "id": "nokar_pf",
           "name": "Private Fleet",
+          "tier": "D",
           "description": "During setup, place 4 additional destroyers in your reinforcements."
         },
         {
@@ -3572,6 +3854,7 @@
         {
           "id": "nokar_lc",
           "name": "Local Contracts",
+          "tier": "C",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "During the action phase: You may exhaust this card to use the PRODUCTION ability of one of your units. Then, place 1 command token from your reinforcements in that unit's system."
@@ -3588,6 +3871,7 @@
         {
           "id": "nokar_s2",
           "name": "Sabre II",
+          "tier": "C",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Red"],
           "cost": 1,
@@ -3601,6 +3885,7 @@
         {
           "id": "nokar_agent",
           "name": "Sal Sparrow - The Privateer",
+          "tier": "C",
           "description": "After movement: You may exhaust this card to allow 1 player with 1 or more ships in the active system to place 1 destroyer from their reinforcements in that system. Then, you may perform 1 transaction with that player."
         }
       ],
@@ -3616,6 +3901,7 @@
         {
           "id": "nokar_hero",
           "name": "Starsails - Mercenary King",
+          "tier": "B",
           "note": "IRREFUTABLE OFFER - GALACTICE PRESS GANG",
           "description": "ACTION: Place this card near the game board, until the end of this game round, each of your planets gains the PRODUCTION 3 ability as if it were a unit. At the end of this game round, purge this card."
         }
@@ -3624,6 +3910,7 @@
         {
           "id": "nokar_pn",
           "name": "Nokar Navigator",
+          "tier": "D",
           "description": "At the start of a space combat: During this combat, the active system is adjacent to each system that contains a planet you control for the purposes of announcing and resolving retreats. At the end of this combat, return this card to the Nokar player."
         }
       ],
@@ -3631,6 +3918,7 @@
         {
           "id": "nokar_fs",
           "name": "Annah Regia",
+          "tier": "C",
           "cost": 8,
           "combat": "9(x2)",
           "move": 2,
@@ -3643,6 +3931,7 @@
         {
           "id": "nokar_mech",
           "name": "Freelance Outfit",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -3653,6 +3942,7 @@
         {
           "id": "nokar_starting_tech",
           "name": "Nokar Starting Tech",
+          "tier": "A",
           "note":"Choose 2 of the following:",
           "techs": [
             {
@@ -3674,6 +3964,7 @@
         {
           "id": "nokar_starting_fleet",
           "name": "Nokar Starting Fleet",
+          "tier": "C",
           "description": "1 Carrier, 1 Cruiser, 1 Destroyer, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -3681,6 +3972,7 @@
         {
           "id": "nokar_comms",
           "name": "Commodities", 
+          "tier": "A",
           "description": 4
         }
       ],
@@ -3722,6 +4014,7 @@
         {
           "id": "olradin_policies",
           "name": "Policies",
+          "tier": "B",
           "description": "When you gather your starting components, place the 3 'Policy' cards near your faction sheet, choose which side of each card to place face up. This faction has the abilities and effects listed on the face up side of each policy card."
         }
       ],
@@ -3729,6 +4022,7 @@
         {
           "id": "olradin_ffo",
           "name": "False Flag Operations",
+          "tier": "C",
           "tech_type": "Red",
           "prerequisites": ["Red"],
           "description": "At the start of your turn, you may exhaust this card and 1 planet you control to ready 1 non-home planet other than Mecatol Rex."
@@ -3736,6 +4030,7 @@
         {
           "id": "olradin_gi",
           "name": "Geosympathic Impeller",
+          "tier": "D",
           "tech_type": "Blue",
           "prerequisites": ["Blue"],
           "description": "After you activate a system, you may exhaust a planet you control of the same type as a planet in that system to apply +1 to the move value of each of your ships during this tactical action."
@@ -3745,6 +4040,7 @@
         {
           "id": "olradin_agent",
           "name": "Baggil Wildpaw - Political Haggler",
+          "tier": "C",
           "description": "After a player exhausts a cultural, hazardous, or industrial planet they control, you may exhaust this card to allow that player to ready a planet they control of a different trait than that planet."
         }
       ],
@@ -3752,6 +4048,7 @@
         {
           "id": "olradin_commander",
           "name": "Knak Halfear - Grizzled Negotiator",
+          "tier": "C",
           "note": "[UNLOCK: Control 1 cultural planet, 1 hazardous planet, and 1 industrial planet.]",
           "description": "When you pass: You may exhaust 1 non-home planet you control other than Mecatol Rex to gain a number of trade goods equal to that planet's resource or influence value."
         }
@@ -3768,6 +4065,7 @@
         {
           "id": "olradin_pn",
           "name": "Incite Revolution",
+          "tier": "B",
           "description": "ACTION: Place this card face up in your play area to choose and exhaust 1 planet you control. Then, ready 1 non-home planet you control other than Mecatol Rex. At the start of the status phase, return this card to the Olradin player."
         }
       ],
@@ -3775,6 +4073,7 @@
         {
           "id": "olradin_fs",
           "name": "Rallypoint",
+          "tier": "D",
           "cost": 8,
           "combat": "5(x2)",
           "move": 1,
@@ -3797,6 +4096,7 @@
         {
           "id": "olradin_starting_tech",
           "name": "Olradin Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Scanlink Drone Network",
@@ -3813,6 +4113,7 @@
         {
           "id": "olradin_starting_fleet",
           "name": "Olradin Starting Fleet",
+          "tier": "B",
           "description": "2 Carriers, 1 Cruiser, 3 Fighter, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -3820,6 +4121,7 @@
         {
           "id": "olradin_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": "3"
         }
       ],
@@ -3827,6 +4129,7 @@
         {
           "id": "olradin_hs",
           "name": "Olradin Home System",
+          "tier": "C",
           "planets": [
             {
               "name": "Sanctuary",
@@ -3888,11 +4191,13 @@
         {
           "id": "rm_industrious",
           "name": "Industrious",
+          "tier": "D",
           "description": "After you place a space dock in a systemthat contains no other players' ships, you may spend 6 resources and remove that space dock to place 1 war sun in that system's space area."
         },
         {
           "id": "rm_rm",
           "name": "Recycled Materials",
+          "tier": "C",
           "description": "After you activate a system, you may return 1 cruiser, carrier, or dreadnought you control in that system to your reinforcements to gain a number of trade goods equal to 1 less than that unit's cost value."
         },
         {
@@ -3905,6 +4210,7 @@
         {
           "id": "rm_co",
           "name": "Contractual Obligations",
+          "tier": "A",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "At the start of the agenda phase, for each unit upgrade technology you control, you may choose 1 player. Each of those players must produce 1 ship in a system that cotains 1 or more of their space docks or war suns."
@@ -3920,6 +4226,7 @@
         {
           "id": "rm_tf2",
           "name": "Terrafactory II",
+          "tier": "B",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Yellow", "Yellow", "Yellow"],
           "cost": 12,
@@ -3934,6 +4241,7 @@
         {
           "id": "rm_agent",
           "name": "Rond Bri'ay - Master of Operations",
+          "tier": "B",
           "description": "After 1 or more of a player's units use PRODUCTION: You may exhaust this card to allow that player to gain 1 command token."
         }
       ],
@@ -3941,6 +4249,7 @@
         {
           "id": "rm_commander",
           "name": "B-Unit 205643a - Predominant Constructor",
+          "tier": "D",
           "note": "[UNLOCK: Have units with a combined PRODUCTION value of at least 7 in a single system.]",
           "description": "When you spend a command token to resolve the secondary ability of the 'Construction' strategy card, you may resolve the primary ability instead."
         }
@@ -3949,6 +4258,7 @@
         {
           "id": "rm_hero",
           "name": "Roh-Vhin Dhna mk4 - Ruthless Executive",
+          "tier": "D",
           "note": "PRIMESPACE ACTUALIZATION - SUBVERSIVE AUTOMATION",
           "description": "After you mvoe 1 or more of your ships into the active system: You may purge this card to produce ships using the PRODUCTION ability of any untis in the active system as if they were your own, regardless of whether that system contains another player's ships."
         }
@@ -3957,6 +4267,7 @@
         {
           "id": "rm_pn",
           "name": "Automatons",
+          "tier": "C",
           "description": "At the end of your turn, you may attach this card to a non-home planet you control other than Mecatol Rex. This planet has PRODUCTION 3 as if it were a unit."
         }
       ],
@@ -3964,6 +4275,7 @@
         {
           "id": "rm_fs",
           "name": "Ky'vir",
+          "tier": "C",
           "cost": 8,
           "combat": "5(x2)",
           "move": 1,
@@ -3986,6 +4298,7 @@
         {
           "id": "rm_starting_tech",
           "name": "Rho'Dhna Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Sarween Tools",
@@ -4002,6 +4315,7 @@
         {
           "id": "rm_starting_fleet",
           "name": "Rho'Dhna Starting Fleet",
+          "tier": "C",
           "description": "2 Carriers, 1 Destroyer, 3 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -4009,6 +4323,7 @@
         {
           "id": "rm_comms",
           "name": "Commodities", 
+          "tier": "A",
           "description": 4
         }
       ],
@@ -4016,6 +4331,7 @@
         {
           "id": "rm_hs",
           "name": "Rho'Dhna Home System",
+          "tier": "D",
           "planets": [
             {
               "name": "Prind",
@@ -4045,6 +4361,7 @@
         {
           "id": "cymiae_am",
           "name": "Autonetic Memory",
+          "tier": "B",
           "description": "When you would draw 1 or more action cards, you may draw 1 less card to either choose 1 card from the action card discard pile and add it to your hand, or place 1 infantry from your reinforcements on a planet you control."
         },
         {
@@ -4057,6 +4374,7 @@
         {
           "id": "cymiae_rw",
           "name": "Recursive Worm",
+          "tier": "B",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow"],
           "description": "At the start of your turn, you may exhaust this card to choose 1 non-home system other than Mecatol Rex that contains 1 or more of your units; place 1 other player's command token from their reinforcements in that system."
@@ -4070,6 +4388,7 @@
         {
           "id": "cymiae_ua2",
           "name": "Unholy Abomination II",
+          "tier": "D",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Green"],
           "cost": 1,
@@ -4081,6 +4400,7 @@
         {
           "id": "cymiae_agent",
           "name": "Skhot Unit X-12 - Watcher",
+          "tier": "D",
           "description": "When a player discards or purges an action card: You may exhaust this card to allow that player to draw 1 action card."
         }
       ],
@@ -4088,6 +4408,7 @@
         {
           "id": "cymiae_commander",
           "name": "Koryl Ferax - The Third Voice",
+          "tier": "D",
           "note": "[UNLOCK: Have 10 or more infantry on the board.]",
           "description": "After you gain control of a planet during a tactical action: You may discard 1 action card to place or move 1 mech onto that planet."
         }
@@ -4096,6 +4417,7 @@
         {
           "id": "cymiae_hero",
           "name": "The Voice United - Psionic Maelsrom",
+          "tier": "C",
           "note": "THE SCREAM - SYMPHONY OF AGONY",
           "description": "ACTION: Draw and reveal a number of action cards from the action card deck equal to 1 more than the number of players in the game, give 1 to each other player in the game and keep the rest; each other player must discard 1 action card. Then, purge this card."
         }
@@ -4104,6 +4426,7 @@
         {
           "id": "cymiae_pn",
           "name": "Algorithmic Replication",
+          "tier": "C",
           "description": "ACTION: Choose 1 action card form the action card discard pile and add it to your hand. Then, purge this card."
         }
       ],
@@ -4111,6 +4434,7 @@
         {
           "id": "cymiae_fs",
           "name": "Reprocessor Alpha",
+          "tier": "B",
           "cost": 8,
           "combat": "9(x2)",
           "move": 1,
@@ -4123,6 +4447,7 @@
         {
           "id": "cymiae_mech",
           "name": "Revenant",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -4133,6 +4458,7 @@
         {
           "id": "cymiae_starting_tech",
           "name": "Cymiae Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "AI Development Algorithm",
@@ -4149,6 +4475,7 @@
         {
           "id": "cymiae_starting_fleet",
           "name": "Cymiae Starting Fleet",
+          "tier": "C",
           "description": "1 Carrier, 1 Destroyer, 1 Dreadnought, 2 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -4156,6 +4483,7 @@
         {
           "id": "cymiae_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": 3
         }
       ],
@@ -4163,6 +4491,7 @@
         {
           "id": "cymiae_hs",
           "name": "Cymiae Home System",
+          "tier": "D",
           "planets": [
             {
               "name": "Cymiae",
@@ -4176,6 +4505,7 @@
         {
           "id": "cymiae_bt",
           "name": "Cybernetic Armoring",
+          "tier": "C",
           "synergy": [
             {
               "primary": "Yellow",
@@ -4192,6 +4522,7 @@
         {
           "id": "axis_mic",
           "name": "Military Industrial Complex",
+          "tier": "C",
           "description": "After you gain or replenish commodities, you may spend a number of commodities equal to the combined cost listed on any number of 'Axis Order' cards in your reinforcements to place those cards in your play area. You cannot give your commodities to other players as part of a transaction."
         },
         {
@@ -4204,6 +4535,7 @@
         {
           "id": "axis_re",
           "name": "Rift Engines",
+          "tier": "D",
           "tech_type": "Blue",
           "prerequisites": ["Blue"],
           "description": "After you activate a system, you may exhaust this card to choose 1 ship you control and roll a die. On a result of 1-3, remove that ship from the game board; on a result of 4-10, apply +2 to that ship's move value during this tactical action."
@@ -4211,6 +4543,7 @@
         {
           "id": "axis_ed",
           "name": "Emergency Deployment",
+          "tier": "B",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow", "Yellow"],
           "description": "ACTION: Exhaust this card to place or move 1 of your space docks onto a planet you control that does not contain a space dock."
@@ -4220,6 +4553,7 @@
         {
           "id": "axis_agent",
           "name": "Shipmonger Zsknck - Forgeworld Merchant",
+          "tier": "B",
           "description": "ACTION: Exhaust this card to choose 1 player; that player may place 1 cruiser or 1 destroyer from their reinforcements in a system that contains their ships. Then, if you chose another player, gain 2 commodities."
         }
       ],
@@ -4243,6 +4577,7 @@
         {
           "id": "axis_pn",
           "name": "Industry Secrets",
+          "tier": "B",
           "description": "When 1 or more of your units use PRODUCTION: Place this card face up in your play area to apply +4 to the PRODUCTION value of those units and reduce the combined cost of the produced units by 1 for this use of PRODUCTION. At the start of the status phase, return this card to the Axis player."
         }
       ],
@@ -4250,6 +4585,7 @@
         {
           "id": "axis_fs",
           "name": "Bearer of Heavens",
+          "tier": "C",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -4262,6 +4598,7 @@
         {
           "id": "axis_mech",
           "name": "Forgetender",
+          "tier": "D",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -4272,6 +4609,7 @@
         {
           "id": "axis_starting_tech",
           "name": "Axis Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Sarween Tools",
@@ -4288,6 +4626,7 @@
         {
           "id": "axis_starting_fleet",
           "name": "Axis Starting Fleet",
+          "tier": "C",
           "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 2 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -4295,6 +4634,7 @@
         {
           "id": "axis_comms",
           "name": "Commodities", 
+          "tier": "S",
           "description": 5
         }
       ],
@@ -4302,6 +4642,7 @@
         {
           "id": "axis_hs",
           "name": "Axis Home System",
+          "tier": "S",
           "planets": [
             {
               "name": "Axis",
@@ -4315,6 +4656,7 @@
         {
           "id": "axis_bt",
           "name": "Arms Brokerage",
+          "tier": "D",
           "synergy": [
             {
               "primary": "Blue",
@@ -4353,6 +4695,7 @@
         {
           "id": "tnelis_pd",
           "name": "Plausible Deniability",
+          "tier": "C",
           "description": "When you draw 1 or more secret objective cards, draw 1 additional secret objective card to the secret objective deck; shuffle that deck."
         },
         {
@@ -4370,6 +4713,7 @@
         {
           "id": "tnelis_dfs",
           "name": "Daedalon Flight System",
+          "tier": "C",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow"],
           "description": "After a round of space combat in a system that contains 1 or more of your mechs, you may have 1 of those units become damaged to produce 1 hit and assign it to a cruiser, dreadnought, or destroyer you do not control in that system."
@@ -4385,6 +4729,7 @@
         {
           "id": "tnelis_br2",
           "name": "Blockade Runner II",
+          "tier": "C",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Red"],
           "cost": 1,
@@ -4405,6 +4750,7 @@
         {
           "id": "tnelis_commander",
           "name": "Fillipo Rois - Logistical Expeditor",
+          "tier": "B",
           "note": "[UNLOCK: Have 6 of your destroyers on the game board.]",
           "description": "After you activate a system, you may produce and assign 1 hit to a non-fighter ship you control in a system to apply +1 to the move value of 1 of your ships in that system until the end of this tactical action."
         }
@@ -4413,6 +4759,7 @@
         {
           "id": "tnelis_hero",
           "name": "Turra Sveyar - Shadow Councilor",
+          "tier": "A",
           "note": "CONTRACT NETWORK - FRIENDS IN LOW PLACES",
           "description": "After another player scores a secret objective: You may attach, or remove and attach, this card to that secret objective. You treat the attached secret objective as if it were a public objective. After you score the attached objective, purge this card."
         }
@@ -4421,6 +4768,7 @@
         {
           "id": "tnelis_pn",
           "name": "Plots Within Plots",
+          "tier": "C",
           "description": "When you draw 1 or more secret objective cards: Draw 1 additional secret objective card. Then, return 1 secret objective card to the secret objective deck; shuffle that deck. Then, return this card to the Tnelis player."
         }
       ],
@@ -4428,6 +4776,7 @@
         {
           "id": "tnelis_fs",
           "name": "Principia Aneris",
+          "tier": "A",
           "cost": 8,
           "combat": "9(x4)",
           "move": 2,
@@ -4440,6 +4789,7 @@
         {
           "id": "tnelis_mech",
           "name": "Daedalon",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -4450,6 +4800,7 @@
         {
           "id": "tnelis_starting_tech",
           "name": "Tnelis Starting Tech",
+          "tier": "A",
           "note": "Choose 2 of the following:",
           "techs": [
             {
@@ -4471,6 +4822,7 @@
         {
           "id": "tnelis_starting_fleet",
           "name": "Tnelis Starting Fleet",
+          "tier": "C",
           "description": "1 Carrier, 2 Destroyers, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -4478,6 +4830,7 @@
         {
           "id": "tnelis_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": 2
         }
       ],
@@ -4485,6 +4838,7 @@
         {
           "id": "tnelis_hs",
           "name": "Tnelis Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Discordia",
@@ -4498,6 +4852,7 @@
         {
           "id": "tnelis_bt",
           "name": "Hidden Hardpoints",
+          "tier": "C",
           "synergy": [
             {
               "primary": "Blue",
@@ -4519,6 +4874,7 @@
         {
           "id": "vaden_cl",
           "name": "Collateralized Loans",
+          "tier": "S",
           "description": "After 1 of your opponent's ships is destroyed during a round of space combat, you may remove 1 of that player's control tokens from your faction sheet to place 1 ship of that type from your reinforcements in the active system."
         },
         {
@@ -4531,6 +4887,7 @@
         {
           "id": "vaden_mt",
           "name": "Midas Turbine",
+          "tier": "C",
           "tech_type": "Blue",
           "prerequisites": ["Blue"],
           "description": "After you activate a system, you may exhaust this card and spend any number of trade goods; for each trade good you spent, apply +1 to the move value of 1 non-fighter ship you control."
@@ -4538,6 +4895,7 @@
         {
           "id": "vaden_kst",
           "name": "Krovoz Strike Teams",
+          "tier": "C",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "After another player's unit uses SUSTAIN DAMAGE to cancel a hit produced by your units or abilities, you may exhaust this card to destroy that unit. After you produce 1 or more hits during a round of combat, you may spend 1 trade good to produce 1 additional hit."
@@ -4547,6 +4905,7 @@
         {
           "id": "vaden_agent",
           "name": "Yudri Sukhov - Developer",
+          "tier": "B",
           "description": "At the start of a player's turn: You may exhaust this card to allow that player to choose 1 planet they control; that player gains a number of commodities equal to that planet's influence value."
         }
       ],
@@ -4554,6 +4913,7 @@
         {
           "id": "vaden_commander",
           "name": "Komdar Borodin - Banker",
+          "tier": "B",
           "note": "[UNLOCK: Have 1 or more different players' control tokens on your faction sheet for every 2 players in the game.]",
           "description": "At the start of the status phase: Gain 1 trade good for each secret objective you have scored and 1 commodity for each public objective you have scored."
         }
@@ -4562,6 +4922,7 @@
         {
           "id": "vaden_hero",
           "name": "Putriv Sirvonsk - Clanmaster Prime",
+          "tier": "C",
           "note": "ACULA NETWORK - DEBTS COME DUE",
           "description": "ACTION: For each control token that belongs to another player on your faction sheet, you may return that token. If you do, that player must give you 1 of their trade goods, 2 of their commodities, or 1 prommisory note from their hand, if able. Then, purge this card."
         }
@@ -4570,6 +4931,7 @@
         {
           "id": "vaden_pn",
           "name": "Vaden Handshake",
+          "tier": "C",
           "description": "After you activate a system: You may spend any number of trade goods; for each trade good spent, apply +1 to the move value of 1 non-fighter ship you control during this activation. Return this card to the Vaden player at the end of this activation."
         }
       ],
@@ -4577,6 +4939,7 @@
         {
           "id": "vaden_fs",
           "name": "Aurum Vadra",
+          "tier": "C",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -4589,6 +4952,7 @@
         {
           "id": "vaden_mech",
           "name": "Collector",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -4599,6 +4963,7 @@
         {
           "id": "vaden_starting_tech",
           "name": "Vaden Starting Tech",
+          "tier": "A",
           "note":"Choose 2 of the following:",
           "techs": [
             {
@@ -4620,6 +4985,7 @@
         {
           "id": "vaden_starting_fleet",
           "name": "Vaden Starting Fleet",
+          "tier": "C",
           "description": "1 Dreadnought, 1 Carrier, 1 Cruiser, 2 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -4627,6 +4993,7 @@
         {
           "id": "vaden_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": 3
         }
       ],
@@ -4634,6 +5001,7 @@
         {
           "id": "vaden_hs",
           "name": "Vaden Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Vadarian",
@@ -4673,11 +5041,13 @@
         {
           "id": "vs_scour",
           "name": "Scour",
+          "tier": "B",
           "description": "Once per tactical action, after you gain control of a planet, you may discard 1 action card to ready that planet."
         },
         {
           "id": "vs_raze",
           "name": "Raze",
+          "tier": "C",
           "description": "After 1 or more of another player's structures are destroyed on a planet that contains your units, you may replenish your commodities."
         }
       ],
@@ -4685,6 +5055,7 @@
         {
           "id": "vs_se",
           "name": "Scavenger Exos",
+          "tier": "D",
           "tech_type": "Red",
           "prerequisites": ["Red"],
           "description": "Once per action, after you win a ground combat, you may draw 1 action card."
@@ -4701,6 +5072,7 @@
         {
           "id": "vs_r2",
           "name": "Raider II",
+          "tier": "B",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Yellow", "Green"],
           "cost": 2,
@@ -4714,6 +5086,7 @@
         {
           "id": "vs_agent",
           "name": "Yvin Korduul - Political Gambler",
+          "tier": "D",
           "description": "After a player gains control of a planet, you may exhaust this card to allow that player to draw 1 action card."
         }
       ],
@@ -4721,6 +5094,7 @@
         {
           "id": "vs_commander",
           "name": "Pyndil Gonsuul - Strike Team Coordinator",
+          "tier": "B",
           "note": "[UNLOCK: Control 3 planets that each have the same trait.]",
           "description": "After you activate a system: Choose 1 ship you control with a capacity value, apply +2 to that value during this tactical action."
         }
@@ -4729,6 +5103,7 @@
         {
           "id": "vs_hero",
           "name": "Dyln Harthuul - Vice Admiral of Fleet Group 15",
+          "tier": "B",
           "note": "SPEAR OF VAYLAR - HIDDEN VANGUARD",
           "description": "After you ativate a system: Remove 1 of your command tokens from the game board and gain 1 command token. Until the end of this tactical action, apply +1 to the move value of each of your ships and the result of each of your ships' combat rolls. At the end of this turn, purge this card."
         }
@@ -4744,6 +5119,7 @@
         {
           "id": "vs_fs",
           "name": "Lost Cause",
+          "tier": "B",
           "cost": 8,
           "combat": "7(x2)",
           "move": 2,
@@ -4756,6 +5132,7 @@
         {
           "id": "vs_mech",
           "name": "Eclipse",
+          "tier": "D",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -4766,6 +5143,7 @@
         {
           "id": "vs_starting_tech",
           "name": "Vaylerian Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Dark Energy Tap",
@@ -4782,6 +5160,7 @@
         {
           "id": "vs_starting_fleet",
           "name": "Vaylerian Starting Fleet",
+          "tier": "C",
           "description": "1 Carrier, 1 Cruiser, 1 Destroyer, 3 Fighters, 3 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -4789,6 +5168,7 @@
         {
           "id": "vs_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": 2
         }
       ],
@@ -4796,6 +5176,7 @@
         {
           "id": "vs_hs",
           "name": "Vaylerian Home System",
+          "tier": "D",
           "planets": [
             {
               "name": "Vaylar",
@@ -4809,6 +5190,7 @@
         {
           "id": "vs_bt",
           "name": "Gravitic Disruption",
+          "tier": "A",
           "synergy": [
             {
               "primary": "Blue",
@@ -4825,6 +5207,7 @@
         {
           "id": "veldyr_ce",
           "name": "Corporate Entity",
+          "tier": "A",
           "description": "During setup, take the additional Veldyr faction prommisory notes; you have 4 faction prommisory notes. 'Branch Office' attachments do not count toward scoring objectives."
         },
         {
@@ -4858,6 +5241,7 @@
         {
           "id": "veldyr_ld2",
           "name": "Lancer Dreadnought II",
+          "tier": "D",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Blue", "Blue", "Yellow"],
           "cost": 4,
@@ -4917,6 +5301,7 @@
         {
           "id": "veldyr_fs",
           "name": "Richtyrian",
+          "tier": "D",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -4929,6 +5314,7 @@
         {
           "id": "veldyr_mech",
           "name": "Aurora Stormcaller",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -4939,6 +5325,7 @@
         {
           "id": "veldyr_starting_tech",
           "name": "Veldyr Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Dark Energy Tap",
@@ -4955,6 +5342,7 @@
         {
           "id": "veldyr_starting_fleet",
           "name": "Veldyr Starting Tech",
+          "tier": "B",
           "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 3 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -4962,6 +5350,7 @@
         {
           "id": "veldyr_comms",
           "name": "Commodities", 
+          "tier": "A",
           "description": 4
         }
       ],
@@ -4969,6 +5358,7 @@
         {
           "id": "veldyr_hs",
           "name": "Veldyr Home System",
+          "tier": "C",
           "planets": [
             {
               "name": "Rhune",
@@ -4982,6 +5372,7 @@
         {
           "id": "veldyr_bt",
           "name": "Aurora Research Base",
+          "tier": "S",
           "synergy": [
             {
               "primary": "Blue",
@@ -4998,11 +5389,13 @@
         {
           "id": "rhodun_conspirators",
           "name": "Conspirators",
+          "tier": "D",
           "description": "Once per agenda phase, after an agenda is revealed, if you are not the speaker, you may choose to vote after the speaker on that agenda."
         },
         {
           "id": "rhodun_ak",
           "name": "Ancient Knowledge",
+          "tier": "D",
           "description": "When you use a technology specialty to ignore a prerequisite on a technology card you are researching, you may ignore 1 additional prerequisite of the same color. After you exhaust a planet to use its technology specialty, you may gain 1 commodity."
         }
       ],
@@ -5010,6 +5403,7 @@
         {
           "id": "rhodun_sf",
           "name": "Sanctification Field",
+          "tier": "B",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow", "Yellow"],
           "description": "When you activate a system, or a system that contains 1 or more of your units is activated, you may choose 1 technology or non-fighter, non-structure unit upgrade technology another player controls; until the end of this tactical action, that card is treated as though it had no ability text."
@@ -5017,6 +5411,7 @@
         {
           "id": "rhodun_pb",
           "name": "Pilgrimage Beacons",
+          "tier": "C",
           "tech_type": "Blue",
           "prerequisites": ["Blue", "Blue"],
           "description": "Once during your turn, when you exhaust 1 or more planets you control that have a technology specialty, you may produce 1 ship in 1 system that contains 1 of those planets."
@@ -5026,6 +5421,7 @@
         {
           "id": "rhodun_agents",
           "name": "Priestess Tuh - The Edifier",
+          "tier": "D",
           "description": "After a player researches a technology: You may exhaust this card to allow that player to produce 1 ship in their home system or a system that contains a planet they control that has a technology specialty."
         }
       ],
@@ -5033,6 +5429,7 @@
         {
           "id": "rhodun_commander",
           "name": "Bishop Ulin - The Librarian",
+          "tier": "D",
           "note": "[UNLOCK: Have a technology with 2 or more prerequisites.]",
           "description": "When researching a technology, you may use the technology specialty of 1 planet you control to ignore any 1 prerequisite on the technology card you are researching."
         }
@@ -5041,6 +5438,7 @@
         {
           "id": "rhodun_hero",
           "name": "Saint Binal - The Prophet",
+          "tier": "B",
           "note": "BLESSING OF THE ANCIENTS - FORGOTTEN SORCERY",
           "description": "ACTION: Place this card and up to 3 non-faction technologies near the game board, you gain those technologies. At the start of the next strategy phase, purge all but 1 of those technologies and this card."
         }
@@ -5049,6 +5447,7 @@
         {
           "id": "rhodun_pn",
           "name": "Favor of Rhodun",
+          "tier": "D",
           "description": "When you ignore a prerequisite on a technology card you are researching: You may ignore 1 additional prerequisite of the same color. Then, return this card to the Rhodun player."
         }
       ],
@@ -5056,6 +5455,7 @@
         {
           "id": "rhodun_fs",
           "name": "Reckoning",
+          "tier": "D",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -5068,6 +5468,7 @@
         {
           "id": "rhodun_mech",
           "name": "Templar",
+          "tier": "D",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -5078,6 +5479,7 @@
         {
           "id": "rhodun_starting_tech",
           "name": "Rhodun Starting Tech",
+          "tier": "D",
           "techs": [
             {
               "name": "Bio-Stims",
@@ -5090,6 +5492,7 @@
         {
           "id": "rhodun_starting_fleet",
           "name": "Rhodun Starting Fleet",
+          "tier": "D",
           "description": "1 Carrier, 1 Cruiser, 1 Destroyer, 3 Fighters, 4 Infantry, 1 Space Dock"
         }
       ],
@@ -5097,6 +5500,7 @@
         {
           "id": "rhodun_comms",
           "name": "Commodities", 
+          "tier": "C",
           "description": 3
         }
       ],
@@ -5104,6 +5508,7 @@
         {
           "id": "rhodun_hs",
           "name": "Rhodun Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Poh",
@@ -5122,6 +5527,7 @@
         {
           "id": "rhodun_bt",
           "name": "Rhodun's Reliquary",
+          "tier": "S",
           "synergy": [
             {
               "primary": "Yellow",
@@ -5138,6 +5544,7 @@
         {
           "id": "zelian_od",
           "name": "Obsessive Designs",
+          "tier": "D",
           "description": "During the action phase, after you research a unit upgrade technology, you may use the PRODUCTION ability of 1 of your space docks in your home system to produce units of that type, reducing the combined cost of the produced units by 2."
         },
         {
@@ -5170,6 +5577,7 @@
         {
           "id": "zelian_i2",
           "name": "Impactor II",
+          "tier": "C",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Green"],
           "cost": "1(x2)",
@@ -5182,6 +5590,7 @@
         {
           "id": "zelian_agent",
           "name": "Zelian A - The Mutilator",
+          "tier": "C",
           "description": "At the start of invasion: You may exhaust this card to allow the active player to replace 1 infantry in the space area of the active system with 1 mech from their reinforcements."
         }
       ],
@@ -5189,6 +5598,7 @@
         {
           "id": "zelian_commander",
           "name": "Zelian B - The Hunter",
+          "tier": "D",
           "note": "[UNLOCK: Have 1 or more ships in 2 systems that contain an asteroid field.]",
           "description": "Each of your Dreadnoughts and War Suns without ANTI-FIGHTER BARRAGE gains ANTI-FIGHTER BARRAGE 5."
         }
@@ -5197,6 +5607,7 @@
         {
           "id": "zelian_hero",
           "name": "Zelian R - The Destroyer",
+          "tier": "C",
           "note": "CATACLYSM - CELESTIAL IMPACT",
           "description": "After you move a unit with BOMBARDMENT into a non-home system other than Mecatol Rex: You may gain trade goods equal to the total combined resource values of planets in that system. If you do, destroy all units on planets in that system and replace that system tile with the Zelian asteroid tile."
         }
@@ -5212,6 +5623,7 @@
         {
           "id": "zelian_fs",
           "name": "World-Cracker",
+          "tier": "D",
           "cost": 8,
           "combat": 5,
           "move": 1,
@@ -5224,6 +5636,7 @@
         {
           "id": "zelian_mech",
           "name": "Collider",
+          "tier": "D",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -5234,6 +5647,7 @@
         {
           "id": "zelian_starting_tech",
           "name": "Zelian Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Antimass Deflectors",
@@ -5250,6 +5664,7 @@
         {
           "id": "zelian_starting_fleet",
           "name": "Zelian Starting Fleet",
+          "tier": "A",
           "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 1 Fighter, 5 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -5257,6 +5672,7 @@
         {
           "id": "zelian_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": 2
         }
       ],
@@ -5264,6 +5680,7 @@
         {
           "id": "zelian_hs",
           "name": "Zelian Home System",
+          "tier": "S",
           "planets": [
             {
               "name": "Zelian",
@@ -5283,6 +5700,7 @@
         {
           "id": "zelian_bt",
           "name": "Awakened Planetoids",
+          "tier": "B",
           "synergy": [
             {
               "primary": "Green",
@@ -5299,6 +5717,7 @@
         {
           "id": "atokera_synthesis",
           "name": "Synthesis",
+          "tier": "A",
           "description": "Readied planets you control have PLANETARY SHIELD and PRODUCTION 0 as if they were unit. Apply +1 to the PRODUCTION value of each of your units with PRODUCTION."
         },
         {
@@ -5326,6 +5745,7 @@
         {
           "id": "atokera_ms2",
           "name": "Mirrorshard II",
+          "tier": "S",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Yellow", "Red"],
           "cost": 2,
@@ -5347,6 +5767,7 @@
         {
           "id": "atokera_commander",
           "name": "Ordagka - Maker",
+          "tier": "B",
           "note": "[UNLOCK: Cast more votes for an outcome than any other player.]",
           "description": "Once per agenda phase, after an agenda is revealed: You may predict aloud an outcome of that agenda. If you do not vote on that agenda, and your prediction is correct, gain 1 command token."
         }
@@ -5355,6 +5776,7 @@
         {
           "id": "atokera_hero",
           "name": "Kapoko Vui - Great Spirit",
+          "tier": "B",
           "note": "FALLEN SKY - JUDGEMENT",
           "description": "At the start of invasion: You may purge this card to commit any of your ships in the active system to planets as if they were ground forces; those units participate in combat. At the end of this tactical action, return those ships to the space area of the active system."
         }
@@ -5363,6 +5785,7 @@
         {
           "id": "atokera_pn",
           "name": "Tri-Weave Shielding",
+          "tier": "D",
           "description": "At the sart of invasion: Choose 1 unit you control in the active system; that unit gains PLANETARY SHIELD until the end of this action. Then, return this card to the Atokera player."
         }
       ],
@@ -5370,6 +5793,7 @@
         {
           "id": "atokera_fs",
           "name": "Kohi",
+          "tier": "C",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -5382,6 +5806,7 @@
         {
           "id": "atokera_mech",
           "name": "Obelisk",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -5392,6 +5817,7 @@
         {
           "id": "atokera_starting_tech",
           "name": "Atokera Starting Tech",
+          "tier": "B",
           "techs": [
             {
               "name": "Graviton Laser System",
@@ -5408,6 +5834,7 @@
         {
           "id": "atokera_starting_fleet",
           "name": "Atokera Starting Fleet",
+          "tier": "B",
           "description": "1 Dreadnought, 1 Carrier, 1 Destroyer, 5 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -5415,6 +5842,7 @@
         {
           "id": "atokera_comms",
           "name": "Commodities",
+          "tier": "C",
           "description": 3
         }
       ],
@@ -5422,6 +5850,7 @@
         {
           "id": "atokera_hs",
           "name": "Atokera Home System",
+          "tier": "A",
           "planets": [
             {
               "name": "Magna",
@@ -5435,6 +5864,7 @@
         {
           "id": "atokera_bt",
           "name": "Panoply Animus",
+          "tier": "B",
           "synergy": [
             {
               "primary": "Yellow",
@@ -5451,6 +5881,7 @@
         {
           "id": "belkosea_cd",
           "name": "Classified Developments",
+          "tier": "A",
           "description": "ACTION: Spend a combined total of 5 resources or influence to place 1 superweapon on a planet you control, and gain its superweapon card."
         },
         {
@@ -5463,6 +5894,7 @@
         {
           "id": "belkosea_sm",
           "name": "Synchrony Matrix",
+          "tier": "B",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "At any time, you may exhaust this card to ready 1 non-technology component other than a strategy card in your play area."
@@ -5478,6 +5910,7 @@
         {
           "id": "belkosea_w2",
           "name": "Wyvern II",
+          "tier": "A",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Blue"],
           "cost": "1(x2)",
@@ -5491,6 +5924,7 @@
         {
           "id": "belkosea_agent",
           "name": "Razalka Gris - Ghost Squadron",
+          "tier": "A",
           "description": "After a system is activated, you may exhaust this card to choose 1 system; until the end of movement, other players' ships in that system do not affect ships' movement."
         }
       ],
@@ -5506,6 +5940,7 @@
         {
           "id": "belkosea_hero",
           "name": "Mobius Spike - The Reaper",
+          "tier": "B",
           "note": "ACE OF ACES - INSPIRATIONAL PILOT",
           "description": "At the start of combat, you may exhaust this card; if you do, during this combat, hits produced by your fighters' ANTI-FIGHTER BARRAGE are instead produced against all ships (not just fighters)."
         }
@@ -5514,6 +5949,7 @@
         {
           "id": "belkosea_pn",
           "name": "Mercenary Sortie",
+          "tier": "C",
           "description": "At the start of combat: Roll 3 dice; for each result of 8 or greater, destroy up to 1 of your opponent's fighters or infantry participating in that combat. After the first round of this combat, return this card to the Belkosea player."
         }
       ],
@@ -5521,6 +5957,7 @@
         {
           "id": "belkosea_fs",
           "name": "Ascendancy",
+          "tier": "A",
           "cost": 8,
           "combat": "7(x2)",
           "move": 2,
@@ -5533,6 +5970,7 @@
         {
           "id": "belkosea_mech",
           "name": "Uzean Wardog",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage", "Anti-Fighter Barrage 6"],
@@ -5543,6 +5981,7 @@
         {
           "id": "belkosea_comms",
           "name": "Commodities",
+          "tier": "F",
           "description": 1
         }
       ],
@@ -5550,6 +5989,7 @@
         {
           "id": "belkosea_starting_fleet",
           "name": "Belksoea Starting Fleet",
+          "tier": "C",
           "description": "1 Dreadnought, 1 Carrier, 1 Cruiser, 5 Fighters, 3 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -5557,6 +5997,7 @@
         {
           "id": "belkosea_starting_tech",
           "name": "Belkosea Starting Tech",
+          "tier": "C",
           "note": "Choose 1 yellow or red technology with no prerequisites."
         }
       ],
@@ -5564,6 +6005,7 @@
         {
           "id": "belkosea_hs",
           "name": "Belkosea Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Iterum",
@@ -5632,6 +6074,7 @@
         {
           "id": "pharadn_dp",
           "name": "Dark Purpose",
+          "tier": "S",
           "description": "When you score an objective, gain 1 command token."
         },
         {
@@ -5644,6 +6087,7 @@
         {
           "id": "pharadn_rfi",
           "name": "Reality-Field Impactor",
+          "tier": "B",
           "tech_type": "Blue",
           "prerequisites": ["Blue"],
           "description": "After you activate a system, you may choose 1 anomaly on the game board; that anomaly has no effect until the end of this tactical action."
@@ -5658,6 +6102,7 @@
         {
           "id": "pharadn_i2",
           "name": "Immortal II",
+          "tier": "B",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Green"],
           "cost": "1(x2)",
@@ -5692,6 +6137,7 @@
         {
           "id": "pharadn_pn",
           "name": "Death Binding",
+          "tier": "C",
           "description": "When the Pharad'n player passes, remove 4 of your infantry form the game board to gain 1 technology with no prerequisites. Then, return this card to the Pharad'n player; that player captures 1 infantry from the supply."
         }
       ],
@@ -5699,6 +6145,7 @@
         {
           "id": "pharadn_fs",
           "name": "Sedtra",
+          "tier": "A",
           "cost": 8,
           "combat": "5(x2)",
           "move": 0,
@@ -5711,6 +6158,7 @@
         {
           "id": "pharadn_mech",
           "name": "Sacrotitan",
+          "tier": "C",
           "cost": 2,
           "combat": 5,
           "abilities": ["Sustain Damage"],
@@ -5721,6 +6169,7 @@
         {
           "id": "pharadn_comms",
           "name": "Commodities",
+          "tier": "D",
           "description": 2
         }
       ],
@@ -5728,6 +6177,7 @@
         {
           "id": "pharadn_starting_fleet",
           "name": "Pharad'n Starting Fleet",
+          "tier": "B",
           "description": "1 Carrier, 2 Cruisers, 2 Fighters, 8 Infantry, 1 Space Dock"
         }
       ],
@@ -5735,6 +6185,7 @@
         {
           "id": "pharadn_starting_tech",
           "name": "Pharad'n Starting Tech",
+          "tier": "A",
           "techs": [
             {
               "name": "Integrated Economy",
@@ -5786,6 +6237,7 @@
         {
           "id": "qhet_ts",
           "name": "Tempest Squads",
+          "tier": "C",
           "description": "While you are the active player, 2 infantry in the active system do not count against your ships' capacity."
         }
       ],
@@ -5800,6 +6252,7 @@
         {
           "id": "qhet_c2",
           "name": "Commando II",
+          "tier": "B",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Green"],
           "cost": "1(x2)",
@@ -5818,6 +6271,7 @@
         {
           "id": "qhet_bc2",
           "name": "Battlecruiser II",
+          "tier": "S",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Yellow", "Red"],
           "cost": 2,
@@ -5832,6 +6286,7 @@
         {
           "id": "qhet_agent",
           "name": "Zhroth Khuvad - Khuvad Arms C.E.O.",
+          "tier": "A",
           "description": "After a system is activated: You may exhaust this card to allow the active player to gain 1 non-faction unit upgrade technology until the end of this tactical action. At the end of this tactical action, they must return that card to their technology deck."
         }
       ],
@@ -5839,6 +6294,7 @@
         {
           "id": "qhet_commander",
           "name": "Ghaist Asmora - Paramilitary Liaison",
+          "tier": "A",
           "note": "[UNLOCK: Win 2 combats in 1 turn.]",
           "description": "After you perform an action: If you won a combat during that action, you may perform an additional action."
         }
@@ -5847,6 +6303,7 @@
         {
           "id": "qhet_hero",
           "name": "Tvor Khage - Shield of Qhet",
+          "tier": "A",
           "note": "LOGISTICAL SUPREMACY - WAR UNBOUND",
           "description": "ACTION: Place this card near the game board; until the end of this game round, when you win a combat, if your opponent has a control token on your faction sheet, remove 1 of your command tokens from the active system, if able."
         }
@@ -5855,6 +6312,7 @@
         {
           "id": "qhet_pn",
           "name": "Alloy Shipment",
+          "tier": "C",
           "description": "At the start of a round of combat: Choose up to 3 of your units; during this round of combat, hits those units produce cannot be canceled. After this round of combat, return this card to the Qhet payer."
         }
       ],
@@ -5862,6 +6320,7 @@
         {
           "id": "qhet_fs",
           "name": "Khage",
+          "tier": "C",
           "cost": 8,
           "combat": "5(x2)",
           "move": 1,
@@ -5874,6 +6333,7 @@
         {
           "id": "qhet_mech",
           "name": "Basilisk",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -5884,6 +6344,7 @@
         {
           "id": "qhet_comms",
           "name": "Commodities",
+          "tier": "D",
           "description": 2
         }
       ],
@@ -5891,6 +6352,7 @@
         {
           "id": "qhet_starting_fleet",
           "name": "Qhet Starting Fleet",
+          "tier": "D",
           "description": "1 Carrier, 2 Cruisers, 2 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -5898,6 +6360,7 @@
         {
           "id": "qhet_starting_tech",
           "name": "Qhet Starting Tech",
+          "tier": "A",
           "techs": [
             {
               "name": "Sling Relay",
@@ -5914,6 +6377,7 @@
         {
           "id": "qhet_hs",
           "name": "Qhet Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Qhet",
@@ -5932,6 +6396,7 @@
         {
           "id": "qhet_bt",
           "name": "Duranium Outfitting",
+          "tier": "C",
           "synergy": [
             {
               "primary": "Green",
@@ -5948,6 +6413,7 @@
         {
           "id": "toldar_hb",
           "name": "Honor-Bound",
+          "tier": "S+",
           "description": "When you gain honor, place or flip 1 code token on your faction sheet face up, if able. When you gain dishonor, instead place or flip 1 code token face down, if able."
         },
         {
@@ -5965,6 +6431,7 @@
         {
           "id": "toldar_em",
           "name": "Emergency Modifications",
+          "tier": "C",
           "tech_type": "Blue",
           "prerequisites": ["Blue"],
           "description": "After a player activates a system, choose 1 unit on the game board; apply +2 to that unit's Capacity value, if it has one, until the end of this tactical action."
@@ -5972,6 +6439,7 @@
         {
           "id": "toldar_virt",
           "name": "V.I.R. Training",
+          "tier": "A",
           "tech_type": "Red",
           "prerequisites": ["Red"],
           "description": "During each round of combat, you may cancel 1 hit your units produced to cancel up to 1 hit your opponent's units produced."
@@ -5981,6 +6449,7 @@
         {
           "id": "toldar_agent",
           "name": "Maertin Donaais - Esteemed Philanthropist",
+          "tier": "B",
           "description": "After a player gains commodities, you may exhaust this card to convert that player's commodities to trade goods; if that player was another player, gain 2 commodities or draw 1 action card."
         }
       ],
@@ -5996,6 +6465,7 @@
         {
           "id": "toldar_hero",
           "name": "Cadh Acamont - Concordat Marshall",
+          "tier": "C",
           "note": "CONCORD RENEWED - GALACTIC OUTREACH",
           "description": "ACTION: Attach this card to a revealed objective. The players with the fewest victory points may score this objective without fulfilling its requirements; after a player scores this objective, the Toldar player may draw 1 secret objective."
         }
@@ -6004,6 +6474,7 @@
         {
           "id": "toldar_pn",
           "name": "Concordat Allegiant",
+          "tier": "B",
           "description": "ACTION: Place this card face up in your play area. Once per action, when you win a combat against a player with more victory points than you, gain 3 commodities. If you activate a system that contains 1 or more of the Toldar player's units, purge 1 command token from your reinforcements and return this card to that player."
         }
       ],
@@ -6011,6 +6482,7 @@
         {
           "id": "toldar_fs",
           "name": "Errant",
+          "tier": "C",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -6033,6 +6505,7 @@
         {
           "id": "toldar_comms",
           "name": "Commodities",
+          "tier": "C",
           "description": 3
         }
       ],
@@ -6040,6 +6513,7 @@
         {
           "id": "toldar_starting_fleet",
           "name": "Toldar Starting Fleet",
+          "tier": "B",
           "description": "1 Dreadnought, 1 Carrier, 1 Fighter, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -6047,6 +6521,7 @@
         {
           "id": "toldar_starting_tech",
           "name": "Toldar Starting Tech",
+          "tier": "C",
           "note": "Choose 1 green or blue technology with no prerequisites."
         }
       ],
@@ -6054,6 +6529,7 @@
         {
           "id": "toldar_hs",
           "name": "Toldar Home System",
+          "tier": "A",
           "planets": [
             {
               "name": "Khodd",
@@ -6120,6 +6596,7 @@
         {
           "id": "uydai_prescience",
           "name": "Prescience",
+          "tier": "A",
           "description": "At the end of your turn, if you have not passed, place 1 of the plan cards on your faction sheet, face down."
         },
         {
@@ -6137,6 +6614,7 @@
         {
           "id": "uydai_mp",
           "name": "Messiah Protocols",
+          "tier": "C",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green"],
           "description": "During the action phase, you may exhaust this card and spend any amount of influence to place infantry from your reinforcements on a number of different planets you control equal to the influence spent."
@@ -6144,6 +6622,7 @@
         {
           "id": "uydai_nr",
           "name": "Navigation Relays",
+          "tier": "B",
           "tech_type": "Blue",
           "prerequisites": ["Blue", "Blue", "Blue"],
           "description": "After you activate a system, you may exhaust this card to allow your ships and units they transport to move out of systems that contain your command tokens during this tactical action."
@@ -6153,6 +6632,7 @@
         {
           "id": "uydai_agent",
           "name": "Garstil - Recruitment Officer",
+          "tier": "C",
           "description": "When a player draws a card: You may exhaust this card to allow that player to place that card on the bottom of the corresponding deck and draw another card from the top of the dec instead. If the player is another player, gain 1 commodity."
         }
       ],
@@ -6160,6 +6640,7 @@
         {
           "id": "uydai_commander",
           "name": "Reides Lupa - Gifted Telepath",
+          "tier": "D",
           "note": "[UNLOCK: Lose control of a planet.]",
           "description": "Once during each of your turns, you may look at the top card of 1 non-objective common deck; you may spend 1 trade good or 1 commodity to place that card on the bottom of that deck."
         }
@@ -6168,6 +6649,7 @@
         {
           "id": "uydai_hero",
           "name": "Londor II - God Emperor",
+          "tier": "B",
           "note": "OBSIDIAN GATE - PATHFINDER",
           "description": "After you activate a non-home system: You may purge this card to treat each of your non-structure units as adjacent to the active system until the end of this tactical action."
         }
@@ -6176,6 +6658,7 @@
         {
           "id": "uydai_pn",
           "name": "Eerie Predictions",
+          "tier": "C",
           "description": "At the start of the status phase: You may look at the top card of any common deck; place that card on the top or bottom of that deck. Then, return this card to the Uydai player."
         }
       ],
@@ -6183,6 +6666,7 @@
         {
           "id": "uydai_fs",
           "name": "Desert Sage",
+          "tier": "D",
           "cost": 8,
           "combat": "9(x2)",
           "move": 1,
@@ -6195,6 +6679,7 @@
         {
           "id": "uydai_mech",
           "name": "Fulgurite",
+          "tier": "B",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -6205,6 +6690,7 @@
         {
           "id": "uydai_comms",
           "name": "Commodities",
+          "tier": "S",
           "description": 5
         }
       ],
@@ -6212,6 +6698,7 @@
         {
           "id": "uydai_starting_fleet",
           "name": "Uydai Starting Fleet",
+          "tier": "A",
           "description": "3 Carriers, 4 Fighters, 5 Infantry"
         }
       ],
@@ -6219,6 +6706,7 @@
         {
           "id": "uydai_starting_tech",
           "name": "Uydai Starting Tech",
+          "tier": "S",
           "techs": [
             {
               "name": "Daxcive Animators",
@@ -6249,6 +6737,7 @@
         {
           "id": "uydai_bt",
           "name": "Prescient Warriors",
+          "tier": "B",
           "synergy": [
             {
               "primary": "Blue",

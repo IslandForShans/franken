@@ -912,7 +912,11 @@ body {
   transition: all var(--transition-normal);
   font-size: 0.875rem;
   background: var(--bg-tertiary);
+  display: flex;          /* ADD */
+  align-items: stretch;   /* ADD */
+  overflow: hidden;       /* ADD */
 }
+
 
 .sidebar-component-item:hover {
   background: #dbeafe;
@@ -925,6 +929,20 @@ body {
   color: #9ca3af;
   cursor: not-allowed;
   border-color: #e5e7eb;
+}
+
+.sidebar-tier-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.75rem;
+  border-radius: 0.15rem 0 0 0.15rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin: -0.5rem 0.5rem -0.5rem -0.5rem;
+  color: #000;
 }
 
 /* Sidebar close button: only visible on mobile */

@@ -239,7 +239,7 @@ export const undraftableComponents = {
     { name: "Heaven's Hollow", faction: "The Obsidian", triggerComponent: "Heaven's Eye", type: "gain_extra" },
     //DS
     { name: "Hulgade's Hammer", faction: "The Berserkers of Kjalengard", triggerComponent: "Glory", type: "optional_swap" },
-    { name: "All Mother", faction: "The Ghoti Wayfarers", triggerComponent: "Ghoti Starting Fleet", type: "draftable_and_swap" },
+    { name: "All-Mother", faction: "The Ghoti Wayfarers", triggerComponent: "Ghoti Starting Fleet", type: "draftable_and_swap" },
     { name: "The Lady", faction: "The Ghemina Raiders", triggerComponent: "The Lady & The Lord", type: "gain_extra"}
   ],
 

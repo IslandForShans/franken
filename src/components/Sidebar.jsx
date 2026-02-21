@@ -7,6 +7,27 @@ import { isComponentUndraftable, getExtraComponents, getSwapOptionsForTrigger } 
 import { findFullComponentData } from "../utils/swapUtils.js";
 import { formatCategoryName } from "../utils/formatters.js";
 
+const TIER_COLORS = {
+  'S+': '#ff00f7ff',
+  'S':  '#09ff00ff',
+  'A':  '#00aeffff',
+  'B':  '#0400ffff',
+  'C':  '#ff8800ff',
+  'D':  '#66250bff',
+  'E':  '#5b0606ff',
+  'F':  '#000000ff',
+};
+
+function TierBadge({ tier }) {
+  if (!tier) return null;
+  const bg = TIER_COLORS[tier] ?? '#6b7280';
+  return (
+    <span className="sidebar-tier-badge" style={{ background: bg }}>
+      {tier}
+    </span>
+  );
+}
+
 const FACTION_CATEGORIES = [
   'abilities', 'faction_techs', 'agents', 'commanders', 'heroes', 'promissory',
   'starting_techs', 'starting_fleet', 'commodity_values', 'flagship', 'mech',
@@ -595,15 +616,16 @@ const toggleAllCategories = () => {
                 scheduleHoverClose();
               }}
             >
-              <div className="flex items-center gap-2 font-medium">
-                {component.factionIcon && (
-                  <img
-                    src={component.factionIcon}
-                    alt={component.faction}
-                    className="w-5 h-5 rounded-full"
-                  />
-                )}
-                <span>{component.name}</span>
+              <TierBadge tier={component.tier} />
+<div className="flex items-center gap-2 font-medium flex-1 min-w-0">
+  {component.factionIcon && (
+    <img
+      src={component.factionIcon}
+      alt={component.faction}
+      className="w-5 h-5 rounded-full"
+    />
+  )}
+  <span>{component.name}</span>
 
                 {cat === "commodity_values" && component.description !== undefined && (
     <span className="ml-auto text-sm font-bold opacity-40" style={{ color: '#fcd34d' }}>
