@@ -25,7 +25,7 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5);
   --transition-fast: 150ms;
   --transition-normal: 300ms;
-  --font-description: 'Myriad Pro', 'Myriad', sans-serif;
+  --font-description: 'Source Sans 3', 'Myriad Pro', 'Myriad', sans-serif;
 }
 
 /* Global Styles */
@@ -36,7 +36,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Myriad Pro', 'Myriad', sans-serif;
+  font-family: 'Source Sans 3', 'Myriad Pro', 'Myriad', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(to bottom right, var(--bg-primary), var(--bg-secondary), var(--bg-black));
@@ -670,36 +670,6 @@ body {
 
 /* Mobile / small-screen sidebar behavior */
 @media (max-width: 767px) {
-  /* Allow component item inner row to wrap so icons don't crush the name */
-.sidebar-component-item {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Force the inner flex row to fill available width and stay on one line */
-.sidebar-component-item .flex.items-center {
-  width: 100%;
-  flex-wrap: nowrap;
-  min-width: 0;
-}
-
-/* Name span: grow to fill space, truncate with ellipsis if too long */
-.sidebar-component-item .flex.items-center > span {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Keep icons at their intended size, never shrink them */
-.sidebar-component-item .flex.items-center > img {
-  flex-shrink: 0;
-  width: 1.25rem;
-  height: 1.25rem;
-  min-width: 1.25rem;
-}
-
   /* Off-canvas sidebar on mobile */
   .sidebar {
     position: fixed;
@@ -712,6 +682,8 @@ body {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     padding: 0;
+    overflow-y: auto;
+    padding-top: 1rem;
   }
 
   .sidebar.open {
@@ -979,6 +951,25 @@ body {
   border-color: #e5e7eb;
 }
 
+/* Sidebar item layout: icon left, content right */
+.sidebar-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-item-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sidebar-item-row > img {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+}
+
 .sidebar-tier-badge {
   display: flex;
   align-items: center;
@@ -1010,10 +1001,17 @@ body {
 }
 
 .sidebar-backdrop {
+  display: none;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 9998;
+}
+
+@media (max-width: 767px) {
+  .sidebar-backdrop {
+    display: block;
+  }
 }
 
 /* Desktop behavior */

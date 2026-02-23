@@ -53,7 +53,8 @@ export default function Sidebar({
   defaultCollapsed = false,
   isSearching = false,
   noWrapper = false,
-  isOpen = true
+  isOpen = true,
+  collapseAllTrigger = null
 }) {
   const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
   const [showAllComponents, setShowAllComponents] = useState(false);
@@ -64,6 +65,10 @@ export default function Sidebar({
   return new Set();
 });
 
+  useEffect(() => {
+    if (collapseAllTrigger === null) return;
+    toggleAllCategories();
+  }, [collapseAllTrigger]);
 
   // Hover preview state
   const [hoveredComponent, setHoveredComponent] = useState(null);
@@ -87,9 +92,9 @@ useEffect(() => {
       });
       return newSet;
     });
-  } else if (defaultCollapsed) {
-    // When search is cleared, collapse all if defaultCollapsed is true
-    setCollapsedCategories(new Set(categories));
+  } else {
+    // When search is cleared, expand all
+    setCollapsedCategories(new Set());
   }
 }, [isSearching, availableComponents, categories, defaultCollapsed]);
 
@@ -617,15 +622,17 @@ const toggleAllCategories = () => {
               }}
             >
               <TierBadge tier={component.tier} />
-<div className="flex items-center gap-2 font-medium flex-1 min-w-0">
-  {component.factionIcon && (
-    <img
-      src={component.factionIcon}
-      alt={component.faction}
-      className="w-5 h-5 rounded-full"
-    />
-  )}
-  <span>{component.name}</span>
+              <div className="sidebar-item-row">
+                {component.factionIcon && (
+                  <img
+                    src={component.factionIcon}
+                    alt={component.faction}
+                    className="w-5 h-5 rounded-full flex-shrink-0"
+                  />
+                )}
+                <div className="sidebar-item-content">
+                  <div className="flex items-center gap-2 font-medium flex-wrap">
+                    <span>{component.name}</span>
 
                 {cat === "commodity_values" && component.description !== undefined && (
     <span className="ml-auto text-sm font-bold opacity-40" style={{ color: '#fcd34d' }}>
@@ -757,11 +764,30 @@ const toggleAllCategories = () => {
               {/* ===== MOBILE INLINE DETAILS (no hover on touch devices) ===== */}
               {!supportsHover && (
                 <>
-                  {component.description && cat !== 'starting_techs' && (
+                  {/* Note for commanders, heroes, and starting_techs */}
+                  {component.note && (cat === 'commanders' || cat === 'heroes' || cat === 'starting_techs') && (
+                    <div className="text-xs mt-1 font-semibold" style={{ color: '#fbbf24' }}>
+                      {component.note}
+                    </div>
+                  )}
+
+                  {/* Description (skip for starting_techs — handled below) */}
+                  {component.description && (
                     <div className="text-xs italic mt-1" style={{ color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                       {component.description}
                     </div>
                   )}
+
+                  {/* Starting techs list */}
+                  {cat === 'starting_techs' && Array.isArray(component.techs) && component.techs.map((t, i) => {
+                    const techColorMap = { Blue: '#60a5fa', Red: '#f87171', Green: '#34d399', Yellow: '#fcd34d' };
+                    const color = techColorMap[t.tech_type] || '#fff';
+                    return (
+                      <div key={i} className="text-xs" style={{ color, marginBottom: '0.15rem' }}>
+                        • {typeof t === 'string' ? t : t.name}
+                      </div>
+                    );
+                  })}
                   {(component.cost !== undefined || component.combat !== undefined ||
                     component.move !== undefined || component.capacity !== undefined) && (
                     <div className="text-xs mt-1 flex gap-2 flex-wrap">
@@ -791,8 +817,9 @@ const toggleAllCategories = () => {
                       {component.planets.map((planet, pIdx) => (
                         <div key={pIdx}>
                           <span className="font-semibold text-green-400">{planet.name}:</span>{' '}
-                          <span className="text-blue-300">{planet.resources}Resources:</span>{' '}
-                          <span className="text-yellow-300">{planet.influence}Influence:</span>
+                          <span className="text-yellow-300">{planet.resources ?? planet.resource ?? 0}R</span>{' '}
+                          <span className="text-blue-300">{planet.influence ?? 0}I</span>
+                          {planet.traits && planet.traits.length > 0 && <span> · {planet.traits.join(', ')}</span>}
                           {planet.trait && <span> · {planet.trait}</span>}
                         </div>
                       ))}
@@ -800,6 +827,8 @@ const toggleAllCategories = () => {
                   )}
                 </>
               )}
+              </div>
+              </div>
             </div>
           );
         }) : [])

@@ -78,7 +78,14 @@ const myPlayerIndex = multiplayer.mySlotId
 
   // Sidebar
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [sidebarCollapseAllTrigger, setSidebarCollapseAllTrigger] = useState(null);
   const showSidebar = draftStarted && draftPhase === "draft";
+
+  useEffect(() => {
+    if (draftStarted && window.matchMedia("(max-width: 767px)").matches) {
+      setSidebarCollapsed(false);
+    }
+  }, [draftStarted]);
 
   // UI state
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
@@ -1752,6 +1759,7 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
               availableComponents={getAvailableComponents()}
               onComponentClick={handlePick}
               draftVariant={draftVariant}
+              collapseAllTrigger={sidebarCollapseAllTrigger}
             />
 
         {!sidebarCollapsed && (
@@ -1825,11 +1833,12 @@ const handleAddComponentToBuild = (playerIndex, category, component) => {
                     {showSummary ? "Hide" : "Show"} Summary
                   </button>
                   
-                  {draftStarted && (
+                  {draftStarted && showSidebar && (
                     <button
-                      onClick={() => setSettingsCollapsed(!settingsCollapsed)}
-                      className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors mobile-action-button"                    >
-                      {settingsCollapsed ? "Show" : "Hide"} Info
+                      onClick={() => setSidebarCollapseAllTrigger(v => !v)}
+                      className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors mobile-action-button md:hidden"
+                    >
+                      ☰ Categories
                     </button>
                   )}
                   {draftStarted && (

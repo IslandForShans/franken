@@ -6,12 +6,15 @@ export const CATEGORY_LABELS = {
     heroes: "Heroes",
     promissory: "Promissory",
     starting_tech: "Starting Techs",
+    starting_techs: "Starting Techs",
     starting_fleet: "Starting Fleet",
     commodity_value: "Commodities",
+    commodity_values: "Commodities",
     flagship: "Flagship",
     mech: "Mech",
     home_systems: "Home System",
-    breakthrough: "Breakthrough"
+    breakthrough: "Breakthrough",
+    table_position: "Table Position"
 };
 
 export function formatCategoryName(category) {
