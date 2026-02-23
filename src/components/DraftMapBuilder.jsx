@@ -869,7 +869,7 @@ useEffect(() => {
   ? -1  // solo: isMyTurn will be overridden below
   : players.findIndex(p => p.multiplayerSlotId === multiplayer.mySlotId);
 
-const isMyTurn = !isMapGuest  // solo and host always show buttons
+const isMyTurn = !multiplayer  // solo always show buttons
   ? true
   : mantisInfo.pidx === myPlayersArrayIndex;  // guest: only on their turn
 

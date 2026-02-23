@@ -8,21 +8,21 @@ import { findFullComponentData } from "../utils/swapUtils.js";
 import { formatCategoryName } from "../utils/formatters.js";
 
 const TIER_COLORS = {
-  'S+': '#ff00f7ff',
-  'S':  '#09ff00ff',
-  'A':  '#00aeffff',
-  'B':  '#0400ffff',
-  'C':  '#ff8800ff',
-  'D':  '#66250bff',
-  'E':  '#5b0606ff',
-  'F':  '#000000ff',
+  'S+': { bg: '#ff00f7ff', text: '#fff' },
+  'S':  { bg: '#04ba44ff', text: '#fff' },
+  'A':  { bg: '#0090d3ff', text: '#fff' },
+  'B':  { bg: '#0400ffff', text: '#fff' },
+  'C':  { bg: '#c86a00ff', text: '#fff' },
+  'D':  { bg: '#66250bff', text: '#fff' },
+  'E':  { bg: '#5b0606ff', text: '#fff' },
+  'F':  { bg: '#000000ff', text: '#fff' },
 };
 
 function TierBadge({ tier }) {
   if (!tier) return null;
-  const bg = TIER_COLORS[tier] ?? '#6b7280';
+  const colors = TIER_COLORS[tier] ?? { bg: '#6b7280', text: '#fff' };
   return (
-    <span className="sidebar-tier-badge" style={{ background: bg }}>
+    <span className="sidebar-tier-badge" style={{ background: colors.bg, color: colors.text }}>
       {tier}
     </span>
   );

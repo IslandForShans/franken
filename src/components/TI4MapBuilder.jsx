@@ -794,7 +794,7 @@ export default function TI4MapBuilder({ onNavigate }) {
 
         <div style={{ flex: 1, overflowY: "auto", padding: "8px", display: "flex", flexDirection: "column", gap: 6 }}>
   {activeTiles.map((tile) => {
-    const isPlaced = placedSet.has(tile.key);
+    const isPlaced = placedSet.has(tile.key) && !tile.code.startsWith("00");
     return (
       <div
         key={tile.key}

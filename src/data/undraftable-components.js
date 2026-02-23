@@ -308,7 +308,7 @@ export const undraftableComponents = {
   //Starting Fleets
   starting_fleets: [
     //DS
-    { name: "L'tokk Khrask Starting Fleet", faction: "The L'tokk Khrask", triggerComponent: "Shattered Sky II", type: "optional_swap" }
+    { name: "L'tokk Khrask Starting Fleet", faction: "The L'tokk Khrask", reason: "Just Plain Garbage", type: "garbage" }
   ],
   
   //Commodities

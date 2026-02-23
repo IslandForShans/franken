@@ -67,6 +67,9 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [factionFilterOpen, setFactionFilterOpen] = useState(false);
   const [visibleFactions, setVisibleFactions] = useState(new Set());
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [tierFilter, setTierFilter] = useState(new Set());
+  const [tierSort, setTierSort] = useState(false);
   const headerRef = useRef(null);
 
   // Hover preview state for component popups
@@ -265,10 +268,33 @@ const availableComponentsForSidebar = useMemo(() => {
       all = all.filter(c => !c.faction || visibleFactions.has(c.faction));
     }
 
+    // Apply tier filter
+    if (tierFilter.size > 0) {
+      all = all.filter(c => c.tier && tierFilter.has(c.tier));
+    }
+
+    // Apply tier sort
+    if (tierSort) {
+      const TIER_ORDER = ['S+', 'S', 'A', 'B', 'C', 'D', 'E', 'F'];
+      all = [...all].sort((a, b) => {
+        const ai = a.tier ? TIER_ORDER.indexOf(a.tier) : 999;
+        const bi = b.tier ? TIER_ORDER.indexOf(b.tier) : 999;
+        return ai - bi;
+      });
+    }
+
     components[cat] = all;
   });
+
+// Apply category filter by removing other keys
+  if (categoryFilter) {
+    Object.keys(components).forEach(k => {
+      if (k !== categoryFilter) delete components[k];
+    });
+  }
+
   return components;
-}, [categories, globalSearchTerm, visibleFactions, dsOnlyMode, dsAddMode, brAddMode]);
+}, [categories, globalSearchTerm, visibleFactions, dsOnlyMode, dsAddMode, brAddMode, categoryFilter, tierFilter, tierSort]);
 
   const handleAddComponent = (cat, item) => {
   // Skip limit check in unlimited mode
@@ -964,6 +990,58 @@ const getAllAvailableSwaps = () => {
       >
         Filter Factions
       </button>
+
+      <div className="border-t border-gray-700 pt-3 mt-3 space-y-2">
+        <select
+          value={categoryFilter}
+          onChange={e => setCategoryFilter(e.target.value)}
+          className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
+        >
+          <option value="">All Categories</option>
+          {categories.map(cat => (
+            <option key={cat} value={cat}>{cat.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>
+          ))}
+        </select>
+
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-gray-400">Filter by tier</span>
+            <button
+              onClick={() => setTierSort(v => !v)}
+              title="Sort by tier"
+              className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${tierSort ? 'bg-yellow-600 border-yellow-400 text-white' : 'bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400'}`}
+            >
+              ↑ Sort
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {['S+', 'S', 'A', 'B', 'C', 'D', 'E', 'F'].map(t => {
+              const active = tierFilter.has(t);
+              return (
+                <button
+                  key={t}
+                  onClick={() => setTierFilter(prev => {
+                    const next = new Set(prev);
+                    if (next.has(t)) next.delete(t); else next.add(t);
+                    return next;
+                  })}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${active ? 'bg-yellow-600 border-yellow-400 text-white' : 'bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400'}`}
+                >
+                  {t}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        {(categoryFilter || tierFilter.size > 0 || tierSort) && (
+          <button
+            onClick={() => { setCategoryFilter(''); setTierFilter(new Set()); setTierSort(false); }}
+            className="w-full text-xs text-gray-400 hover:text-white transition-colors"
+          >
+            ✕ Clear filters
+          </button>
+        )}
+      </div>
     </div>
 
     {/* Unified Sidebar Component */}
