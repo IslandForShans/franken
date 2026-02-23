@@ -200,6 +200,7 @@
         {
           "id": "bentor_mr",
           "name": "Merged Replicators",
+          "tier": "E",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "When 1 or more of your units use PRODUCTION, you may exhaust this card to swap 1 of those unit's PRODUCTION with another on the game board, or apply +2 to the total PRODUCTION value of those units."
@@ -411,6 +412,7 @@
         {
           "id": "berserkers_pn",
           "name": "Vassalage",
+          "tier": "E",
           "description": "Apply +1 to the results of each of your fighters' combat rolls during this combat. The Kjalengard player captures each of your fighters destroyed during this combat. Then, return this card to the Kjalengard player."
         }
       ],
@@ -689,6 +691,7 @@
         {
           "id": "cheiran_bp",
           "name": "Brood Pod",
+          "tier": "D",
           "tech_type": "Red",
           "prerequisites": ["Red", "Red"],
           "description": "After another player activates a system that contains 1 or more of your structures, you may exhaust this card to produce 1 ship in the active system. For each of your structures in the active system, you may remove that unit from the game board to reduce the cost of the produced ship by 3."
@@ -805,6 +808,7 @@
         {
           "id": "cheiran_comms",
           "name": "Commodities", 
+          "tier": "D",
           "description": "2"
         }
       ],
@@ -812,6 +816,7 @@
         {
           "id": "cheiran_hs",
           "name": "Cheiran Home System",
+          "tier": "C",
           "planets": [
             {
               "name": "Gghurn Theta",
@@ -899,6 +904,7 @@
         {
           "id": "dih-mohn_agent",
           "name": "Jgin Faru - Chancellor of Immigration",
+          "tier": "E",
           "description": "When a player commits 1 or more units to a planet during invasion: You may exhaust this card to allow that player to place 1 infantry from their reinforcements on that planet."
         }
       ],
@@ -915,6 +921,7 @@
         {
           "id": "dih-mohn_hero",
           "name": "Verrisus Ypru - Former Admiral of the Unrelenting Battlegroup",
+          "tier": "E",
           "note": "DEFENSE MATRIX OVERLOAD - VOLATILE EMP BURST",
           "description": "After the 'Roll Dice' step of space combat: You may purhe this card. If you do, all ships in the active system become damaged; during this round of space combat your ships cannot be destroyed."
         }
@@ -1198,6 +1205,7 @@
         {
           "id": "florzen_bp",
           "name": "Blackmail Programs",
+          "tier": "E",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green"],
           "description": "When a player would perform a strategic actionm you may exhaust this car dand spend 1 token from your strategy pool to end that player's turn; the strategic action is not resolved and the strategy card is not exhausted."
@@ -1228,6 +1236,7 @@
         {
           "id": "florzen_agent",
           "name": "Sal Gavda - Black Market Dealer",
+          "tier": "E",
           "description": "At the start of a player's turn: You may exhaust this card to allow that player to remove an attachment from a non-home planet they control and attach it to a non-home planet they control other than Mecatol Rex adjacent to that planet's system."
         }
       ],
@@ -1274,6 +1283,7 @@
         {
           "id": "florzen_mech",
           "name": "Privateer",
+          "tier": "E",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -1372,6 +1382,7 @@
         {
           "id": "fsc_en",
           "name": "Envoy Network",
+          "tier": "E",
           "tech_type": "Green",
           "prerequisites": ["Green"],
           "description": "At the start of the agenda phase, you may choose and exhaust 1 cultural, 1 hazardous, and 1 industrial planet. When you cast 1 or more votes, if you exhaust at least 1 cultural, 1 hazardous, and 1 industrial planet to cast votes, you may cast 4 additional votes."
@@ -1379,6 +1390,7 @@
         {
           "id": "fsc_cst",
           "name": "Covert Strike Teams",
+          "tier": "E",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "At the start of a ground combat, you may roll 1 die for each of up to 2 of your ground forces on that planet. For each result equal to or greater than that unit's combat value, produce 1 hit; your opponent must assign it to 1 of their units on that planet."
@@ -1388,6 +1400,7 @@
         {
           "id": "fsc_agent",
           "name": "Cordo Haved - Friendly Diplomat",
+          "tier": "E",
           "description": "While ready, this card has the text ability of each legendary planet ability card any player controls, even if that card is exhausted. You may allow another player to use this card's ability."
         }
       ],
@@ -1421,6 +1434,7 @@
         {
           "id": "fsc_fs",
           "name": "Vox",
+          "tier": "E",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -1556,6 +1570,7 @@
         {
           "id": "ghemina_agent",
           "name": "Skarvald & Torvar - Raid Heralds",
+          "tier": "E",
           "description": "When the active player produces 1 or more hits during a round of combat: You may exhaust this card to allow that player to produce 1 additional hit."
         }
       ],
@@ -1863,6 +1878,7 @@
         {
           "id": "gledge_dm",
           "name": "Deep Mining",
+          "tier": "E",
           "description": "When you would explore a planet that contains 1 of your mechs or structures, you may instead gain 1 trade good."
         }
       ],
@@ -2027,6 +2043,7 @@
         {
           "id": "glimmer_ip",
           "name": "Illusory Prescence",
+          "tier": "E",
           "description": "During the agenda phase, after another player casts votes, you may exhaust up to 2 planets you control; that player casts an additional number of votes equal to 1 more than the combined influence values of those planets."
         }
       ],
@@ -2034,6 +2051,7 @@
         {
           "id": "glimmer_fp",
           "name": "Fractal Plating",
+          "tier": "E",
           "tech_type": "Red",
           "prerequisites": ["Red", "Red"],
           "description": "After a unit you control in a system is destroyed, you may exhaust this card to place 1 unit of that type from your reinforcements in the space area of a system adjacent to that system that contains 1 or more of your ships."
@@ -2197,6 +2215,7 @@
         {
           "id": "kyro_it",
           "name": "Indoctrination Teams",
+          "tier": "E",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green"],
           "description": "During the agenda phase, after an outcome you voted for is resolved, place 2 infantry from your reinforcements on a planet you control."
@@ -2231,6 +2250,7 @@
         {
           "id": "kyro_hero",
           "name": "Speygh - Blightmaster",
+          "tier": "E",
           "note": "BRIKK STRAIN - GALACTIC BLIGHT",
           "description": "At the start of the status phase: You may attach this card to 1 of your strategy cards. Its initiative value is 9. Non-Kyro players may only resolve 1 clause of this strategy card's primary ability. The Kyro player gains any trade goods placed on this card."
         }
@@ -2368,6 +2388,7 @@
         {
           "id": "kortali_agent",
           "name": "Queen Lucreia - Atonement and Punishment",
+          "tier": "E",
           "description": "When a player wins a ground combat: You may exhaust this card to allow that player to take 1 relic fragment their opponent owns, at random, if able."
         }
       ],
@@ -3195,7 +3216,7 @@
       "abilities": [
         {
           "id": "mirveda_pc",
-          "name": "Privileged Society",
+          "name": "Privileged Citizenry",
           "description": "Each system can contain a number of your PDS equal to the number of command tokens in your fleet pool. For the purpose of scoring objectives, you may treat each of your PDS units as though it is a structure on any planet you control."
         },
         {
@@ -3263,6 +3284,7 @@
         {
           "id": "mirveda_pn",
           "name": "Rapid Assembly",
+          "tier": "E",
           "description": "At the start of your turn: You may move up to 2 PDS units you control to a planet you control. Then, return this card to the Mirveda player."
         }
       ],
@@ -3404,6 +3426,7 @@
         {
           "id": "kolume_commander",
           "name": "Issac of Sinci - Kinematics Specialist",
+          "tier": "E",
           "note": "[UNLOCK: During the action phase, ready 1 of your technologies.]",
           "description": "Apply +1 to each of your unit's ability rolls."
         }
@@ -3412,6 +3435,7 @@
         {
           "id": "kolume_hero",
           "name": "Wonell the Silent - Grandmaster of the Order",
+          "tier": "E",
           "note": "COIL OVERCHARGE - STREAKS IN THE NIGHT",
           "description": "ACTION: Place this card near the game board; during this game round, after you perform a component action, you may use 1 of your unit's SPACE CANNON against ships in or adjacent to that unit's system, without rolling additional dice."
         }
@@ -3420,6 +3444,7 @@
         {
           "id": "kolume_pn",
           "name": "Combinatorial Bypass",
+          "tier": "E",
           "description": "At the start of invasion, place this card in your play area. During invasion, all other player's unit lose SPACE CANNON and PLANETARY SHIELD. At the start of your next turn, return this card to the Kolume player."
         }
       ],
@@ -3451,6 +3476,7 @@
         {
           "id": "kolume_starting_tech",
           "name": "Kolume Starting Tech",
+          "tier": "E",
           "note":"Choose 1 of the following:",
           "techs": [
             {
@@ -3539,6 +3565,7 @@
         {
           "id": "mm_pa",
           "name": "Psychoactive Armaments",
+          "tier": "E",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green"],
           "description": "After your opponent makes a combat roll, you may exhaust this card. If you do, for each of their units that did not produce a hit, you may reroll that unit's combat roll; any hits that roll produces are produced against your opponent's units instead."
@@ -3609,6 +3636,7 @@
         {
           "id": "mm_mech",
           "name": "Amandia Pholdis",
+          "tier": "E",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -3706,6 +3734,7 @@
         {
           "id": "nivyn_agent",
           "name": "Suldhan Wraeg - Shrouded Advisor",
+          "tier": "E",
           "description": "When a player would use 1 unit's non-PRODUCTION unit ability in a system that contains or is adjacent to an anomaly, you may exhaust this card to prevent that unit from using that unit ability."
         }
       ],
@@ -3805,6 +3834,7 @@
         {
           "id": "nivyn_hs",
           "name": "Nivyn Home System",
+          "tier": "E",
           "planets": [
             {
               "name": "Ellas",
@@ -3980,6 +4010,7 @@
         {
           "id": "nokar_hs",
           "name": "Nokar Home System",
+          "tier": "E",
           "planets": [
             {
               "name": "Zarr",
@@ -4701,6 +4732,7 @@
         {
           "id": "tnelis_ib",
           "name": "Information Brokers",
+          "tier": "E",
           "description": "You may have 1 additional unscored secret objective."
         },
         {
@@ -4743,6 +4775,7 @@
         {
           "id": "tnelis_agent",
           "name": "Davish S'Norri - Labor Relations Specialist",
+          "tier": "E",
           "description": "At the start of invasion: You may exhaust this card to choose 1 ship in the active system. During this invasion, that ship may use its ANTI-FIGHTER BARRAGE as if it were BOMBARDMENT."
         }
       ],
@@ -5019,7 +5052,7 @@
       "breakthrough": [
         {
           "id": "vaden_bt",
-          "name": "Arms Brokerage",
+          "name": "Strongarm Banking",
           "synergy": [
             {
               "primary": "Green",
@@ -5036,6 +5069,7 @@
         {
           "id": "vs_cr",
           "name": "Cargo Raiders",
+          "tier": "E",
           "description": "During the first round of a space combat, you may prevent your opponent from declaring a retreat unless they spend 1 trade good." 
         },
         {
@@ -5112,6 +5146,7 @@
         {
           "id": "vs_pn",
           "name": "Clan's Favor",
+          "tier": "E",
           "description": "At the start of a round of space combat: The Vaylerian player discard 1 action card. Then, move all of your ships from the active system to an adjacent system that does not contain another player's ships; the space combat ends in a draw. Then, place a command token from your reinforcements in that system and return this card to the Vaylerian player."
         }
       ],
@@ -5225,6 +5260,7 @@
         {
           "id": "veldyr_sp",
           "name": "SEIDR Project",
+          "tier": "E",
           "tech_type": "Red",
           "prerequisites": ["Red", "Red"],
           "description": "At the end of each round of space combat, you may use the SPACE CANNON of 1 of your units in the active system against your opponent's ships, without rolling additional dice."
@@ -5256,6 +5292,7 @@
         {
           "id": "veldyr_agent",
           "name": "Solis Morden - Research and Development",
+          "tier": "E",
           "description": "When a player spends resources to research: You may exhaust this card to allow that player to spend the influence of 1 planet they control as resources."
         }
       ],
@@ -5562,6 +5599,7 @@
         {
           "id": "zelian_sv",
           "name": "Shard Volley",
+          "tier": "E",
           "tech_type": "Red",
           "prerequisites": ["Red"],
           "description": "When 1 or more of your units produce 1 or more hits during a BOMBARDMENT roll against a planet, produce 1 additional hit for that roll."
@@ -5616,6 +5654,7 @@
         {
           "id": "zelian_pn",
           "name": "Hyperkinetic Ordinance",
+          "tier": "E",
           "description": "When 1 or more of your units would make a BOMBARDMENT roll: If you produce 1 or more hits during this BOMBARDMENT roll, produce 1 additional hit for that roll. Then, return this card ot the Zelian player."
         }
       ],
@@ -6114,6 +6153,7 @@
         {
           "id": "pharadn_agent",
           "name": "Nokash - Architect",
+          "tier": "E",
           "description": "At any time: Exhaust this card to allow a player to destroy all their infantry on 1 planet they control. For each infantry destroyed, that player gains 1 commodity. Then, that player converts all of their commodities to trade goods."
         }
       ],
@@ -6227,6 +6267,7 @@
         {
           "id": "qhet_dr",
           "name": "Data Recovery",
+          "tier": "D",
           "description": "Once per action, after 1 or more of your units is destroyed, you may place 1 of the active player's control tokens on your faction sheet."
         },
         {

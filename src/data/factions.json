@@ -223,6 +223,7 @@
         {
           "id": "argent_hero",
           "name": "Mirik Aun Sissiri",
+          "tier": "E",
           "note": "HELIX PROTOCOL",
           "description": "ACTION: Move any number of your ships from any systems to any number of other systems that contain 1 of oyur command tokens and no other player's ships. Then, purge this card."
         }
@@ -239,6 +240,7 @@
         {
           "id": "argent_fs",
           "name": "Quetzecoatl",
+          "tier": "E",
           "cost": 8,
           "combat": "7(x2)",
           "move": 1,
@@ -356,6 +358,7 @@
         {
           "id": "barony_l4",
           "name": "L4 Disruptors",
+          "tier": "E",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow"],
           "description": "During an invasion, units cannot use SPACE CANNON against your units."
@@ -373,6 +376,7 @@
         {
           "id": "barony_agent",
           "name": "Viscount Unlenn",
+          "tier": "E",
           "description": "At the start of a space combat round: You may exhaust this card to choose 1 ship in the active system. That ship rolls 1 additional die during this combat round."
         }
       ],
@@ -628,6 +632,7 @@
         {
           "id": "saar_hs",
           "name": "Saar Home System",
+          "tier": "E",
           "planets": [
             {
               "name": "Lisis II",
@@ -663,6 +668,7 @@
         {
           "id": "keleres_tribunii",
           "name": "The Tribunii Ω",
+          "tier": "F",
           "description": "During setup, choose a Keleres hero that corresponds to an unsued faction; take that faction's home system, command tokens, and control markers. The unchosen Keleres heroes are not used."
         },
         {
@@ -708,6 +714,7 @@
         {
           "id": "keleres_commander",
           "name": "Suffi An",
+          "tier": "E",
           "note": "[UNLOCK: Spend 1 trade good after you play an action card that has a component action.]",
           "description": "After you perform a component action: You may perform an additional action."
         }
@@ -993,6 +1000,7 @@
         {
           "id": "muaat_hs",
           "name": "Muaat Home System",
+          "tier": "B",
           "planets": [
             {
               "name": "Muaat",
@@ -1151,6 +1159,7 @@
         {
           "id": "hacan_home_system",
           "name": "Hacan Home System",
+          "tier": "E",
           "planets": [
             {
               "name": "Hercant",
@@ -1404,6 +1413,7 @@
         {
           "id": "sol_agent",
           "name": "Evelyn Delouis",
+          "tier": "E",
           "description": "At the start of a ground combat: You may exhaust this card to chose 1 ground force in the active system; that ground force rolls 1 additional die during that combat round."
         }
       ],
@@ -1646,6 +1656,7 @@
         {
           "id": "ghosts_hs",
           "name": "Ghosts Home System",
+          "tier": "E",
           "planets": [
             {
               "name": "Creuss",
@@ -1691,6 +1702,7 @@
         {
           "id": "l1_is",
           "name": "Inheritance Systems",
+          "tier": "E",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "You may exhaust this card and spend 2 resources when you research of technology; ignore all of that technology's prerequisites."
@@ -1937,6 +1949,7 @@
         {
           "id": "mahact_pn",
           "name": "Scepter of Dominion",
+          "tier": "E",
           "description": "At the start of the strategy phase: Choose 1 nonhome system that contains your units; each other player who has a token on the Mahact player's command sheet places a token from their reinforcements in that system. Then, return this card to the Mahact player."
         }
       ],
@@ -2001,6 +2014,7 @@
         {
           "id": "mahact_comms",
           "name": "Commodities", 
+          "tier": "B",
           "description": "3"
         }
       ],
@@ -2278,6 +2292,7 @@
         {
           "id": "naalu_mech",
           "name": "Iconoclast ΩΩ",
+          "tier": "C",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
@@ -2370,6 +2385,7 @@
         {
           "id": "nra_supercharge",
           "name": "Supercharge",
+          "tier": "E",
           "tech_type": "Red",
           "prerequisites": ["Red"],
           "description": "At the start of a combat round, you may exhaust this card to apply +1 to the result of each of your unit's combat rolls during this combat round."
@@ -2623,6 +2639,7 @@
         {
           "id": "nekro_starting_fleet",
           "name": "Nekro Starting Fleet",
+          "tier": "E",
           "description": "1 Dreadnought, 1 Carrier, 1 Cruiser, 2 Fighters, 2 Infantry, 1 Space Dock"
         }
       ],
@@ -2838,6 +2855,7 @@
         {
           "id": "sardakk_vpw",
           "name": "Valkyrie Particle Weave",
+          "tier": "C",
           "tech_type": "Red",
           "prerequisites": ["Red", "Red"],
           "description": "After making combat rolls during a round of ground combat, if your opponent produced 1 or more hits, you produce 1 additional hit"
@@ -3118,6 +3136,7 @@
         {
           "id": "titans_starting_fleet",
           "name": "Titans Starting Fleet",
+          "tier": "E",
           "description": "1 Dreadnought, 2 Cruisers, 2 Fighters, 3 Infantry, 1 Space Dock"
         }
       ],
@@ -3189,7 +3208,8 @@
         },
         {
           "id": "jolnar_scc",
-          "name": "Spatial Conduit Cylinder",
+          "name": "Spatial Conduit Cylinders",
+          "tier": "E",
           "tech_type": "Blue",
           "prerequisites": ["Blue", "Blue"],
           "description": "You may exhaust this card after you activate a system that contains 1 or more of your units; that system is adjacent to all other systems that contain 1 or more of your units during this activation."
@@ -3206,7 +3226,8 @@
       "commanders": [
         {
           "id": "jolnar_commander",
-          "name": "Agnlan Oln",
+          "name": "Anglan Oln",
+          "tier": "D",
           "note": "[UNLOCK: Own 8 technologies.]",
           "description": "After you roll dice for a unit ability: You may reroll any of those dice."
         }
@@ -3519,6 +3540,7 @@
         {
           "id": "winnu_htp",
           "name": "Hegemonic Trade Policy",
+          "tier": "E",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "Exhaust this card when 1 or more of your units use PRODUCTION; swap the resource and influence values of 1 planet you control during that use of Production."
@@ -3594,6 +3616,7 @@
         {
           "id": "winnu_starting_fleet",
           "name": "Winnu Starting Fleet",
+          "tier": "E",
           "description": "1 Carrier, 1 Cruiser, 2 Fighters, 2 Infantry, 1 Space Dock, 1 PDS"
         }
       ],
@@ -3730,6 +3753,7 @@
         {
           "id": "xxcha_starting_tech",
           "name": "Xxcha Starting Tech",
+          "tier": "E",
           "techs": [
             {
               "name": "Graviton Laser System",
@@ -3808,6 +3832,7 @@
         {
           "id": "yin_ic",
           "name": "Impulse Core",
+          "tier": "E",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
           "description": "At the sart of a space combat, you may destroy 1 of your cruisers or destroyers in the active system to produce 1 hit against your opponent's ships; that hit must be assigned by your opponent to 1 of their non-fighter ships, if able."
@@ -3882,6 +3907,7 @@
         {
           "id": "yin_starting_tech",
           "name": "Yin Starting Tech",
+          "tier": "E",
           "techs": [
             {
               "name": "Sarween Tools",
@@ -3960,6 +3986,7 @@
         {
           "id": "yssaril_tp",
           "name": "Transparasteel Plating",
+          "tier": "E",
           "tech_type": "Green",
           "prerequisites": ["Green"],
           "description": "During your turn of the action phase, players that have passed cannot play action cards."
@@ -3985,6 +4012,7 @@
         {
           "id": "yssaril_commander",
           "name": "So Ata",
+          "tier": "E",
           "note": "[UNLOCK: Have 7 action cards.]",
           "description": "After another player activates a system that contains your units: You may look at that player's action cards, promissory notes, or secret objectives."
         }
@@ -4033,6 +4061,7 @@
         {
           "id": "yssaril_starting_tech",
           "name": "Yssaril Starting Tech",
+          "tier": "E",
           "techs": [
             {
               "name": "Neural Motivator",
@@ -4377,6 +4406,7 @@
         {
           "id": "bastion_comms",
           "name": "Commodities", 
+          "tier": "F",
           "description": "1"
         }
       ],
@@ -4912,11 +4942,13 @@
         {
           "id": "obsidian_nocturne",
           "name": "Nocturne",
+          "tier": "F",
           "description": "This faction cannot be chosen during setup."
         },
         {
           "id": "obsidian_tbo",
           "name": "The Blade's Orchestra",
+          "tier": "F",
           "description": "When this faction comes into play, flip your home system, double sided faction components and all of your in-play plot cards. Then, ready Cronos Hollow and Tallin Hollow if you control them."
         },
         {
