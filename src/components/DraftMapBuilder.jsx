@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
 import { ALL_TILE_KEYS, TILE_CODE_TO_JSON_ID } from "../data/tileCatalog";
-import { HS_POSITIONS, LARGE_GALAXY_HS_POSITIONS, SLICE_ORDER, ALL_SLICE_LABELS } from "../utils/sliceDefinitions";
+import { HS_POSITIONS, LARGE_GALAXY_HS_POSITIONS, SLICE_ORDER, ALL_SLICE_LABELS, LARGE_GALAXY_HS_POSITIONS_ALT, SLICE_ORDER_ALT, HYPERLANES_ALT } from "../utils/sliceDefinitions";
 import { shuffleArray } from "../utils/shuffle";
 import { calculateOptimalResources } from "../utils/resourceCalculator";
 import { factionsData, discordantStarsData } from "../data/processedData";
@@ -495,6 +495,28 @@ const isMapGuest = multiplayer?.role === 'guest';
     setFillDone(true);
   };
 
+  const doAltLayout = (pc) => {
+    const altHsPositions = LARGE_GALAXY_HS_POSITIONS_ALT[pc];
+    const altSliceOrder = SLICE_ORDER_ALT[pc];
+    const altHyperlanes = HYPERLANES_ALT[pc];
+    if (!altHsPositions || !altSliceOrder || !altHyperlanes) return;
+
+    const next = { "000": "112_Mecatol" };
+    players.forEach((p, idx) => {
+      const altHs = altHsPositions[idx];
+      if (!altHs) return;
+      if (p.hsKey) next[altHs] = p.hsKey;
+      const slicePositions = altSliceOrder[altHs] ?? [];
+      p.draftedKeys.forEach((key, i) => {
+        if (slicePositions[i] && key) next[slicePositions[i]] = key;
+      });
+    });
+    Object.entries(altHyperlanes).forEach(([label, key]) => { next[label] = key; });
+    setPlaced(next);
+    setMode("random");
+    setFillDone(false);
+  };
+
   // ── Mantis state ───────────────────────────────────────────────────────
   const [mantis, setMantis] = useState(null);
   /*
@@ -531,18 +553,28 @@ const isMapGuest = multiplayer?.role === 'guest';
     });
   };
 
-  const mantisPlace = () => {
-    setMantis(m => {
-      if (!m.drawnTile) return m;
-      const pidx = m.turnNumber % players.length;
-      const slotIdx = Math.floor(m.turnNumber / players.length);
-      const player = players[pidx];
-      const slotLabel = player.sliceTiles[slotIdx];
+  const mantisPlace = (chosenSlotIdx = null) => {
+  setMantis(m => {
+    if (!m.drawnTile) return m;
+    const pidx = m.turnNumber % players.length;
+    const slotIdx = Math.floor(m.turnNumber / players.length);
+    const player = players[pidx];
 
-      setPlaced(prev => ({ ...prev, [slotLabel]: m.drawnTile }));
-      return { ...m, drawnTile: null, turnNumber: m.turnNumber + 1 };
-    });
-  };
+    let slotLabel;
+    if (slotIdx === 0) {
+      slotLabel = player.sliceTiles[0];
+    } else if (slotIdx === 2) {
+      slotLabel = !placed[player.sliceTiles[1]] ? player.sliceTiles[1] : player.sliceTiles[2];
+    } else if (slotIdx === 4) {
+      slotLabel = !placed[player.sliceTiles[3]] ? player.sliceTiles[3] : player.sliceTiles[4];
+    } else {
+      slotLabel = player.sliceTiles[chosenSlotIdx]; // slotIdx 1 or 3: player chose
+    }
+
+    setPlaced(prev => ({ ...prev, [slotLabel]: m.drawnTile }));
+    return { ...m, drawnTile: null, turnNumber: m.turnNumber + 1 };
+  });
+};
 
   const mantisMulligan = () => {
     setMantis(m => {
@@ -582,7 +614,7 @@ const isMapGuest = multiplayer?.role === 'guest';
       if (msg.action === 'DRAW') {
         mantisDraw();
       } else if (msg.action === 'PLACE') {
-        mantisPlace();
+        mantisPlace(msg.chosenSlotIdx ?? null);
       } else if (msg.action === 'MULLIGAN') {
         mantisMulligan();
       } else if (msg.action === 'DRAW_AFTER_MULLIGAN') {
@@ -720,6 +752,9 @@ useEffect(() => {
               <div style={{ fontSize:10, fontWeight:700, color:"#fcd34d", textTransform:"uppercase", letterSpacing:1 }}>Placement Mode</div>
               <button onClick={doRandomPlace} className="px-3 py-2 rounded-lg bg-blue-800 hover:bg-blue-700 text-white text-sm font-semibold transition-colors">🎲 Random</button>
               <button onClick={startMantis} className="px-3 py-2 rounded-lg bg-purple-800 hover:bg-purple-700 text-white text-sm font-semibold transition-colors">🃏 Mantis Draft</button>
+              {isLargeGalaxy && HYPERLANES_ALT[playerCount] && (
+  <button onClick={() => doAltLayout(playerCount)} className="px-3 py-2 rounded-lg bg-violet-900 hover:bg-violet-800 text-white text-xs font-semibold transition-colors">〰 Alt Hyperlane Layout</button>
+)}
             </div>
           )}
 
@@ -732,6 +767,9 @@ useEffect(() => {
 )}
 {isLargeGalaxy && playerCount === 7 && (
   <button onClick={doFillHyperlanesAndRandom} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Hyperlanes + Random Fill</button>
+)}
+{isLargeGalaxy && HYPERLANES_ALT[playerCount] && (
+  <button onClick={() => doAltLayout(playerCount)} className="px-3 py-2 rounded-lg bg-violet-900 hover:bg-violet-800 text-white text-xs font-semibold transition-colors">〰 Alt Hyperlane Layout</button>
 )}
             </div>
           )}
@@ -749,6 +787,9 @@ useEffect(() => {
 )}
 {isLargeGalaxy && playerCount === 7 && (
   <button onClick={doFillHyperlanesAndRandom} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Hyperlanes + Random Fill</button>
+)}
+{isLargeGalaxy && HYPERLANES_ALT[playerCount] && (
+  <button onClick={() => doAltLayout(playerCount)} className="px-3 py-2 rounded-lg bg-violet-900 hover:bg-violet-800 text-white text-xs font-semibold transition-colors">〰 Alt Hyperlane Layout</button>
 )}
   </div>
 )}
@@ -844,7 +885,9 @@ useEffect(() => {
                     {mantisInfo.player?.name} — {mantisInfo.slotName}
                   </div>
                   <div style={{ fontSize:11, color:"#6b7280", marginTop:2 }}>
-                    Placing into {mantisInfo.player?.sliceTiles[mantisInfo.slotIdx]}
+                    {(mantisInfo.slotIdx === 1 || mantisInfo.slotIdx === 3)
+                      ? `Choose: ${mantisInfo.player?.sliceTiles[mantisInfo.slotIdx === 1 ? 1 : 3]} or ${mantisInfo.player?.sliceTiles[mantisInfo.slotIdx === 1 ? 2 : 4]}`
+                      : `Placing into ${mantisInfo.player?.sliceTiles[mantisInfo.slotIdx]}`}
                   </div>
                 </div>
                 <div style={{ fontSize:11, color:"#9ca3af", textAlign:"right" }}>
@@ -869,17 +912,15 @@ useEffect(() => {
   ? -1  // solo: isMyTurn will be overridden below
   : players.findIndex(p => p.multiplayerSlotId === multiplayer.mySlotId);
 
-const isMyTurn = !multiplayer  // solo always show buttons
-  ? true
-  : mantisInfo.pidx === myPlayersArrayIndex;  // guest: only on their turn
+const isMyTurn = !multiplayer?.role || !isMapGuest || mantisInfo.pidx === myPlayersArrayIndex;  // guest: only on their turn
 
   // For multiplayer guests, actions send to host instead of applying locally
   const onDraw = isMapGuest
     ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'DRAW' })
     : mantisDraw;
-  const onPlace = isMapGuest
-    ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'PLACE' })
-    : mantisPlace;
+  const onPlace = (chosenSlotIdx = null) => isMapGuest
+    ? multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'PLACE', chosenSlotIdx })
+    : mantisPlace(chosenSlotIdx);
   const onMulligan = isMapGuest
     ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'MULLIGAN' })
     : mantisMulligan;
@@ -906,9 +947,20 @@ const isMyTurn = !multiplayer  // solo always show buttons
       )}
       {mantis.drawnTile && !mantis.isMulligan && isMyTurn && (
         <>
-          <button onClick={onPlace} className="flex-1 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-colors">
-            Place Tile
-          </button>
+          {(mantisInfo.slotIdx === 1 || mantisInfo.slotIdx === 3) ? (
+            <>
+              <button onClick={() => onPlace(mantisInfo.slotIdx === 1 ? 1 : 3)} className="flex-1 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-colors">
+                Place in {mantisInfo.player?.sliceTiles[mantisInfo.slotIdx === 1 ? 1 : 3]}
+              </button>
+              <button onClick={() => onPlace(mantisInfo.slotIdx === 1 ? 2 : 4)} className="flex-1 px-4 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-sm font-bold transition-colors">
+                Place in {mantisInfo.player?.sliceTiles[mantisInfo.slotIdx === 1 ? 2 : 4]}
+              </button>
+            </>
+          ) : (
+            <button onClick={() => onPlace()} className="flex-1 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-colors">
+              Place Tile
+            </button>
+          )}
           {!mantis.mulligansUsed[mantis.turnNumber % players.length] && (
             <button onClick={onMulligan} className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">
               Mulligan

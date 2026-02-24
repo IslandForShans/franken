@@ -155,6 +155,21 @@ const ELIGIBLE_SYSTEM_TILES = NON_HOME_TILES.filter(t =>
 const HOME_TILE_KEY = "00_green";
 const DEFAULT_CENTER_TILE = ALL_TILES.find((tile) => tile.code === "112")?.key || "112_Mecatol";
 
+// ── NEW: Alt hyperlane layout templates ──
+  const HOME_LABELS_ALT = {
+    7: ["401", "304", "307", "413", "416", "419", "422"],
+    8: ["401", "404", "407", "410", "413", "416", "419", "422"],
+  };
+  const HYPERLANES_ALT_TEMPLATE = {
+    7: { "315": "83b120_Hyperlane", "101": "83b180_Hyperlane", "302": "83b_Hyperlane", "104": "84b180_Hyperlane", "309": "84b_Hyperlane", "105": "89b_Hyperlane" },
+    8: { "315": "83b120_Hyperlane", "104": "88a120_Hyperlane", "101": "88a300_Hyperlane", "306": "88b120_Hyperlane", "105": "89b_Hyperlane", "102": "90b180_Hyperlane" },
+  };
+
+  const SLICE_POSITIONS_ALT = {
+  7: ["201","301","202","424","402","102","203","204","303","305","103","205","206","306","308","412","310","414","207","311","415","312","313","209","208","106","210","211","314","420","318","316","317","423","212"],
+  8: ["424","301","402","318","302","403","303","304","202","103","204","205","305","408","201","203","309","307","308","411","206","412","310","414","207","311","415","312","313","209","208","106","210","211","314","420","318","316","317","423","212"],
+};
+
 function HexTile({ tile, size }) {
   const w = size * 2;
   const h = Math.sqrt(3) * size;
@@ -256,6 +271,7 @@ export default function TI4MapBuilder({ onNavigate }) {
   const [expansionFilter, setExpansionFilter] = useState(new Set());
   const [playerCount, setPlayerCount] = useState(6);
   const [generatedHomeLabels, setGeneratedHomeLabels] = useState(null);
+  const useAltLayoutRef = useRef(false);
   const [genSettings, setGenSettings] = useState({
     matchWormholes: true,
     anomalyRatio: 0.2,      // fraction of fill slots that are anomaly tiles
@@ -473,6 +489,19 @@ export default function TI4MapBuilder({ onNavigate }) {
     8: ["401", "404", "407", "410", "413", "416", "419", "422"],
   };
 
+  const applyAltLayout = (pc) => {
+    const homes = HOME_LABELS_ALT[pc];
+    const hyperlanes = HYPERLANES_ALT_TEMPLATE[pc];
+    if (!homes || !hyperlanes) return;
+    if (ringCount < 4) setRingCount(4);
+    const newPlaced = { "000": DEFAULT_CENTER_TILE };
+    homes.forEach(lbl => { newPlaced[lbl] = HOME_TILE_KEY; });
+    Object.entries(hyperlanes).forEach(([lbl, key]) => { newPlaced[lbl] = key; });
+    setPlaced(newPlaced);
+    setGeneratedHomeLabels(new Set(homes));
+    useAltLayoutRef.current = true;  // ← ref, not state
+  };
+
   useEffect(() => {
     if (playerCount >= 7 && ringCount < 4) {
       setRingCount(4);
@@ -483,6 +512,118 @@ export default function TI4MapBuilder({ onNavigate }) {
 
   const generateMap = useCallback(() => {
     const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+
+    if (useAltLayoutRef.current && HOME_LABELS_ALT[playerCount]) {
+      const altHomes = HOME_LABELS_ALT[playerCount];
+      const altHyperlanes = HYPERLANES_ALT_TEMPLATE[playerCount];
+      const homeLabels = new Set(altHomes);
+      const hyperlaneLabels = new Set(Object.keys(altHyperlanes));
+      const homePositions = altHomes.map(lbl => mapPositions.find(p => p.label === lbl)).filter(Boolean);
+      const sliceSet = new Set(SLICE_POSITIONS_ALT[playerCount]);
+      const fillPositions = mapPositions.filter(p => sliceSet.has(p.label));
+      const fillCount = fillPositions.length;
+
+      const eligiblePool = ELIGIBLE_SYSTEM_TILES.filter(t => genSettings.genExpansions.has(t.expansion));
+      const dedupe = arr => { const seen = new Set(); return arr.filter(t => seen.has(t.key) ? false : (seen.add(t.key), true)); };
+      const anomalyPool = dedupe(eligiblePool.filter(t => t.anomalies.length > 0));
+      const legendaryPool = dedupe(eligiblePool.filter(t => t.legendary && t.anomalies.length === 0));
+      const voidTiles = dedupe(eligiblePool.filter(t => t.anomalies.length === 0 && !t.legendary && t.planets.length === 0));
+      const systemTiles = dedupe(eligiblePool.filter(t => t.anomalies.length === 0 && !t.legendary && t.planets.length > 0));
+      const targetAnomalyCount = Math.min(Math.round(fillCount * genSettings.anomalyRatio), anomalyPool.length);
+      const targetLegendaryCount = Math.min(genSettings.legendaryCount, legendaryPool.length);
+
+      const MAX_ATTEMPTS = 500;
+      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+        const tempPlaced = {};
+        const usedKeys = new Set();
+
+        // Step 1: Anomaly tiles — no two adjacent
+        const shuffledPositions = shuffle(fillPositions);
+        const shuffledAnomalies = shuffle(anomalyPool);
+        let aIdx = 0;
+        for (const pos of shuffledPositions) {
+          if (aIdx >= shuffledAnomalies.length) break;
+          while (aIdx < shuffledAnomalies.length && usedKeys.has(shuffledAnomalies[aIdx].key)) aIdx++;
+          if (aIdx >= shuffledAnomalies.length) break;
+          if (Object.values(tempPlaced).filter(v => v.isAnomaly).length >= targetAnomalyCount) break;
+          const adjHasAnomaly = (adjacency[pos.label] || []).some(n => tempPlaced[n]?.isAnomaly);
+          if (!adjHasAnomaly) {
+            usedKeys.add(shuffledAnomalies[aIdx].key);
+            tempPlaced[pos.label] = { key: shuffledAnomalies[aIdx++].key, isAnomaly: true };
+          }
+        }
+        if (Object.values(tempPlaced).filter(v => v.isAnomaly).length < targetAnomalyCount) continue;
+
+        // Step 2: Legendary tiles — not adjacent to homes
+        const nonAnomalyPositions = shuffle(fillPositions.filter(p => !tempPlaced[p.label]));
+        const shuffledLegendary = shuffle(legendaryPool);
+        let lIdx = 0, legPlaced = 0;
+        for (const pos of nonAnomalyPositions) {
+          if (legPlaced >= targetLegendaryCount) break;
+          while (lIdx < shuffledLegendary.length && usedKeys.has(shuffledLegendary[lIdx].key)) lIdx++;
+          if (lIdx >= shuffledLegendary.length) break;
+          usedKeys.add(shuffledLegendary[lIdx].key);
+          tempPlaced[pos.label] = { key: shuffledLegendary[lIdx++].key };
+          legPlaced++;
+        }
+
+        // Step 3: Fill remaining with normal tiles (voids weighted 3x)
+        const remainingPositions = fillPositions.filter(p => !tempPlaced[p.label]);
+        const weightedNormal = dedupe([...voidTiles, ...voidTiles, ...voidTiles, ...systemTiles].filter(t => !usedKeys.has(t.key)));
+        const shuffledNormal = shuffle(weightedNormal);
+        remainingPositions.forEach((pos, i) => {
+          if (shuffledNormal[i]) {
+            usedKeys.add(shuffledNormal[i].key);
+            tempPlaced[pos.label] = { key: shuffledNormal[i].key };
+          }
+        });
+
+        // Step 4: Wormhole matching
+        if (genSettings.matchWormholes) {
+          const wormholeCounts = {};
+          Object.values(tempPlaced).forEach(({ key }) => {
+            const meta = buildTileMeta(key);
+            if (meta.wormhole) {
+              const wh = Array.isArray(meta.wormhole) ? meta.wormhole : [meta.wormhole];
+              wh.forEach(w => { wormholeCounts[w] = (wormholeCounts[w] || 0) + 1; });
+            }
+          });
+          if (Object.entries(wormholeCounts).some(([, count]) => count < 2)) continue;
+        }
+
+        // Step 5: Balance check
+        if (homePositions.length > 0) {
+          const homeTotals = homePositions.map(homePos => {
+            let res = 0, inf = 0;
+            (adjacency[homePos.label] || []).forEach(n => {
+              const entry = tempPlaced[n];
+              if (entry) buildTileMeta(entry.key).planets.forEach(p => { res += (p.resource || 0); inf += (p.influence || 0); });
+            });
+            return { res, inf };
+          });
+          const belowMin = homeTotals.some(t => t.res < genSettings.minHomeResource || t.inf < genSettings.minHomeInfluence);
+          if (belowMin) continue;
+          if (homePositions.length > 1) {
+            const scores = homeTotals.map(t => t.res + t.inf);
+            const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+            if (Math.max(...scores.map(v => Math.abs(v - mean))) > 7) continue;
+          }
+        }
+
+        // Success — stamp homes and hyperlanes on top of generated tiles
+        const newPlaced = { "000": DEFAULT_CENTER_TILE };
+        altHomes.forEach(lbl => { newPlaced[lbl] = HOME_TILE_KEY; });
+        Object.entries(altHyperlanes).forEach(([lbl, key]) => { newPlaced[lbl] = key; });
+        Object.entries(tempPlaced).forEach(([lbl, { key }]) => { newPlaced[lbl] = key; });
+        setPlaced(newPlaced);
+        setGeneratedHomeLabels(new Set(altHomes));
+        return;
+      }
+      alert("Could not generate a valid map after many attempts. Try relaxing settings (lower legendary count, reduce minimums, or disable wormhole matching).");
+      return;
+    }
+
+    // ── Standard layout ────────────────────────────────────────────────────
     const cornerPicks = HOME_CORNER_PICKS[playerCount];
     const explicitHomeLabels = HOME_LABELS_BY_PLAYER_COUNT[playerCount] ?? null;
     if (!cornerPicks && !explicitHomeLabels) { alert("Player count not supported for generation yet."); return; }
@@ -540,12 +681,9 @@ export default function TI4MapBuilder({ onNavigate }) {
         if (legPlaced >= targetLegendaryCount) break;
         while (lIdx < shuffledLegendary.length && usedKeys.has(shuffledLegendary[lIdx].key)) lIdx++;
         if (lIdx >= shuffledLegendary.length) break;
-        const adjToHome = (adjacency[pos.label] || []).some(n => homeLabels.has(n));
-        if (!adjToHome) {
-          usedKeys.add(shuffledLegendary[lIdx].key);
-          tempPlaced[pos.label] = { key: shuffledLegendary[lIdx++].key };
-          legPlaced++;
-        }
+        usedKeys.add(shuffledLegendary[lIdx].key);
+        tempPlaced[pos.label] = { key: shuffledLegendary[lIdx++].key };
+        legPlaced++;
       }
 
       // Step 3: Fill remaining with normal tiles (voids weighted 3x), no repeats
@@ -882,7 +1020,7 @@ export default function TI4MapBuilder({ onNavigate }) {
                 </div>
               )}
               <button onClick={() => setSettingsOpen(o => !o)} className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">⚙ Settings</button>
-              <button onClick={() => { setPlaced({ "000": DEFAULT_CENTER_TILE }); setCorners({}); setGeneratedHomeLabels(null); }} className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">Clear Map</button>
+              <button onClick={() => { setPlaced({ "000": DEFAULT_CENTER_TILE }); setCorners({}); setGeneratedHomeLabels(null); useAltLayoutRef.current = false; }} className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">Clear Map</button>
             </div>
           </div>
           {settingsOpen && (
@@ -961,6 +1099,19 @@ export default function TI4MapBuilder({ onNavigate }) {
                   ))}
                 </div>
               </div>
+
+              {/* Alt layout templates */}
+              {(playerCount === 7 || playerCount === 8) && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: 1 }}>Alt Hyperlane Templates</span>
+                  <button
+                    onClick={() => applyAltLayout(playerCount)}
+                    style={{ padding: "5px 10px", background: "#4c1d95", border: "1px solid #7c3aed", borderRadius: 6, color: "#f3f4f6", fontSize: 11, fontWeight: 600, cursor: "pointer" }}
+                  >
+                    Apply {playerCount}P Alt Hyperlane Layout
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
