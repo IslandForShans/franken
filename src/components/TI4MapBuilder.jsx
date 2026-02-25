@@ -272,6 +272,7 @@ export default function TI4MapBuilder({ onNavigate }) {
   const [playerCount, setPlayerCount] = useState(6);
   const [generatedHomeLabels, setGeneratedHomeLabels] = useState(null);
   const useAltLayoutRef = useRef(false);
+  const [altLayoutActive, setAltLayoutActive] = useState(false);
   const [genSettings, setGenSettings] = useState({
     matchWormholes: true,
     anomalyRatio: 0.2,      // fraction of fill slots that are anomaly tiles
@@ -500,6 +501,7 @@ export default function TI4MapBuilder({ onNavigate }) {
     setPlaced(newPlaced);
     setGeneratedHomeLabels(new Set(homes));
     useAltLayoutRef.current = true;  // ← ref, not state
+    setAltLayoutActive(true);
   };
 
   useEffect(() => {
@@ -775,8 +777,8 @@ export default function TI4MapBuilder({ onNavigate }) {
 
     setPlaced(prev => {
       const fillLabels = Object.keys(prev).filter(
-        lbl => lbl !== "000" && !generatedHomeLabels.has(lbl)
-      );
+  lbl => lbl !== "000" && !generatedHomeLabels.has(lbl) && !prev[lbl]?.includes("Hyperlane")
+);
 
       const currentDev = getDeviation(prev);
       let bestDev = currentDev;
@@ -1020,7 +1022,7 @@ export default function TI4MapBuilder({ onNavigate }) {
                 </div>
               )}
               <button onClick={() => setSettingsOpen(o => !o)} className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">⚙ Settings</button>
-              <button onClick={() => { setPlaced({ "000": DEFAULT_CENTER_TILE }); setCorners({}); setGeneratedHomeLabels(null); useAltLayoutRef.current = false; }} className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">Clear Map</button>
+              <button onClick={() => { setPlaced({ "000": DEFAULT_CENTER_TILE }); setCorners({}); setGeneratedHomeLabels(null); useAltLayoutRef.current = false; setAltLayoutActive(false); }} className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">Clear Map</button>
             </div>
           </div>
           {settingsOpen && (
@@ -1102,16 +1104,31 @@ export default function TI4MapBuilder({ onNavigate }) {
 
               {/* Alt layout templates */}
               {(playerCount === 7 || playerCount === 8) && (
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: 1 }}>Alt Hyperlane Templates</span>
-                  <button
-                    onClick={() => applyAltLayout(playerCount)}
-                    style={{ padding: "5px 10px", background: "#4c1d95", border: "1px solid #7c3aed", borderRadius: 6, color: "#f3f4f6", fontSize: 11, fontWeight: 600, cursor: "pointer" }}
-                  >
-                    Apply {playerCount}P Alt Hyperlane Layout
-                  </button>
-                </div>
-              )}
+  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+    <span style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: 1 }}>Alt Hyperlane Layout</span>
+    <button
+      onClick={() => {
+        if (altLayoutActive) {
+          setPlaced({ "000": DEFAULT_CENTER_TILE });
+          setCorners({});
+          setGeneratedHomeLabels(null);
+          useAltLayoutRef.current = false;
+          setAltLayoutActive(false);
+        } else {
+          applyAltLayout(playerCount);
+        }
+      }}
+      style={{
+        padding: "5px 10px",
+        background: altLayoutActive ? "#5b21b6" : "#1e1b4b",
+        border: `1px solid ${altLayoutActive ? "#a78bfa" : "#4c1d95"}`,
+        borderRadius: 6, color: "#f3f4f6", fontSize: 11, fontWeight: 600, cursor: "pointer"
+      }}
+    >
+      {altLayoutActive ? "✓ Alt Layout Active (click to disable)" : `Apply ${playerCount}P Alt Hyperlane Layout`}
+    </button>
+  </div>
+)}
             </div>
           )}
         </div>
