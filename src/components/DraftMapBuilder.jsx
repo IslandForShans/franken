@@ -1,6 +1,14 @@
 import { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
 import { ALL_TILE_KEYS, TILE_CODE_TO_JSON_ID } from "../data/tileCatalog";
-import { HS_POSITIONS, LARGE_GALAXY_HS_POSITIONS, SLICE_ORDER, ALL_SLICE_LABELS, LARGE_GALAXY_HS_POSITIONS_ALT, SLICE_ORDER_ALT, HYPERLANES_ALT } from "../utils/sliceDefinitions";
+import {
+  HS_POSITIONS,
+  LARGE_GALAXY_HS_POSITIONS,
+  SLICE_ORDER,
+  ALL_SLICE_LABELS,
+  LARGE_GALAXY_HS_POSITIONS_ALT,
+  SLICE_ORDER_ALT,
+  HYPERLANES_ALT,
+} from "../utils/sliceDefinitions";
 import { shuffleArray } from "../utils/shuffle";
 import { calculateOptimalResources } from "../utils/resourceCalculator";
 import { factionsData, discordantStarsData } from "../data/processedData";
@@ -8,20 +16,42 @@ import { factionsData, discordantStarsData } from "../data/processedData";
 // ── Hex geometry (self-contained, no coupling to TI4MapBuilder) ─────────────
 const S = 62;
 const D = Math.sqrt(3) * S;
-const HEX_CLIP = "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)";
+const HEX_CLIP =
+  "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)";
 const PAD = S * 1.2;
 
 function generateMapPositions(rings) {
-  const dirs = [[1.5*S,D/2],[0,D],[-1.5*S,D/2],[-1.5*S,-D/2],[0,-D],[1.5*S,-D/2]];
-  const pos = [{ label:"000", x:0, y:0, ring:0 }];
+  const dirs = [
+    [1.5 * S, D / 2],
+    [0, D],
+    [-1.5 * S, D / 2],
+    [-1.5 * S, -D / 2],
+    [0, -D],
+    [1.5 * S, -D / 2],
+  ];
+  const pos = [{ label: "000", x: 0, y: 0, ring: 0 }];
   for (let r = 1; r <= rings; r++) {
-    let cx = 0, cy = -r*D, num = 1;
-    pos.push({ label:`${r}${String(num).padStart(2,"0")}`, x:cx, y:cy, ring:r });
+    let cx = 0,
+      cy = -r * D,
+      num = 1;
+    pos.push({
+      label: `${r}${String(num).padStart(2, "0")}`,
+      x: cx,
+      y: cy,
+      ring: r,
+    });
     for (let d = 0; d < 6; d++) {
       const steps = d === 5 ? r - 1 : r;
       for (let s = 0; s < steps; s++) {
-        cx += dirs[d][0]; cy += dirs[d][1]; num++;
-        pos.push({ label:`${r}${String(num).padStart(2,"0")}`, x:cx, y:cy, ring:r });
+        cx += dirs[d][0];
+        cy += dirs[d][1];
+        num++;
+        pos.push({
+          label: `${r}${String(num).padStart(2, "0")}`,
+          x: cx,
+          y: cy,
+          ring: r,
+        });
       }
     }
   }
@@ -30,12 +60,17 @@ function generateMapPositions(rings) {
 
 function buildAdjacency(positions) {
   const adj = {};
-  positions.forEach(p => { adj[p.label] = []; });
+  positions.forEach((p) => {
+    adj[p.label] = [];
+  });
   for (let i = 0; i < positions.length; i++) {
     for (let j = i + 1; j < positions.length; j++) {
       const dx = Math.abs(positions[i].x - positions[j].x);
       const dy = Math.abs(positions[i].y - positions[j].y);
-      if ((Math.abs(dx - 1.5*S) < 0.5 && Math.abs(dy - D/2) < 0.5) || (dx < 0.5 && Math.abs(dy - D) < 0.5)) {
+      if (
+        (Math.abs(dx - 1.5 * S) < 0.5 && Math.abs(dy - D / 2) < 0.5) ||
+        (dx < 0.5 && Math.abs(dy - D) < 0.5)
+      ) {
         adj[positions[i].label].push(positions[j].label);
         adj[positions[j].label].push(positions[i].label);
       }
@@ -46,18 +81,31 @@ function buildAdjacency(positions) {
 
 // ── Tile planet lookup (for res/inf overlay) ───────────────────────────────
 const DMB_TILE_LOOKUP = new Map();
-(factionsData?.tiles?.blue_tiles ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
-(factionsData?.tiles?.red_tiles ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
-(factionsData?.tiles?.home_systems ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
-(discordantStarsData?.tiles?.blue_tiles ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
-(discordantStarsData?.tiles?.red_tiles ?? []).forEach(t => { if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t); });
+(factionsData?.tiles?.blue_tiles ?? []).forEach((t) => {
+  if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t);
+});
+(factionsData?.tiles?.red_tiles ?? []).forEach((t) => {
+  if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t);
+});
+(factionsData?.tiles?.home_systems ?? []).forEach((t) => {
+  if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t);
+});
+(discordantStarsData?.tiles?.blue_tiles ?? []).forEach((t) => {
+  if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t);
+});
+(discordantStarsData?.tiles?.red_tiles ?? []).forEach((t) => {
+  if (t.id != null) DMB_TILE_LOOKUP.set(String(t.id), t);
+});
 
 function getTilePlanets(key) {
   if (!key) return [];
   const code = key.split("_")[0];
-  const jsonId = TILE_CODE_TO_JSON_ID[code] !== undefined
-    ? String(TILE_CODE_TO_JSON_ID[code])
-    : (!isNaN(parseInt(code, 10)) ? String(parseInt(code, 10)) : null);
+  const jsonId =
+    TILE_CODE_TO_JSON_ID[code] !== undefined
+      ? String(TILE_CODE_TO_JSON_ID[code])
+      : !isNaN(parseInt(code, 10))
+        ? String(parseInt(code, 10))
+        : null;
   return DMB_TILE_LOOKUP.get(jsonId)?.planets ?? [];
 }
 
@@ -75,13 +123,13 @@ const HOME_SYSTEM_ID_TO_TILE_KEY = new Map([
 ]);
 
 // ── Tile key lookup ─────────────────────────────────────────────────────────
-const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
 
 // Build two lookup maps at module level for O(1) lookups
-const TILE_KEY_BY_NAME = new Map();   // normalized name → key
-const TILE_KEY_BY_CODE = new Map();   // numeric code string → key (e.g. "19" → "19_Wellon")
+const TILE_KEY_BY_NAME = new Map(); // normalized name → key
+const TILE_KEY_BY_CODE = new Map(); // numeric code string → key (e.g. "19" → "19_Wellon")
 const TILE_KEY_BY_JSON_ID = new Map(); // json tile id string → key (e.g. "4253" → "d100")
-ALL_TILE_KEYS.forEach(key => {
+ALL_TILE_KEYS.forEach((key) => {
   const parts = key.split("_");
   const code = parts[0];
   const name = parts.slice(1).join(" ");
@@ -97,7 +145,7 @@ TILE_KEY_BY_NAME.set("arcprime", "10_ArcPime");
 
 function findTileKey(tileObjOrName) {
   if (!tileObjOrName) return null;
-  const isObj = typeof tileObjOrName === 'object';
+  const isObj = typeof tileObjOrName === "object";
   const name = isObj ? tileObjOrName.name : tileObjOrName;
 
   // 1. Normalized name match (works for blue/red system tiles)
@@ -107,9 +155,9 @@ function findTileKey(tileObjOrName) {
   }
 
   if (isObj && tileObjOrName.id) {
-  const mapped = HOME_SYSTEM_ID_TO_TILE_KEY.get(String(tileObjOrName.id));
-  if (mapped) return mapped;
-}
+    const mapped = HOME_SYSTEM_ID_TO_TILE_KEY.get(String(tileObjOrName.id));
+    if (mapped) return mapped;
+  }
 
   // 2. Numeric id field (works for tiles with id like "19", "35" and DS JSON ids like "4253")
   if (isObj && tileObjOrName.id) {
@@ -118,7 +166,7 @@ function findTileKey(tileObjOrName) {
     const byJsonId = TILE_KEY_BY_JSON_ID.get(rawId);
     if (byJsonId) return byJsonId;
 
-    const numericId = rawId.replace(/\D/g, '');
+    const numericId = rawId.replace(/\D/g, "");
     if (numericId) {
       const byCode = TILE_KEY_BY_CODE.get(numericId);
       if (byCode) return byCode;
@@ -147,53 +195,179 @@ function findTileKey(tileObjOrName) {
 }
 
 // ── Eligible fill tiles (tiles not used by any player) ──────────────────────
-const INELIGIBLE_CODES = new Set(["00","18","17","17r","51","51h","51r","82a","82ah","82b","82bh","81a","81b","83a","83b","84a","84b","85a","86b","87a","87b","88a","88b","89a","89b","90a","90b","91a","91b","96a","96b","118","94"]);
+const INELIGIBLE_CODES = new Set([
+  "00",
+  "18",
+  "17",
+  "17r",
+  "51",
+  "51h",
+  "51r",
+  "82a",
+  "82ah",
+  "82b",
+  "82bh",
+  "81a",
+  "81b",
+  "83a",
+  "83b",
+  "84a",
+  "84b",
+  "85a",
+  "86b",
+  "87a",
+  "87b",
+  "88a",
+  "88b",
+  "89a",
+  "89b",
+  "90a",
+  "90b",
+  "91a",
+  "91b",
+  "96a",
+  "96b",
+  "118",
+  "94",
+]);
 const HOME_CODES_SET = new Set([
   ...Array.from({ length: 17 }, (_, i) => String(i + 1).padStart(2, "0")),
-  "D01","D02","D03","D04","D05","D06","D07","D08","D09","D10","D11","D12","D13","D14","D15","D16","D17","D18","D19","D20","D21","D22","D23","D24","D25","D26","D27","D28","D29","D30","D31","D32","D33","D34",
-  "BR1","BR2","BR3","BR4","BR5","BR6",
-  "51", "51r", "52", "53", "54", "55", "56", "57", "58", "118", "92", "93", "94", "95", "96a", "96b"
+  "D01",
+  "D02",
+  "D03",
+  "D04",
+  "D05",
+  "D06",
+  "D07",
+  "D08",
+  "D09",
+  "D10",
+  "D11",
+  "D12",
+  "D13",
+  "D14",
+  "D15",
+  "D16",
+  "D17",
+  "D18",
+  "D19",
+  "D20",
+  "D21",
+  "D22",
+  "D23",
+  "D24",
+  "D25",
+  "D26",
+  "D27",
+  "D28",
+  "D29",
+  "D30",
+  "D31",
+  "D32",
+  "D33",
+  "D34",
+  "BR1",
+  "BR2",
+  "BR3",
+  "BR4",
+  "BR5",
+  "BR6",
+  "51",
+  "51r",
+  "52",
+  "53",
+  "54",
+  "55",
+  "56",
+  "57",
+  "58",
+  "118",
+  "92",
+  "93",
+  "94",
+  "95",
+  "96a",
+  "96b",
 ]);
-const ALL_ELIGIBLE_KEYS = ALL_TILE_KEYS.filter(key => {
+const ALL_ELIGIBLE_KEYS = ALL_TILE_KEYS.filter((key) => {
   const [code] = key.split("_");
-  return !INELIGIBLE_CODES.has(code) && !HOME_CODES_SET.has(code)
-    && !key.startsWith("00_") && !key.includes("xmas") && !key.includes("SorrowWH")
-    && !key.includes("Hyperlane");
+  return (
+    !INELIGIBLE_CODES.has(code) &&
+    !HOME_CODES_SET.has(code) &&
+    !key.startsWith("00_") &&
+    !key.includes("xmas") &&
+    !key.includes("SorrowWH") &&
+    !key.includes("Hyperlane")
+  );
 });
 
 // ── Small rendering helpers ─────────────────────────────────────────────────
 const BASE_URL = import.meta.env.BASE_URL;
 
 function HexTile({ tileKey, size, dimmed }) {
-  const w = size * 2, h = Math.sqrt(3) * size;
+  const w = size * 2,
+    h = Math.sqrt(3) * size;
   return (
-    <div style={{ width:w, height:h, clipPath:HEX_CLIP, overflow:"hidden", flexShrink:0 }}>
+    <div
+      style={{
+        width: w,
+        height: h,
+        clipPath: HEX_CLIP,
+        overflow: "hidden",
+        flexShrink: 0,
+      }}
+    >
       <img
         src={`${BASE_URL}tiles/${tileKey}.png`}
         alt={tileKey}
         draggable={false}
-        style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity: dimmed ? 0.4 : 1 }}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+          opacity: dimmed ? 0.4 : 1,
+        }}
       />
     </div>
   );
 }
 
 function EmptyHex({ size, highlight, label, color }) {
-  const w = size * 2, h = Math.sqrt(3) * size;
-  const pts = Array.from({length:6}, (_,i) => {
-    const a = (Math.PI/3)*i;
-    return `${w/2+size*Math.cos(a)},${h/2+size*Math.sin(a)}`;
+  const w = size * 2,
+    h = Math.sqrt(3) * size;
+  const pts = Array.from({ length: 6 }, (_, i) => {
+    const a = (Math.PI / 3) * i;
+    return `${w / 2 + size * Math.cos(a)},${h / 2 + size * Math.sin(a)}`;
   }).join(" ");
   return (
-    <div style={{ width:w, height:h, position:"relative" }}>
-      <svg width={w} height={h} style={{ position:"absolute", inset:0 }}>
-        <polygon points={pts} fill={highlight ? "rgba(96,165,250,0.15)" : color ?? "rgba(55,65,81,0.3)"}
-          stroke={highlight ? "#60a5fa" : color ?? "#6b7280"} strokeWidth={highlight ? 2 : 1.5}
-          strokeDasharray={highlight ? "none" : "4,4"} />
+    <div style={{ width: w, height: h, position: "relative" }}>
+      <svg width={w} height={h} style={{ position: "absolute", inset: 0 }}>
+        <polygon
+          points={pts}
+          fill={
+            highlight
+              ? "rgba(96,165,250,0.15)"
+              : (color ?? "rgba(55,65,81,0.3)")
+          }
+          stroke={highlight ? "#60a5fa" : (color ?? "#6b7280")}
+          strokeWidth={highlight ? 2 : 1.5}
+          strokeDasharray={highlight ? "none" : "4,4"}
+        />
       </svg>
       {label && (
-        <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center",
-          color: highlight ? "#bfdbfe" : "#9ca3af", fontSize: size*0.2, fontWeight:600 }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: highlight ? "#bfdbfe" : "#9ca3af",
+            fontSize: size * 0.2,
+            fontWeight: 600,
+          }}
+        >
           {label}
         </div>
       )}
@@ -201,26 +375,35 @@ function EmptyHex({ size, highlight, label, color }) {
   );
 }
 
-const PLAYER_COLORS = ["#f59e0b","#60a5fa","#4ade80","#f472b6","#a78bfa","#fb923c","#f87171","#34d399"];
+const PLAYER_COLORS = [
+  "#f59e0b",
+  "#60a5fa",
+  "#4ade80",
+  "#f472b6",
+  "#a78bfa",
+  "#fb923c",
+  "#f87171",
+  "#34d399",
+];
 
 const HOME_CLOCKWISE = ["301", "304", "307", "310", "313", "316"];
 const CLOCKWISE_SHIFT_BY_HOME = {
-  "301": { from: "202", to: "203" },
-  "304": { from: "204", to: "205" },
-  "307": { from: "206", to: "207" },
-  "310": { from: "208", to: "209" },
-  "313": { from: "210", to: "211" },
-  "316": { from: "212", to: "201" },
+  301: { from: "202", to: "203" },
+  304: { from: "204", to: "205" },
+  307: { from: "206", to: "207" },
+  310: { from: "208", to: "209" },
+  313: { from: "210", to: "211" },
+  316: { from: "212", to: "201" },
 };
 
 function applyClockwiseGapShift(basePlaced, players) {
   if (!players.length) return basePlaced;
 
-  const occupiedHomes = new Set(players.map(p => p.hsLabel).filter(Boolean));
+  const occupiedHomes = new Set(players.map((p) => p.hsLabel).filter(Boolean));
   const next = { ...basePlaced };
   let changed = false;
 
-  players.forEach(player => {
+  players.forEach((player) => {
     if (!player.hsLabel) return;
 
     const hsIdx = HOME_CLOCKWISE.indexOf(player.hsLabel);
@@ -245,20 +428,32 @@ function applyClockwiseGapShift(basePlaced, players) {
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
-export default function DraftMapBuilder({ onNavigate, draftData, multiplayer, onPeerMessageRef }) {
+export default function DraftMapBuilder({
+  onNavigate,
+  draftData,
+  multiplayer,
+  onPeerMessageRef,
+}) {
   const { factions, playerCount } = draftData;
   const isLargeGalaxy = playerCount >= 6;
   const mapRingCount = isLargeGalaxy ? 4 : 3;
-  const mapPositions = useMemo(() => generateMapPositions(mapRingCount), [mapRingCount]);
+  const mapPositions = useMemo(
+    () => generateMapPositions(mapRingCount),
+    [mapRingCount],
+  );
   const adjacency = useMemo(() => buildAdjacency(mapPositions), [mapPositions]);
   const canvasW = useMemo(() => 3 * mapRingCount * S + PAD * 2, [mapRingCount]);
-  const canvasH = useMemo(() => (2 * mapRingCount + 1) * D + PAD * 2, [mapRingCount]);
+  const canvasH = useMemo(
+    () => (2 * mapRingCount + 1) * D + PAD * 2,
+    [mapRingCount],
+  );
   const OX = canvasW / 2;
   const OY = canvasH / 2;
   const viewportRef = useRef(null);
   const [fitScale, setFitScale] = useState(1);
-  const isMapHost = multiplayer?.role === 'host';
-const isMapGuest = multiplayer?.role === 'guest';
+  const isMapHost = multiplayer?.role === "host";
+  const isMapGuest = multiplayer?.role === "guest";
+  const [useAltSlices, setUseAltSlices] = useState(false);
 
   // Compute player order (sorted by table position) and their HS labels
   const players = useMemo(() => {
@@ -269,15 +464,22 @@ const isMapGuest = multiplayer?.role === 'guest';
       .map((f, idx) => {
         const tablePos = f.table_position?.[0];
         const position = tablePos?.position ?? null;
-        const positionLabel = tablePos?.name ?? (position != null ? `${position}` : "—");
-        const hsLabel = (position != null && position >= 1 && position <= hsPositions.length)
-          ? hsPositions[position - 1]
-          : null;
-        const sliceTiles = SLICE_ORDER[hsLabel] ?? [];
+        const positionLabel =
+          tablePos?.name ?? (position != null ? `${position}` : "—");
+        const hsLabel =
+          position != null && position >= 1 && position <= hsPositions.length
+            ? hsPositions[position - 1]
+            : null;
+        const sliceTiles =
+          useAltSlices && SLICE_ORDER_ALT[playerCount]?.[hsLabel]
+            ? SLICE_ORDER_ALT[playerCount][hsLabel]
+            : (SLICE_ORDER[hsLabel] ?? []);
         const draftedKeys = [
           ...(f.blue_tiles ?? []).slice(0, 3),
           ...(f.red_tiles ?? []).slice(0, 2),
-        ].map(t => findTileKey(t)).filter(Boolean);
+        ]
+          .map((t) => findTileKey(t))
+          .filter(Boolean);
         const hsObj = f.home_systems?.[0];
         const hsKey = hsObj ? findTileKey(hsObj) : null;
         const hsStats = calculateOptimalResources(hsObj?.planets ?? []);
@@ -293,21 +495,29 @@ const isMapGuest = multiplayer?.role === 'guest';
           hsKey,
           hsStats,
         };
-      }).sort((a, b) => {
-        const aPos = Number.isFinite(a.position) ? a.position : Number.POSITIVE_INFINITY;
-        const bPos = Number.isFinite(b.position) ? b.position : Number.POSITIVE_INFINITY;
+      })
+      .sort((a, b) => {
+        const aPos = Number.isFinite(a.position)
+          ? a.position
+          : Number.POSITIVE_INFINITY;
+        const bPos = Number.isFinite(b.position)
+          ? b.position
+          : Number.POSITIVE_INFINITY;
         return aPos - bPos;
       });
 
-      const occupiedHomes = new Set(basePlayers.map(p => p.hsLabel).filter(Boolean));
+    const occupiedHomes = new Set(
+      basePlayers.map((p) => p.hsLabel).filter(Boolean),
+    );
 
-    return basePlayers.map(player => {
+    return basePlayers.map((player) => {
       if (!player.hsLabel) return player;
 
       const hsIdx = HOME_CLOCKWISE.indexOf(player.hsLabel);
       if (hsIdx === -1) return player;
 
-      const nextHsClockwise = HOME_CLOCKWISE[(hsIdx + 1) % HOME_CLOCKWISE.length];
+      const nextHsClockwise =
+        HOME_CLOCKWISE[(hsIdx + 1) % HOME_CLOCKWISE.length];
       if (occupiedHomes.has(nextHsClockwise)) return player;
 
       const shiftRule = CLOCKWISE_SHIFT_BY_HOME[player.hsLabel];
@@ -315,20 +525,37 @@ const isMapGuest = multiplayer?.role === 'guest';
 
       return {
         ...player,
-        sliceTiles: player.sliceTiles.map(label => label === shiftRule.from ? shiftRule.to : label),
+        sliceTiles: player.sliceTiles.map((label) =>
+          label === shiftRule.from ? shiftRule.to : label,
+        ),
       };
     });
-  }, [factions, isLargeGalaxy, playerCount]);
+  }, [
+    factions,
+    isLargeGalaxy,
+    playerCount,
+  ]);
+
+  const effectivePlayers = useMemo(() => {
+    if (!useAltSlices || !SLICE_ORDER_ALT[playerCount] || !LARGE_GALAXY_HS_POSITIONS_ALT[playerCount]) return players;
+    const altHsPositions = LARGE_GALAXY_HS_POSITIONS_ALT[playerCount];
+    const altSliceOrder = SLICE_ORDER_ALT[playerCount];
+    return players.map((p, idx) => {
+      const altHs = altHsPositions[idx];
+      if (!altHs) return p;
+      return { ...p, hsLabel: altHs, sliceTiles: altSliceOrder[altHs] ?? p.sliceTiles };
+    });
+  }, [players, useAltSlices, playerCount]);
 
   const allDraftedKeySet = useMemo(() => {
     const s = new Set();
-    players.forEach(p => p.draftedKeys.forEach(k => s.add(k)));
+    effectivePlayers.forEach((p) => p.draftedKeys.forEach((k) => s.add(k)));
     return s;
-  }, [players]);
+  }, [effectivePlayers]);
 
-  const fillPool = useMemo(() =>
-    ALL_ELIGIBLE_KEYS.filter(k => !allDraftedKeySet.has(k)),
-    [allDraftedKeySet]
+  const fillPool = useMemo(
+    () => ALL_ELIGIBLE_KEYS.filter((k) => !allDraftedKeySet.has(k)),
+    [allDraftedKeySet],
   );
 
   useLayoutEffect(() => {
@@ -336,7 +563,8 @@ const isMapGuest = multiplayer?.role === 'guest';
     if (!el) return;
     const update = () => {
       const { width, height } = el.getBoundingClientRect();
-      if (width && height) setFitScale(Math.min((width - 24) / canvasW, (height - 24) / canvasH));
+      if (width && height)
+        setFitScale(Math.min((width - 24) / canvasW, (height - 24) / canvasH));
     };
     update();
     const ro = new ResizeObserver(update);
@@ -352,10 +580,10 @@ const isMapGuest = multiplayer?.role === 'guest';
 
   // Auto-place all slice tiles when coming from Milty draft
   useEffect(() => {
-    if (!fromMilty || players.length === 0) return;
-    setPlaced(prev => {
+    if (!fromMilty || effectivePlayers.length === 0) return;
+    setPlaced((prev) => {
       const next = { ...prev };
-      players.forEach(p => {
+      effectivePlayers.forEach((p) => {
         if (p.hsLabel && p.hsKey) next[p.hsLabel] = p.hsKey;
         p.sliceTiles.forEach((label, idx) => {
           const key = p.draftedKeys[idx];
@@ -366,31 +594,31 @@ const isMapGuest = multiplayer?.role === 'guest';
     });
     setMode("random");
     setFillDone(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromMilty, players.length > 0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromMilty, effectivePlayers.length > 0]);
 
   // Place HS tiles whenever players data resolves
   useEffect(() => {
-    setPlaced(prev => {
+    setPlaced((prev) => {
       const next = { ...prev };
       let changed = false;
-      players.forEach(p => {
+      effectivePlayers.forEach((p) => {
         if (p.hsLabel && p.hsKey && !next[p.hsLabel]) {
           next[p.hsLabel] = p.hsKey;
           changed = true;
         }
       });
-      const shifted = applyClockwiseGapShift(next, players);
+      const shifted = applyClockwiseGapShift(next, effectivePlayers);
       if (shifted !== next) changed = true;
       return changed ? shifted : prev;
     });
-  }, [players]);
+  }, [effectivePlayers]);
   const [fillDone, setFillDone] = useState(false);
 
   // ── Random mode ────────────────────────────────────────────────────────
   const doRandomPlace = () => {
     const next = { ...placed };
-    players.forEach(p => {
+    effectivePlayers.forEach((p) => {
       const shuffled = shuffleArray([...p.draftedKeys]);
       p.sliceTiles.forEach((label, i) => {
         if (shuffled[i]) next[label] = shuffled[i];
@@ -402,7 +630,7 @@ const isMapGuest = multiplayer?.role === 'guest';
   };
 
   const doFillRemaining = () => {
-    const next = applyClockwiseGapShift(placed, players);
+    const next = applyClockwiseGapShift(placed, effectivePlayers);
     const remaining = shuffleArray([...fillPool]);
     let ri = 0;
     mapPositions.forEach(({ label }) => {
@@ -418,18 +646,18 @@ const isMapGuest = multiplayer?.role === 'guest';
     const next = { ...placed };
 
     const HS_ALL = ["301", "304", "307", "310", "313", "316"];
-    const occupiedHS = new Set(players.map(p => p.hsLabel).filter(Boolean));
+    const occupiedHS = new Set(effectivePlayers.map((p) => p.hsLabel).filter(Boolean));
 
     // Build a hyperlane tile key: code + angle (omit angle suffix when 0)
     const hl = (code, baseAngle, rotDeg) => {
       const angle = (baseAngle + rotDeg) % 360;
-      return `${code}${angle === 0 ? '' : angle}_Hyperlane`;
+      return `${code}${angle === 0 ? "" : angle}_Hyperlane`;
     };
 
     // Helper to build a map-position label for a given ring and 0-based index
-    const r1lbl = (i) => `1${String((i % 6) + 1).padStart(2, '0')}`;
-    const r2lbl = (i) => `2${String((i % 12) + 1).padStart(2, '0')}`;
-    const r3lbl = (i) => `3${String((i % 18) + 1).padStart(2, '0')}`;
+    const r1lbl = (i) => `1${String((i % 6) + 1).padStart(2, "0")}`;
+    const r2lbl = (i) => `2${String((i % 12) + 1).padStart(2, "0")}`;
+    const r3lbl = (i) => `3${String((i % 18) + 1).padStart(2, "0")}`;
 
     HS_ALL.forEach((hsLabel, k) => {
       if (occupiedHS.has(hsLabel)) return; // skip — player is here
@@ -439,8 +667,8 @@ const isMapGuest = multiplayer?.role === 'guest';
       const pushLeft = !nextHasPlayer;
 
       // rotSteps: how many 60° turns away from the base pattern (k=3, position 310)
-      const rotSteps = ((k - 3) + 6) % 6;
-      const rotDeg   = rotSteps * 60;
+      const rotSteps = (k - 3 + 6) % 6;
+      const rotDeg = rotSteps * 60;
 
       // Base ring indices (defined at k=3 / 310):
       //   ring1 spoke:        index 3  → 104
@@ -453,12 +681,12 @@ const isMapGuest = multiplayer?.role === 'guest';
       const r2LeftIdx = pushLeft ? 8 : 7;
 
       const placements = [
-        [r1lbl(3  + rotSteps),         hl('86a', 0,   rotDeg)],
-        [r2lbl(5  + 2*rotSteps),       hl('88a', 0,   rotDeg)],
-        [r2lbl(r2LeftIdx + 2*rotSteps),hl('88a', 240, rotDeg)],
-        [r3lbl(8  + 3*rotSteps),       hl('84a', 300, rotDeg)],
-        [r3lbl(9  + 3*rotSteps),       hl('85a', 0,   rotDeg)],
-        [r3lbl(10 + 3*rotSteps),       hl('84a', 0,   rotDeg)],
+        [r1lbl(3 + rotSteps), hl("86a", 0, rotDeg)],
+        [r2lbl(5 + 2 * rotSteps), hl("88a", 0, rotDeg)],
+        [r2lbl(r2LeftIdx + 2 * rotSteps), hl("88a", 240, rotDeg)],
+        [r3lbl(8 + 3 * rotSteps), hl("84a", 300, rotDeg)],
+        [r3lbl(9 + 3 * rotSteps), hl("85a", 0, rotDeg)],
+        [r3lbl(10 + 3 * rotSteps), hl("84a", 0, rotDeg)],
       ];
 
       placements.forEach(([label, key]) => {
@@ -471,16 +699,16 @@ const isMapGuest = multiplayer?.role === 'guest';
   };
 
   const doFillHyperlanesAndRandom = () => {
-    const next = applyClockwiseGapShift({ ...placed }, players);
+    const next = applyClockwiseGapShift({ ...placed }, effectivePlayers);
     // Place 413 gap hyperlanes — same tile types/rotations as small-galaxy base case (k=3/310),
     // shifted one ring outward: ring-1→ring-2, ring-2→ring-3, ring-3→ring-4.
     const gapHyperlanes = {
-      "207": "86a_Hyperlane",
-      "309": "88a_Hyperlane",
-      "311": "88a240_Hyperlane",
-      "412": "84a300_Hyperlane",
-      "413": "85a_Hyperlane",
-      "414": "84a_Hyperlane",
+      207: "86a_Hyperlane",
+      309: "88a_Hyperlane",
+      311: "88a240_Hyperlane",
+      412: "84a300_Hyperlane",
+      413: "85a_Hyperlane",
+      414: "84a_Hyperlane",
     };
     Object.entries(gapHyperlanes).forEach(([label, key]) => {
       if (!next[label]) next[label] = key;
@@ -497,23 +725,26 @@ const isMapGuest = multiplayer?.role === 'guest';
 
   const doAltLayout = (pc) => {
     const altHsPositions = LARGE_GALAXY_HS_POSITIONS_ALT[pc];
-    const altSliceOrder = SLICE_ORDER_ALT[pc];
     const altHyperlanes = HYPERLANES_ALT[pc];
-    if (!altHsPositions || !altSliceOrder || !altHyperlanes) return;
+    if (!altHsPositions || !altHyperlanes) return;
 
-    const next = { "000": "112_Mecatol" };
-    players.forEach((p, idx) => {
-      const altHs = altHsPositions[idx];
-      if (!altHs) return;
-      if (p.hsKey) next[altHs] = p.hsKey;
-      const slicePositions = altSliceOrder[altHs] ?? [];
-      p.draftedKeys.forEach((key, i) => {
-        if (slicePositions[i] && key) next[slicePositions[i]] = key;
+    setPlaced((prev) => {
+      const next = { "000": "112_Mecatol" };
+      // Place only HS tiles
+      effectivePlayers.forEach((p) => {
+        if (p.hsKey) {
+          const altHs = altHsPositions[effectivePlayers.indexOf(p)];
+          if (altHs) next[altHs] = p.hsKey;
+        }
       });
+      // Place hyperlanes
+      Object.entries(altHyperlanes).forEach(([label, key]) => {
+        next[label] = key;
+      });
+      return next;
     });
-    Object.entries(altHyperlanes).forEach(([label, key]) => { next[label] = key; });
-    setPlaced(next);
-    setMode("random");
+    setUseAltSlices(true);
+    setMode(null);
     setFillDone(false);
   };
 
@@ -530,11 +761,11 @@ const isMapGuest = multiplayer?.role === 'guest';
   */
 
   const startMantis = () => {
-    const bags = players.map(p => shuffleArray([...p.draftedKeys]));
+    const bags = effectivePlayers.map((p) => shuffleArray([...p.draftedKeys]));
     setMantis({
       turnNumber: 0,
       bags,
-      mulligansUsed: players.map(() => false),
+      mulligansUsed: effectivePlayers.map(() => false),
       drawnTile: null,
       isMulligan: false,
     });
@@ -543,121 +774,146 @@ const isMapGuest = multiplayer?.role === 'guest';
   };
 
   const mantisDraw = () => {
-    setMantis(m => {
-      const pidx = m.turnNumber % players.length;
+    setMantis((m) => {
+      const pidx = m.turnNumber % effectivePlayers.length;
       const bag = [...m.bags[pidx]];
       if (bag.length === 0) return m;
       const drawn = bag.splice(Math.floor(Math.random() * bag.length), 1)[0];
-      const newBags = m.bags.map((b, i) => i === pidx ? bag : b);
+      const newBags = m.bags.map((b, i) => (i === pidx ? bag : b));
       return { ...m, bags: newBags, drawnTile: drawn, isMulligan: false };
     });
   };
 
   const mantisPlace = (chosenSlotIdx = null) => {
-  setMantis(m => {
-    if (!m.drawnTile) return m;
-    const pidx = m.turnNumber % players.length;
-    const slotIdx = Math.floor(m.turnNumber / players.length);
-    const player = players[pidx];
+    setMantis((m) => {
+      if (!m.drawnTile) return m;
+      const pidx = m.turnNumber % effectivePlayers.length;
+      const slotIdx = Math.floor(m.turnNumber / effectivePlayers.length);
+      const player = effectivePlayers[pidx];
 
-    let slotLabel;
-    if (slotIdx === 0) {
-      slotLabel = player.sliceTiles[0];
-    } else if (slotIdx === 2) {
-      slotLabel = !placed[player.sliceTiles[1]] ? player.sliceTiles[1] : player.sliceTiles[2];
-    } else if (slotIdx === 4) {
-      slotLabel = !placed[player.sliceTiles[3]] ? player.sliceTiles[3] : player.sliceTiles[4];
-    } else {
-      slotLabel = player.sliceTiles[chosenSlotIdx]; // slotIdx 1 or 3: player chose
-    }
+      let slotLabel;
+      if (slotIdx === 0) {
+        slotLabel = player.sliceTiles[0];
+      } else if (slotIdx === 2) {
+        slotLabel = !placed[player.sliceTiles[1]]
+          ? player.sliceTiles[1]
+          : player.sliceTiles[2];
+      } else if (slotIdx === 4) {
+        slotLabel = !placed[player.sliceTiles[3]]
+          ? player.sliceTiles[3]
+          : player.sliceTiles[4];
+      } else {
+        slotLabel = player.sliceTiles[chosenSlotIdx]; // slotIdx 1 or 3: player chose
+      }
 
-    setPlaced(prev => ({ ...prev, [slotLabel]: m.drawnTile }));
-    return { ...m, drawnTile: null, turnNumber: m.turnNumber + 1 };
-  });
-};
+      setPlaced((prev) => ({ ...prev, [slotLabel]: m.drawnTile }));
+      return { ...m, drawnTile: null, turnNumber: m.turnNumber + 1 };
+    });
+  };
 
   const mantisMulligan = () => {
-    setMantis(m => {
+    setMantis((m) => {
       if (!m.drawnTile) return m;
-      const pidx = m.turnNumber % players.length;
+      const pidx = m.turnNumber % effectivePlayers.length;
       // Put tile back
       const bag = [...m.bags[pidx], m.drawnTile];
-      const newBags = m.bags.map((b, i) => i === pidx ? bag : b);
+      const newBags = m.bags.map((b, i) => (i === pidx ? bag : b));
       const mulligansUsed = [...m.mulligansUsed];
       mulligansUsed[pidx] = true;
-      return { ...m, bags: newBags, drawnTile: null, mulligansUsed, isMulligan: true };
+      return {
+        ...m,
+        bags: newBags,
+        drawnTile: null,
+        mulligansUsed,
+        isMulligan: true,
+      };
     });
   };
 
   // After mulligan, draw again immediately
   const mantisDrawAfterMulligan = () => {
-    setMantis(m => {
-      const pidx = m.turnNumber % players.length;
+    setMantis((m) => {
+      const pidx = m.turnNumber % effectivePlayers.length;
       const bag = [...m.bags[pidx]];
       if (bag.length === 0) return { ...m, isMulligan: false };
       const drawn = bag.splice(Math.floor(Math.random() * bag.length), 1)[0];
-      const newBags = m.bags.map((b, i) => i === pidx ? bag : b);
+      const newBags = m.bags.map((b, i) => (i === pidx ? bag : b));
       return { ...m, bags: newBags, drawnTile: drawn, isMulligan: false };
     });
   };
 
   useEffect(() => {
-  if (!onPeerMessageRef) return;
-  onPeerMessageRef.current = (slotId, msg) => {
-    if (msg.type === 'MANTIS_STATE') {
-      setMantis(msg.mantis);
-      setPlaced(msg.placed);
-      if (msg.mode) setMode(msg.mode);
-    }
-    if (msg.type === 'MANTIS_ACTION') {
-      if (!isMapHost) return;
-      if (msg.action === 'DRAW') {
-        mantisDraw();
-      } else if (msg.action === 'PLACE') {
-        mantisPlace(msg.chosenSlotIdx ?? null);
-      } else if (msg.action === 'MULLIGAN') {
-        mantisMulligan();
-      } else if (msg.action === 'DRAW_AFTER_MULLIGAN') {
-        mantisDrawAfterMulligan();
+    if (!onPeerMessageRef) return;
+    onPeerMessageRef.current = (slotId, msg) => {
+      if (msg.type === "MANTIS_STATE") {
+        setMantis(msg.mantis);
+        setPlaced(msg.placed);
+        if (msg.mode) setMode(msg.mode);
       }
-    }
-  };
-}, [onPeerMessageRef, isMapHost, mantisDraw, mantisPlace, mantisMulligan, mantisDrawAfterMulligan]);
+      if (msg.type === "MANTIS_ACTION") {
+        if (!isMapHost) return;
+        if (msg.action === "DRAW") {
+          mantisDraw();
+        } else if (msg.action === "PLACE") {
+          mantisPlace(msg.chosenSlotIdx ?? null);
+        } else if (msg.action === "MULLIGAN") {
+          mantisMulligan();
+        } else if (msg.action === "DRAW_AFTER_MULLIGAN") {
+          mantisDrawAfterMulligan();
+        }
+      }
+    };
+  }, [
+    onPeerMessageRef,
+    isMapHost,
+    mantisDraw,
+    mantisPlace,
+    mantisMulligan,
+    mantisDrawAfterMulligan,
+  ]);
 
-useEffect(() => {
-  if (!isMapHost || !mantis || !multiplayer) return;
-  Object.keys(multiplayer.peers).forEach(slotId => {
-    multiplayer.sendToPeer(slotId, {
-      type: 'MANTIS_STATE',
-      mantis,
-      placed,
-      mode,
+  useEffect(() => {
+    if (!isMapHost || !mantis || !multiplayer) return;
+    Object.keys(multiplayer.peers).forEach((slotId) => {
+      multiplayer.sendToPeer(slotId, {
+        type: "MANTIS_STATE",
+        mantis,
+        placed,
+        mode,
+      });
     });
-  });
-}, [mantis, placed]);
+  }, [mantis, placed]);
 
   // Mantis derived values
   const mantisInfo = useMemo(() => {
     if (!mantis) return null;
-    const total = players.length * 5;
-    const done = players.length === 0 || mantis.turnNumber >= total;
-    const pidx = done ? null : mantis.turnNumber % players.length;
-    const slotIdx = done ? null : Math.floor(mantis.turnNumber / players.length);
+    const total = effectivePlayers.length * 5;
+    const done = effectivePlayers.length === 0 || mantis.turnNumber >= total;
+    const pidx = done ? null : mantis.turnNumber % effectivePlayers.length;
+    const slotIdx = done
+      ? null
+      : Math.floor(mantis.turnNumber / effectivePlayers.length);
     const slotNames = ["Ring 1", "Ring 2", "Ring 2", "Ring 3", "Ring 3"];
-    const player = pidx !== null ? players[pidx] : null;
-    return { done, pidx, slotIdx, slotName: slotIdx !== null ? slotNames[slotIdx] : null, player };
-  }, [mantis, players]);
+    const player = pidx !== null ? effectivePlayers[pidx] : null;
+    return {
+      done,
+      pidx,
+      slotIdx,
+      slotName: slotIdx !== null ? slotNames[slotIdx] : null,
+      player,
+    };
+  }, [mantis, effectivePlayers]);
 
   // ── Home stats overlay ─────────────────────────────────────────────────
   const homeStats = useMemo(() => {
     const stats = {};
-    players.forEach(p => {
+    effectivePlayers.forEach((p) => {
       if (!p.hsLabel) return;
       const planets = [];
-      (adjacency[p.hsLabel] ?? []).forEach(n => {
+      (adjacency[p.hsLabel] ?? []).forEach((n) => {
         const key = placed[n];
         if (key && key !== "112_Mecatol") {
-          getTilePlanets(key).forEach(planet => planets.push(planet));
+          getTilePlanets(key).forEach((planet) => planets.push(planet));
         }
       });
       const resInf = calculateOptimalResources(planets);
@@ -668,31 +924,33 @@ useEffect(() => {
       };
     });
     return stats;
-  }, [adjacency, players, placed]);
+  }, [adjacency, effectivePlayers, placed]);
 
   // Which labels are each player's slice (for coloring empty slots)
   const sliceOwner = useMemo(() => {
     const map = {};
-    players.forEach((p, i) => {
-      p.sliceTiles.forEach(lbl => { map[lbl] = i; });
+    effectivePlayers.forEach((p, i) => {
+      p.sliceTiles.forEach((lbl) => {
+        map[lbl] = i;
+      });
       if (p.hsLabel) map[p.hsLabel] = i;
     });
     return map;
-  }, [players]);
+  }, [effectivePlayers]);
 
   // ── Render ─────────────────────────────────────────────────────────────
   const placedForExport = useMemo(() => {
-    return applyClockwiseGapShift(placed, players);
-  }, [placed, players]);
-
+    return applyClockwiseGapShift(placed, effectivePlayers);
+  }, [placed, effectivePlayers]);
 
   const mapString = useMemo(() => {
-    const tokens = ["000", ...mapPositions.slice(1).map(p => p.label)]
-      .map(lbl => {
+    const tokens = ["000", ...mapPositions.slice(1).map((p) => p.label)].map(
+      (lbl) => {
         const key = placedForExport[lbl];
         if (!key) return "0";
         return key.split("_")[0];
-      });
+      },
+    );
     return `{${tokens[0]}} ${tokens.slice(1).join(" ")}`;
   }, [mapPositions, placedForExport]);
 
@@ -704,172 +962,548 @@ useEffect(() => {
   };
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", height:"100dvh", background:"linear-gradient(to bottom right,#0a0e1a,#1a1f2e,#000)", color:"#c8dde8", fontFamily:"system-ui,sans-serif", overflow:"hidden" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100dvh",
+        background: "linear-gradient(to bottom right,#0a0e1a,#1a1f2e,#000)",
+        color: "#c8dde8",
+        fontFamily: "system-ui,sans-serif",
+        overflow: "hidden",
+      }}
+    >
       {/* Header */}
       <div className="app-header bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
         <div className="px-4 py-2 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <button onClick={() => onNavigate("/")} className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">← Home</button>
-            <h2 className="text-xl font-bold text-yellow-400">Draft Map Builder</h2>
+            <button
+              onClick={() => onNavigate("/")}
+              className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+            >
+              ← Home
+            </button>
+            <h2 className="text-xl font-bold text-yellow-400">
+              Draft Map Builder
+            </h2>
           </div>
           <div className="flex items-center gap-2">
-            <div style={{ fontSize:11, color:"#9ca3af", fontFamily:"monospace", background:"#030712", border:"1px solid #374151", borderRadius:5, padding:"3px 8px", maxWidth:300, overflow:"hidden", whiteSpace:"nowrap", textOverflow:"ellipsis" }}>
+            <div
+              style={{
+                fontSize: 11,
+                color: "#9ca3af",
+                fontFamily: "monospace",
+                background: "#030712",
+                border: "1px solid #374151",
+                borderRadius: 5,
+                padding: "3px 8px",
+                maxWidth: 300,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            >
               {mapString}
             </div>
-            <button onClick={copyMap} className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">
+            <button
+              onClick={copyMap}
+              className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+            >
               {copied ? "Copied!" : "Copy"}
             </button>
           </div>
         </div>
       </div>
 
-      <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
+      <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
         {/* Sidebar: player info */}
-        <div style={{ width:200, minWidth:200, background:"#0f172a", borderRight:"1px solid #4b5563", overflowY:"auto", padding:"12px 8px", display:"flex", flexDirection:"column", gap:8 }}>
-          <div style={{ fontSize:10, fontWeight:700, letterSpacing:1.2, color:"#fcd34d", textTransform:"uppercase", marginBottom:4 }}>Players</div>
-          {players.map((p, i) => (
-  <div key={i} style={{ padding:"8px", borderRadius:6, background:"#1e293b", border:`1px solid ${PLAYER_COLORS[p.position-1]}44` }}>
-    <div style={{ fontSize:11, fontWeight:700, color: PLAYER_COLORS[p.position-1] }}>{p.name}</div>
-    <div style={{ fontSize:10, color:"#9ca3af", marginTop:3, display:"flex", justifyContent:"space-between" }}>
-      <span style={{ color:"#fcd34d" }}>Draft Order:</span>
-      <span style={{ color:"#d1d5db", fontWeight:600 }}>{p.positionLabel}</span>
-    </div>
-    <div style={{ fontSize:10, color:"#9ca3af", marginTop:2, display:"flex", justifyContent:"space-between" }}>
-      <span style={{ color:"#fcd34d" }}>Map Seat:</span>
-      <span style={{ color:"#d1d5db", fontWeight:600 }}>{p.position ?? "—"}</span>
-    </div>
-    <div style={{ fontSize:10, color:"#9ca3af", marginTop:2, display:"flex", justifyContent:"space-between" }}>
-      <span>HS:</span>
-      <span>{p.hsLabel ?? "—"}</span>
-    </div>
-    <div style={{ fontSize:10, color:"#6b7280", marginTop:2 }}>{p.draftedKeys.length} tiles</div>
-  </div>
-))}
+        <div
+          style={{
+            width: 200,
+            minWidth: 200,
+            background: "#0f172a",
+            borderRight: "1px solid #4b5563",
+            overflowY: "auto",
+            padding: "12px 8px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: 1.2,
+              color: "#fcd34d",
+              textTransform: "uppercase",
+              marginBottom: 4,
+            }}
+          >
+            Players
+          </div>
+          {effectivePlayers.map((p, i) => (
+            <div
+              key={i}
+              style={{
+                padding: "8px",
+                borderRadius: 6,
+                background: "#1e293b",
+                border: `1px solid ${PLAYER_COLORS[p.position - 1]}44`,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: PLAYER_COLORS[p.position - 1],
+                }}
+              >
+                {p.name}
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  color: "#9ca3af",
+                  marginTop: 3,
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ color: "#fcd34d" }}>Draft Order:</span>
+                <span style={{ color: "#d1d5db", fontWeight: 600 }}>
+                  {p.positionLabel}
+                </span>
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  color: "#9ca3af",
+                  marginTop: 2,
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ color: "#fcd34d" }}>Map Seat:</span>
+                <span style={{ color: "#d1d5db", fontWeight: 600 }}>
+                  {p.position ?? "—"}
+                </span>
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  color: "#9ca3af",
+                  marginTop: 2,
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span>HS:</span>
+                <span>{p.hsLabel ?? "—"}</span>
+              </div>
+              <div style={{ fontSize: 10, color: "#6b7280", marginTop: 2 }}>
+                {p.draftedKeys.length} tiles
+              </div>
+            </div>
+          ))}
 
           {/* Mode buttons */}
           {!mode && !fromMilty && (
-            <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
-              <div style={{ fontSize:10, fontWeight:700, color:"#fcd34d", textTransform:"uppercase", letterSpacing:1 }}>Placement Mode</div>
-              <button onClick={doRandomPlace} className="px-3 py-2 rounded-lg bg-blue-800 hover:bg-blue-700 text-white text-sm font-semibold transition-colors">🎲 Random</button>
-              <button onClick={startMantis} className="px-3 py-2 rounded-lg bg-purple-800 hover:bg-purple-700 text-white text-sm font-semibold transition-colors">🃏 Mantis Draft</button>
+            <div
+              style={{
+                marginTop: 8,
+                display: "flex",
+                flexDirection: "column",
+                gap: 6,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: "#fcd34d",
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                }}
+              >
+                Placement Mode
+              </div>
+              <button
+                onClick={doRandomPlace}
+                className="px-3 py-2 rounded-lg bg-blue-800 hover:bg-blue-700 text-white text-sm font-semibold transition-colors"
+              >
+                🎲 Random
+              </button>
+              <button
+                onClick={startMantis}
+                className="px-3 py-2 rounded-lg bg-purple-800 hover:bg-purple-700 text-white text-sm font-semibold transition-colors"
+              >
+                🃏 Mantis Draft
+              </button>
               {isLargeGalaxy && HYPERLANES_ALT[playerCount] && (
-  <button onClick={() => doAltLayout(playerCount)} className="px-3 py-2 rounded-lg bg-violet-900 hover:bg-violet-800 text-white text-xs font-semibold transition-colors">〰 Alt Hyperlane Layout</button>
-)}
+                <button
+                  onClick={() => {
+                    if (useAltSlices) {
+                      setUseAltSlices(false);
+                      setPlaced({ "000": "112_Mecatol" });
+                      setMode(null);
+                      setFillDone(false);
+                    } else {
+                      doAltLayout(playerCount);
+                    }
+                  }}
+                  className={`px-3 py-2 rounded-lg text-white text-xs font-semibold transition-colors ${useAltSlices ? "bg-violet-700 hover:bg-violet-600" : "bg-violet-900 hover:bg-violet-800"}`}
+                >
+                  {useAltSlices
+                    ? "✓ Alt Layout (click to disable)"
+                    : "〰 Alt Hyperlane Layout"}
+                </button>
+              )}
             </div>
           )}
 
           {mode === "random" && !fillDone && !isMapGuest && (
-            <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
-              <button onClick={doRandomPlace} className="px-3 py-2 rounded-lg bg-blue-800 hover:bg-blue-700 text-white text-xs font-semibold transition-colors">↺ Re-randomize</button>
-              <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">🎲 Fill with Random Tiles</button>
-{!isLargeGalaxy && (
-  <button onClick={doFillHyperlanes} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Fill with Hyperlanes</button>
-)}
-{isLargeGalaxy && playerCount === 7 && (
-  <button onClick={doFillHyperlanesAndRandom} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Hyperlanes + Random Fill</button>
-)}
-{isLargeGalaxy && HYPERLANES_ALT[playerCount] && (
-  <button onClick={() => doAltLayout(playerCount)} className="px-3 py-2 rounded-lg bg-violet-900 hover:bg-violet-800 text-white text-xs font-semibold transition-colors">〰 Alt Hyperlane Layout</button>
-)}
+            <div
+              style={{
+                marginTop: 8,
+                display: "flex",
+                flexDirection: "column",
+                gap: 6,
+              }}
+            >
+              <button
+                onClick={doRandomPlace}
+                className="px-3 py-2 rounded-lg bg-blue-800 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+              >
+                ↺ Re-randomize
+              </button>
+              <button
+                onClick={doFillRemaining}
+                className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors"
+              >
+                🎲 Fill with Random Tiles
+              </button>
+              {!isLargeGalaxy && (
+                <button
+                  onClick={doFillHyperlanes}
+                  className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors"
+                >
+                  〰 Fill with Hyperlanes
+                </button>
+              )}
+              {isLargeGalaxy && playerCount === 7 && (
+                <button
+                  onClick={doFillHyperlanesAndRandom}
+                  className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors"
+                >
+                  〰 Hyperlanes + Random Fill
+                </button>
+              )}
+              {isLargeGalaxy && HYPERLANES_ALT[playerCount] && (
+                <button
+                  onClick={() => {
+                    if (useAltSlices) {
+                      setUseAltSlices(false);
+                      setPlaced({ "000": "112_Mecatol" });
+                      setMode(null);
+                      setFillDone(false);
+                    } else {
+                      doAltLayout(playerCount);
+                    }
+                  }}
+                  className={`px-3 py-2 rounded-lg text-white text-xs font-semibold transition-colors ${useAltSlices ? "bg-violet-700 hover:bg-violet-600" : "bg-violet-900 hover:bg-violet-800"}`}
+                >
+                  {useAltSlices
+                    ? "✓ Alt Layout (click to disable)"
+                    : "〰 Alt Hyperlane Layout"}
+                </button>
+              )}
             </div>
           )}
 
           {mode === "random" && !fillDone && !isMapGuest && (
-            <div style={{ marginTop:8, fontSize:10, color:"#4ade80", fontWeight:600 }}>✓ Map complete</div>
+            <div
+              style={{
+                marginTop: 8,
+                fontSize: 10,
+                color: "#4ade80",
+                fontWeight: 600,
+              }}
+            >
+              ✓ Map complete
+            </div>
           )}
 
-          {mode === "mantis" && mantisInfo?.done && !fillDone && !isMapGuest && (
-  <div style={{ marginTop:8, display:"flex", flexDirection:"column", gap:6 }}>
-    <div style={{ fontSize:11, color:"#4ade80", fontWeight:700 }}>✓ All tiles placed!</div>
-    <button onClick={doFillRemaining} className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors">🎲 Fill with Random Tiles</button>
-    {!isLargeGalaxy && (
-  <button onClick={doFillHyperlanes} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Fill with Hyperlanes</button>
-)}
-{isLargeGalaxy && playerCount === 7 && (
-  <button onClick={doFillHyperlanesAndRandom} className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors">〰 Hyperlanes + Random Fill</button>
-)}
-{isLargeGalaxy && HYPERLANES_ALT[playerCount] && (
-  <button onClick={() => doAltLayout(playerCount)} className="px-3 py-2 rounded-lg bg-violet-900 hover:bg-violet-800 text-white text-xs font-semibold transition-colors">〰 Alt Hyperlane Layout</button>
-)}
-  </div>
-)}
+          {mode === "mantis" &&
+            mantisInfo?.done &&
+            !fillDone &&
+            !isMapGuest && (
+              <div
+                style={{
+                  marginTop: 8,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
+                }}
+              >
+                <div
+                  style={{ fontSize: 11, color: "#4ade80", fontWeight: 700 }}
+                >
+                  ✓ All tiles placed!
+                </div>
+                <button
+                  onClick={doFillRemaining}
+                  className="px-3 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-xs font-semibold transition-colors"
+                >
+                  🎲 Fill with Random Tiles
+                </button>
+                {!isLargeGalaxy && (
+                  <button
+                    onClick={doFillHyperlanes}
+                    className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors"
+                  >
+                    〰 Fill with Hyperlanes
+                  </button>
+                )}
+                {isLargeGalaxy && playerCount === 7 && (
+                  <button
+                    onClick={doFillHyperlanesAndRandom}
+                    className="px-3 py-2 rounded-lg bg-cyan-900 hover:bg-cyan-800 text-white text-xs font-semibold transition-colors"
+                  >
+                    〰 Hyperlanes + Random Fill
+                  </button>
+                )}
+                {isLargeGalaxy && HYPERLANES_ALT[playerCount] && (
+                  <button
+                    onClick={() => {
+                      if (useAltSlices) {
+                        setUseAltSlices(false);
+                        setPlaced({ "000": "112_Mecatol" });
+                        setMode(null);
+                        setFillDone(false);
+                      } else {
+                        doAltLayout(playerCount);
+                      }
+                    }}
+                    className={`px-3 py-2 rounded-lg text-white text-xs font-semibold transition-colors ${useAltSlices ? "bg-violet-700 hover:bg-violet-600" : "bg-violet-900 hover:bg-violet-800"}`}
+                  >
+                    {useAltSlices
+                      ? "✓ Alt Layout (click to disable)"
+                      : "〰 Alt Hyperlane Layout"}
+                  </button>
+                )}
+              </div>
+            )}
 
           {mode === "mantis" && fillDone && (
-            <div style={{ marginTop:8, fontSize:10, color:"#4ade80", fontWeight:600 }}>✓ Map complete</div>
+            <div
+              style={{
+                marginTop: 8,
+                fontSize: 10,
+                color: "#4ade80",
+                fontWeight: 600,
+              }}
+            >
+              ✓ Map complete
+            </div>
           )}
         </div>
 
         {/* Map viewport */}
-        <div ref={viewportRef} style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", padding:12, position:"relative" }}>
-          <div style={{ position:"relative", width:canvasW, height:canvasH, flexShrink:0, transform:`scale(${fitScale})`, transformOrigin:"center" }}>
+        <div
+          ref={viewportRef}
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+            padding: 12,
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: canvasW,
+              height: canvasH,
+              flexShrink: 0,
+              transform: `scale(${fitScale})`,
+              transformOrigin: "center",
+            }}
+          >
             {mapPositions.map(({ label, x, y }) => {
               const key = placed[label];
-              const cx = OX + x, cy = OY + y;
+              const cx = OX + x,
+                cy = OY + y;
               const hexH = D;
               const ownerIdx = sliceOwner[label];
-              const ownerColor = ownerIdx !== undefined ? PLAYER_COLORS[players[ownerIdx]?.position - 1] : undefined;
-              const isHS = players.some(p => p.hsLabel === label);
-              const isMantisTarget = mode === "mantis" && mantis && !mantisInfo?.done && (() => {
-                const pidx = mantis.turnNumber % players.length;
-                const slotIdx = Math.floor(mantis.turnNumber / players.length);
-                return players[pidx]?.sliceTiles[slotIdx] === label;
-              })();
+              const ownerColor =
+                ownerIdx !== undefined
+                  ? PLAYER_COLORS[effectivePlayers[ownerIdx]?.position - 1]
+                  : undefined;
+              const isHS = effectivePlayers.some((p) => p.hsLabel === label);
+              const isMantisTarget =
+                mode === "mantis" &&
+                mantis &&
+                !mantisInfo?.done &&
+                (() => {
+                  const pidx = mantis.turnNumber % effectivePlayers.length;
+                  const slotIdx = Math.floor(
+                    mantis.turnNumber / effectivePlayers.length,
+                  );
+                  return effectivePlayers[pidx]?.sliceTiles[slotIdx] === label;
+                })();
 
               return (
-                <div key={label} style={{ position:"absolute", left:cx-S, top:cy-hexH/2, zIndex: isMantisTarget ? 5 : 1 }}>
+                <div
+                  key={label}
+                  style={{
+                    position: "absolute",
+                    left: cx - S,
+                    top: cy - hexH / 2,
+                    zIndex: isMantisTarget ? 5 : 1,
+                  }}
+                >
                   {key ? (
                     <HexTile tileKey={key} size={S} />
                   ) : (
-                    <EmptyHex size={S} highlight={isMantisTarget}
+                    <EmptyHex
+                      size={S}
+                      highlight={isMantisTarget}
                       label={isHS ? "HS" : label}
-                      color={ownerColor ? `${ownerColor}44` : undefined} />
+                      color={ownerColor ? `${ownerColor}44` : undefined}
+                    />
                   )}
                   {/* HS label overlay */}
-                  {isHS && key && (() => {
-                    const player = players.find(p => p.hsLabel === label);
-                    return (
-                      <div style={{ position:"absolute", inset:0, clipPath:HEX_CLIP, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", pointerEvents:"none", zIndex:3, background:"rgba(0,0,0,0.55)", gap:2 }}>
-                        <span style={{ fontSize:S*0.15, fontWeight:700, color: PLAYER_COLORS[player?.position-1], textAlign:"center", textShadow:"0 1px 3px #000" }}>Seat {player?.position}</span>
-                        <span style={{ fontSize:S*0.12, fontWeight:600, color:"#fcd34d", textAlign:"center", textShadow:"0 1px 3px #000" }}>Draft: {player?.positionLabel}</span>
-                         <div style={{ fontSize:S*0.14, fontWeight:800, letterSpacing:0.3, lineHeight:1.1, textShadow:"0 1px 2px #000" }}>
-                          <span style={{ color:"#fbbf24" }}>{player?.hsStats?.optimalResource ?? 0}R</span>
-                          <span style={{ color:"#6b7280", margin:"0 4px" }}>/</span>
-                          <span style={{ color:"#60a5fa" }}>{player?.hsStats?.optimalInfluence ?? 0}I</span>
+                  {isHS &&
+                    key &&
+                    (() => {
+                      const player = effectivePlayers.find((p) => p.hsLabel === label);
+                      return (
+                        <div
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            clipPath: HEX_CLIP,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            pointerEvents: "none",
+                            zIndex: 3,
+                            background: "rgba(0,0,0,0.55)",
+                            gap: 2,
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: S * 0.15,
+                              fontWeight: 700,
+                              color: PLAYER_COLORS[player?.position - 1],
+                              textAlign: "center",
+                              textShadow: "0 1px 3px #000",
+                            }}
+                          >
+                            Seat {player?.position}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: S * 0.12,
+                              fontWeight: 600,
+                              color: "#fcd34d",
+                              textAlign: "center",
+                              textShadow: "0 1px 3px #000",
+                            }}
+                          >
+                            Draft: {player?.positionLabel}
+                          </span>
+                          <div
+                            style={{
+                              fontSize: S * 0.14,
+                              fontWeight: 800,
+                              letterSpacing: 0.3,
+                              lineHeight: 1.1,
+                              textShadow: "0 1px 2px #000",
+                            }}
+                          >
+                            <span style={{ color: "#fbbf24" }}>
+                              {player?.hsStats?.optimalResource ?? 0}R
+                            </span>
+                            <span style={{ color: "#6b7280", margin: "0 4px" }}>
+                              /
+                            </span>
+                            <span style={{ color: "#60a5fa" }}>
+                              {player?.hsStats?.optimalInfluence ?? 0}I
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              fontSize: S * 0.11,
+                              color: "#9ca3af",
+                              fontWeight: 600,
+                              lineHeight: 1.1,
+                              textShadow: "0 1px 2px #000",
+                            }}
+                          >
+                            ({player?.hsStats?.totalResource ?? 0}R/
+                            {player?.hsStats?.totalInfluence ?? 0}I)
+                          </div>
                         </div>
-                        <div style={{ fontSize:S*0.11, color:"#9ca3af", fontWeight:600, lineHeight:1.1, textShadow:"0 1px 2px #000" }}>
-                          ({player?.hsStats?.totalResource ?? 0}R/{player?.hsStats?.totalInfluence ?? 0}I)
-                        </div>
-                      </div>
-                    );
-                  })()}
+                      );
+                    })()}
 
-                  {homeStats[label] && (() => {
-                    const s = homeStats[label];
-                    return (
-                      <div style={{
-                        position:"absolute", inset:0,
-                        clipPath:"polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
-                        display:"flex", flexDirection:"column",
-                        alignItems:"center", justifyContent:"center",
-                        pointerEvents:"none", zIndex:6,
-                        background:"rgba(0,0,0,0.72)",
-                      }}>
-                        <div style={{ textAlign:"center", lineHeight:1.3 }}>
-                          <div style={{ fontSize:S*0.27, fontWeight:900 }}>
-                            <span style={{ color:"#fbbf24" }}>{s.optimalResource}R</span>
-                            <span style={{ color:"#6b7280", margin:"0 3px" }}>/</span>
-                            <span style={{ color:"#60a5fa" }}>{s.optimalInfluence}I</span>
+                  {homeStats[label] &&
+                    (() => {
+                      const s = homeStats[label];
+                      return (
+                        <div
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            clipPath:
+                              "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            pointerEvents: "none",
+                            zIndex: 6,
+                            background: "rgba(0,0,0,0.72)",
+                          }}
+                        >
+                          <div style={{ textAlign: "center", lineHeight: 1.3 }}>
+                            <div
+                              style={{ fontSize: S * 0.27, fontWeight: 900 }}
+                            >
+                              <span style={{ color: "#fbbf24" }}>
+                                {s.optimalResource}R
+                              </span>
+                              <span
+                                style={{ color: "#6b7280", margin: "0 3px" }}
+                              >
+                                /
+                              </span>
+                              <span style={{ color: "#60a5fa" }}>
+                                {s.optimalInfluence}I
+                              </span>
+                            </div>
+                            <div
+                              style={{ fontSize: S * 0.16, color: "#9ca3af" }}
+                            >
+                              ({s.totalResource}R/{s.totalInfluence}I)
+                            </div>
+                            {s.flexValue > 0 && (
+                              <div
+                                style={{ fontSize: S * 0.15, color: "#86efac" }}
+                              >
+                                {s.flexValue} flex
+                              </div>
+                            )}
                           </div>
-                          <div style={{ fontSize:S*0.16, color:"#9ca3af" }}>
-                            ({s.totalResource}R/{s.totalInfluence}I)
-                          </div>
-                          {s.flexValue > 0 && (
-                            <div style={{ fontSize:S*0.15, color:"#86efac" }}>{s.flexValue} flex</div>
-                          )}
                         </div>
-                      </div>
-                    );
-                  })()}
+                      );
+                    })()}
                 </div>
               );
             })}
@@ -877,100 +1511,215 @@ useEffect(() => {
 
           {/* Mantis Draft overlay panel */}
           {mode === "mantis" && mantis && !mantisInfo?.done && (
-            <div style={{ position:"absolute", bottom:16, left:"50%", transform:"translateX(-50%)", background:"#0f172a", border:"1px solid #4b5563", borderRadius:12, padding:"16px 24px", minWidth:360, zIndex:20, boxShadow:"0 8px 32px rgba(0,0,0,0.8)" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12, alignItems:"center" }}>
+            <div
+              style={{
+                position: "absolute",
+                bottom: 16,
+                left: "50%",
+                transform: "translateX(-50%)",
+                background: "#0f172a",
+                border: "1px solid #4b5563",
+                borderRadius: 12,
+                padding: "16px 24px",
+                minWidth: 360,
+                zIndex: 20,
+                boxShadow: "0 8px 32px rgba(0,0,0,0.8)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: 12,
+                  alignItems: "center",
+                }}
+              >
                 <div>
-                  <div style={{ fontSize:10, color:"#9ca3af", textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>Current Turn</div>
-                  <div style={{ fontSize:16, fontWeight:800, color: PLAYER_COLORS[mantisInfo.player?.position-1] }}>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: "#9ca3af",
+                      textTransform: "uppercase",
+                      letterSpacing: 1,
+                      marginBottom: 2,
+                    }}
+                  >
+                    Current Turn
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 800,
+                      color: PLAYER_COLORS[mantisInfo.player?.position - 1],
+                    }}
+                  >
                     {mantisInfo.player?.name} — {mantisInfo.slotName}
                   </div>
-                  <div style={{ fontSize:11, color:"#6b7280", marginTop:2 }}>
-                    {(mantisInfo.slotIdx === 1 || mantisInfo.slotIdx === 3)
+                  <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>
+                    {mantisInfo.slotIdx === 1 || mantisInfo.slotIdx === 3
                       ? `Choose: ${mantisInfo.player?.sliceTiles[mantisInfo.slotIdx === 1 ? 1 : 3]} or ${mantisInfo.player?.sliceTiles[mantisInfo.slotIdx === 1 ? 2 : 4]}`
                       : `Placing into ${mantisInfo.player?.sliceTiles[mantisInfo.slotIdx]}`}
                   </div>
                 </div>
-                <div style={{ fontSize:11, color:"#9ca3af", textAlign:"right" }}>
-                  Turn {mantis.turnNumber + 1}/{players.length * 5}
-                  {mantis.mulligansUsed[mantis.turnNumber % players.length] && (
-                    <div style={{ color:"#f87171" }}>Mulligan used</div>
+                <div
+                  style={{ fontSize: 11, color: "#9ca3af", textAlign: "right" }}
+                >
+                  Turn {mantis.turnNumber + 1}/{effectivePlayers.length * 5}
+                  {mantis.mulligansUsed[mantis.turnNumber % effectivePlayers.length] && (
+                    <div style={{ color: "#f87171" }}>Mulligan used</div>
                   )}
                 </div>
               </div>
 
               {/* Drawn tile display */}
               {mantis.drawnTile && (
-                <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    marginBottom: 12,
+                  }}
+                >
                   <HexTile tileKey={mantis.drawnTile} size={40} />
-                  <div style={{ fontSize:13, color:"#d1d5db", fontWeight:600 }}>{mantis.drawnTile.split("_").slice(1).join(" ")}</div>
+                  <div
+                    style={{ fontSize: 13, color: "#d1d5db", fontWeight: 600 }}
+                  >
+                    {mantis.drawnTile.split("_").slice(1).join(" ")}
+                  </div>
                 </div>
               )}
 
               {/* Determine if it's this player's turn */}
-{(() => {
-  const myPlayersArrayIndex = !multiplayer
-  ? -1  // solo: isMyTurn will be overridden below
-  : players.findIndex(p => p.multiplayerSlotId === multiplayer.mySlotId);
+              {(() => {
+                const myPlayersArrayIndex = !multiplayer
+                  ? -1 // solo: isMyTurn will be overridden below
+                  : effectivePlayers.findIndex(
+                      (p) => p.multiplayerSlotId === multiplayer.mySlotId,
+                    );
 
-const isMyTurn = !multiplayer?.role || !isMapGuest || mantisInfo.pidx === myPlayersArrayIndex;  // guest: only on their turn
+                const isMyTurn =
+                  !multiplayer?.role ||
+                  !isMapGuest ||
+                  mantisInfo.pidx === myPlayersArrayIndex; // guest: only on their turn
 
-  // For multiplayer guests, actions send to host instead of applying locally
-  const onDraw = isMapGuest
-    ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'DRAW' })
-    : mantisDraw;
-  const onPlace = (chosenSlotIdx = null) => isMapGuest
-    ? multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'PLACE', chosenSlotIdx })
-    : mantisPlace(chosenSlotIdx);
-  const onMulligan = isMapGuest
-    ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'MULLIGAN' })
-    : mantisMulligan;
-  const onDrawAfterMulligan = isMapGuest
-    ? () => multiplayer.sendToHost({ type: 'MANTIS_ACTION', action: 'DRAW_AFTER_MULLIGAN' })
-    : mantisDrawAfterMulligan;
+                // For multiplayer guests, actions send to host instead of applying locally
+                const onDraw = isMapGuest
+                  ? () =>
+                      multiplayer.sendToHost({
+                        type: "MANTIS_ACTION",
+                        action: "DRAW",
+                      })
+                  : mantisDraw;
+                const onPlace = (chosenSlotIdx = null) =>
+                  isMapGuest
+                    ? multiplayer.sendToHost({
+                        type: "MANTIS_ACTION",
+                        action: "PLACE",
+                        chosenSlotIdx,
+                      })
+                    : mantisPlace(chosenSlotIdx);
+                const onMulligan = isMapGuest
+                  ? () =>
+                      multiplayer.sendToHost({
+                        type: "MANTIS_ACTION",
+                        action: "MULLIGAN",
+                      })
+                  : mantisMulligan;
+                const onDrawAfterMulligan = isMapGuest
+                  ? () =>
+                      multiplayer.sendToHost({
+                        type: "MANTIS_ACTION",
+                        action: "DRAW_AFTER_MULLIGAN",
+                      })
+                  : mantisDrawAfterMulligan;
 
-  return (
-    <div style={{ display:"flex", gap:8 }}>
-      {!mantis.drawnTile && !mantis.isMulligan && isMyTurn && (
-        <button onClick={onDraw} className="flex-1 px-4 py-2 rounded-lg bg-yellow-700 hover:bg-yellow-600 text-white text-sm font-bold transition-colors">
-          Draw Tile
-        </button>
-      )}
-      {!mantis.drawnTile && !mantis.isMulligan && !isMyTurn && (
-        <div style={{ flex:1, textAlign:'center', color:'#6b7280', fontSize:12, padding:'8px 0' }}>
-          Waiting for {mantisInfo.player?.name}...
-        </div>
-      )}
-      {mantis.isMulligan && isMyTurn && (
-        <button onClick={onDrawAfterMulligan} className="flex-1 px-4 py-2 rounded-lg bg-orange-700 hover:bg-orange-600 text-white text-sm font-bold transition-colors">
-          Draw Again (Mulligan)
-        </button>
-      )}
-      {mantis.drawnTile && !mantis.isMulligan && isMyTurn && (
-        <>
-          {(mantisInfo.slotIdx === 1 || mantisInfo.slotIdx === 3) ? (
-            <>
-              <button onClick={() => onPlace(mantisInfo.slotIdx === 1 ? 1 : 3)} className="flex-1 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-colors">
-                Place in {mantisInfo.player?.sliceTiles[mantisInfo.slotIdx === 1 ? 1 : 3]}
-              </button>
-              <button onClick={() => onPlace(mantisInfo.slotIdx === 1 ? 2 : 4)} className="flex-1 px-4 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-sm font-bold transition-colors">
-                Place in {mantisInfo.player?.sliceTiles[mantisInfo.slotIdx === 1 ? 2 : 4]}
-              </button>
-            </>
-          ) : (
-            <button onClick={() => onPlace()} className="flex-1 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-colors">
-              Place Tile
-            </button>
-          )}
-          {!mantis.mulligansUsed[mantis.turnNumber % players.length] && (
-            <button onClick={onMulligan} className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors">
-              Mulligan
-            </button>
-          )}
-        </>
-      )}
-    </div>
-  );
-})()}
+                return (
+                  <div style={{ display: "flex", gap: 8 }}>
+                    {!mantis.drawnTile && !mantis.isMulligan && isMyTurn && (
+                      <button
+                        onClick={onDraw}
+                        className="flex-1 px-4 py-2 rounded-lg bg-yellow-700 hover:bg-yellow-600 text-white text-sm font-bold transition-colors"
+                      >
+                        Draw Tile
+                      </button>
+                    )}
+                    {!mantis.drawnTile && !mantis.isMulligan && !isMyTurn && (
+                      <div
+                        style={{
+                          flex: 1,
+                          textAlign: "center",
+                          color: "#6b7280",
+                          fontSize: 12,
+                          padding: "8px 0",
+                        }}
+                      >
+                        Waiting for {mantisInfo.player?.name}...
+                      </div>
+                    )}
+                    {mantis.isMulligan && isMyTurn && (
+                      <button
+                        onClick={onDrawAfterMulligan}
+                        className="flex-1 px-4 py-2 rounded-lg bg-orange-700 hover:bg-orange-600 text-white text-sm font-bold transition-colors"
+                      >
+                        Draw Again (Mulligan)
+                      </button>
+                    )}
+                    {mantis.drawnTile && !mantis.isMulligan && isMyTurn && (
+                      <>
+                        {mantisInfo.slotIdx === 1 ||
+                        mantisInfo.slotIdx === 3 ? (
+                          <>
+                            <button
+                              onClick={() =>
+                                onPlace(mantisInfo.slotIdx === 1 ? 1 : 3)
+                              }
+                              className="flex-1 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-colors"
+                            >
+                              Place in{" "}
+                              {
+                                mantisInfo.player?.sliceTiles[
+                                  mantisInfo.slotIdx === 1 ? 1 : 3
+                                ]
+                              }
+                            </button>
+                            <button
+                              onClick={() =>
+                                onPlace(mantisInfo.slotIdx === 1 ? 2 : 4)
+                              }
+                              className="flex-1 px-4 py-2 rounded-lg bg-green-800 hover:bg-green-700 text-white text-sm font-bold transition-colors"
+                            >
+                              Place in{" "}
+                              {
+                                mantisInfo.player?.sliceTiles[
+                                  mantisInfo.slotIdx === 1 ? 2 : 4
+                                ]
+                              }
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => onPlace()}
+                            className="flex-1 px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-colors"
+                          >
+                            Place Tile
+                          </button>
+                        )}
+                        {!mantis.mulligansUsed[
+                          mantis.turnNumber % effectivePlayers.length
+                        ] && (
+                          <button
+                            onClick={onMulligan}
+                            className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
+                          >
+                            Mulligan
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           )}
         </div>
