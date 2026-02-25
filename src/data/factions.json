@@ -7,7 +7,6 @@
           "id": "arborec_mitosis",
           "name": "Mitosis",
           "description": "Your space docks cannot produce infantry. At the start of the status phase, place 1 infantry from your reinforcements on any planet you control."
-        
         }
       ],
       "faction_techs": [
@@ -120,7 +119,7 @@
       "commodity_values": [
         {
           "id": "arborec_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "B",
           "description": "3"
         }
@@ -192,7 +191,7 @@
           "id": "argent_swa2",
           "name": "Strike Wing Alpha II",
           "tier": "A",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Red"],
           "cost": 1,
           "combat": 7,
@@ -294,7 +293,7 @@
       "commodity_values": [
         {
           "id": "argent_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "B",
           "description": "3"
         }
@@ -458,7 +457,7 @@
       "commodity_values": [
         {
           "id": "barony_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -623,7 +622,7 @@
       "commodity_values": [
         {
           "id": "saar_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "B",
           "description": "3"
         }
@@ -793,7 +792,7 @@
       "commodity_values": [
         {
           "id": "keleres_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -901,7 +900,7 @@
           "id": "muaat_pw2",
           "name": "Prototype War Sun II",
           "tier": "B",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Red", "Red", "Yellow"],
           "cost": 10,
           "combat": "3(x3)",
@@ -991,7 +990,7 @@
       "commodity_values": [
         {
           "id": "muaat_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -1034,7 +1033,7 @@
           "description": "You may negotiate transactions with players who are not your neighbors."
         },
         {
-          "id": "hacan_arbiters", 
+          "id": "hacan_arbiters",
           "name": "Arbiters",
           "tier": "C",
           "description": "When you are negotiating a transaction, action cards can be exchanged as part of a transacation."
@@ -1118,7 +1117,7 @@
           "tier": "C",
           "cost": 2,
           "combat": 6,
-          "abilities":["Sustain Damage"],
+          "abilities": ["Sustain Damage"],
           "description": "Cost 2, Combat 6. Sustain Damage. This planet's card may be traded as part of a transaction; if you do, move all of your units from this planet to another planet you control."
         }
       ],
@@ -1320,7 +1319,7 @@
       "commodity_values": [
         {
           "id": "emp_comms",
-          "name": "Comodities", 
+          "name": "Comodities",
           "tier": "A",
           "description": "4"
         }
@@ -1382,7 +1381,7 @@
           "id": "sol_so2",
           "name": "Spec Ops II",
           "tier": "D",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Green"],
           "cost": "1(x2)",
           "combat": 6,
@@ -1400,7 +1399,7 @@
           "id": "sol_ac2",
           "name": "Advanced Carrier II",
           "tier": "A",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Blue", "Blue"],
           "cost": 3,
           "combat": 9,
@@ -1494,7 +1493,7 @@
       "commodity_values": [
         {
           "id": "sol_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -1647,7 +1646,7 @@
       "commodity_values": [
         {
           "id": "ghosts_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -1719,7 +1718,7 @@
         {
           "id": "l1_sd2",
           "name": "Super-Dreadnought II",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "tier": "B",
           "prerequisites": ["Blue", "Blue", "Yellow"],
           "cost": 4,
@@ -1816,7 +1815,7 @@
       "commodity_values": [
         {
           "id": "l1_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -1906,7 +1905,7 @@
           "id": "mahact_cl2",
           "name": "Crimson Legionnaire II",
           "tier": "A",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Green"],
           "cost": "1(x2)",
           "combat": 7,
@@ -2013,7 +2012,7 @@
       "commodity_values": [
         {
           "id": "mahact_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "B",
           "description": "3"
         }
@@ -2165,7 +2164,7 @@
       "commodity_values": [
         {
           "id": "mentak_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -2234,7 +2233,7 @@
           "id": "naalu_hcf2",
           "name": "Hybrid Crystal Fighter II",
           "tier": "B",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Blue"],
           "cost": "1(x2)",
           "combat": 7,
@@ -2327,7 +2326,7 @@
       "commodity_values": [
         {
           "id": "naalu_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "B",
           "description": "3"
         }
@@ -2494,7 +2493,7 @@
       "commodity_values": [
         {
           "id": "nra_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "B",
           "description": "3"
         }
@@ -2646,7 +2645,7 @@
       "commodity_values": [
         {
           "id": "nekro_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "B",
           "description": "3"
         }
@@ -2808,7 +2807,7 @@
       "commodity_values": [
         {
           "id": "nomad_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -2873,7 +2872,7 @@
           "id": "sardakk_e2",
           "name": "Exotrireme II",
           "tier": "S",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Blue", "Blue", "Yellow"],
           "cost": 4,
           "combat": 5,
@@ -2959,7 +2958,7 @@
       "commodity_values": [
         {
           "id": "sardakk_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": "3"
         }
@@ -3031,7 +3030,7 @@
           "id": "titans_se2",
           "name": "Saturn Engine II",
           "tier": "S",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Yellow", "Red"],
           "cost": 2,
           "combat": 6,
@@ -3043,17 +3042,27 @@
           "id": "titans_ht1",
           "name": "Hel-Titan I",
           "combat": 7,
-          "abilities": ["Planetary Shield", "Space Cannon 6", "Sustain Damage", "PRODUCTION 1"],
+          "abilities": [
+            "Planetary Shield",
+            "Space Cannon 6",
+            "Sustain Damage",
+            "PRODUCTION 1"
+          ],
           "description": "This unit is treated as both a structure and a ground force. It cannot be transported."
         },
         {
           "id": "titans_ht2",
           "name": "Hel-Titan II",
           "tier": "C",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Yellow", "Red"],
           "combat": 6,
-          "abilities": ["Planetary Shield", "Space Cannon 5", "Sustain Damage", "PRODUCTION 1"],
+          "abilities": [
+            "Planetary Shield",
+            "Space Cannon 5",
+            "Sustain Damage",
+            "PRODUCTION 1"
+          ],
           "description": "This unit is treated as both a structure and a ground force. It cannot be transported. You may use this unit's SPACE CANNON against ships that are adjacent to this unit's system."
         }
       ],
@@ -3143,7 +3152,7 @@
       "commodity_values": [
         {
           "id": "titans_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -3308,7 +3317,7 @@
       "commodity_values": [
         {
           "id": "jolnar_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -3392,7 +3401,7 @@
           "id": "cabal_dt2",
           "name": "Dimensional Tear II",
           "tier": "S",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Yellow", "Yellow"],
           "abilities": ["PRODUCTION 7"],
           "description": "PRODUCTION 7. This system is a gravity rift; your ships do not roll for this gravity rift. Place a dimensional tear token beneath this unit as a reminder. Up to 12 fighters in this system do not count against your ships' capacity."
@@ -3478,7 +3487,7 @@
       "commodity_values": [
         {
           "id": "cabal_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -3623,7 +3632,7 @@
       "commodity_values": [
         {
           "id": "winnu_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "B",
           "description": "3"
         }
@@ -3773,7 +3782,7 @@
       "commodity_values": [
         {
           "id": "xxcha_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -3927,7 +3936,7 @@
       "commodity_values": [
         {
           "id": "yin_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -4081,7 +4090,7 @@
       "commodity_values": [
         {
           "id": "yssaril_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "B",
           "description": "3"
         }
@@ -4225,7 +4234,7 @@
       "commodity_values": [
         {
           "id": "dws_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": "3"
         }
@@ -4259,31 +4268,31 @@
         }
       ],
       "other": [
-            {
-              "id": "oc1",
-              "name": "Deep Abyss",
-              "description": "Resources: 1 / Influence: 1"
-            },
-            {
-              "id": "oc2",
-              "name": "Brine Pool",
-              "description": "Resources: 1 / Influence: 1"
-            },
-            {
-              "id": "oc3",
-              "name": "Coral Reef",
-              "description": "Resources: 1 / Influence: 1"
-            },
-            {
-              "id": "oc4",
-              "name": "Ice Shelf",
-              "description": "Resources: 1 / Influence: 1"
-            },
-            {
-              "id": "oc5",
-              "name": "Lost Fleet",
-              "description": "Resources: 1 / Influence: 1"
-            }
+        {
+          "id": "oc1",
+          "name": "Deep Abyss",
+          "description": "Resources: 1 / Influence: 1"
+        },
+        {
+          "id": "oc2",
+          "name": "Brine Pool",
+          "description": "Resources: 1 / Influence: 1"
+        },
+        {
+          "id": "oc3",
+          "name": "Coral Reef",
+          "description": "Resources: 1 / Influence: 1"
+        },
+        {
+          "id": "oc4",
+          "name": "Ice Shelf",
+          "description": "Resources: 1 / Influence: 1"
+        },
+        {
+          "id": "oc5",
+          "name": "Lost Fleet",
+          "description": "Resources: 1 / Influence: 1"
+        }
       ]
     },
     {
@@ -4326,7 +4335,7 @@
           "id": "bastion_sd2",
           "name": "4X41C 'HELIOS' V2",
           "tier": "B",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Yellow", "Yellow"],
           "abilities": ["Production X"],
           "description": "This unit's PRODUCTION value is equal to 4 more than the resource value of this planet. The resource value of this planet is increased by 2. Up to 3 fighters in this system do not count against your ships' capacity."
@@ -4405,7 +4414,7 @@
       "commodity_values": [
         {
           "id": "bastion_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "F",
           "description": "1"
         }
@@ -4484,7 +4493,7 @@
           "id": "rn_ls2",
           "name": "Linkship II",
           "tier": "A",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Red"],
           "cost": 1,
           "combat": 8,
@@ -4649,7 +4658,7 @@
         {
           "id": "crimson_exile2",
           "name": "Exile II",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Red"],
           "cost": 1,
           "combat": 7,

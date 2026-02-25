@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { factionsData, discordantStarsData } from "../data/processedData";
-import { filterFactionsByExpansions, filterTilesByExpansions } from "../utils/expansionFilters";
-import './UnifiedStyles.css';
+import {
+  filterFactionsByExpansions,
+  filterTilesByExpansions,
+} from "../utils/expansionFilters";
+import "./UnifiedStyles.css";
 
 const CARTER_CUT = [
   "Hired Guns",
@@ -128,7 +131,7 @@ const CARTER_CUT = [
   "Duuban",
   "Omniopiares",
   "Collider",
-  "Javelin"
+  "Javelin",
 ];
 
 export default function BanManagementModal({
@@ -139,7 +142,13 @@ export default function BanManagementModal({
   onBanFaction,
   onBanComponent,
   categories,
-  expansionsEnabled = { pok: true, te: false, ds: false, us: false, firmobs: false }
+  expansionsEnabled = {
+    pok: true,
+    te: false,
+    ds: false,
+    us: false,
+    firmobs: false,
+  },
 }) {
   const [componentSearchTerm, setComponentSearchTerm] = useState("");
 
@@ -147,59 +156,67 @@ export default function BanManagementModal({
 
   // Filter factions based on expansion settings
   const getFilteredFactions = () => {
-    let factions = filterFactionsByExpansions(factionsData.factions, expansionsEnabled);
+    let factions = filterFactionsByExpansions(
+      factionsData.factions,
+      expansionsEnabled,
+    );
     if (expansionsEnabled.ds && discordantStarsData?.factions) {
       factions = [...factions, ...discordantStarsData.factions];
     }
-    
+
     return factions;
   };
 
   const getAllComponentsForBanning = () => {
     const allComponents = [];
     const filteredFactions = getFilteredFactions();
-    
-    categories.forEach(category => {
+
+    categories.forEach((category) => {
       // Get components from base + enabled expansion factions
-      const categoryComponents = filteredFactions.flatMap(f => 
-        (f[category] || []).map(comp => ({
+      const categoryComponents = filteredFactions.flatMap((f) =>
+        (f[category] || []).map((comp) => ({
           ...comp,
           faction: f.name,
           category,
-          displayName: `${comp.name} (${f.name} - ${category})`
-        }))
+          displayName: `${comp.name} (${f.name} - ${category})`,
+        })),
       );
-      
+
       // Get tiles based on expansion settings
-      if (category === 'blue_tiles' || category === 'red_tiles') {
+      if (category === "blue_tiles" || category === "red_tiles") {
         let tiles = [...(factionsData.tiles[category] || [])];
         tiles = filterTilesByExpansions(tiles, expansionsEnabled);
         if (expansionsEnabled.us && discordantStarsData?.tiles?.[category]) {
           tiles = [...tiles, ...discordantStarsData.tiles[category]];
         }
-        
-        const tileComponents = tiles.map(comp => ({
+
+        const tileComponents = tiles.map((comp) => ({
           ...comp,
           category,
-          displayName: `${comp.name} (${category})`
+          displayName: `${comp.name} (${category})`,
         }));
-        
+
         allComponents.push(...categoryComponents, ...tileComponents);
       } else {
         allComponents.push(...categoryComponents);
       }
     });
-    
+
     return allComponents;
   };
 
   const allComponents = getAllComponentsForBanning();
-  const allComponentIds = Array.from(new Set(allComponents.map(comp => comp.name)));
+  const allComponentIds = Array.from(
+    new Set(allComponents.map((comp) => comp.name)),
+  );
 
-  const filteredComponents = componentSearchTerm 
-    ? allComponents.filter(comp => 
-        comp.name.toLowerCase().includes(componentSearchTerm.toLowerCase()) ||
-        comp.faction?.toLowerCase().includes(componentSearchTerm.toLowerCase())
+  const filteredComponents = componentSearchTerm
+    ? allComponents.filter(
+        (comp) =>
+          comp.name.toLowerCase().includes(componentSearchTerm.toLowerCase()) ||
+          comp.faction
+            ?.toLowerCase()
+            .includes(componentSearchTerm.toLowerCase()),
       )
     : [];
 
@@ -210,7 +227,7 @@ export default function BanManagementModal({
       <div className="modal-content">
         <div className="modal-header">
           <h3 className="modal-title">Ban Management</h3>
-          <button 
+          <button
             type="button"
             onClick={onClose}
             className="btn btn-secondary btn-sm"
@@ -228,7 +245,7 @@ export default function BanManagementModal({
             <button
               type="button"
               onClick={() => {
-                filteredFactions.forEach(faction => {
+                filteredFactions.forEach((faction) => {
                   if (!bannedFactions.has(faction.name)) {
                     onBanFaction(faction.name);
                   }
@@ -239,21 +256,25 @@ export default function BanManagementModal({
               Ban All
             </button>
             <div className="ban-list">
-              {filteredFactions.map(faction => {
+              {filteredFactions.map((faction) => {
                 const isBanned = bannedFactions.has(faction.name);
                 return (
-                  <div 
+                  <div
                     key={faction.name}
                     className="ban-item"
                     onClick={() => onBanFaction(faction.name)}
                   >
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={isBanned}
                       onChange={() => {}}
                       className="checkbox"
                     />
-                    <span className={isBanned ? "ban-item-checked text-sm" : "text-sm"}>
+                    <span
+                      className={
+                        isBanned ? "ban-item-checked text-sm" : "text-sm"
+                      }
+                    >
                       {faction.name}
                     </span>
                   </div>
@@ -270,84 +291,126 @@ export default function BanManagementModal({
             <button
               type="button"
               onClick={() => {
-                allComponentIds.forEach(componentId => {
+                allComponentIds.forEach((componentId) => {
                   if (!bannedComponents.has(componentId)) {
                     onBanComponent(componentId);
                   }
                 });
               }}
               className="btn btn-danger btn-sm mb-3"
-              style={{width: '100%', flexShrink: 0}}
+              style={{ width: "100%", flexShrink: 0 }}
             >
               Ban All Components
             </button>
             <button
-            type="button"
-            onClick={() => {
-  CARTER_CUT.forEach(name => {
-    const match = allComponents.find(c => c.name === name);
-    const key = match ? (match.name) : name;
-    if (!bannedComponents.has(key)) onBanComponent(key);
-  });
-}}
-            className="btn btn-danger btn-sm mb-3"
-            style={{width: '100%', flexShrink: 0}}
-          >
-            Carter Cut
-          </button>
-            <input 
-              type="text" 
+              type="button"
+              onClick={() => {
+                CARTER_CUT.forEach((name) => {
+                  const match = allComponents.find((c) => c.name === name);
+                  const key = match ? match.name : name;
+                  if (!bannedComponents.has(key)) onBanComponent(key);
+                });
+              }}
+              className="btn btn-danger btn-sm mb-3"
+              style={{ width: "100%", flexShrink: 0 }}
+            >
+              Carter Cut
+            </button>
+            <input
+              type="text"
               placeholder="Search components to ban..."
               value={componentSearchTerm}
               onChange={(e) => setComponentSearchTerm(e.target.value)}
               className="search-input mb-3"
-              style={{flexShrink: 0}}
+              style={{ flexShrink: 0 }}
             />
-            
+
             {componentSearchTerm && (
-              <div style={{maxHeight: '10rem', overflowY: 'auto', border: '1px solid #d1d5db', borderRadius: '0.25rem', padding: '0.5rem', marginBottom: '0.75rem', background: '#1f2937', flexShrink: 0}}>
+              <div
+                style={{
+                  maxHeight: "10rem",
+                  overflowY: "auto",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "0.25rem",
+                  padding: "0.5rem",
+                  marginBottom: "0.75rem",
+                  background: "#1f2937",
+                  flexShrink: 0,
+                }}
+              >
                 {filteredComponents.slice(0, 20).map((comp, idx) => (
-                  <div 
+                  <div
                     key={`${comp.name}-${comp.faction}-${idx}`}
-                    style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.25rem 0'}}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "0.25rem 0",
+                    }}
                     className="ban-item-component"
                   >
                     <span className="text-sm truncate">{comp.displayName}</span>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => {
                         onBanComponent(comp.name);
                         setComponentSearchTerm("");
                       }}
                       className="btn btn-danger btn-sm"
-                      style={{marginLeft: '0.5rem', flexShrink: 0}}
+                      style={{ marginLeft: "0.5rem", flexShrink: 0 }}
                     >
                       Ban
                     </button>
                   </div>
                 ))}
                 {filteredComponents.length > 20 && (
-                  <div className="text-xs" style={{color: '#6b7280', padding: '0.5rem'}}>
+                  <div
+                    className="text-xs"
+                    style={{ color: "#6b7280", padding: "0.5rem" }}
+                  >
                     Showing first 20 results. Refine search for more.
                   </div>
                 )}
               </div>
             )}
 
-            <div className="text-sm font-medium mb-2" style={{color: '#4b5563', flexShrink: 0}}>
+            <div
+              className="text-sm font-medium mb-2"
+              style={{ color: "#4b5563", flexShrink: 0 }}
+            >
               Currently Banned:
             </div>
             <div className="ban-list text-sm">
-              {Array.from(bannedComponents).map(compId => (
-                <div 
-                  key={compId} 
-                  style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fee2e2', padding: '0.5rem', borderRadius: '0.25rem', marginBottom: '0.25rem', flexShrink: 0}}
+              {Array.from(bannedComponents).map((compId) => (
+                <div
+                  key={compId}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    background: "#fee2e2",
+                    padding: "0.5rem",
+                    borderRadius: "0.25rem",
+                    marginBottom: "0.25rem",
+                    flexShrink: 0,
+                  }}
                 >
-                  <span className="truncate" style={{flex: 1}}>{compId}</span>
-                  <button 
+                  <span className="truncate" style={{ flex: 1 }}>
+                    {compId}
+                  </span>
+                  <button
                     type="button"
                     onClick={() => onBanComponent(compId)}
-                    style={{color: '#dc2626', marginLeft: '0.5rem', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.75rem', textDecoration: 'underline', flexShrink: 0}}
+                    style={{
+                      color: "#dc2626",
+                      marginLeft: "0.5rem",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "0.75rem",
+                      textDecoration: "underline",
+                      flexShrink: 0,
+                    }}
                   >
                     Unban
                   </button>
@@ -361,31 +424,27 @@ export default function BanManagementModal({
         </div>
 
         <div className="modal-footer">
-          <div style={{display: 'flex', gap: '0.5rem'}}>
-    <button 
-      type="button"
-      onClick={() => {
-        Array.from(bannedFactions).forEach(f => onBanFaction(f));
-      }}
-      className="btn btn-warning"
-    >
-      Clear Faction Bans
-    </button>
-    <button 
-      type="button"
-      onClick={() => {
-        Array.from(bannedComponents).forEach(c => onBanComponent(c));
-      }}
-      className="btn btn-warning"
-    >
-      Clear Component Bans
-    </button>
-  </div>
-          <button 
-            type="button"
-            onClick={onClose}
-            className="btn btn-primary"
-          >
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button
+              type="button"
+              onClick={() => {
+                Array.from(bannedFactions).forEach((f) => onBanFaction(f));
+              }}
+              className="btn btn-warning"
+            >
+              Clear Faction Bans
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                Array.from(bannedComponents).forEach((c) => onBanComponent(c));
+              }}
+              className="btn btn-warning"
+            >
+              Clear Component Bans
+            </button>
+          </div>
+          <button type="button" onClick={onClose} className="btn btn-primary">
             Done
           </button>
         </div>

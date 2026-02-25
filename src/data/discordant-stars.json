@@ -8,19 +8,16 @@
           "name": "Oracle AI",
           "tier": "D",
           "description": "After the speaker reveals an unrevealed public objective, choose 1 unrevealed public objective card and place that card on your faction sheet. You may look at the card on your faction sheet at any time."
-        
         },
         {
           "id": "augurs_limited",
           "name": "Limited Vision",
           "description": "You may not place a stage II objective card on your faction sheet until all stage I objectives have been revealed."
-        
         },
         {
           "id": "augurs_pa",
           "name": "Probability Algorithms",
           "description": "When the speaker would reveal the next public objective, they must reveal the public objective card on your faction sheet instead. Place that card near the other public objectives."
-        
         }
       ],
       "faction_techs": [
@@ -125,7 +122,7 @@
       "commodity_values": [
         {
           "id": "augurs_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": "3"
         }
@@ -172,20 +169,17 @@
           "name": "Secret Maps",
           "tier": "D",
           "description": "At the end of your tactical actions, you may explore 1 planet in the active system that is or contains 1 or more of your units with PRODUCTION that you did not explore during that tactical action."
-        
         },
         {
           "id": "bentor_fortune_seekers",
           "name": "Fortune Seekers",
           "tier": "A",
           "description": "Once per action, after you explore a planet or frontier token, you may gain 1 commodity."
-        
         },
         {
           "id": "bentor_ab",
           "name": "Ancient Blueprints",
           "description": "The first time you gain a cultural, hazardous, industrial, or unknown relic fragment, place the corresponding 'Fragment' token on your faction sheet."
-        
         }
       ],
       "faction_techs": [
@@ -248,7 +242,12 @@
           "combat": "9(x2)",
           "move": 1,
           "capacity": 3,
-          "abilities": ["Sustain Damage", "Anti-Fighter Barrage 9(x2)", "Space Cannon 9", "Bombardment 9"],
+          "abilities": [
+            "Sustain Damage",
+            "Anti-Fighter Barrage 9(x2)",
+            "Space Cannon 9",
+            "Bombardment 9"
+          ],
           "description": "Apply +1 to the results of this ship's combat and ability rolls for each Fragment token on your faction sheet."
         }
       ],
@@ -296,7 +295,7 @@
       "commodity_values": [
         {
           "id": "bentor_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -457,7 +456,7 @@
       "commodity_values": [
         {
           "id": "berserkers_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": "3"
         }
@@ -530,7 +529,7 @@
           "id": "celdauri_tp2",
           "name": "Trade Port II",
           "tier": "B",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Yellow", "Yellow"],
           "abilities": ["Anti-Fighter Barrage 6(x2)", "PRODUCTION X+4"],
           "description": "This unit's PRODUCTION value is equal to 4 more than the resource or influence value of this planet. Up to 3 fighters in this system do not count against your ships' capacity. This unit may use its ANTI-FIGHTER BARRAGE during each round of space combat."
@@ -627,7 +626,7 @@
       "commodity_values": [
         {
           "id": "celdauri_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -710,7 +709,7 @@
           "id": "cheiran_ch2",
           "name": "Chitin Hulk II",
           "tier": "C",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Blue", "Blue", "Yellow"],
           "cost": 4,
           "combat": 5,
@@ -807,7 +806,7 @@
       "commodity_values": [
         {
           "id": "cheiran_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -890,7 +889,7 @@
           "id": "dih-mohn_a2",
           "name": "Aegis II",
           "tier": "C",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Blue", "Blue", "Yellow"],
           "cost": 4,
           "combat": 4,
@@ -986,7 +985,7 @@
       "commodity_values": [
         {
           "id": "di-mohn_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -1136,7 +1135,7 @@
         {
           "id": "edyn_comms",
           "name": "Commodities",
-          "tier": "C", 
+          "tier": "C",
           "description": "3"
         }
       ],
@@ -1223,7 +1222,7 @@
           "id": "florzen_c2",
           "name": "Corsair II",
           "tier": "B",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Blue"],
           "cost": "1(x2)",
           "combat": 8,
@@ -1318,7 +1317,7 @@
       "commodity_values": [
         {
           "id": "florzen_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -1477,7 +1476,7 @@
       "commodity_values": [
         {
           "id": "fsc_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -1557,7 +1556,7 @@
           "id": "ghemina_ct2",
           "name": "Combat Transport II",
           "tier": "A",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Blue", "Blue"],
           "cost": 3,
           "combat": 9,
@@ -1666,7 +1665,7 @@
       "commodity_values": [
         {
           "id": "ghemina_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -1830,7 +1829,7 @@
       "commodity_values": [
         {
           "id": "ghoti_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": "4"
         }
@@ -1901,7 +1900,7 @@
           "id": "gledge_op2",
           "name": "Orion Platform II",
           "tier": "D",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Yellow"],
           "abilities": ["Planetary Shield", "Space Cannon 5"],
           "description": "When this unit produces 1 or more hit against another player's units, explore this planet. You may use this unit's SPACE CANNON against ships that are adjacent to this unit's system."
@@ -1998,7 +1997,7 @@
       "commodity_values": [
         {
           "id": "gledge_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": "2"
         }
@@ -2151,7 +2150,7 @@
       "commodity_values": [
         {
           "id": "glimmer_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": "3"
         }
@@ -2316,7 +2315,7 @@
       "commodity_values": [
         {
           "id": "kyro_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": 2
         }
@@ -2470,7 +2469,7 @@
       "commodity_values": [
         {
           "id": "kortali_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": 3
         }
@@ -2630,7 +2629,7 @@
       "commodity_values": [
         {
           "id": "kollec_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": 3
         }
@@ -2765,7 +2764,7 @@
           "id": "lanefir_starting_tech",
           "name": "Lanefir Starting Tech",
           "tier": "A",
-          "note":"Choose 2 of the following:",
+          "note": "Choose 2 of the following:",
           "techs": [
             {
               "name": "Dark Energy Tap",
@@ -2793,7 +2792,7 @@
       "commodity_values": [
         {
           "id": "lanefir_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": 2
         }
@@ -2867,7 +2866,7 @@
           "id": "lz_hb2",
           "name": "Heavy Bomber II",
           "tier": "C",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Green", "Blue"],
           "cost": "1(x2)",
           "combat": 8,
@@ -2959,7 +2958,7 @@
       "commodity_values": [
         {
           "id": "lz_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": 3
         }
@@ -3077,7 +3076,7 @@
           "id": "lk_ss2",
           "name": "Shattered Sky II",
           "tier": "A",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Yellow", "Green"],
           "cost": 2,
           "combat": 6,
@@ -3171,7 +3170,7 @@
       "commodity_values": [
         {
           "id": "lk_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": 2
         }
@@ -3246,7 +3245,7 @@
           "id": "mirveda_gc2",
           "name": "Gauss Cannon II",
           "tier": "B",
-          "tech_type":"Unit Upgrade",
+          "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Yellow"],
           "move": 2,
           "capacity": 1,
@@ -3336,7 +3335,7 @@
       "commodity_values": [
         {
           "id": "mirveda_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": 3
         }
@@ -3477,7 +3476,7 @@
           "id": "kolume_starting_tech",
           "name": "Kolume Starting Tech",
           "tier": "E",
-          "note":"Choose 1 of the following:",
+          "note": "Choose 1 of the following:",
           "techs": [
             {
               "name": "Graviton Laser System",
@@ -3501,7 +3500,7 @@
       "commodity_values": [
         {
           "id": "kolume_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": 3
         }
@@ -3667,7 +3666,7 @@
       "commodity_values": [
         {
           "id": "mm_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "description": 1
         }
       ],
@@ -3825,7 +3824,7 @@
       "commodity_values": [
         {
           "id": "nivyn_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": 3
         }
@@ -3973,7 +3972,7 @@
           "id": "nokar_starting_tech",
           "name": "Nokar Starting Tech",
           "tier": "A",
-          "note":"Choose 2 of the following:",
+          "note": "Choose 2 of the following:",
           "techs": [
             {
               "name": "AI Development Algorithm",
@@ -4001,7 +4000,7 @@
       "commodity_values": [
         {
           "id": "nokar_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": 4
         }
@@ -4151,7 +4150,7 @@
       "commodity_values": [
         {
           "id": "olradin_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": "3"
         }
@@ -4353,7 +4352,7 @@
       "commodity_values": [
         {
           "id": "rm_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": 4
         }
@@ -4513,7 +4512,7 @@
       "commodity_values": [
         {
           "id": "cymiae_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": 3
         }
@@ -4664,7 +4663,7 @@
       "commodity_values": [
         {
           "id": "axis_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "S",
           "description": 5
         }
@@ -4862,7 +4861,7 @@
       "commodity_values": [
         {
           "id": "tnelis_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": 2
         }
@@ -4997,7 +4996,7 @@
           "id": "vaden_starting_tech",
           "name": "Vaden Starting Tech",
           "tier": "A",
-          "note":"Choose 2 of the following:",
+          "note": "Choose 2 of the following:",
           "techs": [
             {
               "name": "Antimass Deflectors",
@@ -5025,7 +5024,7 @@
       "commodity_values": [
         {
           "id": "vaden_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": 3
         }
@@ -5070,7 +5069,7 @@
           "id": "vs_cr",
           "name": "Cargo Raiders",
           "tier": "E",
-          "description": "During the first round of a space combat, you may prevent your opponent from declaring a retreat unless they spend 1 trade good." 
+          "description": "During the first round of a space combat, you may prevent your opponent from declaring a retreat unless they spend 1 trade good."
         },
         {
           "id": "vs_scour",
@@ -5202,7 +5201,7 @@
       "commodity_values": [
         {
           "id": "vs_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": 2
         }
@@ -5386,7 +5385,7 @@
       "commodity_values": [
         {
           "id": "veldyr_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "A",
           "description": 4
         }
@@ -5536,7 +5535,7 @@
       "commodity_values": [
         {
           "id": "rhodun_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "C",
           "description": 3
         }
@@ -5667,7 +5666,11 @@
           "combat": 5,
           "move": 1,
           "capacity": 3,
-          "abilities": ["Sustain Damage", "Bombardment 5", "Anti-Fighter Barrage 5"],
+          "abilities": [
+            "Sustain Damage",
+            "Bombardment 5",
+            "Anti-Fighter Barrage 5"
+          ],
           "description": "When this unit makes a combat or ability roll, it rolls 1 additional die for each asteroid field adjacent to this unit."
         }
       ],
@@ -5710,7 +5713,7 @@
       "commodity_values": [
         {
           "id": "zelian_comms",
-          "name": "Commodities", 
+          "name": "Commodities",
           "tier": "D",
           "description": 2
         }

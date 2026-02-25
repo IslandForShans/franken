@@ -25,7 +25,7 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5);
   --transition-fast: 150ms;
   --transition-normal: 300ms;
-  --font-description: 'Source Sans 3', 'Myriad Pro', 'Myriad', sans-serif;
+  --font-description: "Source Sans 3", "Myriad Pro", "Myriad", sans-serif;
 }
 
 /* Global Styles */
@@ -36,10 +36,15 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Source Sans 3', 'Myriad Pro', 'Myriad', sans-serif;
+  font-family: "Source Sans 3", "Myriad Pro", "Myriad", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(to bottom right, var(--bg-primary), var(--bg-secondary), var(--bg-black));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-primary),
+    var(--bg-secondary),
+    var(--bg-black)
+  );
   color: var(--text-primary);
 }
 
@@ -167,7 +172,11 @@ body {
 
 /* Card/Panel Styles */
 .card {
-  background: linear-gradient(to bottom right, var(--bg-secondary), var(--bg-primary));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-secondary),
+    var(--bg-primary)
+  );
   border: 1px solid var(--border-color);
   border-radius: 0.75rem;
   padding: 1.5rem;
@@ -209,7 +218,11 @@ body {
 }
 
 .modal-content {
-  background: linear-gradient(to bottom right, var(--bg-primary), var(--bg-black));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-primary),
+    var(--bg-black)
+  );
   color: var(--bg-primary);
   border-radius: 0.5rem;
   padding: 1.5rem;
@@ -348,7 +361,7 @@ body {
 
 .ban-item:hover {
   background: #f3f4f6;
-  color: var(--bg-black)
+  color: var(--bg-black);
 }
 
 .ban-item-checked {
@@ -370,7 +383,11 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   padding: 0.75rem;
-  background: linear-gradient(to bottom right, var(--bg-secondary), var(--bg-primary));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-secondary),
+    var(--bg-primary)
+  );
   cursor: pointer;
   transition: all var(--transition-normal);
   position: relative;
@@ -430,7 +447,11 @@ body {
   padding: 0.5rem;
   border-radius: 0.5rem;
   box-shadow: var(--shadow-md);
-  background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary));
+  background: linear-gradient(
+    to bottom,
+    var(--bg-secondary),
+    var(--bg-primary)
+  );
   /* Show the title and at least a couple of history rows without scrolling, but
      allow scrolling for long history lists. Use min-height for visible area and
      a reasonable max-height to prevent it from taking too much screen on mobile. */
@@ -469,7 +490,11 @@ body {
   padding: 0.5rem;
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
-  background: linear-gradient(to bottom right, var(--bg-secondary), var(--bg-primary));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-secondary),
+    var(--bg-primary)
+  );
 }
 
 .settings-title {
@@ -503,7 +528,11 @@ body {
 .faction-sheet {
   border-radius: 0.5rem;
   padding: 1.5rem;
-  background: linear-gradient(to bottom right, var(--bg-primary), var(--bg-black));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-primary),
+    var(--bg-black)
+  );
   border: 2px solid var(--border-color);
 }
 
@@ -575,7 +604,11 @@ body {
   border: 2px solid var(--border-color-light);
   cursor: pointer;
   transition: all var(--transition-normal);
-  background: linear-gradient(to bottom right, var(--bg-secondary), var(--bg-primary));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-secondary),
+    var(--bg-primary)
+  );
 }
 
 .faction-component:hover {
@@ -642,7 +675,11 @@ body {
   height: auto;
   width: 320px;
   min-width: 240px;
-  background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary));
+  background: linear-gradient(
+    to bottom,
+    var(--bg-secondary),
+    var(--bg-primary)
+  );
   color: white;
   padding: 1rem;
   overflow-y: auto;
@@ -795,15 +832,15 @@ body {
   }
 
   .app-header .px-4 .flex .justify-between .flex.items-center.gap-3 {
-  flex-wrap: nowrap;
-  align-items: center;
-}
+    flex-wrap: nowrap;
+    align-items: center;
+  }
 
-.app-header .px-4 .flex .justify-between .flex.items-center.gap-2 {
-  flex-wrap: wrap;
-  row-gap: 0.25rem;
-  align-items: center;
-}
+  .app-header .px-4 .flex .justify-between .flex.items-center.gap-2 {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+    align-items: center;
+  }
 
   /* Make the left header group able to shrink and keep the title from wrapping
      onto the next line in tighter spaces. */
@@ -811,7 +848,8 @@ body {
     min-width: 0; /* allow shrinking */
   }
 
-  .app-header h2, .app-header h1 {
+  .app-header h2,
+  .app-header h1 {
     flex-shrink: 0; /* keep the title on the same row as controls */
   }
 
@@ -819,7 +857,6 @@ body {
   .sidebar-toggle-button {
     pointer-events: auto;
   }
- 
 
   /* Make the main content area scrollable so settings/draft content doesn't get cut off */
   .flex-1.overflow-auto {
@@ -847,8 +884,14 @@ body {
   }
 
   /* Reduce padding in header so controls fit on small screens */
-  .px-4 { padding-left: 0.75rem; padding-right: 0.75rem; }
-  .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+  .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
 
   /* Settings panel: prevent overflow and make grid single column */
   .settings-panel {
@@ -932,11 +975,10 @@ body {
   transition: all var(--transition-normal);
   font-size: 0.875rem;
   background: var(--bg-tertiary);
-  display: flex;          /* ADD */
-  align-items: stretch;   /* ADD */
-  overflow: hidden;       /* ADD */
+  display: flex; /* ADD */
+  align-items: stretch; /* ADD */
+  overflow: hidden; /* ADD */
 }
-
 
 .sidebar-component-item:hover {
   background: #dbeafe;
@@ -1035,7 +1077,11 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   padding: 1rem;
-  background: linear-gradient(to bottom right, var(--bg-secondary), var(--bg-primary));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-secondary),
+    var(--bg-primary)
+  );
 }
 
 .multiplayer-title {
@@ -1103,7 +1149,11 @@ body {
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: var(--shadow-md);
-  background: linear-gradient(to bottom right, var(--bg-secondary), var(--bg-primary));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-secondary),
+    var(--bg-primary)
+  );
 }
 
 .draft-summary-title {
@@ -1132,14 +1182,14 @@ body {
   background: var(--bg-primary);
   border-radius: 0.5rem;
   color: white;
-  font-family: 'Myriad Pro', 'Myriad', sans-serif;
+  font-family: "Myriad Pro", "Myriad", sans-serif;
 }
 
 .resource-summary-title {
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
-  font-family: 'Myriad Pro', 'Myriad', sans-serif;
+  font-family: "Myriad Pro", "Myriad", sans-serif;
 }
 
 .resource-totals {
@@ -1175,7 +1225,7 @@ body {
 .resource-label {
   font-size: 0.75rem;
   color: var(--text-tertiary);
-  font-family: 'Myriad Pro', 'Myriad', sans-serif;
+  font-family: "Myriad Pro", "Myriad", sans-serif;
 }
 
 .resource-assignments {
@@ -1185,7 +1235,7 @@ body {
 }
 
 .resource-assignment-title {
-  font-family: 'Myriad Pro', 'Myriad', sans-serif;
+  font-family: "Myriad Pro", "Myriad", sans-serif;
   font-weight: 500;
   font-size: 0.75rem;
   margin-bottom: 0.5rem;
@@ -1197,7 +1247,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   font-size: 0.75rem;
-  font-family: 'Myriad Pro', 'Myriad', sans-serif;
+  font-family: "Myriad Pro", "Myriad", sans-serif;
 }
 
 .resource-assignment-column {
@@ -1618,7 +1668,11 @@ body {
 }
 
 .swap-modal-content {
-  background: linear-gradient(to bottom right, var(--bg-primary), var(--bg-black));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-primary),
+    var(--bg-black)
+  );
   border-radius: 0.5rem;
   padding: 1.5rem;
   max-width: 48rem;

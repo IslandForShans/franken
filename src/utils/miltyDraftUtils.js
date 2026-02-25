@@ -1,5 +1,10 @@
 import { factionsData, discordantStarsData } from "../data/processedData";
-import { pokExclusions, teExclusions, noFirmament, brExclusions } from "./expansionFilters";
+import {
+  pokExclusions,
+  teExclusions,
+  noFirmament,
+  brExclusions,
+} from "./expansionFilters";
 import { calculateOptimalResources } from "./resourceCalculator";
 import { shuffleArray } from "./shuffle";
 
@@ -20,10 +25,14 @@ export function clampInt(val, min, max, fallback = min) {
 }
 
 function factionAllowedByExpansion(name, expansionsEnabled) {
-  if (!expansionsEnabled.pok && pokExclusions.factions.includes(name)) return false;
-  if (!expansionsEnabled.te && teExclusions.factions.includes(name)) return false;
-  if (!expansionsEnabled.firmobs && noFirmament.factions.includes(name)) return false;
-  if (!expansionsEnabled.br && brExclusions.factions.includes(name)) return false;
+  if (!expansionsEnabled.pok && pokExclusions.factions.includes(name))
+    return false;
+  if (!expansionsEnabled.te && teExclusions.factions.includes(name))
+    return false;
+  if (!expansionsEnabled.firmobs && noFirmament.factions.includes(name))
+    return false;
+  if (!expansionsEnabled.br && brExclusions.factions.includes(name))
+    return false;
   return true;
 }
 
@@ -38,24 +47,29 @@ export function getFilteredFactionPool({
   expansionsEnabled = DEFAULT_EXPANSIONS,
   bannedFactions = new Set(),
 }) {
-  const baseFactions = (expansionsEnabled.dsOnly ? [] : factionsData?.factions ?? [])
-    .filter(f => !bannedFactions.has(f.name))
-    .filter(f => factionAllowedByExpansion(f.name, expansionsEnabled));
+  const baseFactions = (
+    expansionsEnabled.dsOnly ? [] : (factionsData?.factions ?? [])
+  )
+    .filter((f) => !bannedFactions.has(f.name))
+    .filter((f) => factionAllowedByExpansion(f.name, expansionsEnabled));
 
-  const dsFactions = (expansionsEnabled.ds ? discordantStarsData?.factions ?? [] : [])
-    .filter(f => !bannedFactions.has(f.name));
+  const dsFactions = (
+    expansionsEnabled.ds ? (discordantStarsData?.factions ?? []) : []
+  ).filter((f) => !bannedFactions.has(f.name));
 
   // DS faction set can include BR factions if present in DS packs; optional filter:
-  const filteredDsFactions = dsFactions.filter(f => factionAllowedByExpansion(f.name, expansionsEnabled));
+  const filteredDsFactions = dsFactions.filter((f) =>
+    factionAllowedByExpansion(f.name, expansionsEnabled),
+  );
 
-  return [...baseFactions, ...filteredDsFactions].map(f => ({
+  return [...baseFactions, ...filteredDsFactions].map((f) => ({
     name: f.name,
     icon: f.icon,
     home_systems: Array.isArray(f.home_systems)
       ? f.home_systems
       : Array.isArray(f.home_system)
-      ? f.home_system
-      : [],
+        ? f.home_system
+        : [],
   }));
 }
 
@@ -70,14 +84,21 @@ function allTilesFromSources(expansionsEnabled) {
 
   let dsBlue = [];
   let dsRed = [];
-  if (expansionsEnabled.ds && (expansionsEnabled.us || expansionsEnabled.dsOnly)) {
+  if (
+    expansionsEnabled.ds &&
+    (expansionsEnabled.us || expansionsEnabled.dsOnly)
+  ) {
     dsBlue = discordantStarsData?.tiles?.blue_tiles ?? [];
     dsRed = discordantStarsData?.tiles?.red_tiles ?? [];
   }
 
   return {
-    blue: [...baseBlue, ...dsBlue].filter(t => tileAllowedByExpansion(t, expansionsEnabled)),
-    red: [...baseRed, ...dsRed].filter(t => tileAllowedByExpansion(t, expansionsEnabled)),
+    blue: [...baseBlue, ...dsBlue].filter((t) =>
+      tileAllowedByExpansion(t, expansionsEnabled),
+    ),
+    red: [...baseRed, ...dsRed].filter((t) =>
+      tileAllowedByExpansion(t, expansionsEnabled),
+    ),
   };
 }
 
@@ -86,12 +107,14 @@ function tilePlanetList(tile) {
 }
 
 function tileHasLegendary(tile) {
-  return tilePlanetList(tile).some(p => !!p?.legendary_ability);
+  return tilePlanetList(tile).some((p) => !!p?.legendary_ability);
 }
 
 function tileTechSpecialtyCount(tile) {
   return tilePlanetList(tile).reduce((acc, p) => {
-    const arr = Array.isArray(p?.technology_specialty) ? p.technology_specialty : [];
+    const arr = Array.isArray(p?.technology_specialty)
+      ? p.technology_specialty
+      : [];
     return acc + arr.length;
   }, 0);
 }
@@ -109,10 +132,22 @@ export function calculateSliceStats(sliceTiles) {
   const planets = sliceTiles.flatMap(tilePlanetList);
   const resInf = calculateOptimalResources(planets);
 
-  const legendaryCount = sliceTiles.reduce((acc, t) => acc + (tileHasLegendary(t) ? 1 : 0), 0);
-  const wormholeCount = sliceTiles.reduce((acc, t) => acc + tileWormholeCount(t), 0);
-  const anomalyCount = sliceTiles.reduce((acc, t) => acc + tileAnomalyCount(t), 0);
-  const techSpecCount = sliceTiles.reduce((acc, t) => acc + tileTechSpecialtyCount(t), 0);
+  const legendaryCount = sliceTiles.reduce(
+    (acc, t) => acc + (tileHasLegendary(t) ? 1 : 0),
+    0,
+  );
+  const wormholeCount = sliceTiles.reduce(
+    (acc, t) => acc + tileWormholeCount(t),
+    0,
+  );
+  const anomalyCount = sliceTiles.reduce(
+    (acc, t) => acc + tileAnomalyCount(t),
+    0,
+  );
+  const techSpecCount = sliceTiles.reduce(
+    (acc, t) => acc + tileTechSpecialtyCount(t),
+    0,
+  );
 
   return {
     totalResource: resInf.totalResource,
@@ -140,14 +175,22 @@ export function passesSliceConstraints(stats, constraints = {}) {
     maxTechSpecs,
   } = constraints;
 
-  if (typeof minLegendary === "number" && stats.legendaryCount < minLegendary) return false;
-  if (typeof maxLegendary === "number" && stats.legendaryCount > maxLegendary) return false;
-  if (typeof minWormholes === "number" && stats.wormholeCount < minWormholes) return false;
-  if (typeof maxWormholes === "number" && stats.wormholeCount > maxWormholes) return false;
-  if (typeof minAnomalies === "number" && stats.anomalyCount < minAnomalies) return false;
-  if (typeof maxAnomalies === "number" && stats.anomalyCount > maxAnomalies) return false;
-  if (typeof minTechSpecs === "number" && stats.techSpecCount < minTechSpecs) return false;
-  if (typeof maxTechSpecs === "number" && stats.techSpecCount > maxTechSpecs) return false;
+  if (typeof minLegendary === "number" && stats.legendaryCount < minLegendary)
+    return false;
+  if (typeof maxLegendary === "number" && stats.legendaryCount > maxLegendary)
+    return false;
+  if (typeof minWormholes === "number" && stats.wormholeCount < minWormholes)
+    return false;
+  if (typeof maxWormholes === "number" && stats.wormholeCount > maxWormholes)
+    return false;
+  if (typeof minAnomalies === "number" && stats.anomalyCount < minAnomalies)
+    return false;
+  if (typeof maxAnomalies === "number" && stats.anomalyCount > maxAnomalies)
+    return false;
+  if (typeof minTechSpecs === "number" && stats.techSpecCount < minTechSpecs)
+    return false;
+  if (typeof maxTechSpecs === "number" && stats.techSpecCount > maxTechSpecs)
+    return false;
 
   const total = stats.totalResource + stats.totalInfluence;
   if (resInfProfile === "high" && total < 12) return false;
@@ -158,7 +201,7 @@ export function passesSliceConstraints(stats, constraints = {}) {
 
 function makeSliceSignature(sliceTiles) {
   return sliceTiles
-    .map(t => String(t?.id ?? t?.name ?? ""))
+    .map((t) => String(t?.id ?? t?.name ?? ""))
     .sort((a, b) => a.localeCompare(b))
     .join("|");
 }
@@ -183,8 +226,8 @@ export function generateSlicePool({
   while (unique.size < size && attempts < maxAttempts) {
     attempts += 1;
 
-    const availBlue = blue.filter(t => !usedIds.has(String(t.id ?? t.name)));
-    const availRed = red.filter(t => !usedIds.has(String(t.id ?? t.name)));
+    const availBlue = blue.filter((t) => !usedIds.has(String(t.id ?? t.name)));
+    const availRed = red.filter((t) => !usedIds.has(String(t.id ?? t.name)));
 
     if (availBlue.length < 3 || availRed.length < 2) break;
 
@@ -197,7 +240,7 @@ export function generateSlicePool({
 
     const sig = makeSliceSignature(tiles);
     if (!unique.has(sig)) {
-      tiles.forEach(t => usedIds.add(String(t.id ?? t.name)));
+      tiles.forEach((t) => usedIds.add(String(t.id ?? t.name)));
       unique.set(sig, {
         id: `slice_${unique.size + 1}`,
         tiles,
@@ -207,9 +250,10 @@ export function generateSlicePool({
   }
 
   const slices = Array.from(unique.values());
-  const warning = slices.length < size
-    ? `Requested ${size} slices; generated ${slices.length} within constraints.`
-    : null;
+  const warning =
+    slices.length < size
+      ? `Requested ${size} slices; generated ${slices.length} within constraints.`
+      : null;
 
   return { slices, warning };
 }
@@ -227,7 +271,7 @@ export function makeSnakeTurnQueue(playerOrder, numRounds) {
   const queue = [];
   for (let round = 0; round < numRounds; round++) {
     const order = round % 2 === 0 ? playerOrder : [...playerOrder].reverse();
-    order.forEach(playerId => queue.push({ playerId }));
+    order.forEach((playerId) => queue.push({ playerId }));
   }
   return queue;
 }
@@ -242,7 +286,7 @@ export function toDraftMapBuilderPayload({ players, playerCount }) {
     const slicePick = p.picks?.slice;
     const tablePos = p.picks?.position;
 
-    const blueTiles = (slicePick?.tiles ?? []).filter(t => {
+    const blueTiles = (slicePick?.tiles ?? []).filter((t) => {
       // heuristic: tiles with planets/anomalies/wormholes can be in either color pools;
       // fallback to source tagging if present
       return !String(t?.id ?? "").startsWith("4") || true;
@@ -250,12 +294,16 @@ export function toDraftMapBuilderPayload({ players, playerCount }) {
 
     // keep split as 3 blue + 2 red for DraftMapBuilder convention
     const blue = blueTiles.slice(0, 3);
-    const red = (slicePick?.tiles ?? []).filter(t => !blue.includes(t)).slice(0, 2);
+    const red = (slicePick?.tiles ?? [])
+      .filter((t) => !blue.includes(t))
+      .slice(0, 2);
 
     return {
       name: p.name || `Player ${idx + 1}`,
       table_position: tablePos ? [tablePos] : [],
-      home_systems: factionPick?.home_systems?.length ? [factionPick.home_systems[0]] : [],
+      home_systems: factionPick?.home_systems?.length
+        ? [factionPick.home_systems[0]]
+        : [],
       blue_tiles: blue,
       red_tiles: red,
     };

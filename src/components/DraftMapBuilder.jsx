@@ -530,20 +530,25 @@ export default function DraftMapBuilder({
         ),
       };
     });
-  }, [
-    factions,
-    isLargeGalaxy,
-    playerCount,
-  ]);
+  }, [factions, isLargeGalaxy, playerCount]);
 
   const effectivePlayers = useMemo(() => {
-    if (!useAltSlices || !SLICE_ORDER_ALT[playerCount] || !LARGE_GALAXY_HS_POSITIONS_ALT[playerCount]) return players;
+    if (
+      !useAltSlices ||
+      !SLICE_ORDER_ALT[playerCount] ||
+      !LARGE_GALAXY_HS_POSITIONS_ALT[playerCount]
+    )
+      return players;
     const altHsPositions = LARGE_GALAXY_HS_POSITIONS_ALT[playerCount];
     const altSliceOrder = SLICE_ORDER_ALT[playerCount];
     return players.map((p, idx) => {
       const altHs = altHsPositions[idx];
       if (!altHs) return p;
-      return { ...p, hsLabel: altHs, sliceTiles: altSliceOrder[altHs] ?? p.sliceTiles };
+      return {
+        ...p,
+        hsLabel: altHs,
+        sliceTiles: altSliceOrder[altHs] ?? p.sliceTiles,
+      };
     });
   }, [players, useAltSlices, playerCount]);
 
@@ -646,7 +651,9 @@ export default function DraftMapBuilder({
     const next = { ...placed };
 
     const HS_ALL = ["301", "304", "307", "310", "313", "316"];
-    const occupiedHS = new Set(effectivePlayers.map((p) => p.hsLabel).filter(Boolean));
+    const occupiedHS = new Set(
+      effectivePlayers.map((p) => p.hsLabel).filter(Boolean),
+    );
 
     // Build a hyperlane tile key: code + angle (omit angle suffix when 0)
     const hl = (code, baseAngle, rotDeg) => {
@@ -1237,7 +1244,8 @@ export default function DraftMapBuilder({
           {mode === "mantis" &&
             mantisInfo?.done &&
             !fillDone &&
-            !isMapGuest && (
+            !isMapGuest &&
+            !useAltSlices && (
               <div
                 style={{
                   marginTop: 8,
@@ -1294,6 +1302,19 @@ export default function DraftMapBuilder({
                 )}
               </div>
             )}
+
+          {mode === "mantis" && mantisInfo?.done && useAltSlices && (
+            <div
+              style={{
+                marginTop: 8,
+                fontSize: 10,
+                color: "#4ade80",
+                fontWeight: 600,
+              }}
+            >
+              ✓ Map complete
+            </div>
+          )}
 
           {mode === "mantis" && fillDone && (
             <div
@@ -1379,7 +1400,9 @@ export default function DraftMapBuilder({
                   {isHS &&
                     key &&
                     (() => {
-                      const player = effectivePlayers.find((p) => p.hsLabel === label);
+                      const player = effectivePlayers.find(
+                        (p) => p.hsLabel === label,
+                      );
                       return (
                         <div
                           style={{
@@ -1565,9 +1588,9 @@ export default function DraftMapBuilder({
                   style={{ fontSize: 11, color: "#9ca3af", textAlign: "right" }}
                 >
                   Turn {mantis.turnNumber + 1}/{effectivePlayers.length * 5}
-                  {mantis.mulligansUsed[mantis.turnNumber % effectivePlayers.length] && (
-                    <div style={{ color: "#f87171" }}>Mulligan used</div>
-                  )}
+                  {mantis.mulligansUsed[
+                    mantis.turnNumber % effectivePlayers.length
+                  ] && <div style={{ color: "#f87171" }}>Mulligan used</div>}
                 </div>
               </div>
 

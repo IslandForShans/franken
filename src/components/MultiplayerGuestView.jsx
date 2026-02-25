@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import Sidebar from './Sidebar';
-import FactionSheet from './FactionSheet';
-import DraftHistory from './DraftHistory';
-import FrankenDrazBuilder from './FrankenDrazBuilder';
-import { executeSwap } from '../utils/swapUtils';
+import { useState, useRef, useEffect, useCallback } from "react";
+import Sidebar from "./Sidebar";
+import FactionSheet from "./FactionSheet";
+import DraftHistory from "./DraftHistory";
+import FrankenDrazBuilder from "./FrankenDrazBuilder";
+import { executeSwap } from "../utils/swapUtils";
 
 export default function MultiplayerGuestView({
   mpState,
@@ -26,7 +26,10 @@ export default function MultiplayerGuestView({
   useEffect(() => {
     const newPhase = mpState?.draftPhase;
     const newRound = mpState?.round;
-    if (newPhase !== prevPhaseRef.current || newRound !== prevRoundRef.current) {
+    if (
+      newPhase !== prevPhaseRef.current ||
+      newRound !== prevRoundRef.current
+    ) {
       prevPhaseRef.current = newPhase;
       prevRoundRef.current = newRound;
       const broadcastFaction = mpState?.factions?.[myPlayerIndex];
@@ -42,11 +45,11 @@ export default function MultiplayerGuestView({
     if (!el) return;
     const update = () => {
       const h = Math.ceil(el.getBoundingClientRect().height);
-      document.documentElement.style.setProperty('--header-height', `${h}px`);
+      document.documentElement.style.setProperty("--header-height", `${h}px`);
     };
     update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   // Destructure mpState safely — default everything so hooks below don't break
@@ -54,8 +57,8 @@ export default function MultiplayerGuestView({
     factions = [],
     playerBags = [],
     round = 1,
-    draftPhase = 'draft',
-    draftVariant = 'franken',
+    draftPhase = "draft",
+    draftVariant = "franken",
     firstRoundPickCount = 3,
     subsequentRoundPickCount = 2,
     categories = [],
@@ -71,59 +74,83 @@ export default function MultiplayerGuestView({
   const myFaction = localFaction ?? factions[myPlayerIndex] ?? {};
   const myBag = playerBags[myPlayerIndex] ?? {};
   const maxPicks = (() => {
-  if (draftVariant === 'frankendraz') {
-    const base = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
-    const myBagCategories = ['factions', 'blue_tiles', 'red_tiles']
-      .filter(cat => myBag[cat]?.length > 0).length;
-    return Math.min(base, myBagCategories);
-  }
-  if (draftVariant === 'rotisserie') return 1;
-  return round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
-})();
-  const myPendingSwaps = pendingSwaps.filter(s => s.playerIndex === myPlayerIndex);
+    if (draftVariant === "frankendraz") {
+      const base = round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
+      const myBagCategories = ["factions", "blue_tiles", "red_tiles"].filter(
+        (cat) => myBag[cat]?.length > 0,
+      ).length;
+      return Math.min(base, myBagCategories);
+    }
+    if (draftVariant === "rotisserie") return 1;
+    return round === 1 ? firstRoundPickCount : subsequentRoundPickCount;
+  })();
+  const myPendingSwaps = pendingSwaps.filter(
+    (s) => s.playerIndex === myPlayerIndex,
+  );
 
   const myProgress = {};
-  categories.forEach(cat => { myProgress[cat] = myFaction[cat]?.length ?? 0; });
+  categories.forEach((cat) => {
+    myProgress[cat] = myFaction[cat]?.length ?? 0;
+  });
 
-  const handlePick = useCallback((category, component) => {
-    if (submitted || draftPhase !== 'draft') return;
-    const compId = component.id || component.name;
-    const alreadyPicked = pendingPicks.some(
-      p => p.category === category && (p.component.id || p.component.name) === compId
-    );
-    if (alreadyPicked) {
-      setPendingPicks(prev => prev.filter(
-        p => !(p.category === category && (p.component.id || p.component.name) === compId)
-      ));
-    } else {
-      if (pendingPicks.length >= maxPicks) return;
-      setPendingPicks(prev => [...prev, { category, component }]);
-    }
-  }, [pendingPicks, maxPicks, submitted, draftPhase]);
+  const handlePick = useCallback(
+    (category, component) => {
+      if (submitted || draftPhase !== "draft") return;
+      const compId = component.id || component.name;
+      const alreadyPicked = pendingPicks.some(
+        (p) =>
+          p.category === category &&
+          (p.component.id || p.component.name) === compId,
+      );
+      if (alreadyPicked) {
+        setPendingPicks((prev) =>
+          prev.filter(
+            (p) =>
+              !(
+                p.category === category &&
+                (p.component.id || p.component.name) === compId
+              ),
+          ),
+        );
+      } else {
+        if (pendingPicks.length >= maxPicks) return;
+        setPendingPicks((prev) => [...prev, { category, component }]);
+      }
+    },
+    [pendingPicks, maxPicks, submitted, draftPhase],
+  );
 
   // ── All hooks done. Early returns are safe from here down ────────────
 
   const handleSubmitPicks = () => {
-  // Count how many pickable items are actually available in the bag
-  const availableInBag = draftVariant === 'frankendraz'
-    ? ['factions', 'blue_tiles', 'red_tiles'].filter(cat => myBag[cat]?.length > 0).length
-    : categories.reduce((count, cat) => {
-        const inBag = myBag[cat]?.length ?? 0;
-        const alreadyInFaction = myFaction[cat]?.length ?? 0;
-        const limit = draftLimits[cat] ?? 0;
-        const canPickInCat = Math.max(0, Math.min(inBag, limit - alreadyInFaction));
-        return count + (canPickInCat > 0 ? 1 : 0);
-      }, 0);
+    // Count how many pickable items are actually available in the bag
+    const availableInBag =
+      draftVariant === "frankendraz"
+        ? ["factions", "blue_tiles", "red_tiles"].filter(
+            (cat) => myBag[cat]?.length > 0,
+          ).length
+        : categories.reduce((count, cat) => {
+            const inBag = myBag[cat]?.length ?? 0;
+            const alreadyInFaction = myFaction[cat]?.length ?? 0;
+            const limit = draftLimits[cat] ?? 0;
+            const canPickInCat = Math.max(
+              0,
+              Math.min(inBag, limit - alreadyInFaction),
+            );
+            return count + (canPickInCat > 0 ? 1 : 0);
+          }, 0);
 
-  const effectiveMax = Math.min(maxPicks, availableInBag);
+    const effectiveMax = Math.min(maxPicks, availableInBag);
 
-  if (pendingPicks.length < effectiveMax) {
-    alert(`You must pick ${effectiveMax} component${effectiveMax !== 1 ? 's' : ''}.`);
-    return;
-  }
-  setSubmitted(true);
-  onSubmitPicks(pendingPicks);
-};
+    if (pendingPicks.length < effectiveMax) {
+      alert(
+        `You must pick ${effectiveMax} component${effectiveMax !== 1 ? "s" : ""}.`,
+      );
+      return;
+    }
+    setSubmitted(true);
+    onSubmitPicks(pendingPicks);
+  };
 
   const handleSubmitPhase = (phase) => {
     setPhaseSubmitted(true);
@@ -136,8 +163,12 @@ export default function MultiplayerGuestView({
       <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
         <div className="text-center text-gray-400">
           <div className="text-4xl mb-4">⏳</div>
-          <div className="text-lg font-semibold">Waiting for host to start the draft...</div>
-          <div className="text-sm mt-2 text-gray-500">You are connected as Player {myPlayerIndex + 1}</div>
+          <div className="text-lg font-semibold">
+            Waiting for host to start the draft...
+          </div>
+          <div className="text-sm mt-2 text-gray-500">
+            You are connected as Player {myPlayerIndex + 1}
+          </div>
         </div>
       </div>
     );
@@ -145,16 +176,21 @@ export default function MultiplayerGuestView({
 
   // ── Shared header ────────────────────────────────────────────────────
   const renderHeader = (showBagToggle = false) => (
-    <div ref={headerRef} className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg app-header">
+    <div
+      ref={headerRef}
+      className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg app-header"
+    >
       <div className="px-4 py-2">
-        <h2 className="text-xl font-bold text-yellow-400">Franken Draft — Player {myPlayerIndex + 1}</h2>
+        <h2 className="text-xl font-bold text-yellow-400">
+          Franken Draft — Player {myPlayerIndex + 1}
+        </h2>
         <div className="flex items-center gap-3 mt-2">
           {showBagToggle && (
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               className="sidebar-toggle-button px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
             >
-              {sidebarCollapsed ? '→ Bag' : '← Hide'}
+              {sidebarCollapsed ? "→ Bag" : "← Hide"}
             </button>
           )}
         </div>
@@ -163,7 +199,7 @@ export default function MultiplayerGuestView({
   );
 
   // ── DRAFT PHASE ──────────────────────────────────────────────────────
-  if (draftPhase === 'draft') {
+  if (draftPhase === "draft") {
     return (
       <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black">
         <div className="flex min-h-[100dvh]">
@@ -189,13 +225,19 @@ export default function MultiplayerGuestView({
           <div className="flex-1 flex flex-col">
             {renderHeader(true)}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              <div className={`p-3 rounded-lg border ${submitted
-                ? 'bg-yellow-900/30 border-yellow-600'
-                : 'bg-blue-900/30 border-blue-600'}`}>
-                <h3 className={`font-bold text-sm ${submitted ? 'text-yellow-400' : 'text-blue-400'}`}>
+              <div
+                className={`p-3 rounded-lg border ${
+                  submitted
+                    ? "bg-yellow-900/30 border-yellow-600"
+                    : "bg-blue-900/30 border-blue-600"
+                }`}
+              >
+                <h3
+                  className={`font-bold text-sm ${submitted ? "text-yellow-400" : "text-blue-400"}`}
+                >
                   {submitted
                     ? `✓ Picks submitted — waiting for other players... (Round ${round})`
-                    : `Round ${round} — Choose ${maxPicks} component${maxPicks !== 1 ? 's' : ''} from your bag`}
+                    : `Round ${round} — Choose ${maxPicks} component${maxPicks !== 1 ? "s" : ""} from your bag`}
                 </h3>
                 {!submitted && pendingPicks.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
@@ -203,7 +245,9 @@ export default function MultiplayerGuestView({
                       <span
                         key={idx}
                         className="bg-blue-800 hover:bg-red-800 text-white px-2 py-1 rounded text-xs cursor-pointer transition-colors"
-                        onClick={() => handlePick(pick.category, pick.component)}
+                        onClick={() =>
+                          handlePick(pick.category, pick.component)
+                        }
                         title="Click to remove"
                       >
                         {pick.component.name} ×
@@ -213,21 +257,39 @@ export default function MultiplayerGuestView({
                 )}
                 {!submitted && (
                   <button
-  onClick={handleSubmitPicks}
-  disabled={submitted || pendingPicks.length < Math.min(maxPicks, (() => {
-    return draftVariant === 'frankendraz'
-      ? ['factions', 'blue_tiles', 'red_tiles'].filter(cat => myBag[cat]?.length > 0).length
-      : categories.reduce((count, cat) => {
-          const inBag = myBag[cat]?.length ?? 0;
-          const alreadyInFaction = myFaction[cat]?.length ?? 0;
-          const limit = draftLimits[cat] ?? 0;
-          return count + (Math.max(0, Math.min(inBag, limit - alreadyInFaction)) > 0 ? 1 : 0);
-        }, 0);
-  })())}
-  className="mt-2 px-4 py-2 bg-green-600 hover:bg-green-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold text-sm transition-colors"
->
-  Submit Picks ({pendingPicks.length}/{maxPicks})
-</button>
+                    onClick={handleSubmitPicks}
+                    disabled={
+                      submitted ||
+                      pendingPicks.length <
+                        Math.min(
+                          maxPicks,
+                          (() => {
+                            return draftVariant === "frankendraz"
+                              ? ["factions", "blue_tiles", "red_tiles"].filter(
+                                  (cat) => myBag[cat]?.length > 0,
+                                ).length
+                              : categories.reduce((count, cat) => {
+                                  const inBag = myBag[cat]?.length ?? 0;
+                                  const alreadyInFaction =
+                                    myFaction[cat]?.length ?? 0;
+                                  const limit = draftLimits[cat] ?? 0;
+                                  return (
+                                    count +
+                                    (Math.max(
+                                      0,
+                                      Math.min(inBag, limit - alreadyInFaction),
+                                    ) > 0
+                                      ? 1
+                                      : 0)
+                                  );
+                                }, 0);
+                          })(),
+                        )
+                    }
+                    className="mt-2 px-4 py-2 bg-green-600 hover:bg-green-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold text-sm transition-colors"
+                  >
+                    Submit Picks ({pendingPicks.length}/{maxPicks})
+                  </button>
                 )}
               </div>
 
@@ -247,32 +309,37 @@ export default function MultiplayerGuestView({
   }
 
   // ── REDUCTION PHASE ──────────────────────────────────────────────────
-  if (draftPhase === 'reduction') {
+  if (draftPhase === "reduction") {
     return (
       <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex flex-col">
         {renderHeader(false)}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           <div className="p-4 bg-orange-900/30 rounded-lg border border-orange-600">
-            <h3 className="font-bold text-orange-400 text-lg mb-2">Reduction Phase</h3>
+            <h3 className="font-bold text-orange-400 text-lg mb-2">
+              Reduction Phase
+            </h3>
             <p className="text-orange-300 text-sm mb-3">
-              Remove excess components from your faction to meet the limits. Click any component to remove it.
+              Remove excess components from your faction to meet the limits.
+              Click any component to remove it.
             </p>
             {!phaseSubmitted ? (
               <button
-                onClick={() => handleSubmitPhase('reduction')}
+                onClick={() => handleSubmitPhase("reduction")}
                 className="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-semibold transition-colors"
               >
                 Done with Reductions
               </button>
             ) : (
-              <div className="text-xs text-yellow-400 font-semibold">✓ Submitted — waiting for other players...</div>
+              <div className="text-xs text-yellow-400 font-semibold">
+                ✓ Submitted — waiting for other players...
+              </div>
             )}
           </div>
           <FactionSheet
             drafted={myFaction}
             onRemove={(cat, idx) => {
               if (phaseSubmitted) return;
-              setLocalFaction(prev => {
+              setLocalFaction((prev) => {
                 const updated = { ...prev, [cat]: [...(prev[cat] || [])] };
                 updated[cat].splice(idx, 1);
                 return updated;
@@ -290,7 +357,7 @@ export default function MultiplayerGuestView({
   }
 
   // ── SWAP PHASE ───────────────────────────────────────────────────────
-  if (draftPhase === 'swap') {
+  if (draftPhase === "swap") {
     return (
       <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex flex-col">
         {renderHeader(false)}
@@ -298,23 +365,32 @@ export default function MultiplayerGuestView({
           <div className="p-4 bg-blue-900/30 rounded-lg border border-blue-600">
             <h3 className="font-bold text-blue-400 text-lg mb-2">Swap Phase</h3>
             <p className="text-blue-300 text-sm mb-3">
-              Review available component swaps. You can choose to swap or refuse.
+              Review available component swaps. You can choose to swap or
+              refuse.
             </p>
             {!phaseSubmitted ? (
               <button
-                onClick={() => handleSubmitPhase('swap')}
+                onClick={() => handleSubmitPhase("swap")}
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-semibold transition-colors"
               >
                 Done with Swaps
               </button>
             ) : (
-              <div className="text-xs text-yellow-400 font-semibold">✓ Submitted — waiting for other players...</div>
+              <div className="text-xs text-yellow-400 font-semibold">
+                ✓ Submitted — waiting for other players...
+              </div>
             )}
           </div>
           <FactionSheet
             drafted={myFaction}
             onRemove={() => {}}
-            onSwapComponent={(_, category, componentIdx, swapOption, triggerComponent) => {
+            onSwapComponent={(
+              _,
+              category,
+              componentIdx,
+              swapOption,
+              triggerComponent,
+            ) => {
               if (phaseSubmitted) return;
               const { updatedFactions } = executeSwap({
                 factions: [myFaction],
@@ -339,25 +415,30 @@ export default function MultiplayerGuestView({
   }
 
   // ── BUILD PHASE ──────────────────────────────────────────────────────
-  if (draftPhase === 'build') {
+  if (draftPhase === "build") {
     return (
       <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex flex-col">
         {renderHeader(false)}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           <div className="p-4 bg-purple-900/30 rounded-lg border border-purple-600">
-            <h3 className="font-bold text-purple-400 text-lg mb-2">Build Phase</h3>
+            <h3 className="font-bold text-purple-400 text-lg mb-2">
+              Build Phase
+            </h3>
             <p className="text-purple-300 text-sm mb-2">
-              Build your faction from the components you drafted. You must stay within the standard faction limits.
+              Build your faction from the components you drafted. You must stay
+              within the standard faction limits.
             </p>
             {!phaseSubmitted ? (
               <button
-                onClick={() => handleSubmitPhase('build')}
+                onClick={() => handleSubmitPhase("build")}
                 className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-bold transition-colors shadow-lg"
               >
                 Complete My Build
               </button>
             ) : (
-              <div className="text-xs text-yellow-400 font-semibold">✓ Submitted — waiting for other players...</div>
+              <div className="text-xs text-yellow-400 font-semibold">
+                ✓ Submitted — waiting for other players...
+              </div>
             )}
           </div>
           <FrankenDrazBuilder
@@ -366,15 +447,18 @@ export default function MultiplayerGuestView({
             builtFaction={myFaction}
             onAddComponent={(category, component) => {
               if (phaseSubmitted) return;
-              setLocalFaction(prev => ({
+              setLocalFaction((prev) => ({
                 ...prev,
                 [category]: [...(prev[category] || []), component],
               }));
             }}
             onRemoveComponent={(category, index) => {
               if (phaseSubmitted) return;
-              setLocalFaction(prev => {
-                const updated = { ...prev, [category]: [...(prev[category] || [])] };
+              setLocalFaction((prev) => {
+                const updated = {
+                  ...prev,
+                  [category]: [...(prev[category] || [])],
+                };
                 updated[category].splice(index, 1);
                 return updated;
               });
@@ -396,9 +480,14 @@ export default function MultiplayerGuestView({
         <div className="p-6 bg-gradient-to-r from-green-900/40 to-blue-900/40 rounded-xl border-2 border-green-500 shadow-xl">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-4xl">🎉</span>
-            <h3 className="font-bold text-green-400 text-2xl">Draft Complete!</h3>
+            <h3 className="font-bold text-green-400 text-2xl">
+              Draft Complete!
+            </h3>
           </div>
-          <p className="text-green-300">Your faction has been finalized. The host will move everyone to the map builder.</p>
+          <p className="text-green-300">
+            Your faction has been finalized. The host will move everyone to the
+            map builder.
+          </p>
         </div>
         <FactionSheet
           drafted={myFaction}

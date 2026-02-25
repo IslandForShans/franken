@@ -3,35 +3,53 @@ import { factionsData, discordantStarsData } from "../data/processedData";
 /**
  * Find full component data from JSON files
  */
-export const findFullComponentData = (componentName, factionName, targetCategory) => {
+export const findFullComponentData = (
+  componentName,
+  factionName,
+  targetCategory,
+) => {
   // Try base factions first
-  const baseFaction = factionsData.factions.find(f => f.name === factionName);
+  const baseFaction = factionsData.factions.find((f) => f.name === factionName);
   if (baseFaction && baseFaction[targetCategory]) {
-    const found = baseFaction[targetCategory].find(c => c.name === componentName);
+    const found = baseFaction[targetCategory].find(
+      (c) => c.name === componentName,
+    );
     if (found) {
-      return { ...found, faction: baseFaction.name, factionIcon: baseFaction.icon, icon: baseFaction.icon };
+      return {
+        ...found,
+        faction: baseFaction.name,
+        factionIcon: baseFaction.icon,
+        icon: baseFaction.icon,
+      };
     }
   }
-  
+
   // Try DS factions
   if (discordantStarsData?.factions) {
-    const dsFaction = discordantStarsData.factions.find(f => f.name === factionName);
+    const dsFaction = discordantStarsData.factions.find(
+      (f) => f.name === factionName,
+    );
     if (dsFaction) {
       // Handle DS's different naming for home_systems
       let categoryData = dsFaction[targetCategory];
-      if (!categoryData && targetCategory === 'home_systems') {
-        categoryData = dsFaction['home_system'];
+      if (!categoryData && targetCategory === "home_systems") {
+        categoryData = dsFaction["home_system"];
       }
-      
+
       if (categoryData) {
-        const found = categoryData.find(c => c.name === componentName);
+        const found = categoryData.find((c) => c.name === componentName);
         if (found) {
-          return { ...found, faction: dsFaction.name, factionIcon: dsFaction.icon, icon: dsFaction.icon };
+          return {
+            ...found,
+            faction: dsFaction.name,
+            factionIcon: dsFaction.icon,
+            icon: dsFaction.icon,
+          };
         }
       }
     }
   }
-  
+
   return null;
 };
 
@@ -46,8 +64,19 @@ export const findFullComponentData = (componentName, factionName, targetCategory
  * @param {Object} params.triggerComponent - The component that triggered the swap
  * @returns {Object} - { updatedFactions, swapComponent }
  */
-export const executeSwap = ({ factions, playerIndex, swapCategory, replaceIndex, swapOption, triggerComponent }) => {
-  const fullComponent = findFullComponentData(swapOption.name, swapOption.faction, swapCategory);
+export const executeSwap = ({
+  factions,
+  playerIndex,
+  swapCategory,
+  replaceIndex,
+  swapOption,
+  triggerComponent,
+}) => {
+  const fullComponent = findFullComponentData(
+    swapOption.name,
+    swapOption.faction,
+    swapCategory,
+  );
 
   if (!fullComponent) {
     console.warn("Component not found in faction data:", swapOption.name);
@@ -61,12 +90,14 @@ export const executeSwap = ({ factions, playerIndex, swapCategory, replaceIndex,
     icon: fullComponent.icon || fullComponent.factionIcon,
     isSwap: true,
     originalComponent: triggerComponent.name,
-    triggerComponent: triggerComponent.name
+    triggerComponent: triggerComponent.name,
   };
 
   const updatedFactions = [...factions];
   updatedFactions[playerIndex] = { ...updatedFactions[playerIndex] };
-  updatedFactions[playerIndex][swapCategory] = [...updatedFactions[playerIndex][swapCategory]];
+  updatedFactions[playerIndex][swapCategory] = [
+    ...updatedFactions[playerIndex][swapCategory],
+  ];
   updatedFactions[playerIndex][swapCategory][replaceIndex] = swapComponent;
 
   return { updatedFactions, swapComponent };

@@ -11,38 +11,38 @@ export const ICON_MAP = {
     Green: `${ICON_PATH}tech-green.png`,
     Yellow: `${ICON_PATH}tech-yellow.png`,
   },
-  
+
   // Resources and Influence
   resource: `${ICON_PATH}resource.png`,
   influence: `${ICON_PATH}influence.png`,
-  
+
   // Wormholes
   wormholes: {
     Alpha: `${ICON_PATH}wormhole-alpha.png`,
     Beta: `${ICON_PATH}wormhole-beta.png`,
     Gamma: `${ICON_PATH}wormhole-gamma.png`,
   },
-  
+
   // Anomalies
   anomalies: {
     "Asteroid Field": `${ICON_PATH}anomaly-asteroid.png`,
-    "Nebula": `${ICON_PATH}anomaly-nebula.png`,
-    "Supernova": `${ICON_PATH}anomaly-supernova.png`,
+    Nebula: `${ICON_PATH}anomaly-nebula.png`,
+    Supernova: `${ICON_PATH}anomaly-supernova.png`,
     "Gravity Rift": `${ICON_PATH}anomaly-gravity-rift.png`,
     "Entropic Scar": `${ICON_PATH}anomaly-entropic-scar.png`,
   },
-  
+
   // Legendary
   legendary: `${ICON_PATH}legendary.png`,
 
   // Planet Traits
   traits: {
-    "Cultural": `${ICON_PATH}trait-cultural.png`,
-    "Hazardous": `${ICON_PATH}trait-hazardous.png`,
-    "Industrial": `${ICON_PATH}trait-industrial.png`,
+    Cultural: `${ICON_PATH}trait-cultural.png`,
+    Hazardous: `${ICON_PATH}trait-hazardous.png`,
+    Industrial: `${ICON_PATH}trait-industrial.png`,
     "Space Station": `${ICON_PATH}space-station.png`,
   },
-  
+
   // Faction icons (add your faction names)
   factions: {
     "The Arborec": `${ICON_PATH}factions/Arborec.png`,
@@ -117,8 +117,8 @@ export const ICON_MAP = {
     "Pharad'n Order": `${ICON_PATH}br/Pharadn.png`,
     "Qhet Republic": `${ICON_PATH}br/Qhet.png`,
     "Toldar Concordat": `${ICON_PATH}br/Toldar.png`,
-    "Uydai Conclave": `${ICON_PATH}br/Uydai.png`
-  }
+    "Uydai Conclave": `${ICON_PATH}br/Uydai.png`,
+  },
 };
 
 /**
@@ -130,129 +130,141 @@ export function processFactionData(rawFactionData) {
   }
 
   const processed = { ...rawFactionData };
-  
-  processed.factions = rawFactionData.factions.map(faction => {
+
+  processed.factions = rawFactionData.factions.map((faction) => {
     const processedFaction = { ...faction };
-    
+
     // Add faction icon if available
     if (ICON_MAP.factions[faction.name]) {
       processedFaction.icon = ICON_MAP.factions[faction.name];
     }
-    
+
     // Process faction techs
     if (processedFaction.faction_techs) {
-      processedFaction.faction_techs = processedFaction.faction_techs.map(tech => {
-        const processedTech = { ...tech };
-        
-        // Add tech color icon
-        if (tech.tech_type && ICON_MAP.techColors[tech.tech_type]) {
-          processedTech.tech_type_icon = ICON_MAP.techColors[tech.tech_type];
-        }
-        
-        // Add prerequisite icons
-        if (tech.prerequisites && tech.prerequisites.length > 0) {
-          processedTech.prerequisite_icons = tech.prerequisites.map(
-            prereq => ICON_MAP.techColors[prereq]
-          ).filter(Boolean);
-        }
-        
-        // Process tech package if exists
-        if (processedTech.techs) {
-          processedTech.techs = processedTech.techs.map(subTech => {
-            const processedSubTech = { ...subTech };
-            if (subTech.tech_type && ICON_MAP.techColors[subTech.tech_type]) {
-              processedSubTech.tech_type_icon = ICON_MAP.techColors[subTech.tech_type];
-            }
-            return processedSubTech;
-          });
-        }
-        
-        return processedTech;
-      });
-    }
-    
-    // Process starting techs
-    if (processedFaction.starting_techs) {
-      processedFaction.starting_techs = processedFaction.starting_techs.map(tech => {
-        const processedTech = { ...tech };
-        
-        if (tech.tech_type && ICON_MAP.techColors[tech.tech_type]) {
-          processedTech.tech_type_icon = ICON_MAP.techColors[tech.tech_type];
-        }
-        
-        if (processedTech.techs) {
-          processedTech.techs = processedTech.techs.map(subTech => {
-            const processedSubTech = { ...subTech };
-            if (subTech.tech_type && ICON_MAP.techColors[subTech.tech_type]) {
-              processedSubTech.tech_type_icon = ICON_MAP.techColors[subTech.tech_type];
-            }
-            return processedSubTech;
-          });
-        }
-        
-        return processedTech;
-      });
-    }
-    
-    return processedFaction;
-  });
-  
-  // Process tiles if they exist
-  if (processed.tiles) {
-    ['blue_tiles', 'red_tiles'].forEach(tileCategory => {
-      if (processed.tiles[tileCategory]) {
-        processed.tiles[tileCategory] = processed.tiles[tileCategory].map(tile => {
-          const processedTile = { ...tile };
-          
-          // Add wormhole icon
-          if (tile.wormhole && ICON_MAP.wormholes[tile.wormhole]) {
-            processedTile.wormhole_icon = ICON_MAP.wormholes[tile.wormhole];
-          }
-          
-          // Add anomaly icons
-          if (tile.anomalies && tile.anomalies.length > 0) {
-            processedTile.anomaly_icons = tile.anomalies.map(
-              anomaly => ICON_MAP.anomalies[anomaly]
-            ).filter(Boolean);
-          }
-          
-          // Process planets
-          if (tile.planets && tile.planets.length > 0) {
-            processedTile.planets = tile.planets.map(planet => {
-              const processedPlanet = { ...planet };
-              
-              // Add resource/influence icons
-              processedPlanet.resource_icon = ICON_MAP.resource;
-              processedPlanet.influence_icon = ICON_MAP.influence;
-              
-              // Add legendary icon
-              if (planet.legendary_ability) {
-                processedPlanet.legendary_icon = ICON_MAP.legendary;
-              }
-              
-              // Add tech specialty icons
-              if (planet.technology_specialty && planet.technology_specialty.length > 0) {
-                processedPlanet.tech_specialty_icons = planet.technology_specialty.map(
-                  tech => ICON_MAP.techColors[tech]
-                ).filter(Boolean);
-              }
+      processedFaction.faction_techs = processedFaction.faction_techs.map(
+        (tech) => {
+          const processedTech = { ...tech };
 
-              // Add trait icons
-              if (planet.traits && planet.traits.length > 0) {
-                processedPlanet.trait_icons = planet.traits.map(
-                  trait => ICON_MAP.traits[trait]
-                ).filter(Boolean);
+          // Add tech color icon
+          if (tech.tech_type && ICON_MAP.techColors[tech.tech_type]) {
+            processedTech.tech_type_icon = ICON_MAP.techColors[tech.tech_type];
+          }
+
+          // Add prerequisite icons
+          if (tech.prerequisites && tech.prerequisites.length > 0) {
+            processedTech.prerequisite_icons = tech.prerequisites
+              .map((prereq) => ICON_MAP.techColors[prereq])
+              .filter(Boolean);
+          }
+
+          // Process tech package if exists
+          if (processedTech.techs) {
+            processedTech.techs = processedTech.techs.map((subTech) => {
+              const processedSubTech = { ...subTech };
+              if (subTech.tech_type && ICON_MAP.techColors[subTech.tech_type]) {
+                processedSubTech.tech_type_icon =
+                  ICON_MAP.techColors[subTech.tech_type];
               }
-              
-              return processedPlanet;
+              return processedSubTech;
             });
           }
-          
-          return processedTile;
-        });
+
+          return processedTech;
+        },
+      );
+    }
+
+    // Process starting techs
+    if (processedFaction.starting_techs) {
+      processedFaction.starting_techs = processedFaction.starting_techs.map(
+        (tech) => {
+          const processedTech = { ...tech };
+
+          if (tech.tech_type && ICON_MAP.techColors[tech.tech_type]) {
+            processedTech.tech_type_icon = ICON_MAP.techColors[tech.tech_type];
+          }
+
+          if (processedTech.techs) {
+            processedTech.techs = processedTech.techs.map((subTech) => {
+              const processedSubTech = { ...subTech };
+              if (subTech.tech_type && ICON_MAP.techColors[subTech.tech_type]) {
+                processedSubTech.tech_type_icon =
+                  ICON_MAP.techColors[subTech.tech_type];
+              }
+              return processedSubTech;
+            });
+          }
+
+          return processedTech;
+        },
+      );
+    }
+
+    return processedFaction;
+  });
+
+  // Process tiles if they exist
+  if (processed.tiles) {
+    ["blue_tiles", "red_tiles"].forEach((tileCategory) => {
+      if (processed.tiles[tileCategory]) {
+        processed.tiles[tileCategory] = processed.tiles[tileCategory].map(
+          (tile) => {
+            const processedTile = { ...tile };
+
+            // Add wormhole icon
+            if (tile.wormhole && ICON_MAP.wormholes[tile.wormhole]) {
+              processedTile.wormhole_icon = ICON_MAP.wormholes[tile.wormhole];
+            }
+
+            // Add anomaly icons
+            if (tile.anomalies && tile.anomalies.length > 0) {
+              processedTile.anomaly_icons = tile.anomalies
+                .map((anomaly) => ICON_MAP.anomalies[anomaly])
+                .filter(Boolean);
+            }
+
+            // Process planets
+            if (tile.planets && tile.planets.length > 0) {
+              processedTile.planets = tile.planets.map((planet) => {
+                const processedPlanet = { ...planet };
+
+                // Add resource/influence icons
+                processedPlanet.resource_icon = ICON_MAP.resource;
+                processedPlanet.influence_icon = ICON_MAP.influence;
+
+                // Add legendary icon
+                if (planet.legendary_ability) {
+                  processedPlanet.legendary_icon = ICON_MAP.legendary;
+                }
+
+                // Add tech specialty icons
+                if (
+                  planet.technology_specialty &&
+                  planet.technology_specialty.length > 0
+                ) {
+                  processedPlanet.tech_specialty_icons =
+                    planet.technology_specialty
+                      .map((tech) => ICON_MAP.techColors[tech])
+                      .filter(Boolean);
+                }
+
+                // Add trait icons
+                if (planet.traits && planet.traits.length > 0) {
+                  processedPlanet.trait_icons = planet.traits
+                    .map((trait) => ICON_MAP.traits[trait])
+                    .filter(Boolean);
+                }
+
+                return processedPlanet;
+              });
+            }
+
+            return processedTile;
+          },
+        );
       }
     });
   }
-  
+
   return processed;
 }

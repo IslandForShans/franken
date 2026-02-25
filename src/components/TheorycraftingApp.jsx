@@ -1,10 +1,21 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { createPortal } from "react-dom";
 import FactionSheet from "./FactionSheet.jsx";
 import Sidebar from "./Sidebar.jsx";
 import { factionsData, discordantStarsData } from "../data/processedData";
 import { ICON_MAP } from "../utils/dataProcessor";
-import { getSwapOptions, getExtraComponents, getSwapOptionsForTrigger, isComponentUndraftable } from "../data/undraftable-components.js";
+import {
+  getSwapOptions,
+  getExtraComponents,
+  getSwapOptionsForTrigger,
+  isComponentUndraftable,
+} from "../data/undraftable-components.js";
 import { executeSwap, findFullComponentData } from "../utils/swapUtils.js";
 import { isBlueReverieFaction } from "../utils/expansionFilters.js";
 
@@ -13,27 +24,59 @@ const TECH_ICONS = {
   red: ICON_MAP.techColors.Red,
   blue: ICON_MAP.techColors.Blue,
   green: ICON_MAP.techColors.Green,
-  yellow: ICON_MAP.techColors.Yellow
+  yellow: ICON_MAP.techColors.Yellow,
 };
 
 const baseFactionLimits = {
-  blue_tiles: 2, red_tiles: 1, abilities: 3, faction_techs: 2, agents: 1,
-  commanders: 1, heroes: 1, promissory: 1, starting_techs: 1, starting_fleet: 1,
-  commodity_values: 1, flagship: 1, mech: 1, home_systems: 1,
-  breakthrough: 1
+  blue_tiles: 2,
+  red_tiles: 1,
+  abilities: 3,
+  faction_techs: 2,
+  agents: 1,
+  commanders: 1,
+  heroes: 1,
+  promissory: 1,
+  starting_techs: 1,
+  starting_fleet: 1,
+  commodity_values: 1,
+  flagship: 1,
+  mech: 1,
+  home_systems: 1,
+  breakthrough: 1,
 };
 
 const powerFactionLimits = {
-  blue_tiles: 3, red_tiles: 2, abilities: 5, faction_techs: 4, agents: 3,
-  commanders: 3, heroes: 3, promissory: 2, starting_techs: 2, starting_fleet: 2,
-  commodity_values: 2, flagship: 1, mech: 1, home_systems: 1,
-  breakthrough: 2
+  blue_tiles: 3,
+  red_tiles: 2,
+  abilities: 5,
+  faction_techs: 4,
+  agents: 3,
+  commanders: 3,
+  heroes: 3,
+  promissory: 2,
+  starting_techs: 2,
+  starting_fleet: 2,
+  commodity_values: 2,
+  flagship: 1,
+  mech: 1,
+  home_systems: 1,
+  breakthrough: 2,
 };
 
 const CATEGORIES = [
-  'abilities', 'faction_techs', 'agents', 'commanders', 'heroes', 'promissory',
-  'starting_techs', 'starting_fleet', 'commodity_values', 'flagship', 'mech',
-  'home_systems', 'breakthrough'
+  "abilities",
+  "faction_techs",
+  "agents",
+  "commanders",
+  "heroes",
+  "promissory",
+  "starting_techs",
+  "starting_fleet",
+  "commodity_values",
+  "flagship",
+  "mech",
+  "home_systems",
+  "breakthrough",
 ];
 
 export default function TheorycraftingApp({ onNavigate }) {
@@ -54,7 +97,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     blue_tiles: [],
     red_tiles: [],
     home_systems: [],
-    breakthrough: []
+    breakthrough: [],
   });
   const [draftLimits, setDraftLimits] = useState(baseFactionLimits);
   const [powerMode, setPowerMode] = useState(false);
@@ -67,7 +110,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [factionFilterOpen, setFactionFilterOpen] = useState(false);
   const [visibleFactions, setVisibleFactions] = useState(new Set());
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [tierFilter, setTierFilter] = useState(new Set());
   const [tierSort, setTierSort] = useState(false);
   const headerRef = useRef(null);
@@ -91,8 +134,8 @@ export default function TheorycraftingApp({ onNavigate }) {
 
     // Get base game components
     baseComponents = [
-      ...(factionsData.factions.flatMap(f =>
-        (f[category] || []).map(item => {
+      ...factionsData.factions.flatMap((f) =>
+        (f[category] || []).map((item) => {
           const isUnitUpgrade = item.tech_type === "Unit Upgrade";
 
           return {
@@ -107,21 +150,21 @@ export default function TheorycraftingApp({ onNavigate }) {
                 cost: item.cost,
                 combat: item.combat,
                 abilities: item.abilities,
-                description: item.description
-              }
-            })
+                description: item.description,
+              },
+            }),
           };
-        })
-      )),
-      ...(factionsData.tiles[category] || [])
+        }),
+      ),
+      ...(factionsData.tiles[category] || []),
     ];
 
     // Get Discordant Stars components (excluding Blue Reverie)
     dsComponents = [
-      ...(discordantStarsData.factions
-        .filter(f => !isBlueReverieFaction(f.name))
-        .flatMap(f =>
-          (f[category] || []).map(item => {
+      ...discordantStarsData.factions
+        .filter((f) => !isBlueReverieFaction(f.name))
+        .flatMap((f) =>
+          (f[category] || []).map((item) => {
             const isUnitUpgrade = item.tech_type === "Unit Upgrade";
 
             return {
@@ -137,24 +180,24 @@ export default function TheorycraftingApp({ onNavigate }) {
                   cost: item.cost,
                   combat: item.combat,
                   abilities: item.abilities,
-                  description: item.description
-                }
-              })
+                  description: item.description,
+                },
+              }),
             };
-          })
-        )),
-      ...(discordantStarsData.tiles[category] || []).map(item => ({
+          }),
+        ),
+      ...(discordantStarsData.tiles[category] || []).map((item) => ({
         ...item,
-        isDiscordantStars: true
-      }))
+        isDiscordantStars: true,
+      })),
     ];
 
     // Get Blue Reverie components (from DS JSON)
     brComponents = [
-      ...(discordantStarsData.factions
-        .filter(f => isBlueReverieFaction(f.name))
-        .flatMap(f =>
-          (f[category] || []).map(item => {
+      ...discordantStarsData.factions
+        .filter((f) => isBlueReverieFaction(f.name))
+        .flatMap((f) =>
+          (f[category] || []).map((item) => {
             const isUnitUpgrade = item.tech_type === "Unit Upgrade";
 
             return {
@@ -170,12 +213,12 @@ export default function TheorycraftingApp({ onNavigate }) {
                   cost: item.cost,
                   combat: item.combat,
                   abilities: item.abilities,
-                  description: item.description
-                }
-              })
+                  description: item.description,
+                },
+              }),
             };
-          })
-        ))
+          }),
+        ),
     ];
 
     // Combine based on mode
@@ -197,277 +240,350 @@ export default function TheorycraftingApp({ onNavigate }) {
     }
 
     return allComponents.sort((a, b) =>
-      (a.name || "").localeCompare(b.name || "")
+      (a.name || "").localeCompare(b.name || ""),
     );
   };
 
   // Filter components based on global search term
   const filterComponentsBySearch = (components, searchTerm) => {
     if (!searchTerm) return components;
-    
+
     const q = searchTerm.toLowerCase().trim();
-    
-    return components.filter(item => {
+
+    return components.filter((item) => {
       const matchesName = item.name?.toLowerCase().includes(q);
-      const matchesDesc = String(item.description ?? "").toLowerCase().includes(q);
+      const matchesDesc = String(item.description ?? "")
+        .toLowerCase()
+        .includes(q);
       const matchesFaction = item.faction?.toLowerCase().includes(q);
-      
+
       // Handle tile-specific properties
-      const matchesPlanet = item.planets?.some(p => p.name?.toLowerCase().includes(q)) || false;
-      const matchesTraits = item.planets?.some(p => 
-        p.traits?.some(trait => trait.toLowerCase().includes(q))
-      ) || false;
-      const matchesAnomalies = item.anomalies?.some(anomaly => 
-        anomaly.toLowerCase().includes(q)
-      ) || false;
+      const matchesPlanet =
+        item.planets?.some((p) => p.name?.toLowerCase().includes(q)) || false;
+      const matchesTraits =
+        item.planets?.some((p) =>
+          p.traits?.some((trait) => trait.toLowerCase().includes(q)),
+        ) || false;
+      const matchesAnomalies =
+        item.anomalies?.some((anomaly) => anomaly.toLowerCase().includes(q)) ||
+        false;
       const matchesWormhole = item.wormhole?.toLowerCase().includes(q) || false;
 
-      return matchesName || matchesDesc || matchesFaction || matchesPlanet || matchesTraits || matchesAnomalies || matchesWormhole;
+      return (
+        matchesName ||
+        matchesDesc ||
+        matchesFaction ||
+        matchesPlanet ||
+        matchesTraits ||
+        matchesAnomalies ||
+        matchesWormhole
+      );
     });
   };
 
   const playerProgress = useMemo(() => {
-  const progress = {};
-  categories.forEach(cat => {
-    progress[cat] = customFaction[cat]?.length || 0;
-  });
-  return progress;
-}, [customFaction, categories]);
-
-// Compute available components for Sidebar
-const availableComponentsForSidebar = useMemo(() => {
-  const components = {};
-  categories.forEach(cat => {
-    let all = getAllComponents(cat);
-
-    // Filter out undraftable components
-    all = all.filter(item => {
-  const undraftable = isComponentUndraftable(item.name, item.faction);
-  return !undraftable || undraftable.type === "draftable_and_swap";
-});
-
-    // Hide unit-upgrade faction techs that are "I" or "V1"
-    if (cat === "faction_techs") {
-      all = all.filter(ft => {
-        const name = ft.name || "";
-        if (name.includes(" I") && !name.includes(" II")) {
-          return false;
-        }
-        if (name.includes(" V1") && !name.includes(" V2")) {
-          return false;
-        }
-        return true;
-      });
-    }
-
-    // Apply global search filter
-    all = filterComponentsBySearch(all, globalSearchTerm);
-
-    // Apply faction filter
-    if (visibleFactions.size > 0) {
-      all = all.filter(c => !c.faction || visibleFactions.has(c.faction));
-    }
-
-    // Apply tier filter
-    if (tierFilter.size > 0) {
-      all = all.filter(c => c.tier && tierFilter.has(c.tier));
-    }
-
-    // Apply tier sort
-    if (tierSort) {
-      const TIER_ORDER = ['S+', 'S', 'A', 'B', 'C', 'D', 'E', 'F'];
-      all = [...all].sort((a, b) => {
-        const ai = a.tier ? TIER_ORDER.indexOf(a.tier) : 999;
-        const bi = b.tier ? TIER_ORDER.indexOf(b.tier) : 999;
-        return ai - bi;
-      });
-    }
-
-    components[cat] = all;
-  });
-
-// Apply category filter by removing other keys
-  if (categoryFilter) {
-    Object.keys(components).forEach(k => {
-      if (k !== categoryFilter) delete components[k];
+    const progress = {};
+    categories.forEach((cat) => {
+      progress[cat] = customFaction[cat]?.length || 0;
     });
-  }
+    return progress;
+  }, [customFaction, categories]);
 
-  return components;
-}, [categories, globalSearchTerm, visibleFactions, dsOnlyMode, dsAddMode, brAddMode, categoryFilter, tierFilter, tierSort]);
+  // Compute available components for Sidebar
+  const availableComponentsForSidebar = useMemo(() => {
+    const components = {};
+    categories.forEach((cat) => {
+      let all = getAllComponents(cat);
+
+      // Filter out undraftable components
+      all = all.filter((item) => {
+        const undraftable = isComponentUndraftable(item.name, item.faction);
+        return !undraftable || undraftable.type === "draftable_and_swap";
+      });
+
+      // Hide unit-upgrade faction techs that are "I" or "V1"
+      if (cat === "faction_techs") {
+        all = all.filter((ft) => {
+          const name = ft.name || "";
+          if (name.includes(" I") && !name.includes(" II")) {
+            return false;
+          }
+          if (name.includes(" V1") && !name.includes(" V2")) {
+            return false;
+          }
+          return true;
+        });
+      }
+
+      // Apply global search filter
+      all = filterComponentsBySearch(all, globalSearchTerm);
+
+      // Apply faction filter
+      if (visibleFactions.size > 0) {
+        all = all.filter((c) => !c.faction || visibleFactions.has(c.faction));
+      }
+
+      // Apply tier filter
+      if (tierFilter.size > 0) {
+        all = all.filter((c) => c.tier && tierFilter.has(c.tier));
+      }
+
+      // Apply tier sort
+      if (tierSort) {
+        const TIER_ORDER = ["S+", "S", "A", "B", "C", "D", "E", "F"];
+        all = [...all].sort((a, b) => {
+          const ai = a.tier ? TIER_ORDER.indexOf(a.tier) : 999;
+          const bi = b.tier ? TIER_ORDER.indexOf(b.tier) : 999;
+          return ai - bi;
+        });
+      }
+
+      components[cat] = all;
+    });
+
+    // Apply category filter by removing other keys
+    if (categoryFilter) {
+      Object.keys(components).forEach((k) => {
+        if (k !== categoryFilter) delete components[k];
+      });
+    }
+
+    return components;
+  }, [
+    categories,
+    globalSearchTerm,
+    visibleFactions,
+    dsOnlyMode,
+    dsAddMode,
+    brAddMode,
+    categoryFilter,
+    tierFilter,
+    tierSort,
+  ]);
 
   const handleAddComponent = (cat, item) => {
-  // Skip limit check in unlimited mode
-  if (!unlimitedMode) {
-    const currentLimit = powerMode ? powerFactionLimits[cat] : baseFactionLimits[cat];
-    if (customFaction[cat].length >= currentLimit) return;
-  }
-  
-  setCustomFaction(prev => {
-    const updated = {
-      ...prev,
-      [cat]: [...prev[cat], item]
-    };
-    
-    // Auto-add extra components
-    const extraComponents = getExtraComponents(item.name, item.faction);
-    
-    if (extraComponents.length > 0) {
-      console.log(`Auto-adding extra components for ${item.name}:`, extraComponents.map(e => e.name));
-      
-      extraComponents.forEach(extra => {
-        let targetCategory = extra.category || cat;
-        
-        const categoryMap = {
-          "Artuno the Betrayer": "agents",
-          "The Thundarian": "agents", 
-          "Awaken": "abilities",
-          "Coalescence": "abilities",
-          "Devour": "abilities",
-          "Dark Pact": "promissory",
-          "Ghoti Home System": "home_systems"
-        };
-
-        if (categoryMap[extra.name]) {
-          targetCategory = categoryMap[extra.name];
-        }
-
-        // Find full component data from JSON
-        const findFullComponentData = (componentName, factionName, targetCategory) => {
-          // Try base factions first
-          const baseFaction = factionsData.factions.find(f => f.name === factionName);
-          if (baseFaction && baseFaction[targetCategory]) {
-            const found = baseFaction[targetCategory].find(c => c.name === componentName);
-            if (found) {
-              return { ...found, faction: baseFaction.name, factionIcon: baseFaction.icon, icon: baseFaction.icon };
-            }
-          }
-          
-          // Try DS factions
-          if (discordantStarsData?.factions) {
-            const dsFaction = discordantStarsData.factions.find(f => f.name === factionName);
-            if (dsFaction) {
-              let categoryData = dsFaction[targetCategory];
-              if (!categoryData && targetCategory === 'home_systems') {
-                categoryData = dsFaction['home_system'];
-              }
-              
-              if (categoryData) {
-                const found = categoryData.find(c => c.name === componentName);
-                if (found) {
-                  return { ...found, faction: dsFaction.name, factionIcon: dsFaction.icon, icon: dsFaction.icon };
-                }
-              }
-            }
-          }
-          
-          return null;
-        };
-
-        const fullComponentData = findFullComponentData(extra.name, extra.faction || item.faction, targetCategory);
-        
-        const extraComponent = fullComponentData ? {
-          ...fullComponentData,
-          isExtra: true,
-          triggerComponent: item.name
-        } : {
-          ...extra,
-          isExtra: true,
-          triggerComponent: item.name,
-          description: extra.description || `Gained from ${item.name}`,
-          faction: extra.faction || item.faction,
-          icon: extra.icon || item.icon || item.factionIcon,
-          factionIcon: extra.factionIcon || item.factionIcon || item.icon
-        };
-
-        if (!updated[targetCategory]) {
-          updated[targetCategory] = [];
-        }
-        
-        // Don't add if already exists
-        const alreadyAdded = updated[targetCategory].some(
-          existingItem => existingItem.name === extra.name && existingItem.isExtra
-        );
-        
-        if (!alreadyAdded) {
-          updated[targetCategory] = [...updated[targetCategory], extraComponent];
-        }
-      });
+    // Skip limit check in unlimited mode
+    if (!unlimitedMode) {
+      const currentLimit = powerMode
+        ? powerFactionLimits[cat]
+        : baseFactionLimits[cat];
+      if (customFaction[cat].length >= currentLimit) return;
     }
-    
-    return updated;
-  });
-};
 
-  const handleRemoveComponent = (category, index) => {
-  setCustomFaction(prev => {
-    const updated = { ...prev };
-    const componentToRemove = prev[category][index];
-    
-    // Remove the component
-    updated[category] = [...prev[category]];
-    updated[category].splice(index, 1);
-    
-    // Also remove any swapped components that were triggered by this component
-    if (componentToRemove && !componentToRemove.isSwap) {
-      categories.forEach(cat => {
-        if (updated[cat]) {
-          updated[cat] = updated[cat].filter(
-            item => !(item.isSwap && item.triggerComponent === componentToRemove.name)
-          );
-        }
-      });
-    }
-    
-    // Also remove any extra components that were triggered by this component
-    if (componentToRemove && !componentToRemove.isExtra) {
-      const extraComponents = getExtraComponents(componentToRemove.name, componentToRemove.faction);
-      
+    setCustomFaction((prev) => {
+      const updated = {
+        ...prev,
+        [cat]: [...prev[cat], item],
+      };
+
+      // Auto-add extra components
+      const extraComponents = getExtraComponents(item.name, item.faction);
+
       if (extraComponents.length > 0) {
-        extraComponents.forEach(extra => {
-          let targetCategory = extra.category || category;
-          
+        console.log(
+          `Auto-adding extra components for ${item.name}:`,
+          extraComponents.map((e) => e.name),
+        );
+
+        extraComponents.forEach((extra) => {
+          let targetCategory = extra.category || cat;
+
           const categoryMap = {
             "Artuno the Betrayer": "agents",
-            "The Thundarian": "agents", 
-            "Awaken": "abilities",
-            "Coalescence": "abilities",
-            "Devour": "abilities",
+            "The Thundarian": "agents",
+            Awaken: "abilities",
+            Coalescence: "abilities",
+            Devour: "abilities",
             "Dark Pact": "promissory",
-            "Ghoti Home System": "home_systems"
+            "Ghoti Home System": "home_systems",
           };
 
           if (categoryMap[extra.name]) {
             targetCategory = categoryMap[extra.name];
           }
-          
-          // Remove the extra component that matches this trigger
-          if (updated[targetCategory]) {
-            updated[targetCategory] = updated[targetCategory].filter(
-              item => !(item.isExtra && item.triggerComponent === componentToRemove.name && item.name === extra.name)
+
+          // Find full component data from JSON
+          const findFullComponentData = (
+            componentName,
+            factionName,
+            targetCategory,
+          ) => {
+            // Try base factions first
+            const baseFaction = factionsData.factions.find(
+              (f) => f.name === factionName,
+            );
+            if (baseFaction && baseFaction[targetCategory]) {
+              const found = baseFaction[targetCategory].find(
+                (c) => c.name === componentName,
+              );
+              if (found) {
+                return {
+                  ...found,
+                  faction: baseFaction.name,
+                  factionIcon: baseFaction.icon,
+                  icon: baseFaction.icon,
+                };
+              }
+            }
+
+            // Try DS factions
+            if (discordantStarsData?.factions) {
+              const dsFaction = discordantStarsData.factions.find(
+                (f) => f.name === factionName,
+              );
+              if (dsFaction) {
+                let categoryData = dsFaction[targetCategory];
+                if (!categoryData && targetCategory === "home_systems") {
+                  categoryData = dsFaction["home_system"];
+                }
+
+                if (categoryData) {
+                  const found = categoryData.find(
+                    (c) => c.name === componentName,
+                  );
+                  if (found) {
+                    return {
+                      ...found,
+                      faction: dsFaction.name,
+                      factionIcon: dsFaction.icon,
+                      icon: dsFaction.icon,
+                    };
+                  }
+                }
+              }
+            }
+
+            return null;
+          };
+
+          const fullComponentData = findFullComponentData(
+            extra.name,
+            extra.faction || item.faction,
+            targetCategory,
+          );
+
+          const extraComponent = fullComponentData
+            ? {
+                ...fullComponentData,
+                isExtra: true,
+                triggerComponent: item.name,
+              }
+            : {
+                ...extra,
+                isExtra: true,
+                triggerComponent: item.name,
+                description: extra.description || `Gained from ${item.name}`,
+                faction: extra.faction || item.faction,
+                icon: extra.icon || item.icon || item.factionIcon,
+                factionIcon: extra.factionIcon || item.factionIcon || item.icon,
+              };
+
+          if (!updated[targetCategory]) {
+            updated[targetCategory] = [];
+          }
+
+          // Don't add if already exists
+          const alreadyAdded = updated[targetCategory].some(
+            (existingItem) =>
+              existingItem.name === extra.name && existingItem.isExtra,
+          );
+
+          if (!alreadyAdded) {
+            updated[targetCategory] = [
+              ...updated[targetCategory],
+              extraComponent,
+            ];
+          }
+        });
+      }
+
+      return updated;
+    });
+  };
+
+  const handleRemoveComponent = (category, index) => {
+    setCustomFaction((prev) => {
+      const updated = { ...prev };
+      const componentToRemove = prev[category][index];
+
+      // Remove the component
+      updated[category] = [...prev[category]];
+      updated[category].splice(index, 1);
+
+      // Also remove any swapped components that were triggered by this component
+      if (componentToRemove && !componentToRemove.isSwap) {
+        categories.forEach((cat) => {
+          if (updated[cat]) {
+            updated[cat] = updated[cat].filter(
+              (item) =>
+                !(
+                  item.isSwap &&
+                  item.triggerComponent === componentToRemove.name
+                ),
             );
           }
         });
       }
-    }
-    
-    return updated;
-  });
-};
+
+      // Also remove any extra components that were triggered by this component
+      if (componentToRemove && !componentToRemove.isExtra) {
+        const extraComponents = getExtraComponents(
+          componentToRemove.name,
+          componentToRemove.faction,
+        );
+
+        if (extraComponents.length > 0) {
+          extraComponents.forEach((extra) => {
+            let targetCategory = extra.category || category;
+
+            const categoryMap = {
+              "Artuno the Betrayer": "agents",
+              "The Thundarian": "agents",
+              Awaken: "abilities",
+              Coalescence: "abilities",
+              Devour: "abilities",
+              "Dark Pact": "promissory",
+              "Ghoti Home System": "home_systems",
+            };
+
+            if (categoryMap[extra.name]) {
+              targetCategory = categoryMap[extra.name];
+            }
+
+            // Remove the extra component that matches this trigger
+            if (updated[targetCategory]) {
+              updated[targetCategory] = updated[targetCategory].filter(
+                (item) =>
+                  !(
+                    item.isExtra &&
+                    item.triggerComponent === componentToRemove.name &&
+                    item.name === extra.name
+                  ),
+              );
+            }
+          });
+        }
+      }
+
+      return updated;
+    });
+  };
 
   const handleLoadFaction = (factionName) => {
     // Try to find in base factions first
-    let faction = factionsData.factions.find(f => f.name === factionName);
+    let faction = factionsData.factions.find((f) => f.name === factionName);
     let factionSource = "Base";
-    
+
     // If not found, try Discordant Stars
     if (!faction) {
-      faction = discordantStarsData.factions.find(f => f.name === factionName);
+      faction = discordantStarsData.factions.find(
+        (f) => f.name === factionName,
+      );
       if (faction) {
         factionSource = isBlueReverieFaction(faction.name) ? "BR" : "DS";
       }
     }
-    
+
     if (faction) {
       const loadedFaction = {
         name: faction.name + ` (${factionSource})`,
@@ -485,7 +601,7 @@ const availableComponentsForSidebar = useMemo(() => {
         blue_tiles: [],
         red_tiles: [],
         home_systems: faction.home_systems ? [...faction.home_systems] : [],
-        breakthrough: faction.breakthrough || []
+        breakthrough: faction.breakthrough || [],
       };
       setCustomFaction(loadedFaction);
     }
@@ -508,7 +624,7 @@ const availableComponentsForSidebar = useMemo(() => {
       blue_tiles: [],
       red_tiles: [],
       home_systems: [],
-      breakthrough: []
+      breakthrough: [],
     });
   };
 
@@ -532,31 +648,31 @@ const availableComponentsForSidebar = useMemo(() => {
 
   const handleToggleDsOnlyMode = () => {
     const newValue = !dsOnlyMode;
-    console.log('DS Only Mode toggled:', newValue, 'dsAddMode:', dsAddMode);
+    console.log("DS Only Mode toggled:", newValue, "dsAddMode:", dsAddMode);
     setDsOnlyMode(newValue);
-    
+
     // If enabling DS Only, disable DS Add
     if (newValue && dsAddMode) {
-      console.log('Disabling DS Add Mode');
+      console.log("Disabling DS Add Mode");
       setDsAddMode(false);
     }
   };
 
   const handleToggleDsAddMode = () => {
     const newValue = !dsAddMode;
-    console.log('DS Add Mode toggled:', newValue, 'dsOnlyMode:', dsOnlyMode);
+    console.log("DS Add Mode toggled:", newValue, "dsOnlyMode:", dsOnlyMode);
     setDsAddMode(newValue);
-    
+
     // If enabling DS Add, disable DS Only
     if (newValue && dsOnlyMode) {
-      console.log('Disabling DS Only Mode');
+      console.log("Disabling DS Only Mode");
       setDsOnlyMode(false);
     }
   };
 
   const handleToggleBrAddMode = () => {
     const newValue = !brAddMode;
-    console.log('BR Add Mode toggled:', newValue);
+    console.log("BR Add Mode toggled:", newValue);
     setBrAddMode(newValue);
   };
 
@@ -564,17 +680,18 @@ const availableComponentsForSidebar = useMemo(() => {
     const factionData = {
       ...customFaction,
       mode: powerMode ? "power" : "standard",
-      created: new Date().toISOString()
+      created: new Date().toISOString(),
     };
-    
+
     const dataStr = JSON.stringify(factionData, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = `${customFaction.name.replace(/\s+/g, '_')}_faction.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
+    const dataUri =
+      "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+
+    const exportFileDefaultName = `${customFaction.name.replace(/\s+/g, "_")}_faction.json`;
+
+    const linkElement = document.createElement("a");
+    linkElement.setAttribute("href", dataUri);
+    linkElement.setAttribute("download", exportFileDefaultName);
     linkElement.click();
   };
 
@@ -595,7 +712,7 @@ const availableComponentsForSidebar = useMemo(() => {
         blue_tiles: "Blue Tiles",
         red_tiles: "Red Tiles",
         home_systems: "Home System",
-        breakthrough: "Breakthrough"
+        breakthrough: "Breakthrough",
       };
       return names[category] || category.toUpperCase().replace(/_/g, " ");
     };
@@ -606,8 +723,8 @@ const availableComponentsForSidebar = useMemo(() => {
     output += `${"=".repeat(50)}\n\n`;
 
     const allCategories = Object.keys(baseFactionLimits);
-    
-    allCategories.forEach(category => {
+
+    allCategories.forEach((category) => {
       const components = customFaction[category] || [];
       if (components.length === 0) return;
 
@@ -615,7 +732,7 @@ const availableComponentsForSidebar = useMemo(() => {
       output += `${"-".repeat(formatCategoryNameForExport(category).length + 1)}\n`;
 
       if (category === "starting_fleet") {
-        components.forEach(entry => {
+        components.forEach((entry) => {
           if (entry.description) {
             output += `- ${entry.description}\n`;
           }
@@ -625,13 +742,13 @@ const availableComponentsForSidebar = useMemo(() => {
       }
 
       if (category === "starting_techs") {
-        components.forEach(entry => {
+        components.forEach((entry) => {
           if (entry.note) {
             output += `${entry.note}\n`;
           }
 
           if (Array.isArray(entry.techs)) {
-            entry.techs.forEach(tech => {
+            entry.techs.forEach((tech) => {
               output += `- ${tech.name}\n`;
             });
           } else if (entry.name) {
@@ -650,15 +767,15 @@ const availableComponentsForSidebar = useMemo(() => {
           output += `${num}${component.name}\n`;
         }
       });
-      
+
       output += `\n`;
     });
 
-    const blob = new Blob([output], { type: 'text/plain' });
+    const blob = new Blob([output], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `${customFaction.name.replace(/\s+/g, '_')}_async.txt`;
+    link.download = `${customFaction.name.replace(/\s+/g, "_")}_async.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -675,22 +792,22 @@ const availableComponentsForSidebar = useMemo(() => {
       promissory: "/franken pn_add promissory:",
       flagship: "/franken unit_add unit:",
       mech: "/franken unit_add unit:",
-      breakthrough: "/franken breakthrough_add breakthrough:"
+      breakthrough: "/franken breakthrough_add breakthrough:",
     };
 
     let output = [];
 
-    Object.keys(categoryCommandMap).forEach(category => {
-      (customFaction[category] || []).forEach(component => {
+    Object.keys(categoryCommandMap).forEach((category) => {
+      (customFaction[category] || []).forEach((component) => {
         output.push(`${categoryCommandMap[category]} ${component.name}`);
       });
     });
 
-    const blob = new Blob([output.join("\n")], { type: 'text/plain' });
+    const blob = new Blob([output.join("\n")], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `${customFaction.name.replace(/\s+/g, '_')}_async_commands.txt`;
+    link.download = `${customFaction.name.replace(/\s+/g, "_")}_async_commands.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -698,18 +815,23 @@ const availableComponentsForSidebar = useMemo(() => {
   };
 
   const getFactionTechsForSheet = () => {
-    return (customFaction.faction_techs || []).map(ft => {
+    return (customFaction.faction_techs || []).map((ft) => {
       // Search in base and DS factions (includes BR)
       const original = [
-        ...factionsData.factions.flatMap(f => f.faction_techs || []),
-        ...discordantStarsData.factions.flatMap(f => f.faction_techs || [])
-      ].find(t => t.name === ft.name);
+        ...factionsData.factions.flatMap((f) => f.faction_techs || []),
+        ...discordantStarsData.factions.flatMap((f) => f.faction_techs || []),
+      ].find((t) => t.name === ft.name);
 
       if (!original) return ft;
 
       if (original.unit_upgrades) {
         const unitStats = [
-          'cost','combat', 'move', 'capacity', 'abilities', 'description'
+          "cost",
+          "combat",
+          "move",
+          "capacity",
+          "abilities",
+          "description",
         ].reduce((acc, key) => {
           if (original[key] !== undefined) acc[key] = original[key];
           return acc;
@@ -718,7 +840,7 @@ const availableComponentsForSidebar = useMemo(() => {
         return {
           ...ft,
           unit_upgrades: original.unit_upgrades,
-          ...unitStats
+          ...unitStats,
         };
       }
 
@@ -728,17 +850,20 @@ const availableComponentsForSidebar = useMemo(() => {
 
   // Get combined faction list for dropdown
   const getAllFactionsList = React.useCallback(() => {
-    const baseFactions = factionsData.factions.map(f => ({ ...f, source: 'Base' }));
+    const baseFactions = factionsData.factions.map((f) => ({
+      ...f,
+      source: "Base",
+    }));
     const dsFactions = discordantStarsData.factions
-      .filter(f => !isBlueReverieFaction(f.name))
-      .map(f => ({ ...f, source: 'DS' }));
+      .filter((f) => !isBlueReverieFaction(f.name))
+      .map((f) => ({ ...f, source: "DS" }));
     const brFactions = discordantStarsData.factions
-      .filter(f => isBlueReverieFaction(f.name))
-      .map(f => ({ ...f, source: 'BR' }));
-    
+      .filter((f) => isBlueReverieFaction(f.name))
+      .map((f) => ({ ...f, source: "BR" }));
+
     // Apply filtering based on mode
     let filteredFactions = [];
-    
+
     if (dsOnlyMode) {
       // DS Only mode: Show ONLY DS factions (not BR)
       filteredFactions = dsFactions;
@@ -749,12 +874,12 @@ const availableComponentsForSidebar = useMemo(() => {
       // Default mode: Show only base factions
       filteredFactions = baseFactions;
     }
-    
+
     // Add Blue Reverie if enabled
     if (brAddMode) {
       filteredFactions = [...filteredFactions, ...brFactions];
     }
-    
+
     return filteredFactions.sort((a, b) => a.name.localeCompare(b.name));
   }, [dsOnlyMode, dsAddMode, brAddMode]);
 
@@ -763,303 +888,362 @@ const availableComponentsForSidebar = useMemo(() => {
       try {
         const el = headerRef.current;
         const h = el ? Math.ceil(el.getBoundingClientRect().height) : 56;
-        document.documentElement.style.setProperty('--header-height', `${h}px`);
+        document.documentElement.style.setProperty("--header-height", `${h}px`);
       } catch (e) {
-        document.documentElement.style.setProperty('--header-height', `56px`);
+        document.documentElement.style.setProperty("--header-height", `56px`);
       }
     };
 
     setHeaderHeightVar();
-    window.addEventListener('resize', setHeaderHeightVar);
-    return () => window.removeEventListener('resize', setHeaderHeightVar);
+    window.addEventListener("resize", setHeaderHeightVar);
+    return () => window.removeEventListener("resize", setHeaderHeightVar);
   }, []);
 
   const toggleFactionVisibility = (name) => {
-  setVisibleFactions(prev => {
-    const next = new Set(prev);
-    if (next.has(name)) next.delete(name);
-    else next.add(name);
-    return next;
-  });
-};
-
-const clearFactionFilter = () => {
-  setVisibleFactions(new Set());
-};
-
-const getAllAvailableSwaps = () => {
-  const swaps = [];
-  
-  categories.forEach(cat => {
-    const items = customFaction[cat] || [];
-    
-    items.forEach((item, itemIdx) => {
-      if (!item || !item.name) return;
-      
-      const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
-      
-      if (triggeredSwaps && Array.isArray(triggeredSwaps) && triggeredSwaps.length > 0) {
-        triggeredSwaps.forEach(swap => {
-          swaps.push({
-            playerIndex: 0,
-            triggerComponent: item,
-            triggerCategory: cat,
-            triggerIndex: itemIdx,
-            swapOption: swap
-          });
-        });
-      }
+    setVisibleFactions((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
     });
-  });
-  
-  return swaps;
-};
+  };
+
+  const clearFactionFilter = () => {
+    setVisibleFactions(new Set());
+  };
+
+  const getAllAvailableSwaps = () => {
+    const swaps = [];
+
+    categories.forEach((cat) => {
+      const items = customFaction[cat] || [];
+
+      items.forEach((item, itemIdx) => {
+        if (!item || !item.name) return;
+
+        const triggeredSwaps = getSwapOptionsForTrigger(
+          item.name,
+          item.faction,
+        );
+
+        if (
+          triggeredSwaps &&
+          Array.isArray(triggeredSwaps) &&
+          triggeredSwaps.length > 0
+        ) {
+          triggeredSwaps.forEach((swap) => {
+            swaps.push({
+              playerIndex: 0,
+              triggerComponent: item,
+              triggerCategory: cat,
+              triggerIndex: itemIdx,
+              swapOption: swap,
+            });
+          });
+        }
+      });
+    });
+
+    return swaps;
+  };
 
   return (
     <div className="min-h-[100dvh] w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="min-h-[100dvh] flex">
-    {!sidebarCollapsed && (
-  <div className="sidebar open">
-    {/* Sidebar Controls Header */}
-    <div className="sidebar-header" style={{ borderBottom: '1px solid var(--border-color)' }}>
-      <button
-        className="sidebar-close-button md:hidden"
-        aria-label="Close sidebar"
-        onClick={() => setSidebarCollapsed(true)}
-      >
-        ✕
-      </button>
-
-      <h1 className="sidebar-title">TI4 Faction Builder</h1>
-      <p className="sidebar-subtitle">Build custom factions</p>
-
-      <div className="space-y-2 mb-4 mt-4">
-        <select 
-          value={selectedFaction} 
-          onChange={e => setSelectedFaction(e.target.value)}
-          className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
-        >
-          <option value="">Load Base Faction...</option>
-          {getAllFactionsList().map(f => 
-            <option key={f.name + f.source} value={f.name}>
-              {f.name} {f.source === 'DS' ? '(DS)' : f.source === 'BR' ? '(BR)' : ''}
-            </option>
-          )}
-        </select>
-        
-        <div className="flex space-x-2">
-          <button 
-            onClick={() => handleLoadFaction(selectedFaction)}
-            disabled={!selectedFaction}
-            className="flex-1 px-3 py-1 bg-blue-600 text-white rounded disabled:bg-gray-700 hover:bg-blue-500 transition-colors text-sm"
-          >
-            Load
-          </button>
-          <button 
-            onClick={handleClearFaction}
-            className="flex-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-sm"
-          >
-            Clear
-          </button>
-        </div>
-      </div>
-
-      <input 
-        type="text" 
-        value={customFaction.name}
-        onChange={e => setCustomFaction(prev => ({ ...prev, name: e.target.value }))}
-        className="w-full border border-gray-700 p-2 rounded mb-4 bg-gray-800 text-white text-sm"
-        placeholder="Faction Name"
-      />
-
-      <div className="mb-4">
-        <label className="flex items-center cursor-pointer mb-2">
-          <input 
-            type="checkbox" 
-            checked={powerMode}
-            onChange={handleTogglePowerMode}
-            className="mr-2"
-            disabled={unlimitedMode}
-          />
-          <span className={`font-medium text-white text-sm ${unlimitedMode ? 'text-gray-500' : ''}`}>
-            Power Mode Limits
-          </span>
-        </label>
-        <div className="text-xs text-gray-400 mb-3">
-          {powerMode ? "Higher component limits" : "Standard component limits"}
-        </div>
-        
-        <label className="flex items-center cursor-pointer mb-2">
-          <input 
-            type="checkbox" 
-            checked={unlimitedMode}
-            onChange={handleToggleUnlimitedMode}
-            className="mr-2"
-          />
-          <span className="font-medium text-white text-sm">Unlimited Mode</span>
-        </label>
-        <div className="text-xs text-gray-400 mb-3">
-          {unlimitedMode ? "No component limits" : "Enable to remove all limits"}
-        </div>
-
-        <div className="border-t border-gray-700 pt-3 mt-3">
-          <div className="text-sm font-semibold text-yellow-400 mb-2">Discordant Stars</div>
-          
-          <label className="flex items-center cursor-pointer mb-2">
-            <input 
-              type="checkbox" 
-              checked={dsOnlyMode}
-              onChange={handleToggleDsOnlyMode}
-              className="mr-2"
-            />
-            <span className="font-medium text-white text-sm">DS Only Mode</span>
-          </label>
-          <div className="text-xs text-gray-400 mb-3">
-            {dsOnlyMode ? "Showing only DS components" : "Show only Discordant Stars components"}
-          </div>
-          
-          <label className="flex items-center cursor-pointer mb-2">
-            <input 
-              type="checkbox" 
-              checked={dsAddMode}
-              onChange={handleToggleDsAddMode}
-              className="mr-2"
-            />
-            <span className="font-medium text-white text-sm">Add DS Components</span>
-          </label>
-          <div className="text-xs text-gray-400 mb-3">
-            {dsAddMode ? "Adding DS components to base game" : "Add Discordant Stars to base game components"}
-          </div>
-
-          <label className="flex items-center cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={brAddMode}
-              onChange={handleToggleBrAddMode}
-              className="mr-2"
-            />
-            <span className="font-medium text-white text-sm">Add Blue Reverie (BR)</span>
-          </label>
-          <div className="text-xs text-gray-400">
-            {brAddMode ? "Adding Blue Reverie components" : "Add Blue Reverie components (from DS data)"}
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-2 mb-4">
-        <button 
-          onClick={exportFaction}
-          className="w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-500 font-semibold transition-colors text-sm"
-        >
-          Export Faction (JSON)
-        </button>
-
-        <button 
-          onClick={exportForAsync}
-          className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 font-semibold transition-colors text-sm"
-        >
-          Export as Text
-        </button>
-
-        <button 
-          onClick={exportForAsyncCommands}
-          className="w-full px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-500 font-semibold transition-colors text-sm"
-        >
-          Export for Async
-        </button>
-      </div>
-
-      <div className="border-t border-gray-700 pt-3">
-        <input 
-          type="search" 
-          placeholder="Search all components..."
-          value={globalSearchTerm}
-          onChange={(e) => setGlobalSearchTerm(e.target.value)}
-          className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
-        />
-        {globalSearchTerm && (
-          <div className="text-xs text-gray-400 mt-1">
-            Searching across all categories
-          </div>
-        )}
-      </div>
-
-      <button
-        onClick={() => setFactionFilterOpen(true)}
-        className="w-full mt-3 px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm"
-      >
-        Filter Factions
-      </button>
-
-      <div className="border-t border-gray-700 pt-3 mt-3 space-y-2">
-        <select
-          value={categoryFilter}
-          onChange={e => setCategoryFilter(e.target.value)}
-          className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
-        >
-          <option value="">All Categories</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>
-          ))}
-        </select>
-
-        <div className="space-y-1">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-400">Filter by tier</span>
-            <button
-              onClick={() => setTierSort(v => !v)}
-              title="Sort by tier"
-              className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${tierSort ? 'bg-yellow-600 border-yellow-400 text-white' : 'bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400'}`}
+        {!sidebarCollapsed && (
+          <div className="sidebar open">
+            {/* Sidebar Controls Header */}
+            <div
+              className="sidebar-header"
+              style={{ borderBottom: "1px solid var(--border-color)" }}
             >
-              ↑ Sort
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-1">
-            {['S+', 'S', 'A', 'B', 'C', 'D', 'E', 'F'].map(t => {
-              const active = tierFilter.has(t);
-              return (
-                <button
-                  key={t}
-                  onClick={() => setTierFilter(prev => {
-                    const next = new Set(prev);
-                    if (next.has(t)) next.delete(t); else next.add(t);
-                    return next;
-                  })}
-                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${active ? 'bg-yellow-600 border-yellow-400 text-white' : 'bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400'}`}
-                >
-                  {t}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-        {(categoryFilter || tierFilter.size > 0 || tierSort) && (
-          <button
-            onClick={() => { setCategoryFilter(''); setTierFilter(new Set()); setTierSort(false); }}
-            className="w-full text-xs text-gray-400 hover:text-white transition-colors"
-          >
-            ✕ Clear filters
-          </button>
-        )}
-      </div>
-    </div>
+              <button
+                className="sidebar-close-button md:hidden"
+                aria-label="Close sidebar"
+                onClick={() => setSidebarCollapsed(true)}
+              >
+                ✕
+              </button>
 
-    {/* Unified Sidebar Component */}
-    <Sidebar
-      categories={categories}
-      onSelectCategory={setSelectedCategory}
-      playerProgress={playerProgress}
-      draftLimits={unlimitedMode ? Object.fromEntries(categories.map(cat => [cat, 999])) : draftLimits}
-      selectedCategory={selectedCategory}
-      availableComponents={availableComponentsForSidebar}
-      onComponentClick={handleAddComponent}
-      draftVariant="franken"
-      defaultCollapsed={true}
-      isSearching={globalSearchTerm.trim().length > 0}
-      noWrapper={true}
-    />
-  </div>
-)}
+              <h1 className="sidebar-title">TI4 Faction Builder</h1>
+              <p className="sidebar-subtitle">Build custom factions</p>
+
+              <div className="space-y-2 mb-4 mt-4">
+                <select
+                  value={selectedFaction}
+                  onChange={(e) => setSelectedFaction(e.target.value)}
+                  className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
+                >
+                  <option value="">Load Base Faction...</option>
+                  {getAllFactionsList().map((f) => (
+                    <option key={f.name + f.source} value={f.name}>
+                      {f.name}{" "}
+                      {f.source === "DS"
+                        ? "(DS)"
+                        : f.source === "BR"
+                          ? "(BR)"
+                          : ""}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleLoadFaction(selectedFaction)}
+                    disabled={!selectedFaction}
+                    className="flex-1 px-3 py-1 bg-blue-600 text-white rounded disabled:bg-gray-700 hover:bg-blue-500 transition-colors text-sm"
+                  >
+                    Load
+                  </button>
+                  <button
+                    onClick={handleClearFaction}
+                    className="flex-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-sm"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              <input
+                type="text"
+                value={customFaction.name}
+                onChange={(e) =>
+                  setCustomFaction((prev) => ({
+                    ...prev,
+                    name: e.target.value,
+                  }))
+                }
+                className="w-full border border-gray-700 p-2 rounded mb-4 bg-gray-800 text-white text-sm"
+                placeholder="Faction Name"
+              />
+
+              <div className="mb-4">
+                <label className="flex items-center cursor-pointer mb-2">
+                  <input
+                    type="checkbox"
+                    checked={powerMode}
+                    onChange={handleTogglePowerMode}
+                    className="mr-2"
+                    disabled={unlimitedMode}
+                  />
+                  <span
+                    className={`font-medium text-white text-sm ${unlimitedMode ? "text-gray-500" : ""}`}
+                  >
+                    Power Mode Limits
+                  </span>
+                </label>
+                <div className="text-xs text-gray-400 mb-3">
+                  {powerMode
+                    ? "Higher component limits"
+                    : "Standard component limits"}
+                </div>
+
+                <label className="flex items-center cursor-pointer mb-2">
+                  <input
+                    type="checkbox"
+                    checked={unlimitedMode}
+                    onChange={handleToggleUnlimitedMode}
+                    className="mr-2"
+                  />
+                  <span className="font-medium text-white text-sm">
+                    Unlimited Mode
+                  </span>
+                </label>
+                <div className="text-xs text-gray-400 mb-3">
+                  {unlimitedMode
+                    ? "No component limits"
+                    : "Enable to remove all limits"}
+                </div>
+
+                <div className="border-t border-gray-700 pt-3 mt-3">
+                  <div className="text-sm font-semibold text-yellow-400 mb-2">
+                    Discordant Stars
+                  </div>
+
+                  <label className="flex items-center cursor-pointer mb-2">
+                    <input
+                      type="checkbox"
+                      checked={dsOnlyMode}
+                      onChange={handleToggleDsOnlyMode}
+                      className="mr-2"
+                    />
+                    <span className="font-medium text-white text-sm">
+                      DS Only Mode
+                    </span>
+                  </label>
+                  <div className="text-xs text-gray-400 mb-3">
+                    {dsOnlyMode
+                      ? "Showing only DS components"
+                      : "Show only Discordant Stars components"}
+                  </div>
+
+                  <label className="flex items-center cursor-pointer mb-2">
+                    <input
+                      type="checkbox"
+                      checked={dsAddMode}
+                      onChange={handleToggleDsAddMode}
+                      className="mr-2"
+                    />
+                    <span className="font-medium text-white text-sm">
+                      Add DS Components
+                    </span>
+                  </label>
+                  <div className="text-xs text-gray-400 mb-3">
+                    {dsAddMode
+                      ? "Adding DS components to base game"
+                      : "Add Discordant Stars to base game components"}
+                  </div>
+
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={brAddMode}
+                      onChange={handleToggleBrAddMode}
+                      className="mr-2"
+                    />
+                    <span className="font-medium text-white text-sm">
+                      Add Blue Reverie (BR)
+                    </span>
+                  </label>
+                  <div className="text-xs text-gray-400">
+                    {brAddMode
+                      ? "Adding Blue Reverie components"
+                      : "Add Blue Reverie components (from DS data)"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2 mb-4">
+                <button
+                  onClick={exportFaction}
+                  className="w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-500 font-semibold transition-colors text-sm"
+                >
+                  Export Faction (JSON)
+                </button>
+
+                <button
+                  onClick={exportForAsync}
+                  className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 font-semibold transition-colors text-sm"
+                >
+                  Export as Text
+                </button>
+
+                <button
+                  onClick={exportForAsyncCommands}
+                  className="w-full px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-500 font-semibold transition-colors text-sm"
+                >
+                  Export for Async
+                </button>
+              </div>
+
+              <div className="border-t border-gray-700 pt-3">
+                <input
+                  type="search"
+                  placeholder="Search all components..."
+                  value={globalSearchTerm}
+                  onChange={(e) => setGlobalSearchTerm(e.target.value)}
+                  className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
+                />
+                {globalSearchTerm && (
+                  <div className="text-xs text-gray-400 mt-1">
+                    Searching across all categories
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={() => setFactionFilterOpen(true)}
+                className="w-full mt-3 px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm"
+              >
+                Filter Factions
+              </button>
+
+              <div className="border-t border-gray-700 pt-3 mt-3 space-y-2">
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="w-full border border-gray-700 p-2 rounded bg-gray-800 text-white text-sm"
+                >
+                  <option value="">All Categories</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat
+                        .replace(/_/g, " ")
+                        .replace(/\b\w/g, (l) => l.toUpperCase())}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-400">
+                      Filter by tier
+                    </span>
+                    <button
+                      onClick={() => setTierSort((v) => !v)}
+                      title="Sort by tier"
+                      className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${tierSort ? "bg-yellow-600 border-yellow-400 text-white" : "bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400"}`}
+                    >
+                      ↑ Sort
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {["S+", "S", "A", "B", "C", "D", "E", "F"].map((t) => {
+                      const active = tierFilter.has(t);
+                      return (
+                        <button
+                          key={t}
+                          onClick={() =>
+                            setTierFilter((prev) => {
+                              const next = new Set(prev);
+                              if (next.has(t)) next.delete(t);
+                              else next.add(t);
+                              return next;
+                            })
+                          }
+                          className={`px-2 py-0.5 rounded text-xs font-bold border transition-colors ${active ? "bg-yellow-600 border-yellow-400 text-white" : "bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400"}`}
+                        >
+                          {t}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                {(categoryFilter || tierFilter.size > 0 || tierSort) && (
+                  <button
+                    onClick={() => {
+                      setCategoryFilter("");
+                      setTierFilter(new Set());
+                      setTierSort(false);
+                    }}
+                    className="w-full text-xs text-gray-400 hover:text-white transition-colors"
+                  >
+                    ✕ Clear filters
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Unified Sidebar Component */}
+            <Sidebar
+              categories={categories}
+              onSelectCategory={setSelectedCategory}
+              playerProgress={playerProgress}
+              draftLimits={
+                unlimitedMode
+                  ? Object.fromEntries(categories.map((cat) => [cat, 999]))
+                  : draftLimits
+              }
+              selectedCategory={selectedCategory}
+              availableComponents={availableComponentsForSidebar}
+              onComponentClick={handleAddComponent}
+              draftVariant="franken"
+              defaultCollapsed={true}
+              isSearching={globalSearchTerm.trim().length > 0}
+              noWrapper={true}
+            />
+          </div>
+        )}
 
         {!sidebarCollapsed && (
           <div
@@ -1071,12 +1255,15 @@ const getAllAvailableSwaps = () => {
         )}
 
         <div className="flex-1 overflow-hidden flex flex-col">
-          <div ref={headerRef} className="app-header bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
+          <div
+            ref={headerRef}
+            className="app-header bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg"
+          >
             <div className="px-4 py-2 flex justify-between items-center">
               <div className="flex items-center gap-3">
                 {onNavigate && (
                   <button
-                    onClick={() => onNavigate('/')}
+                    onClick={() => onNavigate("/")}
                     className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors mobile-action-button"
                   >
                     ← Home
@@ -1086,91 +1273,110 @@ const getAllAvailableSwaps = () => {
                   onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                   className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors mobile-action-button"
                 >
-                  {sidebarCollapsed ? '→ Show' : '← Hide'} Sidebar
+                  {sidebarCollapsed ? "→ Show" : "← Hide"} Sidebar
                 </button>
-                <h2 className="text-xl font-bold text-yellow-400">Faction Builder</h2>
+                <h2 className="text-xl font-bold text-yellow-400">
+                  Faction Builder
+                </h2>
               </div>
             </div>
           </div>
 
           <div className="flex-1 overflow-auto p-4 bg-gradient-to-b from-gray-900 to-gray-800">
             <FactionSheet
-  drafted={{
-    ...customFaction,
-    faction_techs: getFactionTechsForSheet()
-  }}
-  onRemove={handleRemoveComponent}
-  onSwapComponent={(playerIndex, category, componentIdx, swapOption, triggerComponent) => {
-  const { updatedFactions } = executeSwap({
-    factions: [customFaction],
-    playerIndex: 0,
-    swapCategory: category,
-    replaceIndex: componentIdx,
-    swapOption,
-    triggerComponent
-  });
+              drafted={{
+                ...customFaction,
+                faction_techs: getFactionTechsForSheet(),
+              }}
+              onRemove={handleRemoveComponent}
+              onSwapComponent={(
+                playerIndex,
+                category,
+                componentIdx,
+                swapOption,
+                triggerComponent,
+              ) => {
+                const { updatedFactions } = executeSwap({
+                  factions: [customFaction],
+                  playerIndex: 0,
+                  swapCategory: category,
+                  replaceIndex: componentIdx,
+                  swapOption,
+                  triggerComponent,
+                });
 
-  if (updatedFactions[0]) {
-    setCustomFaction(updatedFactions[0]);
-  }
-}}
-  draftLimits={unlimitedMode ? {} : draftLimits}
-  title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}`}
-  hiddenCategories={["blue_tiles", "red_tiles"]}
-  showReductionHelper={false}
-  showSwapHelper={true}
-  availableSwaps={getAllAvailableSwaps()}
-  playerIndex={0}
-/>
+                if (updatedFactions[0]) {
+                  setCustomFaction(updatedFactions[0]);
+                }
+              }}
+              draftLimits={unlimitedMode ? {} : draftLimits}
+              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}`}
+              hiddenCategories={["blue_tiles", "red_tiles"]}
+              showReductionHelper={false}
+              showSwapHelper={true}
+              availableSwaps={getAllAvailableSwaps()}
+              playerIndex={0}
+            />
           </div>
         </div>
       </div>
 
-      {factionFilterOpen && createPortal(
-  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[99999]">
-    <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 w-[400px] max-h-[80vh] overflow-y-auto">
-      <h2 className="text-lg font-bold text-yellow-400 mb-3">Show Factions</h2>
+      {factionFilterOpen &&
+        createPortal(
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[99999]">
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 w-[400px] max-h-[80vh] overflow-y-auto">
+              <h2 className="text-lg font-bold text-yellow-400 mb-3">
+                Show Factions
+              </h2>
 
-      <div className="space-y-2">
-        {getAllFactionsList().map(f => {
-          const isActive = visibleFactions.has(f.name);
-          return (
-            <label key={f.name + f.source} className="flex items-center gap-2 cursor-pointer text-sm">
-              <input
-                type="checkbox"
-                checked={isActive}
-                onChange={() => toggleFactionVisibility(f.name)}
-              />
-              <span className="text-white">
-                {f.name} {f.source === "DS" ? "(DS)" : f.source === "BR" ? "(BR)" : ""}
-              </span>
-            </label>
-          );
-        })}
-      </div>
+              <div className="space-y-2">
+                {getAllFactionsList().map((f) => {
+                  const isActive = visibleFactions.has(f.name);
+                  return (
+                    <label
+                      key={f.name + f.source}
+                      className="flex items-center gap-2 cursor-pointer text-sm"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={() => toggleFactionVisibility(f.name)}
+                      />
+                      <span className="text-white">
+                        {f.name}{" "}
+                        {f.source === "DS"
+                          ? "(DS)"
+                          : f.source === "BR"
+                            ? "(BR)"
+                            : ""}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
 
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={clearFactionFilter}
-          className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-sm"
-        >
-          Clear Filter
-        </button>
-        <button
-          onClick={() => setFactionFilterOpen(false)}
-          className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm"
-        >
-          Done
-        </button>
-      </div>
-    </div>
-  </div>,
-  document.body
-)}
-
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={clearFactionFilter}
+                  className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-sm"
+                >
+                  Clear Filter
+                </button>
+                <button
+                  onClick={() => setFactionFilterOpen(false)}
+                  className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
 
       {/* Hover Preview Popup */}
-      {hoveredComponent && supportsHover &&
+      {hoveredComponent &&
+        supportsHover &&
         createPortal(
           <div
             style={{
@@ -1188,7 +1394,7 @@ const getAllAvailableSwaps = () => {
               padding: "1rem",
               boxShadow: "0 30px 70px rgba(0,0,0,0.85)",
               zIndex: 100000,
-              pointerEvents: "none"
+              pointerEvents: "none",
             }}
           >
             <div
@@ -1196,7 +1402,7 @@ const getAllAvailableSwaps = () => {
               style={{
                 color: "var(--accent-yellow)",
                 fontSize: "1.1rem",
-                letterSpacing: "0.05em"
+                letterSpacing: "0.05em",
               }}
             >
               {hoveredComponent.component.name}
@@ -1212,45 +1418,57 @@ const getAllAvailableSwaps = () => {
             )}
 
             {/* Tech Color with Synergies */}
-            {hoveredComponent.category === 'faction_techs' && hoveredComponent.component.tech_type && (
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                  {hoveredComponent.component.tech_type}
-                </span>
-                {hoveredComponent.component.prerequisites && hoveredComponent.component.prerequisites.length > 0 && (
-                  <div className="flex items-center gap-1">
-                    {hoveredComponent.component.prerequisites.map((prereq, i) => {
-                      const techKey = prereq.toLowerCase();
-                      const icon = TECH_ICONS[techKey];
-                      if (!icon) return null;
-                      return (
-                        <img
-                          key={i}
-                          src={icon}
-                          alt={`${prereq} prerequisite`}
-                          className="w-5 h-5"
-                        />
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
+            {hoveredComponent.category === "faction_techs" &&
+              hoveredComponent.component.tech_type && (
+                <div className="flex items-center gap-2 mb-2">
+                  <span
+                    className="text-sm"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    {hoveredComponent.component.tech_type}
+                  </span>
+                  {hoveredComponent.component.prerequisites &&
+                    hoveredComponent.component.prerequisites.length > 0 && (
+                      <div className="flex items-center gap-1">
+                        {hoveredComponent.component.prerequisites.map(
+                          (prereq, i) => {
+                            const techKey = prereq.toLowerCase();
+                            const icon = TECH_ICONS[techKey];
+                            if (!icon) return null;
+                            return (
+                              <img
+                                key={i}
+                                src={icon}
+                                alt={`${prereq} prerequisite`}
+                                className="w-5 h-5"
+                              />
+                            );
+                          },
+                        )}
+                      </div>
+                    )}
+                </div>
+              )}
 
             {/* Synergies for faction techs */}
-            {hoveredComponent.category === 'faction_techs' &&
+            {hoveredComponent.category === "faction_techs" &&
               Array.isArray(hoveredComponent.component.synergies) &&
               hoveredComponent.component.synergies.map((syn, i) => {
                 const primaryKey = syn.primary?.toLowerCase();
                 const secondaryKey = syn.secondary?.toLowerCase();
                 const primaryIcon = TECH_ICONS[primaryKey];
                 const secondaryIcon = TECH_ICONS[secondaryKey];
-                
+
                 if (!primaryIcon || !secondaryIcon) return null;
 
                 return (
                   <div key={i} className="flex items-center gap-2 mb-2">
-                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>Synergy:</span>
+                    <span
+                      className="text-sm"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      Synergy:
+                    </span>
                     <img
                       src={primaryIcon}
                       alt={`${syn.primary} tech`}
@@ -1271,19 +1489,24 @@ const getAllAvailableSwaps = () => {
               })}
 
             {/* Breakthrough Synergy Icons in Preview */}
-            {hoveredComponent.category === 'breakthrough' &&
+            {hoveredComponent.category === "breakthrough" &&
               Array.isArray(hoveredComponent.component.synergy) &&
               hoveredComponent.component.synergy.map((syn, i) => {
                 const primaryKey = syn.primary?.toLowerCase();
                 const secondaryKey = syn.secondary?.toLowerCase();
                 const primaryIcon = TECH_ICONS[primaryKey];
                 const secondaryIcon = TECH_ICONS[secondaryKey];
-                
+
                 if (!primaryIcon || !secondaryIcon) return null;
 
                 return (
                   <div key={i} className="flex items-center gap-2 mb-2">
-                    <span className="text-sm" style={{ color: "var(--text-secondary)" }}>Synergy:</span>
+                    <span
+                      className="text-sm"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      Synergy:
+                    </span>
                     <img
                       src={primaryIcon}
                       alt={`${syn.primary} tech`}
@@ -1303,20 +1526,28 @@ const getAllAvailableSwaps = () => {
                 );
               })}
 
-              {/* Leaders note */}
-            {(hoveredComponent.category === 'commanders' || hoveredComponent.category === 'heroes') && hoveredComponent.component.note && (
-              <div className="text-sm mb-3">
-                <div className="font-semibold mb-2" style={{ color: "var(--accent-yellow)" }}>
-                  {hoveredComponent.component.note}
+            {/* Leaders note */}
+            {(hoveredComponent.category === "commanders" ||
+              hoveredComponent.category === "heroes") &&
+              hoveredComponent.component.note && (
+                <div className="text-sm mb-3">
+                  <div
+                    className="font-semibold mb-2"
+                    style={{ color: "var(--accent-yellow)" }}
+                  >
+                    {hoveredComponent.component.note}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Starting Techs - Special handling */}
-            {hoveredComponent.category === 'starting_techs' && (
+            {hoveredComponent.category === "starting_techs" && (
               <div className="text-sm mb-3">
                 {hoveredComponent.component.note && (
-                  <div className="font-semibold mb-2" style={{ color: "var(--accent-yellow)" }}>
+                  <div
+                    className="font-semibold mb-2"
+                    style={{ color: "var(--accent-yellow)" }}
+                  >
                     {hoveredComponent.component.note}
                   </div>
                 )}
@@ -1324,13 +1555,13 @@ const getAllAvailableSwaps = () => {
                   <ul className="space-y-1">
                     {hoveredComponent.component.techs.map((t, i) => {
                       const techColorMap = {
-                        'Blue': '#60a5fa',
-                        'Red': '#f87171',
-                        'Green': '#34d399',
-                        'Yellow': '#fcd34d'
+                        Blue: "#60a5fa",
+                        Red: "#f87171",
+                        Green: "#34d399",
+                        Yellow: "#fcd34d",
                       };
-                      const techColor = techColorMap[t.tech_type] || '#ffffff';
-                      
+                      const techColor = techColorMap[t.tech_type] || "#ffffff";
+
                       return (
                         <li key={i} style={{ color: techColor }}>
                           • {typeof t === "string" ? t : t.name}
@@ -1343,162 +1574,266 @@ const getAllAvailableSwaps = () => {
             )}
 
             {/* Regular techs array for other categories */}
-            {hoveredComponent.category !== 'starting_techs' && Array.isArray(hoveredComponent.component.techs) && (
-              <div className="text-sm mb-3">
-                <strong>Techs:</strong>
-                <ul className="list-disc list-inside">
-                  {hoveredComponent.component.techs.map((t, i) => (
-                    <li key={i}>
-                      {typeof t === "string"
-                        ? t
-                        : `${t.name}${
-                            t.tech_type ? ` (${t.tech_type})` : ""
-                          }`}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            {hoveredComponent.category !== "starting_techs" &&
+              Array.isArray(hoveredComponent.component.techs) && (
+                <div className="text-sm mb-3">
+                  <strong>Techs:</strong>
+                  <ul className="list-disc list-inside">
+                    {hoveredComponent.component.techs.map((t, i) => (
+                      <li key={i}>
+                        {typeof t === "string"
+                          ? t
+                          : `${t.name}${
+                              t.tech_type ? ` (${t.tech_type})` : ""
+                            }`}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-            {hoveredComponent.component.description && hoveredComponent.category !== 'starting_techs' && (
-              <div
-                className="text-sm italic mb-3"
-                style={{
-                  color: "var(--text-secondary)",
-                  lineHeight: 1.4
-                }}
-              >
-                {hoveredComponent.component.description}
-              </div>
-            )}
+            {hoveredComponent.component.description &&
+              hoveredComponent.category !== "starting_techs" && (
+                <div
+                  className="text-sm italic mb-3"
+                  style={{
+                    color: "var(--text-secondary)",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {hoveredComponent.component.description}
+                </div>
+              )}
 
             {/* Unit Stats for Flagship, Mech, and Starting Fleet */}
-            {(
-              hoveredComponent.component.combat !== undefined ||
+            {(hoveredComponent.component.combat !== undefined ||
               hoveredComponent.component.move !== undefined ||
               hoveredComponent.component.capacity !== undefined ||
               hoveredComponent.component.cost !== undefined ||
               (Array.isArray(hoveredComponent.component.abilities) &&
-                hoveredComponent.component.abilities.length > 0)
-            ) && (
+                hoveredComponent.component.abilities.length > 0)) && (
               <div className="mt-3 pt-3 border-t border-gray-700">
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   {hoveredComponent.component.cost !== undefined && (
                     <div>
-                      <span className="font-semibold text-yellow-400">Cost:</span>{' '}
-                      <span className="text-white">{hoveredComponent.component.cost}</span>
+                      <span className="font-semibold text-yellow-400">
+                        Cost:
+                      </span>{" "}
+                      <span className="text-white">
+                        {hoveredComponent.component.cost}
+                      </span>
                     </div>
                   )}
                   {hoveredComponent.component.combat !== undefined && (
                     <div>
-                      <span className="font-semibold text-red-400">Combat:</span>{' '}
-                      <span className="text-white">{hoveredComponent.component.combat}</span>
+                      <span className="font-semibold text-red-400">
+                        Combat:
+                      </span>{" "}
+                      <span className="text-white">
+                        {hoveredComponent.component.combat}
+                      </span>
                     </div>
                   )}
                   {hoveredComponent.component.move !== undefined && (
                     <div>
-                      <span className="font-semibold text-blue-400">Move:</span>{' '}
-                      <span className="text-white">{hoveredComponent.component.move}</span>
+                      <span className="font-semibold text-blue-400">Move:</span>{" "}
+                      <span className="text-white">
+                        {hoveredComponent.component.move}
+                      </span>
                     </div>
                   )}
                   {hoveredComponent.component.capacity !== undefined && (
                     <div>
-                      <span className="font-semibold text-green-400">Capacity:</span>{' '}
-                      <span className="text-white">{hoveredComponent.component.capacity}</span>
+                      <span className="font-semibold text-green-400">
+                        Capacity:
+                      </span>{" "}
+                      <span className="text-white">
+                        {hoveredComponent.component.capacity}
+                      </span>
                     </div>
                   )}
                 </div>
-                {hoveredComponent.component.abilities && hoveredComponent.component.abilities.length > 0 && (
-                  <div className="mt-2">
-                    <span className="font-semibold text-purple-400">Abilities:</span>{' '}
-                    <span className="text-white text-sm">{hoveredComponent.component.abilities.join(', ')}</span>
-                  </div>
-                )}
+                {hoveredComponent.component.abilities &&
+                  hoveredComponent.component.abilities.length > 0 && (
+                    <div className="mt-2">
+                      <span className="font-semibold text-purple-400">
+                        Abilities:
+                      </span>{" "}
+                      <span className="text-white text-sm">
+                        {hoveredComponent.component.abilities.join(", ")}
+                      </span>
+                    </div>
+                  )}
               </div>
             )}
 
             {/* Tile/Home System Info - Planets */}
-            {(hoveredComponent.category === 'blue_tiles' || 
-              hoveredComponent.category === 'red_tiles' || 
-              hoveredComponent.category === 'home_systems') && 
-              hoveredComponent.component.planets && 
+            {(hoveredComponent.category === "blue_tiles" ||
+              hoveredComponent.category === "red_tiles" ||
+              hoveredComponent.category === "home_systems") &&
+              hoveredComponent.component.planets &&
               hoveredComponent.component.planets.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-gray-700">
-                <div className="font-semibold mb-2 text-sm" style={{ color: "var(--accent-green)" }}>
-                  Planets:
-                </div>
-                {hoveredComponent.component.planets.map((planet, idx) => (
-                  <div key={idx} className="mb-3 pb-3 border-b border-gray-700 last:border-b-0">
-                    <div className="font-semibold text-sm mb-1" style={{ color: "#6ee7b7" }}>
-                      {planet.name}
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-xs mb-1">
-                      <div>
-                        <span className="font-semibold text-yellow-400">Resources:</span>{' '}
-                        <span className="text-white">{planet.resource || 0}</span>
-                      </div>
-                      <div>
-                        <span className="font-semibold text-blue-400">Influence:</span>{' '}
-                        <span className="text-white">{planet.influence || 0}</span>
-                      </div>
-                    </div>
-                    {planet.traits && planet.traits.length > 0 && (
-                      <div className="text-xs mb-1">
-                        <span className="font-semibold text-purple-400">Traits:</span>{' '}
-                        <span className="text-white">{planet.traits.join(', ')}</span>
-                      </div>
-                    )}
-                    {planet.technology_specialty && planet.technology_specialty.length > 0 && (
-                      <div className="text-xs mb-1">
-                        <span className="font-semibold text-orange-400">Tech:</span>{' '}
-                        <span className="text-white">{planet.technology_specialty.join(', ')}</span>
-                      </div>
-                    )}
-                    {planet.legendary_ability && (
-                      <div className="text-xs mt-2 p-2 rounded" style={{ background: "rgba(251, 191, 36, 0.1)", border: "1px solid rgba(251, 191, 36, 0.3)" }}>
-                        <span className="font-semibold" style={{ color: "var(--accent-yellow)" }}>Legendary:</span>{' '}
-                        <span className="text-white italic">{planet.legendary_ability}</span>
-                      </div>
-                    )}
+                <div className="mt-3 pt-3 border-t border-gray-700">
+                  <div
+                    className="font-semibold mb-2 text-sm"
+                    style={{ color: "var(--accent-green)" }}
+                  >
+                    Planets:
                   </div>
-                ))}
-              </div>
-            )}
+                  {hoveredComponent.component.planets.map((planet, idx) => (
+                    <div
+                      key={idx}
+                      className="mb-3 pb-3 border-b border-gray-700 last:border-b-0"
+                    >
+                      <div
+                        className="font-semibold text-sm mb-1"
+                        style={{ color: "#6ee7b7" }}
+                      >
+                        {planet.name}
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs mb-1">
+                        <div>
+                          <span className="font-semibold text-yellow-400">
+                            Resources:
+                          </span>{" "}
+                          <span className="text-white">
+                            {planet.resource || 0}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-blue-400">
+                            Influence:
+                          </span>{" "}
+                          <span className="text-white">
+                            {planet.influence || 0}
+                          </span>
+                        </div>
+                      </div>
+                      {planet.traits && planet.traits.length > 0 && (
+                        <div className="text-xs mb-1">
+                          <span className="font-semibold text-purple-400">
+                            Traits:
+                          </span>{" "}
+                          <span className="text-white">
+                            {planet.traits.join(", ")}
+                          </span>
+                        </div>
+                      )}
+                      {planet.technology_specialty &&
+                        planet.technology_specialty.length > 0 && (
+                          <div className="text-xs mb-1">
+                            <span className="font-semibold text-orange-400">
+                              Tech:
+                            </span>{" "}
+                            <span className="text-white">
+                              {planet.technology_specialty.join(", ")}
+                            </span>
+                          </div>
+                        )}
+                      {planet.legendary_ability && (
+                        <div
+                          className="text-xs mt-2 p-2 rounded"
+                          style={{
+                            background: "rgba(251, 191, 36, 0.1)",
+                            border: "1px solid rgba(251, 191, 36, 0.3)",
+                          }}
+                        >
+                          <span
+                            className="font-semibold"
+                            style={{ color: "var(--accent-yellow)" }}
+                          >
+                            Legendary:
+                          </span>{" "}
+                          <span className="text-white italic">
+                            {planet.legendary_ability}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
 
             {/* Wormhole and Anomalies for tiles */}
-            {(hoveredComponent.category === 'blue_tiles' || hoveredComponent.category === 'red_tiles') && (
+            {(hoveredComponent.category === "blue_tiles" ||
+              hoveredComponent.category === "red_tiles") && (
               <>
                 {hoveredComponent.component.wormhole && (
                   <div className="mt-2 text-xs">
-                    <span className="font-semibold text-purple-400">Wormhole:</span>{' '}
-                    <span className="text-white">{hoveredComponent.component.wormhole}</span>
+                    <span className="font-semibold text-purple-400">
+                      Wormhole:
+                    </span>{" "}
+                    <span className="text-white">
+                      {hoveredComponent.component.wormhole}
+                    </span>
                   </div>
                 )}
-                {hoveredComponent.component.anomalies && hoveredComponent.component.anomalies.length > 0 && (
-                  <div className="mt-2 text-xs">
-                    <span className="font-semibold text-red-400">Anomalies:</span>{' '}
-                    <span className="text-white">{hoveredComponent.component.anomalies.join(', ')}</span>
-                  </div>
-                )}
+                {hoveredComponent.component.anomalies &&
+                  hoveredComponent.component.anomalies.length > 0 && (
+                    <div className="mt-2 text-xs">
+                      <span className="font-semibold text-red-400">
+                        Anomalies:
+                      </span>{" "}
+                      <span className="text-white">
+                        {hoveredComponent.component.anomalies.join(", ")}
+                      </span>
+                    </div>
+                  )}
               </>
             )}
 
             {(() => {
-              const extras = getExtraComponents(hoveredComponent.component.name, hoveredComponent.component.faction);
-              const swaps = getSwapOptionsForTrigger(hoveredComponent.component.name, hoveredComponent.component.faction);
+              const extras = getExtraComponents(
+                hoveredComponent.component.name,
+                hoveredComponent.component.faction,
+              );
+              const swaps = getSwapOptionsForTrigger(
+                hoveredComponent.component.name,
+                hoveredComponent.component.faction,
+              );
               if (extras.length === 0 && swaps.length === 0) return null;
               return (
                 <div className="mt-3 pt-3 border-t border-gray-700">
                   {extras.length > 0 && (
                     <div className="mb-2">
-                      <div className="font-semibold text-xs mb-1" style={{ color: "var(--accent-green)" }}>ALSO GAINS</div>
+                      <div
+                        className="font-semibold text-xs mb-1"
+                        style={{ color: "var(--accent-green)" }}
+                      >
+                        ALSO GAINS
+                      </div>
                       {extras.map((extra, i) => {
-                        const comp = findFullComponentData(extra.name, extra.faction, extra.category) || extra;
+                        const comp =
+                          findFullComponentData(
+                            extra.name,
+                            extra.faction,
+                            extra.category,
+                          ) || extra;
                         return (
-                          <div key={i} className="text-xs mb-2 p-2 rounded" style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)" }}>
-                            <div className="font-semibold text-white">{comp.name}</div>
-                            {comp.faction && <div className="text-xs" style={{ color: "var(--accent-blue)" }}>{comp.faction}</div>}
-                            {comp.description && <div className="text-gray-300 mt-1 italic">{comp.description}</div>}
+                          <div
+                            key={i}
+                            className="text-xs mb-2 p-2 rounded"
+                            style={{
+                              background: "rgba(16,185,129,0.1)",
+                              border: "1px solid rgba(16,185,129,0.3)",
+                            }}
+                          >
+                            <div className="font-semibold text-white">
+                              {comp.name}
+                            </div>
+                            {comp.faction && (
+                              <div
+                                className="text-xs"
+                                style={{ color: "var(--accent-blue)" }}
+                              >
+                                {comp.faction}
+                              </div>
+                            )}
+                            {comp.description && (
+                              <div className="text-gray-300 mt-1 italic">
+                                {comp.description}
+                              </div>
+                            )}
                           </div>
                         );
                       })}
@@ -1506,14 +1841,44 @@ const getAllAvailableSwaps = () => {
                   )}
                   {swaps.length > 0 && (
                     <div>
-                      <div className="font-semibold text-xs mb-1" style={{ color: "var(--accent-yellow)" }}>CAN SWAP</div>
+                      <div
+                        className="font-semibold text-xs mb-1"
+                        style={{ color: "var(--accent-yellow)" }}
+                      >
+                        CAN SWAP
+                      </div>
                       {swaps.map((swap, i) => {
-                        const comp = findFullComponentData(swap.name, swap.faction, swap.category) || swap;
+                        const comp =
+                          findFullComponentData(
+                            swap.name,
+                            swap.faction,
+                            swap.category,
+                          ) || swap;
                         return (
-                          <div key={i} className="text-xs mb-2 p-2 rounded" style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)" }}>
-                            <div className="font-semibold text-white">{comp.name}</div>
-                            {comp.faction && <div className="text-xs" style={{ color: "var(--accent-blue)" }}>{comp.faction}</div>}
-                            {comp.description && <div className="text-gray-300 mt-1 italic">{comp.description}</div>}
+                          <div
+                            key={i}
+                            className="text-xs mb-2 p-2 rounded"
+                            style={{
+                              background: "rgba(251,191,36,0.1)",
+                              border: "1px solid rgba(251,191,36,0.3)",
+                            }}
+                          >
+                            <div className="font-semibold text-white">
+                              {comp.name}
+                            </div>
+                            {comp.faction && (
+                              <div
+                                className="text-xs"
+                                style={{ color: "var(--accent-blue)" }}
+                              >
+                                {comp.faction}
+                              </div>
+                            )}
+                            {comp.description && (
+                              <div className="text-gray-300 mt-1 italic">
+                                {comp.description}
+                              </div>
+                            )}
                           </div>
                         );
                       })}
@@ -1523,7 +1888,7 @@ const getAllAvailableSwaps = () => {
               );
             })()}
           </div>,
-          document.body
+          document.body,
         )}
     </div>
   );
