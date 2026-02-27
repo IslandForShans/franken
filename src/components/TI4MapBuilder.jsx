@@ -527,6 +527,7 @@ export default function TI4MapBuilder({ onNavigate }) {
   const [altLayoutActive, setAltLayoutActive] = useState(false);
   const [genSettings, setGenSettings] = useState({
     matchWormholes: true,
+    noWormholes: false,
     anomalyRatio: 0.2, // fraction of fill slots that are anomaly tiles
     legendaryCount: 2,
     minHomeResource: 3,
@@ -546,6 +547,7 @@ export default function TI4MapBuilder({ onNavigate }) {
   const isPanningRef = useRef(false);
   const panStartRef = useRef({ x: 0, y: 0 });
   const panOffsetStartRef = useRef({ x: 0, y: 0 });
+  const colorTemplateRef = useRef(null);
 
   useLayoutEffect(() => {
     const viewport = mapViewportRef.current;
@@ -788,6 +790,12 @@ export default function TI4MapBuilder({ onNavigate }) {
   }, [playerCount, ringCount]);
 
   const generateMap = useCallback(() => {
+    console.log('generateMap', { playerCount, ringCount, genSettings, useAltLayout: useAltLayoutRef.current });
+    setCorners({});
+    setGeneratedHomeLabels(null);
+    useAltLayoutRef.current = false;
+    setAltLayoutActive(false);
+
     const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
     if (useAltLayoutRef.current && HOME_LABELS_ALT[playerCount]) {
@@ -802,8 +810,10 @@ export default function TI4MapBuilder({ onNavigate }) {
       const fillPositions = mapPositions.filter((p) => sliceSet.has(p.label));
       const fillCount = fillPositions.length;
 
-      const eligiblePool = ELIGIBLE_SYSTEM_TILES.filter((t) =>
-        genSettings.genExpansions.has(t.expansion),
+      const eligiblePool = ELIGIBLE_SYSTEM_TILES.filter(
+        (t) =>
+          genSettings.genExpansions.has(t.expansion) &&
+          (!genSettings.noWormholes || !t.wormhole),
       );
       const dedupe = (arr) => {
         const seen = new Set();
@@ -972,6 +982,7 @@ export default function TI4MapBuilder({ onNavigate }) {
         Object.entries(tempPlaced).forEach(([lbl, { key }]) => {
           newPlaced[lbl] = key;
         });
+        console.log('SUCCESS - newPlaced:', newPlaced);
         setPlaced(newPlaced);
         setGeneratedHomeLabels(new Set(altHomes));
         return;
@@ -982,9 +993,195 @@ export default function TI4MapBuilder({ onNavigate }) {
       return;
     }
 
+    // ── Custom color-tile layout (00_gray / 00_blue / 00_red / 00_green) ──
+    const CUSTOM_COLOR_KEYS = new Set([
+      "00_gray",
+      "00_blue",
+      "00_red",
+      "00_green",
+    ]);
+    const templatePlaced = colorTemplateRef.current ?? placed;
+    const customColorEntries = Object.entries(templatePlaced).filter(
+      ([, key]) => CUSTOM_COLOR_KEYS.has(key),
+    );
+    if (customColorEntries.length > 0) {
+      if (!colorTemplateRef.current) colorTemplateRef.current = { ...placed };
+      const greenEntries = customColorEntries.filter(
+        ([, key]) => key === "00_green",
+      );
+      const blueEntries = customColorEntries.filter(
+        ([, key]) => key === "00_blue",
+      );
+      const redEntries = customColorEntries.filter(
+        ([, key]) => key === "00_red",
+      );
+      const grayEntries = customColorEntries.filter(
+        ([, key]) => key === "00_gray",
+      );
+
+      const greenPositions = greenEntries
+        .map(([lbl]) => mapPositions.find((p) => p.label === lbl))
+        .filter(Boolean);
+
+      const eligiblePool = ELIGIBLE_SYSTEM_TILES.filter(
+        (t) =>
+          genSettings.genExpansions.has(t.expansion) &&
+          (!genSettings.noWormholes || !t.wormhole),
+      );
+      const dedupe = (arr) => {
+        const seen = new Set();
+        return arr.filter((t) =>
+          seen.has(t.key) ? false : (seen.add(t.key), true),
+        );
+      };
+      // Blue = planet systems (no anomaly, not legendary-only)
+      const blueTilePool = dedupe(
+        eligiblePool.filter(
+          (t) => t.anomalies.length === 0 && t.planets.length > 0,
+        ),
+      );
+      // Red = anomalies + voids/wormhole-only tiles
+      const redTilePool = dedupe(
+        eligiblePool.filter(
+          (t) => t.anomalies.length > 0 || t.planets.length === 0,
+        ),
+      );
+      // Gray = any eligible tile
+      const anyTilePool = dedupe(eligiblePool);
+
+      const MAX_ATTEMPTS = 500;
+      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+        const tempPlaced = {};
+        const usedKeys = new Set(
+          Object.values(templatePlaced).filter(
+            (key) =>
+              key && !CUSTOM_COLOR_KEYS.has(key) && !key.includes("Hyperlane"),
+          ),
+        );
+        let ok = true;
+
+        // Fill blue slots
+        const shuffledBlue = shuffle(blueTilePool);
+        let bIdx = 0;
+        for (const [lbl] of blueEntries) {
+          while (
+            bIdx < shuffledBlue.length &&
+            usedKeys.has(shuffledBlue[bIdx].key)
+          )
+            bIdx++;
+          if (bIdx >= shuffledBlue.length) {
+            ok = false;
+            break;
+          }
+          usedKeys.add(shuffledBlue[bIdx].key);
+          tempPlaced[lbl] = { key: shuffledBlue[bIdx++].key };
+        }
+        if (!ok) continue;
+
+        // Fill red slots
+        const shuffledRed = shuffle(redTilePool);
+        let rIdx = 0;
+        for (const [lbl] of redEntries) {
+          while (
+            rIdx < shuffledRed.length &&
+            usedKeys.has(shuffledRed[rIdx].key)
+          )
+            rIdx++;
+          if (rIdx >= shuffledRed.length) {
+            ok = false;
+            break;
+          }
+          usedKeys.add(shuffledRed[rIdx].key);
+          tempPlaced[lbl] = { key: shuffledRed[rIdx++].key };
+        }
+        if (!ok) continue;
+
+        // Fill gray slots (any eligible tile not yet used)
+        const shuffledAny = shuffle(
+          anyTilePool.filter((t) => !usedKeys.has(t.key)),
+        );
+        let aIdx = 0;
+        for (const [lbl] of grayEntries) {
+          while (
+            aIdx < shuffledAny.length &&
+            usedKeys.has(shuffledAny[aIdx].key)
+          )
+            aIdx++;
+          if (aIdx >= shuffledAny.length) {
+            ok = false;
+            break;
+          }
+          usedKeys.add(shuffledAny[aIdx].key);
+          tempPlaced[lbl] = { key: shuffledAny[aIdx++].key };
+        }
+        if (!ok) continue;
+
+        // Balance check against 00_green home positions
+        if (greenPositions.length > 0) {
+          const homeTotals = greenPositions.map((homePos) => {
+            let res = 0,
+              inf = 0;
+            (adjacency[homePos.label] || []).forEach((n) => {
+              const entry = tempPlaced[n];
+              const existingKey = templatePlaced[n];
+              const key =
+                entry?.key ??
+                (existingKey &&
+                !CUSTOM_COLOR_KEYS.has(existingKey) &&
+                !existingKey.includes("Hyperlane")
+                  ? existingKey
+                  : null);
+              if (key) {
+                buildTileMeta(key).planets.forEach((p) => {
+                  res += p.resource || 0;
+                  inf += p.influence || 0;
+                });
+              }
+            });
+            return { res, inf };
+          });
+          const belowMin = homeTotals.some(
+            (t) =>
+              t.res < genSettings.minHomeResource ||
+              t.inf < genSettings.minHomeInfluence,
+          );
+          if (belowMin) continue;
+          if (greenPositions.length > 1) {
+            const scores = homeTotals.map((t) => t.res + t.inf);
+            const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+            if (Math.max(...scores.map((v) => Math.abs(v - mean))) > 7)
+              continue;
+          }
+        }
+
+        // Success — merge over existing placed, replacing only the color tiles
+        const newPlaced = { ...templatePlaced };
+        greenPositions.forEach((p) => {
+          newPlaced[p.label] = HOME_TILE_KEY; // 00_green stays as home marker
+        });
+        Object.entries(tempPlaced).forEach(([lbl, { key }]) => {
+          newPlaced[lbl] = key;
+        });
+        console.log('SUCCESS - newPlaced:', newPlaced);
+        console.trace('setPlaced called here');
+        setPlaced(newPlaced);
+        setGeneratedHomeLabels(
+          greenPositions.length > 0
+            ? new Set(greenPositions.map((p) => p.label))
+            : null,
+        );
+        return;
+      }
+      alert(
+        "Could not generate a valid map after many attempts. Try relaxing settings.",
+      );
+      return;
+    }
+
     // ── Standard layout ────────────────────────────────────────────────────
     const cornerPicks = HOME_CORNER_PICKS[playerCount];
     const explicitHomeLabels = HOME_LABELS_BY_PLAYER_COUNT[playerCount] ?? null;
+    console.log('layout decision:', { playerCount, cornerPicks, explicitHomeLabels });
     if (!cornerPicks && !explicitHomeLabels) {
       alert("Player count not supported for generation yet.");
       return;
@@ -996,6 +1193,7 @@ export default function TI4MapBuilder({ onNavigate }) {
           .map((lbl) => mapPositions.find((p) => p.label === lbl))
           .filter(Boolean)
       : cornerPicks.map((i) => outerRing[i * ringCount]).filter(Boolean);
+    console.log('homePositions:', homePositions.map(p => p.label));
     const homeLabels = new Set(homePositions.map((p) => p.label));
     const fillPositions = mapPositions.filter(
       (p) => p.label !== "000" && !homeLabels.has(p.label),
@@ -1174,6 +1372,7 @@ export default function TI4MapBuilder({ onNavigate }) {
       Object.entries(tempPlaced).forEach(([lbl, { key }]) => {
         newPlaced[lbl] = key;
       });
+      console.log('SUCCESS - newPlaced:', newPlaced);
       setPlaced(newPlaced);
       setGeneratedHomeLabels(new Set(homePositions.map((p) => p.label)));
       return;
@@ -1182,7 +1381,7 @@ export default function TI4MapBuilder({ onNavigate }) {
     alert(
       "Could not generate a valid map after many attempts. Try relaxing settings (lower legendary count, reduce minimums, or disable wormhole matching).",
     );
-  }, [ringCount, mapPositions, adjacency, playerCount, genSettings]);
+  }, [ringCount, mapPositions, adjacency, playerCount, genSettings, placed]);
 
   const balanceMap = useCallback(() => {
     if (!generatedHomeLabels) return;
@@ -1698,6 +1897,7 @@ export default function TI4MapBuilder({ onNavigate }) {
                   setGeneratedHomeLabels(null);
                   useAltLayoutRef.current = false;
                   setAltLayoutActive(false);
+                  colorTemplateRef.current = null;
                 }}
                 className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
               >
@@ -1788,33 +1988,34 @@ export default function TI4MapBuilder({ onNavigate }) {
                   >
                     Generation
                   </span>
-                  {[{ key: "matchWormholes", label: "Match Wormholes" }].map(
-                    ({ key, label }) => (
-                      <label
-                        key={key}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 6,
-                          fontSize: 11,
-                          color: "#d1d5db",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={genSettings[key]}
-                          onChange={(e) =>
-                            setGenSettings((s) => ({
-                              ...s,
-                              [key]: e.target.checked,
-                            }))
-                          }
-                        />
-                        {label}
-                      </label>
-                    ),
-                  )}
+                  {[
+                    { key: "matchWormholes", label: "Match Wormholes" },
+                    { key: "noWormholes", label: "No Wormholes" },
+                  ].map(({ key, label }) => (
+                    <label
+                      key={key}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontSize: 11,
+                        color: "#d1d5db",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={genSettings[key]}
+                        onChange={(e) =>
+                          setGenSettings((s) => ({
+                            ...s,
+                            [key]: e.target.checked,
+                          }))
+                        }
+                      />
+                      {label}
+                    </label>
+                  ))}
                   <div style={{ display: "flex", gap: 4, marginTop: 2 }}>
                     {[
                       {

@@ -56,6 +56,12 @@ export default function MainPage({ onNavigate }) {
               >
                 Milty Draft
               </button>
+              <button
+                onClick={() => handleNavigation("/combat")}
+                className="w-full px-4 py-3 rounded-lg bg-orange-700 hover:bg-orange-600 transition-colors font-semibold text-center"
+              >
+                Combat Simulator
+              </button>
             </div>
           </div>
         )}
@@ -102,6 +108,12 @@ export default function MainPage({ onNavigate }) {
                 className="w-full sm:w-auto px-8 py-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-indigo-900/50"
               >
                 Milty Draft
+              </button>
+              <button
+                onClick={() => handleNavigation("/combat")}
+                className="w-full sm:w-auto px-8 py-4 rounded-lg bg-red-600 hover:bg-red-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-red-900/50"
+              >
+                Combat Simulator
               </button>
             </div>
           </div>
@@ -358,6 +370,43 @@ export default function MainPage({ onNavigate }) {
               <li className="flex items-start">
                 <span className="text-orange-400 mr-2">•</span>
                 <span>Standard 3-ring layout</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Combat Simulator Card */}
+          <div
+            onClick={() => handleNavigation("/combat")}
+            className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 sm:p-8 border border-gray-700 hover:border-orange-500 transition-all hover:shadow-xl hover:shadow-orange-900/30 cursor-pointer"
+          >
+            <div className="text-4xl mb-4">⚔️</div>
+            <h4 className="text-xl sm:text-2xl font-bold mb-3 text-orange-400">
+              Combat Simulator
+            </h4>
+            <p className="text-gray-300 mb-4 text-sm sm:text-base">
+              Monte Carlo space and ground combat simulation with win
+              probabilities, hit averages, and round-by-round breakdowns.
+            </p>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li className="flex items-start">
+                <span className="text-orange-400 mr-2">•</span>
+                <span>Space &amp; ground combat</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-orange-400 mr-2">•</span>
+                <span>Win probability %</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-orange-400 mr-2">•</span>
+                <span>Avg hits per round</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-orange-400 mr-2">•</span>
+                <span>Sustain damage tracking</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-orange-400 mr-2">•</span>
+                <span>Fleet text input + spinners</span>
               </li>
             </ul>
           </div>
