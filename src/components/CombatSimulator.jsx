@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { factionsData, discordantStarsData } from "../data/processedData";
 
 // ─── Unit Definitions ─────────────────────────────────────────────────────────
 
@@ -11,6 +12,10 @@ const SPACE_UNITS = [
     sustain: false,
     afbHit: 0,
     afbDice: 0,
+    spaceCannonHit: 0,
+    spaceCannonDice: 0,
+    bombardmentHit: 0,
+    bombardmentDice: 0,
     isFighter: true,
   },
   {
@@ -21,6 +26,10 @@ const SPACE_UNITS = [
     sustain: false,
     afbHit: 9,
     afbDice: 2,
+    spaceCannonHit: 0,
+    spaceCannonDice: 0,
+    bombardmentHit: 0,
+    bombardmentDice: 0,
     isFighter: false,
   },
   {
@@ -31,6 +40,10 @@ const SPACE_UNITS = [
     sustain: false,
     afbHit: 0,
     afbDice: 0,
+    spaceCannonHit: 0,
+    spaceCannonDice: 0,
+    bombardmentHit: 0,
+    bombardmentDice: 0,
     isFighter: false,
   },
   {
@@ -41,6 +54,10 @@ const SPACE_UNITS = [
     sustain: false,
     afbHit: 0,
     afbDice: 0,
+    spaceCannonHit: 0,
+    spaceCannonDice: 0,
+    bombardmentHit: 0,
+    bombardmentDice: 0,
     isFighter: false,
   },
   {
@@ -51,6 +68,10 @@ const SPACE_UNITS = [
     sustain: true,
     afbHit: 0,
     afbDice: 0,
+    spaceCannonHit: 0,
+    spaceCannonDice: 0,
+    bombardmentHit: 5,
+    bombardmentDice: 1,
     isFighter: false,
   },
   {
@@ -61,6 +82,10 @@ const SPACE_UNITS = [
     sustain: true,
     afbHit: 0,
     afbDice: 0,
+    spaceCannonHit: 0,
+    spaceCannonDice: 0,
+    bombardmentHit: 3,
+    bombardmentDice: 3,
     isFighter: false,
   },
   {
@@ -71,6 +96,10 @@ const SPACE_UNITS = [
     sustain: true,
     afbHit: 0,
     afbDice: 0,
+    spaceCannonHit: 0,
+    spaceCannonDice: 0,
+    bombardmentHit: 0,
+    bombardmentDice: 0,
     isFighter: false,
   },
 ];
@@ -84,6 +113,10 @@ const GROUND_UNITS = [
     sustain: false,
     afbHit: 0,
     afbDice: 0,
+    spaceCannonHit: 0,
+    spaceCannonDice: 0,
+    bombardmentHit: 0,
+    bombardmentDice: 0,
     isFighter: false,
   },
   {
@@ -94,9 +127,174 @@ const GROUND_UNITS = [
     sustain: true,
     afbHit: 0,
     afbDice: 0,
+    spaceCannonHit: 0,
+    spaceCannonDice: 0,
+    bombardmentHit: 0,
+    bombardmentDice: 0,
     isFighter: false,
   },
 ];
+
+const BASE_UNIT_BY_KEYWORD = {
+  "strike wing alpha": "destroyer",
+  "super-dreadnought": "dreadnought",
+  exotrireme: "dreadnought",
+  tribune: "dreadnought",
+  "chitin hulk": "dreadnought",
+  aegis: "dreadnought",
+  "hybrid crystal fighter": "fighter",
+  "star dragon": "fighter",
+  "heavy bomber": "fighter",
+  "spec ops": "infantry",
+  "letani warrior": "infantry",
+  "crimson legionnaire": "infantry",
+  "saturn engine": "cruiser",
+  corsair: "cruiser",
+  exile: "cruiser",
+  "floating factory": "carrier",
+  "advanced carrier": "carrier",
+  "trade port": "carrier",
+  "combat transport": "carrier",
+  linkship: "carrier",
+  "prototype war sun": "warsun",
+  memoria: "flagship",
+};
+
+const ALL_FACTIONS = [
+  ...(factionsData?.factions ?? []),
+  ...(discordantStarsData?.factions ?? []),
+];
+
+function parseCombatValue(value) {
+  if (typeof value === "number") return { combat: value, dice: 1 };
+  if (typeof value !== "string") return null;
+  const match = value.match(/(\d+)\s*\(x(\d+)\)/i);
+  if (match) {
+    return { combat: parseInt(match[1], 10), dice: parseInt(match[2], 10) };
+  }
+  const n = parseInt(value, 10);
+  return Number.isNaN(n) ? null : { combat: n, dice: 1 };
+}
+
+function parseAbilityStat(abilities = [], key) {
+  const patternByKey = {
+    afb: /anti-fighter barrage\s*(\d+)(?:\s*\(x(\d+)\))?/i,
+    spaceCannon: /space cannon\s*(\d+)(?:\s*\(x(\d+)\))?/i,
+    bombardment: /bombardment\s*(\d+)(?:\s*\(x(\d+)\))?/i,
+  };
+  const pattern = patternByKey[key];
+  if (!pattern) return { hit: 0, dice: 0 };
+
+  for (const ability of abilities) {
+    const match = String(ability).match(pattern);
+    if (match) {
+      return {
+        hit: parseInt(match[1], 10),
+        dice: match[2] ? parseInt(match[2], 10) : 1,
+      };
+    }
+  }
+  return { hit: 0, dice: 0 };
+}
+
+function detectUnitIdFromTechName(name = "") {
+  const lower = name.toLowerCase();
+  if (lower.includes("fighter")) return "fighter";
+  if (lower.includes("destroyer")) return "destroyer";
+  if (lower.includes("carrier")) return "carrier";
+  if (lower.includes("cruiser")) return "cruiser";
+  if (lower.includes("dreadnought")) return "dreadnought";
+  if (lower.includes("war sun")) return "warsun";
+  if (lower.includes("infantry")) return "infantry";
+  if (lower.includes("mech")) return "mech";
+
+  for (const [keyword, unitId] of Object.entries(BASE_UNIT_BY_KEYWORD)) {
+    if (lower.includes(keyword)) return unitId;
+  }
+  return null;
+}
+
+function buildFactionAdjustedDefs(mode, factionName) {
+  const baseDefs = mode === "space" ? SPACE_UNITS : GROUND_UNITS;
+  const defs = baseDefs.map((u) => ({ ...u }));
+  const faction = ALL_FACTIONS.find((f) => f.name === factionName);
+  if (!faction) return defs;
+
+  const applyCard = (unitId, card) => {
+    const idx = defs.findIndex((d) => d.id === unitId);
+    if (idx === -1) return;
+    const next = { ...defs[idx] };
+
+    const combat = parseCombatValue(card?.combat);
+    if (combat) {
+      next.combat = combat.combat;
+      next.dice = combat.dice;
+    }
+
+    const abilities = card?.abilities ?? [];
+    const afb = parseAbilityStat(abilities, "afb");
+    const sc = parseAbilityStat(abilities, "spaceCannon");
+    const bomb = parseAbilityStat(abilities, "bombardment");
+
+    next.afbHit = afb.hit;
+    next.afbDice = afb.dice;
+    next.spaceCannonHit = sc.hit;
+    next.spaceCannonDice = sc.dice;
+    next.bombardmentHit = bomb.hit;
+    next.bombardmentDice = bomb.dice;
+    next.sustain = abilities.some((a) => /sustain damage/i.test(String(a)));
+
+    defs[idx] = next;
+  };
+
+  if (faction.flagship?.[0]) applyCard("flagship", faction.flagship[0]);
+  if (faction.mech?.[0]) applyCard("mech", faction.mech[0]);
+
+  for (const tech of faction.faction_techs ?? []) {
+    const unitId = detectUnitIdFromTechName(tech.name);
+    if (!unitId) continue;
+    if (mode === "space" && ["infantry", "mech"].includes(unitId)) continue;
+    if (mode === "ground" && !["infantry", "mech"].includes(unitId)) continue;
+    applyCard(unitId, tech);
+  }
+
+  return defs;
+}
+
+function buildFactionCombatModifiers(factionName) {
+  const faction = ALL_FACTIONS.find((f) => f.name === factionName);
+  if (!faction) return { afbExcessDamagesSustain: false };
+
+  const textChunks = [
+    ...(faction.abilities ?? []).map((a) => a.description ?? a.name ?? ""),
+    ...(faction.commanders ?? []).map((c) => c.description ?? ""),
+    ...(faction.heroes ?? []).map((h) => h.description ?? ""),
+    ...(faction.faction_techs ?? []).map((t) => t.description ?? ""),
+    ...(faction.flagship ?? []).map((u) => u.description ?? ""),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return {
+    // Argent Flight "Raid Formation"
+    afbExcessDamagesSustain:
+      textChunks.includes("anti-fighter barrage") &&
+      textChunks.includes("in excess of") &&
+      textChunks.includes("sustain damage to become damaged"),
+  };
+}
+
+function applySustainDamageOnly(fleet, hits, defs) {
+  const next = cloneFleetState(fleet, defs);
+  for (const def of defs.filter((d) => d.sustain)) {
+    const available = next[def.id].count - next[def.id].damaged;
+    const take = Math.min(available, hits);
+    next[def.id].damaged += take;
+    hits -= take;
+    if (!hits) break;
+  }
+  return next;
+}
 
 // ─── Simulation Engine ────────────────────────────────────────────────────────
 
@@ -141,24 +339,50 @@ function fleetAfbHits(fleet, defs) {
   return hits;
 }
 
-// Optimal hit assignment: fighters → non-sustain → sustain absorb → destroy damaged sustainers
-function applyHits(fleet, hits, defs) {
+function fleetAbilityHits(fleet, defs, abilityKey) {
+  let hits = 0;
+  for (const def of defs) {
+    const diceKey = `${abilityKey}Dice`;
+    const hitKey = `${abilityKey}Hit`;
+    if (!def[diceKey]) continue;
+    const u = fleet[def.id];
+    for (let i = 0; i < u.count * def[diceKey]; i++) {
+      if (rollDie() >= def[hitKey]) hits++;
+    }
+  }
+  return hits;
+}
+
+function cloneFleetState(fleet, defs) {
   const u = {};
   for (const def of defs)
     u[def.id] = { count: fleet[def.id].count, damaged: fleet[def.id].damaged };
+  return u;
+}
 
+// Default assignment hierarchy: fighters → sustain absorbs → destroy ships
+function applyHits(fleet, hits, defs, phase = "combat") {
+  const u = cloneFleetState(fleet, defs);
+
+  // AFB defaults to fighters-only unless a special rule says otherwise.
+  if (phase === "afb") {
+    for (const def of defs.filter((d) => d.isFighter)) {
+      const take = Math.min(u[def.id].count, hits);
+      u[def.id].count -= take;
+      hits -= take;
+      if (!hits) return u;
+    }
+    return u;
+  }
+  // 1) destroy fighters first
   for (const def of defs.filter((d) => d.isFighter)) {
     const take = Math.min(u[def.id].count, hits);
     u[def.id].count -= take;
     hits -= take;
     if (!hits) return u;
   }
-  for (const def of defs.filter((d) => !d.isFighter && !d.sustain)) {
-    const take = Math.min(u[def.id].count, hits);
-    u[def.id].count -= take;
-    hits -= take;
-    if (!hits) return u;
-  }
+
+  // 2) use sustain before destroying more ships
   for (const def of defs.filter((d) => d.sustain)) {
     const available = u[def.id].count - u[def.id].damaged;
     const take = Math.min(available, hits);
@@ -166,6 +390,16 @@ function applyHits(fleet, hits, defs) {
     hits -= take;
     if (!hits) return u;
   }
+
+  // 3) destroy non-sustain ships
+  for (const def of defs.filter((d) => !d.isFighter && !d.sustain)) {
+    const take = Math.min(u[def.id].count, hits);
+    u[def.id].count -= take;
+    hits -= take;
+    if (!hits) return u;
+  }
+
+  // 4) destroy already damaged sustain ships
   for (const def of defs.filter((d) => d.sustain)) {
     const take = Math.min(u[def.id].damaged, hits);
     u[def.id].count -= take;
@@ -182,8 +416,17 @@ function applyHits(fleet, hits, defs) {
   return u;
 }
 
-function simulate(atkCounts, defCounts, mode, bombardmentHits) {
-  const defs = mode === "space" ? SPACE_UNITS : GROUND_UNITS;
+function simulate(
+  atkCounts,
+  defCounts,
+  mode,
+  bombardmentHits,
+  atkDefs,
+  defDefs,
+  atkSpaceDefs,
+  atkMods,
+  defMods,
+) {
   let atkWins = 0,
     defWins = 0,
     draws = 0;
@@ -199,21 +442,52 @@ function simulate(atkCounts, defCounts, mode, bombardmentHits) {
   }));
 
   for (let iter = 0; iter < ITERATIONS; iter++) {
-    let atk = initFleet(atkCounts, defs);
-    let def = initFleet(defCounts, defs);
+    let atk = initFleet(atkCounts, atkDefs);
+    let def = initFleet(defCounts, defDefs);
 
     if (mode === "space") {
-      // Anti-Fighter Barrage phase
-      const atkAfb = fleetAfbHits(atk, defs);
-      const defAfb = fleetAfbHits(def, defs);
-      if (def["fighter"])
-        def["fighter"].count = Math.max(0, def["fighter"].count - atkAfb);
-      if (atk["fighter"])
-        atk["fighter"].count = Math.max(0, atk["fighter"].count - defAfb);
+      // Space Cannon Offense
+      const atkSco = fleetAbilityHits(atk, atkDefs, "spaceCannon");
+      const defSco = fleetAbilityHits(def, defDefs, "spaceCannon");
+      atk = applyHits(atk, defSco, atkDefs, "spaceCannonOffense");
+      def = applyHits(def, atkSco, defDefs, "spaceCannonOffense");
+
+      // Anti-Fighter Barrage
+      const atkAfb = fleetAfbHits(atk, atkDefs);
+      const defAfb = fleetAfbHits(def, defDefs);
+
+      const defFightersBefore = def.fighter?.count ?? 0;
+      const atkFightersBefore = atk.fighter?.count ?? 0;
+      atk = applyHits(atk, defAfb, atkDefs, "afb");
+      def = applyHits(def, atkAfb, defDefs, "afb");
+
+      if (atkMods?.afbExcessDamagesSustain && atkAfb > defFightersBefore) {
+        def = applySustainDamageOnly(def, atkAfb - defFightersBefore, defDefs);
+      }
+      if (defMods?.afbExcessDamagesSustain && defAfb > atkFightersBefore) {
+        atk = applySustainDamageOnly(atk, defAfb - atkFightersBefore, atkDefs);
+      }
     } else {
-      // Bombardment phase (pre-ground combat)
+      // Ground pre-combat bombardment from attacker space units
+      const atkSpace = initFleet(atkCounts, atkSpaceDefs);
+      const atkBombardment = fleetAbilityHits(
+        atkSpace,
+        atkSpaceDefs,
+        "bombardment",
+      );
+      if (atkBombardment > 0) {
+        def = applyHits(def, atkBombardment, defDefs, "bombardment");
+      }
+
+      // Space Cannon Defense from defending ground units
+      const defScd = fleetAbilityHits(def, defDefs, "spaceCannon");
+      if (defScd > 0) {
+        atk = applyHits(atk, defScd, atkDefs, "spaceCannonDefense");
+      }
+
+      // Optional manual override during migration
       if (bombardmentHits > 0) {
-        def = applyHits(def, bombardmentHits, defs);
+        def = applyHits(def, bombardmentHits, defDefs, "bombardment");
       }
     }
 
@@ -221,14 +495,24 @@ function simulate(atkCounts, defCounts, mode, bombardmentHits) {
     while (totalUnits(atk) > 0 && totalUnits(def) > 0 && round < MAX_ROUNDS) {
       roundData[round].reached++;
 
-      const atkH = fleetCombatHits(atk, defs);
-      const defH = fleetCombatHits(def, defs);
+      const atkH = fleetCombatHits(atk, atkDefs);
+      const defH = fleetCombatHits(def, defDefs);
 
       roundData[round].atkHits += atkH;
       roundData[round].defHits += defH;
 
-      atk = applyHits(atk, defH, defs);
-      def = applyHits(def, atkH, defs);
+      atk = applyHits(
+        atk,
+        defH,
+        atkDefs,
+        mode === "space" ? "spaceCombat" : "groundCombat",
+      );
+      def = applyHits(
+        def,
+        atkH,
+        defDefs,
+        mode === "space" ? "spaceCombat" : "groundCombat",
+      );
 
       roundData[round].atkUnits += totalUnits(atk);
       roundData[round].defUnits += totalUnits(def);
@@ -339,6 +623,12 @@ function UnitRow({ def, count, onSet }) {
           {def.dice > 1 ? `(×${def.dice})` : ""}
           {def.sustain ? " · Sustain" : ""}
           {def.afbDice ? ` · AFB ${def.afbHit}(×${def.afbDice})` : ""}
+          {def.spaceCannonDice
+            ? ` · SC ${def.spaceCannonHit}(×${def.spaceCannonDice})`
+            : ""}
+          {def.bombardmentDice
+            ? ` · Bombardment ${def.bombardmentHit}(×${def.bombardmentDice})`
+            : ""}
         </span>
       </div>
       <div className="flex items-center gap-2">
@@ -533,6 +823,8 @@ function ResultsTable({ rounds }) {
 
 export default function CombatSimulator({ onNavigate }) {
   const [mode, setMode] = useState("space");
+  const [atkFaction, setAtkFaction] = useState("");
+  const [defFaction, setDefFaction] = useState("");
   const [atkCounts, setAtkCounts] = useState({});
   const [defCounts, setDefCounts] = useState({});
   const [atkText, setAtkText] = useState("");
@@ -541,7 +833,31 @@ export default function CombatSimulator({ onNavigate }) {
   const [results, setResults] = useState(null);
   const [running, setRunning] = useState(false);
 
-  const defs = mode === "space" ? SPACE_UNITS : GROUND_UNITS;
+  const factionOptions = useMemo(
+    () => ALL_FACTIONS.map((f) => f.name).sort((a, b) => a.localeCompare(b)),
+    [],
+  );
+
+  const atkDefs = useMemo(
+    () => buildFactionAdjustedDefs(mode, atkFaction),
+    [mode, atkFaction],
+  );
+  const defDefs = useMemo(
+    () => buildFactionAdjustedDefs(mode, defFaction),
+    [mode, defFaction],
+  );
+  const atkSpaceDefs = useMemo(
+    () => buildFactionAdjustedDefs("space", atkFaction),
+    [atkFaction],
+  );
+  const atkMods = useMemo(
+    () => buildFactionCombatModifiers(atkFaction),
+    [atkFaction],
+  );
+  const defMods = useMemo(
+    () => buildFactionCombatModifiers(defFaction),
+    [defFaction],
+  );
 
   const handleModeChange = (m) => {
     setMode(m);
@@ -580,18 +896,40 @@ export default function CombatSimulator({ onNavigate }) {
   };
 
   const runSimulation = useCallback(() => {
-    const atkTotal = defs.reduce((s, d) => s + (atkCounts[d.id] ?? 0), 0);
-    const defTotal = defs.reduce((s, d) => s + (defCounts[d.id] ?? 0), 0);
+    const atkTotal = atkDefs.reduce((s, d) => s + (atkCounts[d.id] ?? 0), 0);
+    const defTotal = defDefs.reduce((s, d) => s + (defCounts[d.id] ?? 0), 0);
     if (atkTotal === 0 || defTotal === 0) return;
     setRunning(true);
     setTimeout(() => {
-      setResults(simulate(atkCounts, defCounts, mode, bombardmentHits));
+      setResults(
+        simulate(
+          atkCounts,
+          defCounts,
+          mode,
+          bombardmentHits,
+          atkDefs,
+          defDefs,
+          atkSpaceDefs,
+          atkMods,
+          defMods,
+        ),
+      );
       setRunning(false);
     }, 0);
-  }, [atkCounts, defCounts, mode, bombardmentHits, defs]);
+  }, [
+    atkCounts,
+    defCounts,
+    mode,
+    bombardmentHits,
+    atkDefs,
+    defDefs,
+    atkSpaceDefs,
+    atkMods,
+    defMods,
+  ]);
 
-  const atkTotal = defs.reduce((s, d) => s + (atkCounts[d.id] ?? 0), 0);
-  const defTotal = defs.reduce((s, d) => s + (defCounts[d.id] ?? 0), 0);
+  const atkTotal = atkDefs.reduce((s, d) => s + (atkCounts[d.id] ?? 0), 0);
+  const defTotal = defDefs.reduce((s, d) => s + (defCounts[d.id] ?? 0), 0);
   const canSimulate = atkTotal > 0 && defTotal > 0;
 
   return (
@@ -628,41 +966,76 @@ export default function CombatSimulator({ onNavigate }) {
       <div className="max-w-6xl mx-auto p-4 space-y-4">
         {/* Fleet Builders */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FleetBuilder
-            label="Attacker"
-            color="blue"
-            side="atk"
-            defs={defs}
-            counts={atkCounts}
-            onSet={setCount}
-            text={atkText}
-            onTextChange={setAtkText}
-            onApplyText={() => applyText("atk")}
-            onClear={() => clear("atk")}
-          />
-          <FleetBuilder
-            label="Defender"
-            color="red"
-            side="def"
-            defs={defs}
-            counts={defCounts}
-            onSet={setCount}
-            text={defText}
-            onTextChange={setDefText}
-            onApplyText={() => applyText("def")}
-            onClear={() => clear("def")}
-          />
+          <div className="space-y-2">
+            <select
+              value={atkFaction}
+              onChange={(e) => {
+                setAtkFaction(e.target.value);
+                setResults(null);
+              }}
+              className="w-full bg-gray-800 border border-blue-700 rounded px-2 py-2 text-sm text-white"
+            >
+              <option value="">Standard Units (No Faction)</option>
+              {factionOptions.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+            <FleetBuilder
+              label="Attacker"
+              color="blue"
+              side="atk"
+              defs={atkDefs}
+              counts={atkCounts}
+              onSet={setCount}
+              text={atkText}
+              onTextChange={setAtkText}
+              onApplyText={() => applyText("atk")}
+              onClear={() => clear("atk")}
+            />
+          </div>
+          <div className="space-y-2">
+            <select
+              value={defFaction}
+              onChange={(e) => {
+                setDefFaction(e.target.value);
+                setResults(null);
+              }}
+              className="w-full bg-gray-800 border border-red-700 rounded px-2 py-2 text-sm text-white"
+            >
+              <option value="">Standard Units (No Faction)</option>
+              {factionOptions.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+            <FleetBuilder
+              label="Defender"
+              color="red"
+              side="def"
+              defs={defDefs}
+              counts={defCounts}
+              onSet={setCount}
+              text={defText}
+              onTextChange={setDefText}
+              onApplyText={() => applyText("def")}
+              onClear={() => clear("def")}
+            />
+          </div>
         </div>
 
         {/* Bombardment (ground only) */}
         {mode === "ground" && (
           <div className="bg-gray-800 rounded-xl border border-orange-700 p-4">
             <h3 className="text-sm font-bold text-orange-400 mb-2">
-              Pre-Combat Bombardment
+              Ground Pre-Combat Phases
             </h3>
             <p className="text-xs text-gray-400 mb-3">
-              Enter the total number of bombardment hits dealt to the defender
-              before ground combat begins.
+              Bombardment is rolled from attacking space units with Bombardment.
+              Space Cannon Defense is then rolled by defending ground units with
+              Space Cannon.
             </p>
             <div className="flex items-center gap-3">
               <button
@@ -681,7 +1054,7 @@ export default function CombatSimulator({ onNavigate }) {
                 +
               </button>
               <span className="text-xs text-gray-500 ml-2">
-                bombardment hits on defender
+                optional manual bombardment override
               </span>
             </div>
           </div>
@@ -768,9 +1141,10 @@ export default function CombatSimulator({ onNavigate }) {
           </p>
           <p>
             <span className="text-gray-300 font-semibold">Assumptions:</span>{" "}
-            Optimal hit assignment (fighters first, then non-sustain, then
-            sustain absorb). Flagship uses generic 5(×2) sustain stats. Combat
-            rolls 1–10, hit on ≥ target.
+            AFB hits fighters by default. Hit assignment defaults to fighters,
+            then sustain absorbs, then destroyed ships. Space Cannon Offense is
+            before AFB; Space Cannon Defense is after Bombardment and before
+            ground combat. Combat rolls 1–10, hit on ≥ target.
           </p>
         </div>
       </div>
