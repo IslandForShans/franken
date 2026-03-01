@@ -12,11 +12,13 @@ const SPACE_UNITS = [
     sustain: false,
     afbHit: 0,
     afbDice: 0,
+    capacity: 0,
     spaceCannonHit: 0,
     spaceCannonDice: 0,
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: true,
+    upgrade: { combat: 8 },
   },
   {
     id: "destroyer",
@@ -26,11 +28,13 @@ const SPACE_UNITS = [
     sustain: false,
     afbHit: 9,
     afbDice: 2,
+    capacity: 0,
     spaceCannonHit: 0,
     spaceCannonDice: 0,
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    upgrade: { combat: 8, afbHit: 6, afbDice: 3 },
   },
   {
     id: "carrier",
@@ -40,11 +44,13 @@ const SPACE_UNITS = [
     sustain: false,
     afbHit: 0,
     afbDice: 0,
+    capacity: 4,
     spaceCannonHit: 0,
     spaceCannonDice: 0,
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    upgrade: { combat: 9, capacity: 6 },
   },
   {
     id: "cruiser",
@@ -54,11 +60,13 @@ const SPACE_UNITS = [
     sustain: false,
     afbHit: 0,
     afbDice: 0,
+    capacity: 0,
     spaceCannonHit: 0,
     spaceCannonDice: 0,
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    upgrade: { combat: 6, capacity: 1 },
   },
   {
     id: "dreadnought",
@@ -68,11 +76,13 @@ const SPACE_UNITS = [
     sustain: true,
     afbHit: 0,
     afbDice: 0,
+    capacity: 1,
     spaceCannonHit: 0,
     spaceCannonDice: 0,
     bombardmentHit: 5,
     bombardmentDice: 1,
     isFighter: false,
+    upgrade: { combat: 5, bombardmentHit: 5, bombardmentDice: 1 },
   },
   {
     id: "warsun",
@@ -82,6 +92,7 @@ const SPACE_UNITS = [
     sustain: true,
     afbHit: 0,
     afbDice: 0,
+    capacity: 6,
     spaceCannonHit: 0,
     spaceCannonDice: 0,
     bombardmentHit: 3,
@@ -96,11 +107,28 @@ const SPACE_UNITS = [
     sustain: true,
     afbHit: 0,
     afbDice: 0,
+    capacity: 3,
     spaceCannonHit: 0,
     spaceCannonDice: 0,
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+  },
+  {
+    id: "pds",
+    name: "PDS",
+    combat: 0,
+    dice: 0,
+    sustain: false,
+    afbHit: 0,
+    afbDice: 0,
+    capacity: 0,
+    spaceCannonHit: 6,
+    spaceCannonDice: 1,
+    bombardmentHit: 0,
+    bombardmentDice: 0,
+    isFighter: false,
+    upgrade: { spaceCannonHit: 5, spaceCannonDice: 1 },
   },
 ];
 
@@ -113,11 +141,13 @@ const GROUND_UNITS = [
     sustain: false,
     afbHit: 0,
     afbDice: 0,
+    capacity: 0,
     spaceCannonHit: 0,
     spaceCannonDice: 0,
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    upgrade: { combat: 7 },
   },
   {
     id: "mech",
@@ -127,11 +157,28 @@ const GROUND_UNITS = [
     sustain: true,
     afbHit: 0,
     afbDice: 0,
+    capacity: 0,
     spaceCannonHit: 0,
     spaceCannonDice: 0,
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+  },
+  {
+    id: "pds",
+    name: "PDS",
+    combat: 0,
+    dice: 0,
+    sustain: false,
+    afbHit: 0,
+    afbDice: 0,
+    capacity: 0,
+    spaceCannonHit: 6,
+    spaceCannonDice: 1,
+    bombardmentHit: 0,
+    bombardmentDice: 0,
+    isFighter: false,
+    upgrade: { spaceCannonHit: 5, spaceCannonDice: 1 },
   },
 ];
 
@@ -156,6 +203,8 @@ const BASE_UNIT_BY_KEYWORD = {
   "trade port": "carrier",
   "combat transport": "carrier",
   linkship: "carrier",
+  "hel-titan": "pds",
+  "gauss cannon": "pds",
   "prototype war sun": "warsun",
   memoria: "flagship",
 };
@@ -164,6 +213,234 @@ const ALL_FACTIONS = [
   ...(factionsData?.factions ?? []),
   ...(discordantStarsData?.factions ?? []),
 ];
+
+const FACTION_PASSIVE_MODIFIERS = {
+  "Sardakk N'orr": {
+    allUnitsCombatBonus: 1, // "Unrelenting"
+  },
+  "The Universities of Jol-Nar": {
+    allUnitsCombatBonus: -1, // "FRAGILE"
+  },
+};
+
+const FACTION_TOGGLEABLE_MODIFIERS = {
+  // ── BASE GAME ──────────────────────────────────────────────────────────────
+  "The Barony of Letnev": [
+    {
+      id: "letnev_munitions",
+      name: "Munitions Reserves",
+      source: "Ability",
+      description: "Reroll all non-hitting dice each combat round (assume TG paid)",
+      modes: ["space", "ground"],
+      effect: { rerollMisses: true },
+    },
+    {
+      id: "letnev_nes",
+      name: "Non-Euclidean Shielding",
+      source: "Faction Tech",
+      description: "SUSTAIN DAMAGE cancels 2 hits instead of 1",
+      modes: ["space", "ground"],
+      effect: { sustainCancelsTwo: true },
+    },
+    {
+      id: "letnev_agent",
+      name: "Viscount Unlenn",
+      source: "Agent",
+      description: "One ship rolls 1 additional die each combat round",
+      modes: ["space"],
+      effect: { oneShipExtraDie: true },
+    },
+  ],
+  "The Mentak Coalition": [
+    {
+      id: "mentak_ambush",
+      name: "Ambush",
+      source: "Ability",
+      description: "Before AFB: roll up to 2 cruisers/destroyers at their combat value, hits assigned to opponent",
+      modes: ["space"],
+      effect: { ambush: true },
+    },
+  ],
+  "The Mahact Gene-Sorcerers": [
+    {
+      id: "mahact_flagship",
+      name: "Arvicon Rex",
+      source: "Flagship",
+      description: "Flagship gets +2 to combat rolls (opponent has no command token in your fleet pool)",
+      modes: ["space"],
+      effect: { mahactFlagshipBonus: true },
+    },
+  ],
+  "The Naalu Collective": [
+    {
+      id: "naalu_flagship",
+      name: "Matriarch",
+      source: "Flagship",
+      description: "Fighters participate as ground forces during invasion (fighters roll in ground combat)",
+      modes: ["ground"],
+      effect: { fightersInGround: true },
+    },
+  ],
+  "The Naaz-Rokha Alliance": [
+    {
+      id: "nra_supercharge",
+      name: "Supercharge",
+      source: "Faction Tech",
+      description: "+1 to each unit's combat rolls this combat (exhaust once)",
+      modes: ["space", "ground"],
+      effect: { allUnitsCombatBonus: 1 },
+    },
+    {
+      id: "nra_flagship",
+      name: "Visz el Vir",
+      source: "Flagship",
+      description: "Mechs roll 1 additional die during combat",
+      modes: ["space", "ground"],
+      effect: { mechs1ExtraDie: true },
+    },
+  ],
+  "Sardakk N'orr": [
+    {
+      id: "sardakk_vpw",
+      name: "Valkyrie Particle Weave",
+      source: "Faction Tech",
+      description: "During ground combat, if opponent produced hits this round, produce 1 additional hit",
+      modes: ["ground"],
+      effect: { vpwExtraHit: true },
+    },
+    {
+      id: "sardakk_flagship",
+      name: "C'Morran N'orr",
+      source: "Flagship",
+      description: "All your other ships get +1 to combat rolls (flagship present)",
+      modes: ["space"],
+      effect: { sardakkFlagshipBonus: true },
+    },
+  ],
+  "The Titans of Ul": [
+    {
+      id: "titans_agent",
+      name: "Tellurian",
+      source: "Agent",
+      description: "Cancel 1 hit produced against your units once per combat",
+      modes: ["space", "ground"],
+      effect: { cancelHitPerCombat: 1 },
+    },
+  ],
+  "The Winnu": [
+    {
+      id: "winnu_flagship",
+      name: "Salai Sai Corian",
+      source: "Flagship",
+      description: "Flagship rolls dice equal to opponent's non-fighter ship count instead of 1",
+      modes: ["space"],
+      effect: { winnuFlagshipScales: true },
+    },
+    {
+      id: "winnu_commander",
+      name: "Rickar Rickani",
+      source: "Commander",
+      description: "+2 to all unit combat rolls (in Mecatol Rex, home, or legendary system)",
+      modes: ["space", "ground"],
+      effect: { allUnitsCombatBonus: 2 },
+    },
+    {
+      id: "winnu_imperator",
+      name: "Imperator",
+      source: "Breakthrough",
+      description: "+1 to all unit combat rolls per 'Support for the Throne' in opponent's play area",
+      modes: ["space", "ground"],
+      effect: { allUnitsCombatBonus: 1 },
+    },
+  ],
+  "The Yin Brotherhood": [
+    {
+      id: "yin_devotion",
+      name: "Devotion",
+      source: "Ability",
+      description: "After each space combat round, destroy 1 cruiser or destroyer to produce 1 hit",
+      modes: ["space"],
+      effect: { devotion: true },
+    },
+  ],
+  // ── DISCORDANT STARS ───────────────────────────────────────────────────────
+  "The Berserkers of Kjalengard": [
+    {
+      id: "berserkers_valor",
+      name: "Valor",
+      source: "Ability",
+      description: "Each natural 10 on a combat roll produces 1 additional hit (Glory token in system)",
+      modes: ["space", "ground"],
+      effect: { valorTens: true },
+    },
+  ],
+  "The Dih-Mohn Flotilla": [
+    {
+      id: "dihmohn_aegis",
+      name: "Aegis",
+      source: "Faction Tech",
+      description: "At the start of space combat, if you have 3+ non-fighter ship types, produce 1 hit against opponent",
+      modes: ["space"],
+      effect: { aegisHit: true },
+    },
+    {
+      id: "dihmohn_repairitor",
+      name: "Repairitor",
+      source: "Mech",
+      description: "At the start of combat, repair 1 of your damaged participating units",
+      modes: ["space", "ground"],
+      effect: { repairOneAtStart: true },
+    },
+  ],
+  "The Ghemina Raiders": [
+    {
+      id: "ghemina_raiding",
+      name: "Raiding Parties",
+      source: "Breakthrough",
+      description: "Each round, 1 of your units rolls its combat dice twice — take the better result",
+      modes: ["space", "ground"],
+      effect: { raidingParties: true },
+    },
+  ],
+  "The Kortali Tribunal": [
+    {
+      id: "kortali_commander",
+      name: "Queen Lorena",
+      source: "Commander",
+      description: "During the first round of ground combat, cancel 1 hit against your units",
+      modes: ["ground"],
+      effect: { cancelFirstRoundHit: 1 },
+    },
+    {
+      id: "kortali_deliverance",
+      name: "Deliverance Engine",
+      source: "Faction Tech",
+      description: "Once per space combat, when one of your non-fighter ships is destroyed, produce 1 hit against opponent",
+      modes: ["space"],
+      effect: { deliveranceEngine: true },
+    },
+  ],
+  "The Nivyn Star Kings": [
+    {
+      id: "nivyn_commander",
+      name: "Thussad Krath",
+      source: "Commander",
+      description: "When damaged units make a combat roll, up to 2 of them roll 1 additional die",
+      modes: ["space", "ground"],
+      effect: { damagedUnitsExtraDie: 2 },
+    },
+  ],
+  "The Veldyr Sovereignty": [
+    {
+      id: "veldyr_hero",
+      name: "Dyln Harthuul",
+      source: "Hero",
+      description: "+1 to all ships' combat rolls this tactical action (purge)",
+      modes: ["space"],
+      effect: { allUnitsCombatBonus: 1 },
+    },
+  ],
+};
 
 function parseCombatValue(value) {
   if (typeof value === "number") return { combat: value, dice: 1 };
@@ -207,6 +484,7 @@ function detectUnitIdFromTechName(name = "") {
   if (lower.includes("war sun")) return "warsun";
   if (lower.includes("infantry")) return "infantry";
   if (lower.includes("mech")) return "mech";
+  if (lower.includes("pds")) return "pds";
 
   for (const [keyword, unitId] of Object.entries(BASE_UNIT_BY_KEYWORD)) {
     if (lower.includes(keyword)) return unitId;
@@ -214,9 +492,13 @@ function detectUnitIdFromTechName(name = "") {
   return null;
 }
 
-function buildFactionAdjustedDefs(mode, factionName) {
+function buildFactionAdjustedDefs(mode, factionName, unitUpgrades = {}) {
   const baseDefs = mode === "space" ? SPACE_UNITS : GROUND_UNITS;
-  const defs = baseDefs.map((u) => ({ ...u }));
+  const defs = baseDefs.map((u) => {
+    const next = { ...u };
+    if (unitUpgrades[u.id] && u.upgrade) Object.assign(next, u.upgrade);
+    return next;
+  });
   const faction = ALL_FACTIONS.find((f) => f.name === factionName);
   if (!faction) return defs;
 
@@ -230,6 +512,7 @@ function buildFactionAdjustedDefs(mode, factionName) {
       next.combat = combat.combat;
       next.dice = combat.dice;
     }
+    if (card?.capacity !== undefined) next.capacity = card.capacity;
 
     const abilities = card?.abilities ?? [];
     const afb = parseAbilityStat(abilities, "afb");
@@ -253,15 +536,51 @@ function buildFactionAdjustedDefs(mode, factionName) {
   for (const tech of faction.faction_techs ?? []) {
     const unitId = detectUnitIdFromTechName(tech.name);
     if (!unitId) continue;
+    if (tech.tech_type === "Unit Upgrade" && !unitUpgrades[unitId]) continue;
     if (mode === "space" && ["infantry", "mech"].includes(unitId)) continue;
-    if (mode === "ground" && !["infantry", "mech"].includes(unitId)) continue;
+    if (mode === "ground" && !["infantry", "mech", "pds"].includes(unitId))
+      continue;
     applyCard(unitId, tech);
+  }
+
+  const passiveMods = FACTION_PASSIVE_MODIFIERS[factionName];
+  if (passiveMods?.allUnitsCombatBonus) {
+    const bonus = passiveMods.allUnitsCombatBonus;
+    for (const def of defs) {
+      if (def.combat > 0) {
+        // A +1 bonus to result = threshold drops by 1 (easier to hit)
+        def.combat = Math.max(1, Math.min(10, def.combat - bonus));
+      }
+    }
   }
 
   return defs;
 }
 
-function buildFactionCombatModifiers(factionName) {
+function getUpgradeableUnits(mode, factionName) {
+  const baseDefs = mode === "space" ? SPACE_UNITS : GROUND_UNITS;
+  const upgradeable = new Set();
+  for (const def of baseDefs) {
+    if (def.upgrade) upgradeable.add(def.id);
+  }
+  const faction = ALL_FACTIONS.find((f) => f.name === factionName);
+  for (const tech of faction?.faction_techs ?? []) {
+    if (tech.tech_type !== "Unit Upgrade") continue;
+    const unitId = detectUnitIdFromTechName(tech.name);
+    if (!unitId) continue;
+    if (mode === "space" && ["infantry", "mech"].includes(unitId)) continue;
+    if (mode === "ground" && !["infantry", "mech", "pds"].includes(unitId))
+      continue;
+    upgradeable.add(unitId);
+  }
+  return upgradeable;
+}
+
+function buildFactionCombatModifiers(
+  factionName,
+  activeToggles = new Set(),
+  mode = "space",
+) {
   const faction = ALL_FACTIONS.find((f) => f.name === factionName);
   if (!faction) return { afbExcessDamagesSustain: false };
 
@@ -275,13 +594,21 @@ function buildFactionCombatModifiers(factionName) {
     .join(" ")
     .toLowerCase();
 
-  return {
+  const mods = {
     // Argent Flight "Raid Formation"
     afbExcessDamagesSustain:
       textChunks.includes("anti-fighter barrage") &&
       textChunks.includes("in excess of") &&
       textChunks.includes("sustain damage to become damaged"),
   };
+
+  for (const toggle of FACTION_TOGGLEABLE_MODIFIERS[factionName] ?? []) {
+    if (activeToggles.has(toggle.id) && toggle.modes.includes(mode)) {
+      Object.assign(mods, toggle.effect);
+    }
+  }
+
+  return mods;
 }
 
 function applySustainDamageOnly(fleet, hits, defs) {
@@ -294,6 +621,13 @@ function applySustainDamageOnly(fleet, hits, defs) {
     if (!hits) break;
   }
   return next;
+}
+
+function calcCapacity(counts, defs) {
+  return defs.reduce(
+    (sum, d) => sum + (counts[d.id] ?? 0) * (d.capacity ?? 0),
+    0,
+  );
 }
 
 // ─── Simulation Engine ────────────────────────────────────────────────────────
@@ -316,12 +650,56 @@ function totalUnits(fleet) {
   return Object.values(fleet).reduce((s, u) => s + u.count, 0);
 }
 
-function fleetCombatHits(fleet, defs) {
+function fleetCombatHits(fleet, defs, mods = {}) {
   let hits = 0;
+  const bonus = mods.allUnitsCombatBonus ?? 0;
+  const valorTens = mods.valorTens ?? false;
+  const rerollMisses = mods.rerollMisses ?? false;
+  const sardakkBonus = mods.sardakkFlagshipBonus && (fleet.flagship?.count ?? 0) > 0;
+  let raidingUsed = false;
+  let oneShipExtraDieUsed = false;
+
   for (const def of defs) {
+    if (def.combat === 0) continue;
     const u = fleet[def.id];
-    for (let i = 0; i < u.count * def.dice; i++) {
-      if (rollDie() >= def.combat) hits++;
+    if (!u.count) continue;
+
+    // Per-unit bonus calculation
+    let unitBonus = bonus;
+    if (sardakkBonus && def.id !== "flagship") unitBonus += 1;
+    if (mods.mahactFlagshipBonus && def.id === "flagship") unitBonus += 2;
+    const threshold = Math.max(1, Math.min(10, def.combat - unitBonus));
+
+    // Extra dice for mechs (NRA flagship)
+    const extraMechDie = (mods.mechs1ExtraDie && def.id === "mech") ? 1 : 0;
+
+    for (let i = 0; i < u.count; i++) {
+      // Extra die for oneShipExtraDie (Letnev agent) — first ship only
+      const extraDie = (!oneShipExtraDieUsed && mods.oneShipExtraDie) ? 1 : 0;
+      if (extraDie) oneShipExtraDieUsed = true;
+
+      // Damaged units extra die (Nivyn commander) — up to 2 damaged units
+      const isDamaged = i < u.damaged;
+      const damagedExtra = (isDamaged && mods.damagedUnitsExtraDie > 0) ? 1 : 0;
+
+      const totalDice = def.dice + extraMechDie + extraDie + damagedExtra;
+
+      // Raiding Parties: first unit of highest-value roll gets best-of-two
+      const useRaiding = !raidingUsed && mods.raidingParties && i === 0 && u.count > 0;
+      if (useRaiding) raidingUsed = true;
+
+      for (let d = 0; d < totalDice; d++) {
+        let roll = rollDie();
+        if (rerollMisses && roll < threshold) roll = rollDie();
+        if (useRaiding && d === 0) {
+          const roll2 = rollDie();
+          roll = Math.max(roll, roll2);
+        }
+        if (roll >= threshold) {
+          hits++;
+          if (valorTens && roll === 10) hits++;
+        }
+      }
     }
   }
   return hits;
@@ -361,7 +739,7 @@ function cloneFleetState(fleet, defs) {
 }
 
 // Default assignment hierarchy: fighters → sustain absorbs → destroy ships
-function applyHits(fleet, hits, defs, phase = "combat") {
+function applyHits(fleet, hits, defs, phase = "combat", mods = {}) {
   const u = cloneFleetState(fleet, defs);
 
   // AFB defaults to fighters-only unless a special rule says otherwise.
@@ -383,12 +761,13 @@ function applyHits(fleet, hits, defs, phase = "combat") {
   }
 
   // 2) use sustain before destroying more ships
+  const sustainAbsorb = mods.sustainCancelsTwo ? 2 : 1;
   for (const def of defs.filter((d) => d.sustain)) {
     const available = u[def.id].count - u[def.id].damaged;
-    const take = Math.min(available, hits);
-    u[def.id].damaged += take;
-    hits -= take;
-    if (!hits) return u;
+    const canUse = Math.min(available, Math.ceil(hits / sustainAbsorb));
+    u[def.id].damaged += canUse;
+    hits = Math.max(0, hits - canUse * sustainAbsorb);
+    if (hits <= 0) return u;
   }
 
   // 3) destroy non-sustain ships
@@ -452,6 +831,62 @@ function simulate(
       atk = applyHits(atk, defSco, atkDefs, "spaceCannonOffense");
       def = applyHits(def, atkSco, defDefs, "spaceCannonOffense");
 
+      // Ambush (Mentak) — before AFB
+      for (const [mods, fleet, oppFleet, oppDefs] of [
+        [atkMods, atk, def, defDefs],
+        [defMods, def, atk, atkDefs],
+      ]) {
+        if (!mods.ambush) continue;
+        let rollsLeft = 2;
+        let ambushHits = 0;
+        for (const unitId of ["cruiser", "destroyer"]) {
+          const unitDef = (mods === atkMods ? atkDefs : defDefs).find(
+            (d) => d.id === unitId,
+          );
+          if (!unitDef) continue;
+          const rolls = Math.min(fleet[unitId]?.count ?? 0, rollsLeft);
+          for (let i = 0; i < rolls; i++) {
+            if (rollDie() >= unitDef.combat) ambushHits++;
+          }
+          rollsLeft -= rolls;
+          if (rollsLeft <= 0) break;
+        }
+        if (ambushHits > 0) {
+          if (mods === atkMods)
+            def = applyHits(def, ambushHits, defDefs, "spaceCombat");
+          else atk = applyHits(atk, ambushHits, atkDefs, "spaceCombat");
+        }
+      }
+
+      // Aegis (Dih-Mohn) — 1 hit if 3+ non-fighter ship types
+      for (const [mods, oppFleet, oppDefs] of [
+        [atkMods, def, defDefs],
+        [defMods, atk, atkDefs],
+      ]) {
+        if (!mods.aegisHit) continue;
+        const mySide = mods === atkMods ? atk : def;
+        const nonFighterTypes = ["destroyer","carrier","cruiser","dreadnought","warsun","flagship"]
+          .filter(id => (mySide[id]?.count ?? 0) > 0).length;
+        if (nonFighterTypes >= 3) {
+          if (mods === atkMods) def = applyHits(def, 1, defDefs, "spaceCombat", defMods);
+          else atk = applyHits(atk, 1, atkDefs, "spaceCombat", atkMods);
+        }
+      }
+
+      // Winnu flagship scaling — override flagship dice to opponent non-fighter count
+      if (atkMods.winnuFlagshipScales) {
+        const oppShips = ["destroyer","carrier","cruiser","dreadnought","warsun","flagship"]
+          .reduce((s, id) => s + (def[id]?.count ?? 0), 0);
+        const fsIdx = atkDefs.findIndex(d => d.id === "flagship");
+        if (fsIdx !== -1) atkDefs[fsIdx] = { ...atkDefs[fsIdx], dice: Math.max(1, oppShips) };
+      }
+      if (defMods.winnuFlagshipScales) {
+        const oppShips = ["destroyer","carrier","cruiser","dreadnought","warsun","flagship"]
+          .reduce((s, id) => s + (atk[id]?.count ?? 0), 0);
+        const fsIdx = defDefs.findIndex(d => d.id === "flagship");
+        if (fsIdx !== -1) defDefs[fsIdx] = { ...defDefs[fsIdx], dice: Math.max(1, oppShips) };
+      }
+
       // Anti-Fighter Barrage
       const atkAfb = fleetAfbHits(atk, atkDefs);
       const defAfb = fleetAfbHits(def, defDefs);
@@ -489,14 +924,63 @@ function simulate(
       if (bombardmentHits > 0) {
         def = applyHits(def, bombardmentHits, defDefs, "bombardment");
       }
+
+      // Naalu Matriarch — fighters count as infantry during ground combat
+      if (atkMods.fightersInGround && (atk.fighter?.count ?? 0) > 0) {
+        atk.infantry = { count: (atk.infantry?.count ?? 0) + atk.fighter.count, damaged: atk.infantry?.damaged ?? 0 };
+        atk.fighter = { count: 0, damaged: 0 };
+      }
+      if (defMods.fightersInGround && (def.fighter?.count ?? 0) > 0) {
+        def.infantry = { count: (def.infantry?.count ?? 0) + def.fighter.count, damaged: def.infantry?.damaged ?? 0 };
+        def.fighter = { count: 0, damaged: 0 };
+      }
+    }
+
+    // Track one-per-combat cancels
+    const cancelUsed = { atk: false, def: false };
+
+    // Repairitor (Dih-Mohn) — repair 1 damaged unit before combat begins
+    if (atkMods.repairOneAtStart) {
+      for (const d of atkDefs) {
+        if (atk[d.id]?.damaged > 0) { atk[d.id].damaged--; break; }
+      }
+    }
+    if (defMods.repairOneAtStart) {
+      for (const d of defDefs) {
+        if (def[d.id]?.damaged > 0) { def[d.id].damaged--; break; }
+      }
     }
 
     let round = 0;
     while (totalUnits(atk) > 0 && totalUnits(def) > 0 && round < MAX_ROUNDS) {
       roundData[round].reached++;
 
-      const atkH = fleetCombatHits(atk, atkDefs);
-      const defH = fleetCombatHits(def, defDefs);
+      let atkH = fleetCombatHits(atk, atkDefs, atkMods);
+      let defH = fleetCombatHits(def, defDefs, defMods);
+
+      // Titans Agent — cancel 1 hit per combat
+      if (atkMods.cancelHitPerCombat && !cancelUsed.atk && defH > 0) {
+        defH = Math.max(0, defH - atkMods.cancelHitPerCombat);
+        cancelUsed.atk = true;
+      }
+      if (defMods.cancelHitPerCombat && !cancelUsed.def && atkH > 0) {
+        atkH = Math.max(0, atkH - defMods.cancelHitPerCombat);
+        cancelUsed.def = true;
+      }
+
+      // Valkyrie Particle Weave (ground only)
+      if (mode === "ground") {
+        if (atkMods.vpwExtraHit && defH > 0) atkH++;
+        if (defMods.vpwExtraHit && atkH > 0) defH++;
+      }
+
+      // Cancel first-round hits (Kortali Commander)
+      if (round === 0) {
+        if (atkMods.cancelFirstRoundHit)
+          defH = Math.max(0, defH - atkMods.cancelFirstRoundHit);
+        if (defMods.cancelFirstRoundHit)
+          atkH = Math.max(0, atkH - defMods.cancelFirstRoundHit);
+      }
 
       roundData[round].atkHits += atkH;
       roundData[round].defHits += defH;
@@ -506,13 +990,57 @@ function simulate(
         defH,
         atkDefs,
         mode === "space" ? "spaceCombat" : "groundCombat",
+        atkMods,
       );
       def = applyHits(
         def,
         atkH,
         defDefs,
         mode === "space" ? "spaceCombat" : "groundCombat",
+        defMods,
       );
+
+      // Deliverance Engine (Kortali) — once per space combat when a non-fighter ship is destroyed
+      if (mode === "space") {
+        const deliveranceUsed = { atk: false, def: false };
+        if (atkMods.deliveranceEngine && !deliveranceUsed.atk) {
+          const atkNFBefore = ["destroyer","carrier","cruiser","dreadnought","warsun","flagship"]
+            .reduce((s,id) => s + (atk[id]?.count ?? 0), 0);
+          // already applied hits, check if any non-fighter was destroyed this round
+          // (track pre/post — simplify: if defH > 0 and any non-fighter present, assume possible)
+          // For simplicity: trigger if opponent produced hits this round
+          if (defH > 0) {
+            def = applyHits(def, 1, defDefs, "spaceCombat", defMods);
+            deliveranceUsed.atk = true;
+          }
+        }
+        if (defMods.deliveranceEngine && !deliveranceUsed.def && atkH > 0) {
+          atk = applyHits(atk, 1, atkDefs, "spaceCombat", atkMods);
+          deliveranceUsed.def = true;
+        }
+      }
+
+      // Devotion (Yin) — after combat apply, space only
+      if (mode === "space") {
+        for (const [mods, myFleet, myDefs, oppFleet, oppDefs, oppMods] of [
+          [atkMods, atk, atkDefs, def, defDefs, defMods],
+          [defMods, def, defDefs, atk, atkDefs, atkMods],
+        ]) {
+          if (!mods.devotion || totalUnits(myFleet) === 0) continue;
+          const sacrificeId =
+            (myFleet.destroyer?.count ?? 0) > 0
+              ? "destroyer"
+              : (myFleet.cruiser?.count ?? 0) > 0
+                ? "cruiser"
+                : null;
+          if (sacrificeId) {
+            myFleet[sacrificeId].count--;
+            if (mods === atkMods)
+              def = applyHits(def, 1, defDefs, "spaceCombat", defMods);
+            else atk = applyHits(atk, 1, atkDefs, "spaceCombat", atkMods);
+          }
+        }
+      }
 
       roundData[round].atkUnits += totalUnits(atk);
       roundData[round].defUnits += totalUnits(def);
@@ -591,6 +1119,7 @@ const UNIT_ALIASES = {
   inf: "infantry",
   mech: "mech",
   mechs: "mech",
+  pds: "pds",
 };
 
 function parseFleetText(text) {
@@ -613,11 +1142,25 @@ function parseFleetText(text) {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function UnitRow({ def, count, onSet }) {
+function UnitRow({ def, count, onSet, hasUpgrade, upgraded, onToggleUpgrade }) {
   return (
     <div className="flex items-center justify-between py-1.5 border-b border-gray-800 last:border-0">
       <div className="flex flex-col">
-        <span className="text-sm font-medium text-gray-200">{def.name}</span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-medium text-gray-200">
+            {def.name}
+            {upgraded ? " II" : ""}
+          </span>
+          {hasUpgrade && (
+            <input
+              type="checkbox"
+              checked={upgraded}
+              onChange={(e) => onToggleUpgrade(def.id, e.target.checked)}
+              className="accent-yellow-500 cursor-pointer"
+              title="Upgrade to II"
+            />
+          )}
+        </div>
         <span className="text-xs text-gray-500">
           {def.combat}
           {def.dice > 1 ? `(×${def.dice})` : ""}
@@ -652,6 +1195,53 @@ function UnitRow({ def, count, onSet }) {
   );
 }
 
+function ModifiersPanel({ factionName, mode, activeToggles, onToggle, color }) {
+  const modifiers = (FACTION_TOGGLEABLE_MODIFIERS[factionName] ?? []).filter(
+    (m) => m.modes.includes(mode),
+  );
+  if (!factionName || modifiers.length === 0) return null;
+
+  const borderColor =
+    color === "blue" ? "border-blue-700/50" : "border-red-700/50";
+  const headerColor = color === "blue" ? "text-blue-400" : "text-red-400";
+  const accentColor = color === "blue" ? "accent-blue-500" : "accent-red-500";
+
+  return (
+    <div className={`bg-gray-800/50 rounded-xl border ${borderColor} p-3`}>
+      <h3
+        className={`text-xs font-bold uppercase tracking-wide ${headerColor} mb-2`}
+      >
+        Combat Modifiers
+      </h3>
+      <div className="space-y-2">
+        {modifiers.map((mod) => (
+          <label key={mod.id} className="flex items-start gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={activeToggles.has(mod.id)}
+              onChange={(e) => onToggle(mod.id, e.target.checked)}
+              className={`mt-0.5 shrink-0 ${accentColor}`}
+            />
+            <div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-xs font-semibold text-gray-200">
+                  {mod.name}
+                </span>
+                <span className="text-xs text-gray-500 italic">
+                  {mod.source}
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 leading-tight">
+                {mod.description}
+              </p>
+            </div>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function FleetBuilder({
   label,
   color,
@@ -663,6 +1253,12 @@ function FleetBuilder({
   onTextChange,
   onApplyText,
   onClear,
+  upgradeableUnits,
+  unitUpgrades,
+  onToggleUpgrade,
+  capacityDefs,
+  capacityCounts,
+  carriedUnitId,
 }) {
   const borderColor = color === "blue" ? "border-blue-500" : "border-red-500";
   const headerColor = color === "blue" ? "text-blue-400" : "text-red-400";
@@ -708,6 +1304,9 @@ function FleetBuilder({
             def={def}
             count={counts[def.id] ?? 0}
             onSet={(id, val) => onSet(side, id, val)}
+            hasUpgrade={upgradeableUnits?.has(def.id)}
+            upgraded={!!unitUpgrades?.[def.id]}
+            onToggleUpgrade={onToggleUpgrade}
           />
         ))}
       </div>
@@ -729,6 +1328,23 @@ function FleetBuilder({
             </span>
           </span>
         )}
+        {carriedUnitId != null &&
+          (() => {
+            const used = counts[carriedUnitId] ?? 0;
+            const cap = calcCapacity(
+              capacityCounts ?? counts,
+              capacityDefs ?? defs,
+            );
+            const over = used > cap;
+            return (
+              <span
+                className={`ml-3 ${over ? "text-red-400 font-semibold" : ""}`}
+              >
+                Capacity: {used}/{cap}
+                {over ? " ⚠️" : ""}
+              </span>
+            );
+          })()}
       </div>
     </div>
   );
@@ -832,6 +1448,10 @@ export default function CombatSimulator({ onNavigate }) {
   const [bombardmentHits, setBombardmentHits] = useState(0);
   const [results, setResults] = useState(null);
   const [running, setRunning] = useState(false);
+  const [atkUnitUpgrades, setAtkUnitUpgrades] = useState({});
+  const [defUnitUpgrades, setDefUnitUpgrades] = useState({});
+  const [atkToggles, setAtkToggles] = useState(new Set());
+  const [defToggles, setDefToggles] = useState(new Set());
 
   const factionOptions = useMemo(
     () => ALL_FACTIONS.map((f) => f.name).sort((a, b) => a.localeCompare(b)),
@@ -839,24 +1459,32 @@ export default function CombatSimulator({ onNavigate }) {
   );
 
   const atkDefs = useMemo(
-    () => buildFactionAdjustedDefs(mode, atkFaction),
-    [mode, atkFaction],
+    () => buildFactionAdjustedDefs(mode, atkFaction, atkUnitUpgrades),
+    [mode, atkFaction, atkUnitUpgrades],
   );
   const defDefs = useMemo(
-    () => buildFactionAdjustedDefs(mode, defFaction),
-    [mode, defFaction],
+    () => buildFactionAdjustedDefs(mode, defFaction, defUnitUpgrades),
+    [mode, defFaction, defUnitUpgrades],
   );
   const atkSpaceDefs = useMemo(
-    () => buildFactionAdjustedDefs("space", atkFaction),
-    [atkFaction],
+    () => buildFactionAdjustedDefs("space", atkFaction, atkUnitUpgrades),
+    [atkFaction, atkUnitUpgrades],
+  );
+  const atkUpgradeable = useMemo(
+    () => getUpgradeableUnits(mode, atkFaction),
+    [mode, atkFaction],
+  );
+  const defUpgradeable = useMemo(
+    () => getUpgradeableUnits(mode, defFaction),
+    [mode, defFaction],
   );
   const atkMods = useMemo(
-    () => buildFactionCombatModifiers(atkFaction),
-    [atkFaction],
+    () => buildFactionCombatModifiers(atkFaction, atkToggles, mode),
+    [atkFaction, atkToggles, mode],
   );
   const defMods = useMemo(
-    () => buildFactionCombatModifiers(defFaction),
-    [defFaction],
+    () => buildFactionCombatModifiers(defFaction, defToggles, mode),
+    [defFaction, defToggles, mode],
   );
 
   const handleModeChange = (m) => {
@@ -865,6 +1493,10 @@ export default function CombatSimulator({ onNavigate }) {
     setDefCounts({});
     setAtkText("");
     setDefText("");
+    setAtkUnitUpgrades({});
+    setDefUnitUpgrades({});
+    setAtkToggles(new Set());
+    setDefToggles(new Set());
     setBombardmentHits(0);
     setResults(null);
   };
@@ -971,7 +1603,9 @@ export default function CombatSimulator({ onNavigate }) {
               value={atkFaction}
               onChange={(e) => {
                 setAtkFaction(e.target.value);
+                setAtkUnitUpgrades({});
                 setResults(null);
+                setAtkToggles(new Set());
               }}
               className="w-full bg-gray-800 border border-blue-700 rounded px-2 py-2 text-sm text-white"
             >
@@ -993,6 +1627,29 @@ export default function CombatSimulator({ onNavigate }) {
               onTextChange={setAtkText}
               onApplyText={() => applyText("atk")}
               onClear={() => clear("atk")}
+              upgradeableUnits={atkUpgradeable}
+              unitUpgrades={atkUnitUpgrades}
+              onToggleUpgrade={(unitId, val) => {
+                setAtkUnitUpgrades((prev) => ({ ...prev, [unitId]: val }));
+                setResults(null);
+              }}
+              capacityDefs={mode === "ground" ? atkSpaceDefs : atkDefs}
+              capacityCounts={mode === "ground" ? atkCounts : atkCounts}
+              carriedUnitId={mode === "space" ? "fighter" : "infantry"}
+            />
+            <ModifiersPanel
+              factionName={atkFaction}
+              mode={mode}
+              activeToggles={atkToggles}
+              onToggle={(id, val) => {
+                setAtkToggles((prev) => {
+                  const next = new Set(prev);
+                  val ? next.add(id) : next.delete(id);
+                  return next;
+                });
+                setResults(null);
+              }}
+              color="blue"
             />
           </div>
           <div className="space-y-2">
@@ -1000,7 +1657,9 @@ export default function CombatSimulator({ onNavigate }) {
               value={defFaction}
               onChange={(e) => {
                 setDefFaction(e.target.value);
+                setDefUnitUpgrades({});
                 setResults(null);
+                setDefToggles(new Set());
               }}
               className="w-full bg-gray-800 border border-red-700 rounded px-2 py-2 text-sm text-white"
             >
@@ -1022,6 +1681,29 @@ export default function CombatSimulator({ onNavigate }) {
               onTextChange={setDefText}
               onApplyText={() => applyText("def")}
               onClear={() => clear("def")}
+              upgradeableUnits={defUpgradeable}
+              unitUpgrades={defUnitUpgrades}
+              onToggleUpgrade={(unitId, val) => {
+                setDefUnitUpgrades((prev) => ({ ...prev, [unitId]: val }));
+                setResults(null);
+              }}
+              capacityDefs={defDefs}
+              capacityCounts={defCounts}
+              carriedUnitId={mode === "space" ? "fighter" : "infantry"}
+            />
+            <ModifiersPanel
+              factionName={defFaction}
+              mode={mode}
+              activeToggles={defToggles}
+              onToggle={(id, val) => {
+                setDefToggles((prev) => {
+                  const next = new Set(prev);
+                  val ? next.add(id) : next.delete(id);
+                  return next;
+                });
+                setResults(null);
+              }}
+              color="red"
             />
           </div>
         </div>
