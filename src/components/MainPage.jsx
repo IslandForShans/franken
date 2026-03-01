@@ -45,6 +45,12 @@ export default function MainPage({ onNavigate }) {
                 Component Reference
               </button>
               <button
+                onClick={() => handleNavigation("/reference-non-faction")}
+                className="w-full sm:w-auto px-8 py-4 rounded-lg bg-cyan-700 hover:bg-cyan-600 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-cyan-900/50"
+              >
+                Non-Faction Reference
+              </button>
+              <button
                 onClick={() => handleNavigation("/mapbuilder")}
                 className="w-full px-4 py-3 rounded-lg bg-orange-600 hover:bg-orange-500 transition-colors font-semibold text-center"
               >
@@ -83,7 +89,7 @@ export default function MainPage({ onNavigate }) {
                 onClick={() => handleNavigation("/draft")}
                 className="w-full sm:w-auto px-8 py-4 rounded-lg bg-blue-600 hover:bg-blue-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-blue-900/50"
               >
-                Start Franken Draft
+                Franken Draft
               </button>
               <button
                 onClick={() => handleNavigation("/theorycrafting")}
@@ -96,6 +102,12 @@ export default function MainPage({ onNavigate }) {
                 className="w-full sm:w-auto px-8 py-4 rounded-lg bg-teal-600 hover:bg-teal-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-teal-900/50"
               >
                 Component Reference
+              </button>
+              <button
+                onClick={() => handleNavigation("/reference-non-faction")}
+                className="w-full sm:w-auto px-8 py-4 rounded-lg bg-cyan-700 hover:bg-cyan-600 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-cyan-900/50"
+              >
+                Non-Faction Reference
               </button>
               <button
                 onClick={() => handleNavigation("/mapbuilder")}

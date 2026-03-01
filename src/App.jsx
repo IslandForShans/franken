@@ -3,6 +3,7 @@ import MainPage from "./components/MainPage";
 import DraftSimulator from "./components/DraftSimulator";
 import TheorycraftingApp from "./components/TheorycraftingApp";
 import ComponentReference from "./components/ComponentReference";
+import NonFactionReference from "./components/NonFactionReference";
 import TI4MapBuilder from "./components/TI4MapBuilder";
 import DraftMapBuilder from "./components/DraftMapBuilder";
 import MiltyDraftPage from "./components/MiltyDraftPage";
@@ -43,6 +44,8 @@ function App() {
       setCurrentPage("theorycrafting");
     } else if (path === "/reference") {
       setCurrentPage("reference");
+    } else if (path === "/reference-non-faction") {
+      setCurrentPage("reference-non-faction");
     } else if (path === "/mapbuilder") {
       setCurrentPage("mapbuilder");
     } else if (path === "/combat") {
@@ -71,6 +74,9 @@ function App() {
       )}
       {currentPage === "reference" && (
         <ComponentReference onNavigate={handleNavigate} />
+      )}
+      {currentPage === "reference-non-faction" && (
+        <NonFactionReference onNavigate={handleNavigate} />
       )}
       {currentPage === "mapbuilder" && (
         <TI4MapBuilder onNavigate={handleNavigate} />
