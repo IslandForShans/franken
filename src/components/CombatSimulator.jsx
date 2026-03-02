@@ -1739,20 +1739,6 @@ export default function CombatSimulator({ onNavigate }) {
           <h1 className="text-lg font-bold text-yellow-400">
             Combat Simulator
           </h1>
-          <div className="ml-auto flex gap-2">
-            <button
-              onClick={() => handleModeChange("space")}
-              className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${mode === "space" ? "bg-yellow-500 text-black" : "bg-gray-700 text-gray-300 hover:bg-gray-600"}`}
-            >
-              🚀 Space
-            </button>
-            <button
-              onClick={() => handleModeChange("ground")}
-              className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${mode === "ground" ? "bg-yellow-500 text-black" : "bg-gray-700 text-gray-300 hover:bg-gray-600"}`}
-            >
-              ⚔️ Ground
-            </button>
-          </div>
         </div>
       </div>
 
@@ -1781,7 +1767,7 @@ export default function CombatSimulator({ onNavigate }) {
               label="Attacker"
               color="blue"
               side="atk"
-              defs={atkDefs.filter(d => mode === "space" ? d.spaceCombat : d.groundCombat)}
+              defs={atkDefs}
               counts={atkCounts}
               onSet={setCount}
               text={atkText}
@@ -1835,7 +1821,7 @@ export default function CombatSimulator({ onNavigate }) {
               label="Defender"
               color="red"
               side="def"
-              defs={defDefs.filter(d => mode === "space" ? d.spaceCombat : d.groundCombat)}
+              defs={defDefs}
               counts={defCounts}
               onSet={setCount}
               text={defText}
