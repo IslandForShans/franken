@@ -41,6 +41,7 @@ export const ICON_MAP = {
     Hazardous: `${ICON_PATH}trait-hazardous.png`,
     Industrial: `${ICON_PATH}trait-industrial.png`,
     "Space Station": `${ICON_PATH}space-station.png`,
+    Frontier: `${ICON_PATH}Frontier.png`
   },
 
   // Faction icons (add your faction names)

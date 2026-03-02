@@ -1,8 +1,26 @@
 import React, { useMemo, useState } from "react";
 import { nonFactionCards } from "../data/nonFactionPacks";
+import { ICON_MAP } from "../utils/dataProcessor";
+
+const NON_FACTION_SUBTYPE_ICON_MAP = {
+  biotic: ICON_MAP.techColors.Green,
+  propulsion: ICON_MAP.techColors.Blue,
+  cybernetic: ICON_MAP.techColors.Yellow,
+  warfare: ICON_MAP.techColors.Red,
+  cultural: ICON_MAP.traits.Cultural,
+  hazardous: ICON_MAP.traits.Hazardous,
+  industrial: ICON_MAP.traits.Industrial,
+  frontier: ICON_MAP.traits.Frontier,
+};
+
+const getSubtypeIcon = (subtype) => {
+  if (!subtype) return null;
+  return NON_FACTION_SUBTYPE_ICON_MAP[String(subtype).toLowerCase()] || null;
+};
 
 function NonFactionCard({ card }) {
   const [expanded, setExpanded] = useState(false);
+  const subtypeIcon = getSubtypeIcon(card.subtype);
 
   return (
     <div
@@ -11,9 +29,7 @@ function NonFactionCard({ card }) {
     >
       <div className="px-3 py-2 cursor-pointer hover:bg-gray-700/40 transition-colors">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-yellow-400 font-semibold text-sm">
-            {card.name}
-          </span>
+          <span className="text-yellow-400 font-semibold text-sm">{card.name}</span>
           {card.amount !== undefined && (
             <span className="text-xs px-1.5 py-0.5 rounded bg-gray-700 text-white-300">
               x{card.amount}
@@ -21,15 +37,21 @@ function NonFactionCard({ card }) {
           )}
           {card.subtype && (
             <span className="text-xs px-1.5 py-0.5 rounded bg-blue-900/40 border border-blue-700 text-blue-300">
+              {subtypeIcon && (
+                <img
+                  src={subtypeIcon}
+                  alt={card.subtype}
+                  title={card.subtype}
+                  className="inline-block w-3 h-3 mr-1"
+                />
+              )}
               {card.subtype}
             </span>
           )}
           <span className="text-xs px-1.5 py-0.5 rounded bg-purple-900/40 border border-purple-700 text-purple-300">
             {card.source}
           </span>
-          <span className="ml-auto text-white-500 text-xs">
-            {expanded ? "▲" : "▼"}
-          </span>
+          <span className="ml-auto text-white-500 text-xs">{expanded ? "▲" : "▼"}</span>
         </div>
       </div>
       {expanded && (
@@ -74,8 +96,7 @@ export default function NonFactionReference({ onNavigate }) {
 
     return nonFactionCards.filter((card) => {
       if (activeTypes.size > 0 && !activeTypes.has(card.type)) return false;
-      if (activeSources.size > 0 && !activeSources.has(card.source))
-        return false;
+      if (activeSources.size > 0 && !activeSources.has(card.source)) return false;
       if (!s) return true;
 
       return (
@@ -119,9 +140,7 @@ export default function NonFactionReference({ onNavigate }) {
           >
             ← Home
           </button>
-          <h1 className="text-xl font-bold text-yellow-400">
-            Non-Faction Card Reference
-          </h1>
+          <h1 className="text-xl font-bold text-yellow-400">Non-Faction Card Reference</h1>
           <span className="ml-auto text-xs text-gray-400">
             {filteredCards.length} / {nonFactionCards.length} cards
           </span>
@@ -176,15 +195,10 @@ export default function NonFactionReference({ onNavigate }) {
 
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-4">
         {groupedByType.length === 0 && (
-          <div className="text-sm text-gray-400">
-            No cards match the current filters.
-          </div>
+          <div className="text-sm text-gray-400">No cards match the current filters.</div>
         )}
         {groupedByType.map(([type, cards]) => (
-          <section
-            key={type}
-            className="rounded-xl border border-gray-700 overflow-hidden"
-          >
+          <section key={type} className="rounded-xl border border-gray-700 overflow-hidden">
             <div className="bg-gray-800/80 px-4 py-2 border-b border-gray-700">
               <h2 className="text-blue-400 font-semibold text-sm uppercase tracking-wide">
                 {type} ({cards.length})

@@ -199,45 +199,133 @@
     ],
     "relics": [
         {
-            
+            "pok": [
+                {
+
+                }
+            ],
+            "codices": [
+                {
+
+                }
+            ],
+            "te": [
+                {
+
+                }
+            ]
         }
     ],
     "action_cards": [
         {
+            "base": [
+                {
 
+                }
+            ],
+            "pok": [
+                {
+
+                }
+            ],
+            "codices": [
+                {
+
+                }
+            ],
+            "te": [
+                {
+
+                }
+            ]
         }
     ],
     "agendas": [
         {
+            "base": [
+                {
 
+                }
+            ],
+            "pok": [
+                {
+
+                }
+            ]
         }
     ],
     "technologies": [
         {
             "Biotic": [
                 {
+                    "base": [
+                        {
 
+                        }
+                    ],
+                    "pok": [
+                        {
+
+                        }
+                    ],
+                    "codices": [
+                        {
+
+                        }
+                    ]
                 }
             ]
         },
         {
             "Cybernetic": [
                 {
+                    "base": [
+                        {
 
+                        }
+                    ],
+                    "pok": [
+                        {
+
+                        }
+                    ]
                 }
             ]
         },
         {
             "Propulsion": [
                 {
+                    "base": [
+                        {
 
+                        }
+                    ],
+                    "pok": [
+                        {
+
+                        }
+                    ]
                 }
             ]
         },
         {
             "Warfare": [
                 {
+                    "base": [
+                        {
 
+                        }
+                    ],
+                    "pok": [
+                        {
+
+                        }
+                    ],
+                    "codices": [
+                        {
+                            
+                        }
+                    ]
                 }
             ]
         }

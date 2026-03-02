@@ -3,7 +3,7 @@ import { factionsData, discordantStarsData } from "../data/processedData";
 
 // ─── Unit Definitions ─────────────────────────────────────────────────────────
 
-const SPACE_UNITS = [
+const ALL_UNITS = [
   {
     id: "fighter",
     name: "Fighter",
@@ -18,6 +18,8 @@ const SPACE_UNITS = [
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: true,
+    spaceCombat: true,
+    groundCombat: false,
     upgrade: { combat: 8 },
   },
   {
@@ -34,6 +36,8 @@ const SPACE_UNITS = [
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    spaceCombat: true,
+    groundCombat: false,
     upgrade: { combat: 8, afbHit: 6, afbDice: 3 },
   },
   {
@@ -50,6 +54,8 @@ const SPACE_UNITS = [
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    spaceCombat: true,
+    groundCombat: false,
     upgrade: { combat: 9, capacity: 6 },
   },
   {
@@ -66,6 +72,8 @@ const SPACE_UNITS = [
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    spaceCombat: true,
+    groundCombat: false,
     upgrade: { combat: 6, capacity: 1 },
   },
   {
@@ -82,6 +90,8 @@ const SPACE_UNITS = [
     bombardmentHit: 5,
     bombardmentDice: 1,
     isFighter: false,
+    spaceCombat: true,
+    groundCombat: false,
     upgrade: { combat: 5, bombardmentHit: 5, bombardmentDice: 1 },
   },
   {
@@ -98,6 +108,8 @@ const SPACE_UNITS = [
     bombardmentHit: 3,
     bombardmentDice: 3,
     isFighter: false,
+    spaceCombat: true,
+    groundCombat: false,
   },
   {
     id: "flagship",
@@ -113,26 +125,9 @@ const SPACE_UNITS = [
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    spaceCombat: true,
+    groundCombat: false,
   },
-  {
-    id: "pds",
-    name: "PDS",
-    combat: 0,
-    dice: 0,
-    sustain: false,
-    afbHit: 0,
-    afbDice: 0,
-    capacity: 0,
-    spaceCannonHit: 6,
-    spaceCannonDice: 1,
-    bombardmentHit: 0,
-    bombardmentDice: 0,
-    isFighter: false,
-    upgrade: { spaceCannonHit: 5, spaceCannonDice: 1 },
-  },
-];
-
-const GROUND_UNITS = [
   {
     id: "infantry",
     name: "Infantry",
@@ -147,6 +142,8 @@ const GROUND_UNITS = [
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    spaceCombat: false,
+    groundCombat: true,
     upgrade: { combat: 7 },
   },
   {
@@ -163,6 +160,8 @@ const GROUND_UNITS = [
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    spaceCombat: false,
+    groundCombat: true,
   },
   {
     id: "pds",
@@ -178,6 +177,8 @@ const GROUND_UNITS = [
     bombardmentHit: 0,
     bombardmentDice: 0,
     isFighter: false,
+    spaceCombat: false,
+    groundCombat: true,
     upgrade: { spaceCannonHit: 5, spaceCannonDice: 1 },
   },
 ];
@@ -225,6 +226,16 @@ const FACTION_PASSIVE_MODIFIERS = {
 
 const FACTION_TOGGLEABLE_MODIFIERS = {
   // ── BASE GAME ──────────────────────────────────────────────────────────────
+  "The Universities of Jol-Nar": [
+    {
+      id: "jolnar_flagship",
+      name: "J.N.S. Hylarim",
+      source: "Flagship",
+      description: "Each natural 9 or 10 on the flagship's combat roll produces 1 additional hit",
+      modes: ["space"],
+      effect: { jolnarFlagshipTens: true },
+    },
+  ],
   "The Barony of Letnev": [
     {
       id: "letnev_munitions",
@@ -246,9 +257,67 @@ const FACTION_TOGGLEABLE_MODIFIERS = {
       id: "letnev_agent",
       name: "Viscount Unlenn",
       source: "Agent",
-      description: "One ship rolls 1 additional die each combat round",
+      description: "One ship rolls 1 additional die on the first round of combat",
       modes: ["space"],
       effect: { oneShipExtraDie: true },
+    },
+    {
+      id: "letnev_flagship",
+      name: "Arc Secundus",
+      source: "Flagship",
+      description: "Flagship repairs itself at the start of each combat round",
+      modes: ["space"],
+      effect: { letnevFlagshipRepair: true },
+    },
+  ],
+  "The Nekro Virus": [
+    {
+      id: "nekro_flagship",
+      name: "The Alastor",
+      source: "Flagship",
+      description: "Your ground forces in this system participate in space combat as ships",
+      modes: ["space"],
+      effect: { nekroGroundAsShips: true },
+    },
+  ],
+  "The L'tokk Khrask": [
+    {
+      id: "lkhrask_flagship",
+      name: "Splintering Gale",
+      source: "Flagship",
+      description: "At the start of space combat, up to 2 non-fighter ships gain Sustain Damage",
+      modes: ["space"],
+      effect: { ltokkFlagshipSustain: 2 },
+    },
+  ],
+  "The Cheiran Hordes": [
+    {
+      id: "cheiran_flagship",
+      name: "Lithodax",
+      source: "Flagship",
+      description: "Flagship rolls 1 additional die (adjacent to a structure)",
+      modes: ["space"],
+      effect: { cheiranFlagshipExtraDie: true },
+    },
+  ],
+  "The Nokar Sellships": [
+    {
+      id: "nokar_flagship",
+      name: "Annah Regia",
+      source: "Flagship",
+      description: "+1 to flagship combat rolls per 2 destroyers you control (round down)",
+      modes: ["space"],
+      effect: { nokarFlagshipBonus: true },
+    },
+  ],
+  "The Belkosea": [
+    {
+      id: "belkosea_flagship",
+      name: "Ascendancy",
+      source: "Flagship",
+      description: "Once per combat, flagship becomes damaged to produce 1 hit",
+      modes: ["space"],
+      effect: { belkoseaFlagshipHit: true },
     },
   ],
   "The Mentak Coalition": [
@@ -401,6 +470,14 @@ const FACTION_TOGGLEABLE_MODIFIERS = {
       modes: ["space", "ground"],
       effect: { raidingParties: true },
     },
+    {
+      id: "ghemina_rule_of_two",
+      name: "Rule of Two",
+      source: "Ability",
+      description: "If you have exactly 2 non-fighter ships and they share the same type, +2 to those units' combat rolls",
+      modes: ["space"],
+      effect: { ruleOfTwo: true },
+    },
   ],
   "The Kortali Tribunal": [
     {
@@ -492,13 +569,8 @@ function detectUnitIdFromTechName(name = "") {
   return null;
 }
 
-function buildFactionAdjustedDefs(mode, factionName, unitUpgrades = {}) {
-  const baseDefs = mode === "space" ? SPACE_UNITS : GROUND_UNITS;
-  const defs = baseDefs.map((u) => {
-    const next = { ...u };
-    if (unitUpgrades[u.id] && u.upgrade) Object.assign(next, u.upgrade);
-    return next;
-  });
+function buildFactionAdjustedDefs(factionName, unitUpgrades = {}) {
+  const defs = ALL_UNITS.map((u) => ({ ...u }));
   const faction = ALL_FACTIONS.find((f) => f.name === factionName);
   if (!faction) return defs;
 
@@ -537,9 +609,6 @@ function buildFactionAdjustedDefs(mode, factionName, unitUpgrades = {}) {
     const unitId = detectUnitIdFromTechName(tech.name);
     if (!unitId) continue;
     if (tech.tech_type === "Unit Upgrade" && !unitUpgrades[unitId]) continue;
-    if (mode === "space" && ["infantry", "mech"].includes(unitId)) continue;
-    if (mode === "ground" && !["infantry", "mech", "pds"].includes(unitId))
-      continue;
     applyCard(unitId, tech);
   }
 
@@ -557,10 +626,9 @@ function buildFactionAdjustedDefs(mode, factionName, unitUpgrades = {}) {
   return defs;
 }
 
-function getUpgradeableUnits(mode, factionName) {
-  const baseDefs = mode === "space" ? SPACE_UNITS : GROUND_UNITS;
+function getUpgradeableUnits(factionName) {
   const upgradeable = new Set();
-  for (const def of baseDefs) {
+  for (const def of ALL_UNITS) {
     if (def.upgrade) upgradeable.add(def.id);
   }
   const faction = ALL_FACTIONS.find((f) => f.name === factionName);
@@ -568,9 +636,6 @@ function getUpgradeableUnits(mode, factionName) {
     if (tech.tech_type !== "Unit Upgrade") continue;
     const unitId = detectUnitIdFromTechName(tech.name);
     if (!unitId) continue;
-    if (mode === "space" && ["infantry", "mech"].includes(unitId)) continue;
-    if (mode === "ground" && !["infantry", "mech", "pds"].includes(unitId))
-      continue;
     upgradeable.add(unitId);
   }
   return upgradeable;
@@ -650,19 +715,24 @@ function totalUnits(fleet) {
   return Object.values(fleet).reduce((s, u) => s + u.count, 0);
 }
 
-function fleetCombatHits(fleet, defs, mods = {}) {
+function fleetCombatHits(fleet, defs, mods = {}, phase = "spaceCombat") {
   let hits = 0;
   const bonus = mods.allUnitsCombatBonus ?? 0;
   const valorTens = mods.valorTens ?? false;
   const rerollMisses = mods.rerollMisses ?? false;
   const sardakkBonus = mods.sardakkFlagshipBonus && (fleet.flagship?.count ?? 0) > 0;
   let raidingUsed = false;
-  let oneShipExtraDieUsed = false;
 
   for (const def of defs) {
+    // Determine if this unit participates
+    let participates = def[phase]; // spaceCombat or groundCombat boolean
+    if (phase === "spaceCombat" && mods.nekroGroundAsShips && def.id === "infantry") participates = true;
+    if (phase === "groundCombat" && mods.fightersInGround && def.id === "fighter") participates = true;
+    if (!participates) continue;
+
     if (def.combat === 0) continue;
     const u = fleet[def.id];
-    if (!u.count) continue;
+    if (!u?.count) continue;
 
     // Per-unit bonus calculation
     let unitBonus = bonus;
@@ -670,36 +740,73 @@ function fleetCombatHits(fleet, defs, mods = {}) {
     if (mods.mahactFlagshipBonus && def.id === "flagship") unitBonus += 2;
     const threshold = Math.max(1, Math.min(10, def.combat - unitBonus));
 
+    // Jol-Nar flagship: 9 or 10 produces an extra hit
+    if (mods.jolnarFlagshipTens && def.id === "flagship") {
+      for (let i = 0; i < u.count; i++) {
+        for (let d = 0; d < def.dice; d++) {
+          const roll = rollDie();
+          if (roll >= threshold) {
+            hits++;
+            if (roll >= 9) hits++; // extra hit on 9 or 10
+          }
+        }
+      }
+      continue; // skip default roll below for this unit
+    }
+
+    // Cheiran flagship: rolls 1 extra die
+    const cheiranExtra = (mods.cheiranFlagshipExtraDie && def.id === "flagship") ? 1 : 0;
+
+    // Nokar flagship: +1 per 2 destroyers
+    let nokarBonus = 0;
+    if (mods.nokarFlagshipBonus && def.id === "flagship") {
+      nokarBonus = Math.floor((fleet.destroyer?.count ?? 0) / 2);
+    }
+    const nokarThreshold = Math.max(1, Math.min(10, threshold - nokarBonus));
+
+    // Rule of Two (Ghemina): +2 if exactly 2 non-fighters of same type
+    let ruleOfTwoBonus = 0;
+    if (mods.ruleOfTwo) {
+      const nonFighters = ["destroyer","carrier","cruiser","dreadnought","warsun","flagship"];
+      const types = nonFighters.filter(id => (fleet[id]?.count ?? 0) > 0);
+      if (types.length === 1 && (fleet[types[0]]?.count ?? 0) === 2) {
+        ruleOfTwoBonus = 2;
+      }
+    }
+
     // Extra dice for mechs (NRA flagship)
     const extraMechDie = (mods.mechs1ExtraDie && def.id === "mech") ? 1 : 0;
 
     for (let i = 0; i < u.count; i++) {
-      // Extra die for oneShipExtraDie (Letnev agent) — first ship only
-      const extraDie = (!oneShipExtraDieUsed && mods.oneShipExtraDie) ? 1 : 0;
-      if (extraDie) oneShipExtraDieUsed = true;
-
       // Damaged units extra die (Nivyn commander) — up to 2 damaged units
       const isDamaged = i < u.damaged;
       const damagedExtra = (isDamaged && mods.damagedUnitsExtraDie > 0) ? 1 : 0;
-
-      const totalDice = def.dice + extraMechDie + extraDie + damagedExtra;
 
       // Raiding Parties: first unit of highest-value roll gets best-of-two
       const useRaiding = !raidingUsed && mods.raidingParties && i === 0 && u.count > 0;
       if (useRaiding) raidingUsed = true;
 
+      const effectiveThreshold = def.id === "flagship" && mods.nokarFlagshipBonus
+      ? nokarThreshold
+      : Math.max(1, Math.min(10, def.combat - unitBonus - ruleOfTwoBonus));
+
+    const totalDice = def.dice + extraMechDie + extraDie + damagedExtra + cheiranExtra;
+
+    for (let i = 0; i < u.count; i++) {
       for (let d = 0; d < totalDice; d++) {
         let roll = rollDie();
-        if (rerollMisses && roll < threshold) roll = rollDie();
-        if (useRaiding && d === 0) {
+        if (rerollMisses && roll < effectiveThreshold) roll = rollDie();
+        if (useRaiding && i === 0 && d === 0) {
           const roll2 = rollDie();
           roll = Math.max(roll, roll2);
         }
-        if (roll >= threshold) {
+        if (roll >= effectiveThreshold) {
           hits++;
           if (valorTens && roll === 10) hits++;
+          if (mods.jolnarFlagshipTens && def.id === "flagship" && roll >= 9) hits++;
         }
       }
+    }
     }
   }
   return hits;
@@ -742,6 +849,15 @@ function cloneFleetState(fleet, defs) {
 function applyHits(fleet, hits, defs, phase = "combat", mods = {}) {
   const u = cloneFleetState(fleet, defs);
 
+  const isSpacePhase = ["spaceCombat", "spaceCannonOffense", "spaceCannonDefense", "afb"].includes(phase);
+  const isGroundPhase = ["groundCombat", "bombardment"].includes(phase);
+  
+  const eligible = (def) => {
+    if (isSpacePhase) return def.spaceCombat || (mods.nekroGroundAsShips && def.id === "infantry");
+    if (isGroundPhase) return def.groundCombat || (mods.fightersInGround && def.id === "fighter");
+    return true;
+  };
+
   // AFB defaults to fighters-only unless a special rule says otherwise.
   if (phase === "afb") {
     for (const def of defs.filter((d) => d.isFighter)) {
@@ -753,7 +869,7 @@ function applyHits(fleet, hits, defs, phase = "combat", mods = {}) {
     return u;
   }
   // 1) destroy fighters first
-  for (const def of defs.filter((d) => d.isFighter)) {
+  for (const def of defs.filter((d) => d.isFighter && eligible(d))) {
     const take = Math.min(u[def.id].count, hits);
     u[def.id].count -= take;
     hits -= take;
@@ -762,7 +878,7 @@ function applyHits(fleet, hits, defs, phase = "combat", mods = {}) {
 
   // 2) use sustain before destroying more ships
   const sustainAbsorb = mods.sustainCancelsTwo ? 2 : 1;
-  for (const def of defs.filter((d) => d.sustain)) {
+  for (const def of defs.filter((d) => d.sustain && eligible(d))) {
     const available = u[def.id].count - u[def.id].damaged;
     const canUse = Math.min(available, Math.ceil(hits / sustainAbsorb));
     u[def.id].damaged += canUse;
@@ -771,7 +887,7 @@ function applyHits(fleet, hits, defs, phase = "combat", mods = {}) {
   }
 
   // 3) destroy non-sustain ships
-  for (const def of defs.filter((d) => !d.isFighter && !d.sustain)) {
+  for (const def of defs.filter((d) => !d.isFighter && !d.sustain && eligible(d))) {
     const take = Math.min(u[def.id].count, hits);
     u[def.id].count -= take;
     hits -= take;
@@ -779,14 +895,14 @@ function applyHits(fleet, hits, defs, phase = "combat", mods = {}) {
   }
 
   // 4) destroy already damaged sustain ships
-  for (const def of defs.filter((d) => d.sustain)) {
+  for (const def of defs.filter((d) => d.sustain && eligible(d))) {
     const take = Math.min(u[def.id].damaged, hits);
     u[def.id].count -= take;
     u[def.id].damaged -= take;
     hits -= take;
     if (!hits) return u;
   }
-  for (const def of defs.filter((d) => d.sustain)) {
+  for (const def of defs.filter((d) => d.sustain && eligible(d))) {
     const take = Math.min(u[def.id].count, hits);
     u[def.id].count -= take;
     hits -= take;
@@ -802,7 +918,6 @@ function simulate(
   bombardmentHits,
   atkDefs,
   defDefs,
-  atkSpaceDefs,
   atkMods,
   defMods,
 ) {
@@ -904,10 +1019,10 @@ function simulate(
       }
     } else {
       // Ground pre-combat bombardment from attacker space units
-      const atkSpace = initFleet(atkCounts, atkSpaceDefs);
+      const atkSpace = initFleet(atkCounts, atkDefs);
       const atkBombardment = fleetAbilityHits(
         atkSpace,
-        atkSpaceDefs,
+        atkDefs,
         "bombardment",
       );
       if (atkBombardment > 0) {
@@ -923,16 +1038,6 @@ function simulate(
       // Optional manual override during migration
       if (bombardmentHits > 0) {
         def = applyHits(def, bombardmentHits, defDefs, "bombardment");
-      }
-
-      // Naalu Matriarch — fighters count as infantry during ground combat
-      if (atkMods.fightersInGround && (atk.fighter?.count ?? 0) > 0) {
-        atk.infantry = { count: (atk.infantry?.count ?? 0) + atk.fighter.count, damaged: atk.infantry?.damaged ?? 0 };
-        atk.fighter = { count: 0, damaged: 0 };
-      }
-      if (defMods.fightersInGround && (def.fighter?.count ?? 0) > 0) {
-        def.infantry = { count: (def.infantry?.count ?? 0) + def.fighter.count, damaged: def.infantry?.damaged ?? 0 };
-        def.fighter = { count: 0, damaged: 0 };
       }
     }
 
@@ -951,12 +1056,60 @@ function simulate(
       }
     }
 
+    // L'tokk Khrask flagship — up to 2 non-fighter ships gain sustain for this combat
+    if (atkMods.ltokkFlagshipSustain && (atk.flagship?.count ?? 0) > 0) {
+      let granted = 0;
+      for (const d of atkDefs) {
+        if (granted >= atkMods.ltokkFlagshipSustain) break;
+        if (d.id === "flagship" || d.isFighter || d.sustain) continue;
+        if ((atk[d.id]?.count ?? 0) > 0) { d.sustain = true; granted++; }
+      }
+    }
+    if (defMods.ltokkFlagshipSustain && (def.flagship?.count ?? 0) > 0) {
+      let granted = 0;
+      for (const d of defDefs) {
+        if (granted >= defMods.ltokkFlagshipSustain) break;
+        if (d.id === "flagship" || d.isFighter || d.sustain) continue;
+        if ((def[d.id]?.count ?? 0) > 0) { d.sustain = true; granted++; }
+      }
+    }
+
+    // Belkosea flagship — once per combat, take damage for 1 hit
+    const belkoseaUsed = { atk: false, def: false };
+
     let round = 0;
     while (totalUnits(atk) > 0 && totalUnits(def) > 0 && round < MAX_ROUNDS) {
       roundData[round].reached++;
 
-      let atkH = fleetCombatHits(atk, atkDefs, atkMods);
-      let defH = fleetCombatHits(def, defDefs, defMods);
+      // Arc Secundus (Letnev) — repair flagship at start of each round
+      if (atkMods.letnevFlagshipRepair && (atk.flagship?.count ?? 0) > 0 && (atk.flagship?.damaged ?? 0) > 0) {
+        atk.flagship.damaged--;
+      }
+      if (defMods.letnevFlagshipRepair && (def.flagship?.count ?? 0) > 0 && (def.flagship?.damaged ?? 0) > 0) {
+        def.flagship.damaged--;
+      }
+
+      const combatPhase = mode === "space" ? "spaceCombat" : "groundCombat";
+      let atkH = fleetCombatHits(atk, atkDefs, atkMods, combatPhase);
+      let defH = fleetCombatHits(def, defDefs, defMods, combatPhase);
+
+      // Viscount Unlenn (Letnev Agent) — round 1 only, 1 ship rolls 1 extra die
+      if (round === 0) {
+        if (atkMods.oneShipExtraDie) {
+          const def_ = atkDefs.find(d => d.combat > 0 && (atk[d.id]?.count ?? 0) > 0);
+          if (def_) {
+            const threshold = Math.max(1, Math.min(10, def_.combat - (atkMods.allUnitsCombatBonus ?? 0)));
+            if (rollDie() >= threshold) atkH++;
+          }
+        }
+        if (defMods.oneShipExtraDie) {
+          const def_ = defDefs.find(d => d.combat > 0 && (def[d.id]?.count ?? 0) > 0);
+          if (def_) {
+            const threshold = Math.max(1, Math.min(10, def_.combat - (defMods.allUnitsCombatBonus ?? 0)));
+            if (rollDie() >= threshold) defH++;
+          }
+        }
+      }
 
       // Titans Agent — cancel 1 hit per combat
       if (atkMods.cancelHitPerCombat && !cancelUsed.atk && defH > 0) {
@@ -999,6 +1152,20 @@ function simulate(
         mode === "space" ? "spaceCombat" : "groundCombat",
         defMods,
       );
+
+      // Belkosea flagship — once per combat, take damage to produce 1 hit
+      if (mode === "space") {
+        if (atkMods.belkoseaFlagshipHit && !belkoseaUsed.atk && (atk.flagship?.count ?? 0) > 0 && (atk.flagship?.damaged ?? 0) === 0) {
+          atk.flagship.damaged++;
+          def = applyHits(def, 1, defDefs, "spaceCombat", defMods);
+          belkoseaUsed.atk = true;
+        }
+        if (defMods.belkoseaFlagshipHit && !belkoseaUsed.def && (def.flagship?.count ?? 0) > 0 && (def.flagship?.damaged ?? 0) === 0) {
+          def.flagship.damaged++;
+          atk = applyHits(atk, 1, atkDefs, "spaceCombat", atkMods);
+          belkoseaUsed.def = true;
+        }
+      }
 
       // Deliverance Engine (Kortali) — once per space combat when a non-fighter ship is destroyed
       if (mode === "space") {
@@ -1459,32 +1626,28 @@ export default function CombatSimulator({ onNavigate }) {
   );
 
   const atkDefs = useMemo(
-    () => buildFactionAdjustedDefs(mode, atkFaction, atkUnitUpgrades),
-    [mode, atkFaction, atkUnitUpgrades],
-  );
-  const defDefs = useMemo(
-    () => buildFactionAdjustedDefs(mode, defFaction, defUnitUpgrades),
-    [mode, defFaction, defUnitUpgrades],
-  );
-  const atkSpaceDefs = useMemo(
-    () => buildFactionAdjustedDefs("space", atkFaction, atkUnitUpgrades),
+    () => buildFactionAdjustedDefs(atkFaction, atkUnitUpgrades),
     [atkFaction, atkUnitUpgrades],
   );
+  const defDefs = useMemo(
+    () => buildFactionAdjustedDefs(defFaction, defUnitUpgrades),
+    [defFaction, defUnitUpgrades],
+  );
   const atkUpgradeable = useMemo(
-    () => getUpgradeableUnits(mode, atkFaction),
-    [mode, atkFaction],
+    () => getUpgradeableUnits(atkFaction),
+    [atkFaction],
   );
   const defUpgradeable = useMemo(
-    () => getUpgradeableUnits(mode, defFaction),
-    [mode, defFaction],
+    () => getUpgradeableUnits(defFaction),
+    [defFaction],
   );
   const atkMods = useMemo(
-    () => buildFactionCombatModifiers(atkFaction, atkToggles, mode),
-    [atkFaction, atkToggles, mode],
+    () => buildFactionCombatModifiers(atkFaction, atkToggles),
+    [atkFaction, atkToggles],
   );
   const defMods = useMemo(
-    () => buildFactionCombatModifiers(defFaction, defToggles, mode),
-    [defFaction, defToggles, mode],
+    () => buildFactionCombatModifiers(defFaction, defToggles),
+    [defFaction, defToggles],
   );
 
   const handleModeChange = (m) => {
@@ -1541,7 +1704,6 @@ export default function CombatSimulator({ onNavigate }) {
           bombardmentHits,
           atkDefs,
           defDefs,
-          atkSpaceDefs,
           atkMods,
           defMods,
         ),
@@ -1555,7 +1717,6 @@ export default function CombatSimulator({ onNavigate }) {
     bombardmentHits,
     atkDefs,
     defDefs,
-    atkSpaceDefs,
     atkMods,
     defMods,
   ]);
@@ -1620,7 +1781,7 @@ export default function CombatSimulator({ onNavigate }) {
               label="Attacker"
               color="blue"
               side="atk"
-              defs={atkDefs}
+              defs={atkDefs.filter(d => mode === "space" ? d.spaceCombat : d.groundCombat)}
               counts={atkCounts}
               onSet={setCount}
               text={atkText}
@@ -1633,7 +1794,7 @@ export default function CombatSimulator({ onNavigate }) {
                 setAtkUnitUpgrades((prev) => ({ ...prev, [unitId]: val }));
                 setResults(null);
               }}
-              capacityDefs={mode === "ground" ? atkSpaceDefs : atkDefs}
+              capacityDefs={mode === "ground" ? atkDefs : atkDefs}
               capacityCounts={mode === "ground" ? atkCounts : atkCounts}
               carriedUnitId={mode === "space" ? "fighter" : "infantry"}
             />
@@ -1674,7 +1835,7 @@ export default function CombatSimulator({ onNavigate }) {
               label="Defender"
               color="red"
               side="def"
-              defs={defDefs}
+              defs={defDefs.filter(d => mode === "space" ? d.spaceCombat : d.groundCombat)}
               counts={defCounts}
               onSet={setCount}
               text={defText}
