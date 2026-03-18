@@ -4,6 +4,18 @@ export const ICON_PATH = "./icons/"; // Global constant for icon path
 
 // Icon mappings
 export const ICON_MAP = {
+  // Misc
+  misc: {
+    Relic: `${ICON_PATH}Relic.png`,
+    Explore: `${ICON_PATH}traits.png`,
+    "Action Card": `${ICON_PATH}Action-card.png`,
+    Agenda: `${ICON_PATH}Agenda.png`,
+    "Secret Objective": `${ICON_PATH}Secret.png`,
+    "Stage 1 Public Objective": `${ICON_PATH}Public1.png`,
+    "Stage 2 Public Objective": `${ICON_PATH}Public2.png`,
+    "Promissory Note": `${ICON_PATH}Promissory.png`
+  },
+
   // Tech colors
   techColors: {
     Blue: `${ICON_PATH}tech-blue.png`,

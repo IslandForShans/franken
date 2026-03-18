@@ -201,17 +201,123 @@
         {
             "pok": [
                 {
-
+                    "name": "Dominus Orb",
+                    "description": "Before you move units during a tactical action, you may purge this card to move and transport units that are in systems that contain 1 of your command tokens.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Maw of Worlds",
+                    "description": "At the start of the agenda phase, you may purge this card and exhaust all of your planets to gain any 1 technology.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Scepter of Emelpar",
+                    "description": "When you would spend a token form your strategy pool, you may exhaust this card to spend a token from your reinforcements instead.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Shard of the Throne",
+                    "description": "When you gain this card, gain 1 victory point. When you lose this card, lose 1 victory point. When a player gains control of a legendary planet you control, or a planet you control in your home system, that player gains this card.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Stellar Converter",
+                    "description": "ACTION: Choose 1 non-home, non-legendary planet other than Mecatol Rex in a system that is adjacent to 1 or more of your units that have BOMBARDMENT; destroy all units on that planet and purge its attachments and its planet card. Then, place the destroyed planet token on that planet and purge this card.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "The Codex",
+                    "description": "ACTION: Purge this card to take up to 3 action cards of your choice from the action card discard pile.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "The Crown of Emphidia",
+                    "description": "After you perform a tactical action, you may exhaust this card to explore 1 planet you control. At the end of the status phase, if you control the 'Tomb of Emphidia', you may purge this card to gian 1 victory point.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "The Crown of Thalnos",
+                    "description": "During each combat round, this card's owner may reroll any number of their dice, applying +1 to the results; any units that reroll dice but do not produce at least 1 hit are destroyed.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "The Obsidian",
+                    "description": "When you gain this card, draw 1 secret objective. You can have 1 additional scored or unscored secret objective.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "The Prophet's Tears",
+                    "description": "When you research a technology, you may exhaust this card to ignore 1 prerequisite or draw 1 action card.",
+                    "source": "Prophecy of Kings"
                 }
             ],
             "codices": [
                 {
-
+                    "name": "Dynamis Core",
+                    "description": "While this card is in your play area, your commodity value is increased by 2. ACTION: Purge this card to gain trade goods equal to your printed commodity value +2.",
+                    "source": "Codex II"
+                },
+                {
+                    "name": "JR-XS455-0",
+                    "description": "ACTION: Exhaust this agent and choose a player; that player may spend 3 resources to place a structure on a plent they control. If they do not, they gian 1 trade good.",
+                    "source": "Codex II"
+                },
+                {
+                    "name": "Nano-Forge",
+                    "description": "ACTION: Attach this card to a non-legendary, non-home planet you control; its resource and influence values are increased by 2 and it is a legendary planet.",
+                    "source": "Codex II"
+                },
+                {
+                    "name": "Circlet of the Void",
+                    "description": "Your units do not roll for gravity rifts, and you ignore the movement effects of other anomalies. ACTION: Exhaust this card to explore a frontier token in a system that does not contain any other players' ships.",
+                    "source": "Codex IV"
+                },
+                {
+                    "name": "Book of Latvinia",
+                    "description": "When you gain this card, research up to 2 technologies that have no prerequsites. ACTION: Purge this card; if you control planets that have all 4 types of technology specialties, gain 1 victory point. Otherwise, gain the speaker token.",
+                    "source": "Codex IV"
+                },
+                {
+                    "name": "Neuraloop",
+                    "description": "When a public objective is revealed, you may purge one of your relics to discard that objective and replace it with a random objective from any objective deck; that objective is a public objective, even if it is a secret objective.",
+                    "source": "Codex IV"
                 }
             ],
             "te": [
                 {
-
+                    "name": "Metali Void Armaments",
+                    "description": "During the 'Anti-Fighter Barrage' step of space combat, you may resolve ANTI-FIGHTER BARRAGE 6(x3) against your opponent's units.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "The Quantumcore",
+                    "description": "When you gain this card, gain your breakthrough. You have SYNERGY for all technology types.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "The Silver Flame",
+                    "description": "The Silver Flame can be exchanged as part of a transaction. ACTION: Roll 1 die and purge this card; if the result is a 10, gain 1 victory point. Otherwise, purge your home system and all units in it; you cannot score public objectives. Put the Fracture into play if it is not already.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Lightrail Ordinance",
+                    "description": "Your space docks gain SPACE CANNON 5(x2). You may use your space dock's SPACE CANNON against ships that are adjacent to their system.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Metali Void Shielding",
+                    "description": "Each time hits are produced against 1 of your non-fighter ships, 1 of ythose ships may use SUSTAIN DAMAGE as if it had that ability.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "The Triad",
+                    "description": "This card can be readied and spent as if it were a planet card. Its resource and influence values are equal to 3 plus the number of different types of relic fragments you own.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Heart of Ixth",
+                    "description": "After any die is rolled, you may exhaust this card to add or subtract 1 from its results.",
+                    "source": "Thunder's Edge"
                 }
             ]
         }
@@ -220,7 +326,270 @@
         {
             "base": [
                 {
-
+                    "name": "Ancient Burial Sites",
+                    "amount": 1,
+                    "note": "At the start of the agenda phase:",
+                    "description": "Choose 1 player. Exhaust each cultural planet owned by that player.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Assassinate Representative",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "Choose 1 player. That player cnanot vote on this agenda.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Bribery",
+                    "amount": 1,
+                    "note": "After the speaker votes on an agenda:",
+                    "description": "Spend any number of trade goods. For each trade good spent, cast 1 additional vote for the outcome on which you voted.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Bunker",
+                    "amount": 1,
+                    "note": "At the start of an invasion:",
+                    "description": "During this invasion, apply -4 to the result of each Bombardment roll against planets you control.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Confusing Legal Text",
+                    "amount": 1,
+                    "note": "When you are elected as the outcome of an agenda:",
+                    "description": "Choose 1 player. That player is the elected player instead.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Construction Rider",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "You cannot vote on this agenda. Predict aloud the outcome of this agenda. If your prediction is correct, place 1 space dock from your reinforcements on a planet you control.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Courageous to the End",
+                    "amount": 1,
+                    "note": "After 1 of your ships is destroyed during a space combat:",
+                    "description": "Roll 2 dice. For each result equal to or greater than that ship's combat value, your opponent must choose and destroy 1 of their ships.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Cripple Defenses",
+                    "amount": 1,
+                    "note": "ACTION: Choose 1 planet.",
+                    "description": "Destroy each PDS on that planet.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Diplomacy Rider",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, choose 1 system that contains a planet you control. Each other player places a command token from their reinforcements in that system.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Direct Hit",
+                    "amount": 4,
+                    "note": "After another player's ship uses Sustain Damage to cancel a hit produced by your units or abilities:",
+                    "description": "Destroy that ship.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Disable",
+                    "amount": 1,
+                    "note": "At the start of an invasion in a system that contains 1 or more of your opponents' PDS units:",
+                    "description": "Your opponents' PDS units lose Planetary Shield and Space Cannon during this invasion.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Distinguished Councilor",
+                    "amount": 1,
+                    "note": "After you cast votes on an outcome of an agenda:",
+                    "description": "Cast 5 additional votes for that outcome.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Economic Initiative",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Ready each cultural planet you control.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Emergency Repairs",
+                    "amount": 1,
+                    "note": "At the start of a combat round:",
+                    "description": "Repair all of your units that have Sustain Damage in the active system.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Experimental Battlestation",
+                    "amount": 1,
+                    "note": "After another player moves ships into a system during a tactical action:",
+                    "description": "Choose 1 of your space docks that is either in or adjacent to that system. That space dock uses Space Cannon 5(x3) against ships in the active system.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Fighter Prototype",
+                    "amount": 1,
+                    "note": "At the start of the first round of space combat:",
+                    "description": "Apply +2 to the result of each of your fighters' combat rolls during this combat round.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Fire Team",
+                    "amount": 1,
+                    "note": "After your ground forces make combat rolls during a round of ground combat:",
+                    "description": "Reroll any number of your dice.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Flank Speed",
+                    "amount": 4,
+                    "note": "After you activate a system:",
+                    "description": "Apply +1 to the move value of each of your ships during this tactical action.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Focused Research",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Spend 4 trade goods to research 1 technology.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Frontline Deployment",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Place 3 infantry from your reinforcements on 1 planet you control.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Ghost Ship",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Place 1 destroyer from your reinforcements in a non-home system that contains a wormhole and does not contain other players' ships.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Imperial Rider",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, gain 1 victory point.",
+                    "source": "Base"
+                },
+                {
+                    "name": "In The Silence Of Space",
+                    "amount": 1,
+                    "note": "After you activate a system:",
+                    "description": "Choose 1 system. During this tactical action, your ships in the chosen system can move through systems that contain other players' ships.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Industrial Initiative",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Gain 1 trade good for each industrial planet you control.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Infiltrate",
+                    "amount": 1,
+                    "note": "When you gain control of a planet:",
+                    "description": "Replace each PDS and space dock that is on that planet with a matching unit from your reinforcements.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Insubordination",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Remove 1 token from another player's tactic pool and return it to their reinforcements.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Intercept",
+                    "amount": 1,
+                    "note": "After your opponent declares a retreat during a space combat:",
+                    "description": "Your opponent cannot retreat during this round of space combat.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Leadership Rider",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, gain 3 command tokens.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Lost Star Chart",
+                    "amount": 1,
+                    "note": "After you activate a system:",
+                    "description": "During this tactical action, systems that contain alpha and beta wormholes are adjacent to each other.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Lucky Shot",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Destroy 1 dreadnought, cruiser, or destroyer in a system that contains a planet you control.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Maneuvering Jets",
+                    "amount": 4,
+                    "note": "Before you assign hits produced by another player's Space Cannon roll:",
+                    "description": "Cancel 1 hit.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Mining Initiative",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Gain trade goods equal to the resource value of 1 planet you control.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Morale Boost",
+                    "amount": 4,
+                    "note": "At the start of a combat round:",
+                    "description": "Apply +1 to the result of each of your unit's combat rolls during this combat round.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Parley",
+                    "amount": 1,
+                    "note": "After another player commits units to land on a planet you control:",
+                    "description": "Return the committed units to the space area.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Plague",
+                    "amount": 1,
+                    "note": "ACTION: Choose 1 planet that is controlled by another player.",
+                    "description": "Roll 1 die for each infantry on that planet. For each result of 6 or greater, destroy 1 of those units.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Political Stability",
+                    "amount": 1,
+                    "note": "When you would return your strategy card(s) during the status phase:",
+                    "description": "Do not return your strategy card(s). You do not choose strategy cards during the next strategy phase.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Politics Rider",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, draw 3 action cards and gain the speaker token.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Public Disgrace",
+                    "amount": 1,
+                    "note": "When another player chooses a strategy card during the strategy phase:",
+                    "description": "That player must choose a different strategy card instead, if able.",
+                    "source": "Base"
                 }
             ],
             "pok": [

@@ -48,6 +48,7 @@ const normalizeCard = ({
     modId,
     amount: card.amount,
     text,
+    note: card.note || null,
     deck: card.deck || null,
     tags: ensureArray(card.tags),
     version: card.version || null,

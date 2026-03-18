@@ -13,6 +13,17 @@ const NON_FACTION_SUBTYPE_ICON_MAP = {
   frontier: ICON_MAP.traits.Frontier,
 };
 
+const NON_FACTION_TYPE_ICON_MAP = {
+  Relic: ICON_MAP.misc?.Relic,
+  "Action Card": ICON_MAP.misc?.["Action Card"],
+  Agenda: ICON_MAP.misc?.Agenda,
+  Explore: ICON_MAP.misc?.Explore,
+  "Secret Objective": ICON_MAP.misc?.["Secret Objective"],
+  "Promissory Note": ICON_MAP.misc?.["Promissory Note"],
+  "Stage 1 Public Objective": ICON_MAP.misc?.["Stage 1 Public Objective"],
+  "Stage 2 Public Objective": ICON_MAP.misc?.["Stage 2 Public Objective"],
+};
+
 const getSubtypeIcon = (subtype) => {
   if (!subtype) return null;
   return NON_FACTION_SUBTYPE_ICON_MAP[String(subtype).toLowerCase()] || null;
@@ -20,7 +31,6 @@ const getSubtypeIcon = (subtype) => {
 
 function NonFactionCard({ card }) {
   const [expanded, setExpanded] = useState(false);
-  const subtypeIcon = getSubtypeIcon(card.subtype);
 
   return (
     <div
@@ -29,33 +39,27 @@ function NonFactionCard({ card }) {
     >
       <div className="px-3 py-2 cursor-pointer hover:bg-gray-700/40 transition-colors">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-yellow-400 font-semibold text-sm">{card.name}</span>
+          <span className="text-yellow-400 font-semibold text-sm">
+            {card.name}
+          </span>
           {card.amount !== undefined && (
             <span className="text-xs px-1.5 py-0.5 rounded bg-gray-700 text-white-300">
               x{card.amount}
             </span>
           )}
-          {card.subtype && (
-            <span className="text-xs px-1.5 py-0.5 rounded bg-blue-900/40 border border-blue-700 text-blue-300">
-              {subtypeIcon && (
-                <img
-                  src={subtypeIcon}
-                  alt={card.subtype}
-                  title={card.subtype}
-                  className="inline-block w-3 h-3 mr-1"
-                />
-              )}
-              {card.subtype}
-            </span>
-          )}
           <span className="text-xs px-1.5 py-0.5 rounded bg-purple-900/40 border border-purple-700 text-purple-300">
             {card.source}
           </span>
-          <span className="ml-auto text-white-500 text-xs">{expanded ? "▲" : "▼"}</span>
+          <span className="ml-auto text-white-500 text-xs">
+            {expanded ? "▲" : "▼"}
+          </span>
         </div>
       </div>
       {expanded && (
         <div className="border-t border-gray-700/60 px-3 py-2 space-y-2">
+          {card.note && (
+            <p className="text-sm text-blue-400 italic mb-1">{card.note}</p>
+          )}
           <p className="text-sm text-white-300 leading-relaxed">{card.text}</p>
           <div className="text-xs text-gray-400 flex gap-3 flex-wrap">
             <span>
@@ -80,6 +84,16 @@ export default function NonFactionReference({ onNavigate }) {
   const [search, setSearch] = useState("");
   const [activeTypes, setActiveTypes] = useState(new Set());
   const [activeSources, setActiveSources] = useState(new Set());
+  const [collapsedTypes, setCollapsedTypes] = useState(new Set());
+
+  const toggleType = (type) => {
+    setCollapsedTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(type)) next.delete(type);
+      else next.add(type);
+      return next;
+    });
+  };
 
   const typeOptions = useMemo(
     () => [...new Set(nonFactionCards.map((card) => card.type))].sort(),
@@ -96,7 +110,8 @@ export default function NonFactionReference({ onNavigate }) {
 
     return nonFactionCards.filter((card) => {
       if (activeTypes.size > 0 && !activeTypes.has(card.type)) return false;
-      if (activeSources.size > 0 && !activeSources.has(card.source)) return false;
+      if (activeSources.size > 0 && !activeSources.has(card.source))
+        return false;
       if (!s) return true;
 
       return (
@@ -110,12 +125,19 @@ export default function NonFactionReference({ onNavigate }) {
   }, [search, activeTypes, activeSources]);
 
   const groupedByType = useMemo(() => {
-    const groups = {};
+    const typeMap = {};
     filteredCards.forEach((card) => {
-      if (!groups[card.type]) groups[card.type] = [];
-      groups[card.type].push(card);
+      if (!typeMap[card.type]) typeMap[card.type] = {};
+      const sub = card.subtype || "";
+      if (!typeMap[card.type][sub]) typeMap[card.type][sub] = [];
+      typeMap[card.type][sub].push(card);
     });
-    return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
+    return Object.entries(typeMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([type, subtypeMap]) => [
+        type,
+        Object.entries(subtypeMap).sort(([a], [b]) => a.localeCompare(b)),
+      ]);
   }, [filteredCards]);
 
   const toggleSetValue = (setter, value) => {
@@ -140,7 +162,9 @@ export default function NonFactionReference({ onNavigate }) {
           >
             ← Home
           </button>
-          <h1 className="text-xl font-bold text-yellow-400">Non-Faction Card Reference</h1>
+          <h1 className="text-xl font-bold text-yellow-400">
+            Non-Faction Card Reference
+          </h1>
           <span className="ml-auto text-xs text-gray-400">
             {filteredCards.length} / {nonFactionCards.length} cards
           </span>
@@ -195,22 +219,74 @@ export default function NonFactionReference({ onNavigate }) {
 
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-4">
         {groupedByType.length === 0 && (
-          <div className="text-sm text-gray-400">No cards match the current filters.</div>
+          <div className="text-sm text-gray-400">
+            No cards match the current filters.
+          </div>
         )}
-        {groupedByType.map(([type, cards]) => (
-          <section key={type} className="rounded-xl border border-gray-700 overflow-hidden">
-            <div className="bg-gray-800/80 px-4 py-2 border-b border-gray-700">
-              <h2 className="text-blue-400 font-semibold text-sm uppercase tracking-wide">
-                {type} ({cards.length})
-              </h2>
-            </div>
-            <div className="p-3 bg-gray-900/50 space-y-2">
-              {cards.map((card) => (
-                <NonFactionCard key={card.id} card={card} />
-              ))}
-            </div>
-          </section>
-        ))}
+        {groupedByType.map(([type, subtypeEntries]) => {
+          const totalCount = subtypeEntries.reduce(
+            (n, [, cs]) => n + cs.length,
+            0,
+          );
+          return (
+            <section
+              key={type}
+              className="rounded-xl border border-gray-700 overflow-hidden"
+            >
+              <button
+                className="w-full bg-gray-800/80 px-4 py-2 border-b border-gray-700 hover:bg-gray-700/60 transition-colors text-left"
+                onClick={() => toggleType(type)}
+              >
+                <h2 className="text-blue-400 font-semibold text-sm uppercase tracking-wide flex items-center gap-1.5">
+                  {NON_FACTION_TYPE_ICON_MAP[type] && (
+                    <img
+                      src={NON_FACTION_TYPE_ICON_MAP[type]}
+                      alt={type}
+                      className="w-4 h-4"
+                    />
+                  )}
+                  {type} ({totalCount})
+                  <span className="ml-auto text-gray-500 text-xs">
+                    {collapsedTypes.has(type) ? "▼" : "▲"}
+                  </span>
+                </h2>
+              </button>
+              {!collapsedTypes.has(type) && (
+                <div className="p-3 bg-gray-900/50 space-y-3">
+                  {subtypeEntries.map(([subtype, cards]) =>
+                    subtype ? (
+                      <div key={subtype}>
+                        <div className="flex items-center gap-1.5 px-1 pb-1 mb-1 border-b border-gray-700/50">
+                          {getSubtypeIcon(subtype) && (
+                            <img
+                              src={getSubtypeIcon(subtype)}
+                              alt={subtype}
+                              className="w-3.5 h-3.5"
+                            />
+                          )}
+                          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                            {subtype} ({cards.length})
+                          </span>
+                        </div>
+                        <div className="space-y-2">
+                          {cards.map((card) => (
+                            <NonFactionCard key={card.id} card={card} />
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div key="__no-subtype__" className="space-y-2">
+                        {cards.map((card) => (
+                          <NonFactionCard key={card.id} card={card} />
+                        ))}
+                      </div>
+                    ),
+                  )}
+                </div>
+              )}
+            </section>
+          );
+        })}
       </div>
     </div>
   );
