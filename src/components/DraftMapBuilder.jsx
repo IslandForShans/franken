@@ -433,6 +433,7 @@ export default function DraftMapBuilder({
   draftData,
   multiplayer,
   onPeerMessageRef,
+  onPeerConnectedRef,
 }) {
   const { factions, playerCount } = draftData;
   const isLargeGalaxy = playerCount >= 6;
@@ -453,7 +454,16 @@ export default function DraftMapBuilder({
   const [fitScale, setFitScale] = useState(1);
   const isMapHost = multiplayer?.role === "host";
   const isMapGuest = multiplayer?.role === "guest";
+  const [reconnectCodes, setReconnectCodes] = useState({});
+  const [reconnectAnswers, setReconnectAnswers] = useState({});
+  const [reconnectCopied, setReconnectCopied] = useState(null);
   const [useAltSlices, setUseAltSlices] = useState(false);
+
+  const disconnectedSlots = isMapHost
+    ? Object.entries(multiplayer?.peers ?? {})
+        .filter(([, p]) => !p.connected)
+        .map(([slotId]) => slotId)
+    : [];
 
   // Compute player order (sorted by table position) and their HS labels
   const players = useMemo(() => {
@@ -767,6 +777,31 @@ export default function DraftMapBuilder({
     }
   */
 
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem("mp_mapbuilder_progress");
+      if (!saved) return;
+      const s = JSON.parse(saved);
+      if (s.placed) setPlaced(s.placed);
+      if (s.mantis) setMantis(s.mantis);
+      if (s.mode) setMode(s.mode);
+      if (s.fillDone) setFillDone(s.fillDone);
+      if (s.useAltSlices) setUseAltSlices(s.useAltSlices);
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("mp_mapbuilder_progress", JSON.stringify({
+        placed,
+        mantis,
+        mode,
+        fillDone,
+        useAltSlices,
+      }));
+    } catch {}
+  }, [placed, mantis, mode, fillDone, useAltSlices]);
+
   const startMantis = () => {
     const bags = effectivePlayers.map((p) => shuffleArray([...p.draftedKeys]));
     setMantis({
@@ -849,13 +884,47 @@ export default function DraftMapBuilder({
     });
   };
 
+  // Restore host role if page was refreshed during map building
+  useEffect(() => {
+    if (multiplayer?.role) return;
+    try {
+      const hostState = sessionStorage.getItem("mp_host_draft_state");
+      if (!hostState) return;
+      const s = JSON.parse(hostState);
+      multiplayer.startHosting();
+      const guestSlots = Array.from({ length: s.playerCount - 1 }, (_, i) => `player_${i + 2}`);
+      multiplayer.markSlotsDisconnected(guestSlots);
+    } catch {}
+  }, []); // mount only
+
+  // Re-send map builder navigation + mantis state when a guest reconnects
+  useEffect(() => {
+    if (!onPeerConnectedRef) return;
+    onPeerConnectedRef.current = (slotId) => {
+      if (!isMapHost) return;
+      multiplayer.sendToPeer(slotId, { type: "NAVIGATE_MAP_BUILDER", data: draftData });
+      setTimeout(() => {
+        multiplayer.sendToPeer(slotId, {
+          type: "MANTIS_STATE",
+          mantis,
+          placed,
+          mode,
+          fillDone,
+          useAltSlices,
+        });
+      }, 500);
+    };
+  }, [onPeerConnectedRef, isMapHost, draftData, mantis, placed, mode, fillDone, useAltSlices, multiplayer]);
+
   useEffect(() => {
     if (!onPeerMessageRef) return;
     onPeerMessageRef.current = (slotId, msg) => {
       if (msg.type === "MANTIS_STATE") {
-        setMantis(msg.mantis);
-        setPlaced(msg.placed);
+        if (msg.mantis !== undefined) setMantis(msg.mantis);
+        if (msg.placed) setPlaced(msg.placed);
         if (msg.mode) setMode(msg.mode);
+        if (msg.fillDone !== undefined) setFillDone(msg.fillDone);
+        if (msg.useAltSlices !== undefined) setUseAltSlices(msg.useAltSlices);
       }
       if (msg.type === "MANTIS_ACTION") {
         if (!isMapHost) return;
@@ -980,12 +1049,112 @@ export default function DraftMapBuilder({
         overflow: "hidden",
       }}
     >
+
+      {/* ── HOST: reconnect modal when a peer disconnects ── */}
+      {isMapHost && disconnectedSlots.length > 0 && (
+        <div style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)",
+          zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
+        }}>
+          <div style={{
+            background: "#1e293b", border: "1px solid #ef4444", borderRadius: 12,
+            padding: 24, width: "100%", maxWidth: 420, display: "flex", flexDirection: "column", gap: 16,
+          }}>
+            <h3 style={{ color: "#f87171", fontWeight: 700, fontSize: 16, margin: 0 }}>
+              ⚠️ Player Disconnected
+            </h3>
+            {disconnectedSlots.map((slotId) => {
+              const playerNum = parseInt(slotId.replace("player_", ""), 10);
+              const code = reconnectCodes[slotId];
+              return (
+                <div key={slotId} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div style={{ fontSize: 13, color: "#d1d5db" }}>Player {playerNum} lost connection</div>
+                  {!code ? (
+                    <button
+                      onClick={async () => {
+                        const newCode = await multiplayer.createOfferForSlot(slotId);
+                        if (newCode) setReconnectCodes(prev => ({ ...prev, [slotId]: newCode }));
+                      }}
+                      style={{
+                        padding: "8px 12px", background: "#b45309", border: "none", borderRadius: 8,
+                        color: "white", fontWeight: 600, fontSize: 13, cursor: "pointer",
+                      }}
+                    >
+                      Generate New Offer Code for Player {playerNum}
+                    </button>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: 12, color: "#9ca3af" }}>Share with Player {playerNum}:</div>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <textarea readOnly value={code} style={{
+                          flex: 1, fontSize: 11, background: "#030712", border: "1px solid #374151",
+                          borderRadius: 6, padding: "6px 8px", color: "#d1d5db", height: 60,
+                          fontFamily: "monospace", resize: "none",
+                        }} />
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(code).then(() => {
+                              setReconnectCopied(slotId);
+                              setTimeout(() => setReconnectCopied(null), 2000);
+                            });
+                          }}
+                          style={{
+                            padding: "6px 10px", background: "#374151", border: "none", borderRadius: 6,
+                            color: "white", fontSize: 12, cursor: "pointer", alignSelf: "flex-start",
+                          }}
+                        >
+                          {reconnectCopied === slotId ? "✓" : "Copy"}
+                        </button>
+                      </div>
+                      <div style={{ fontSize: 12, color: "#9ca3af" }}>Paste their answer code:</div>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <textarea
+                          value={reconnectAnswers[slotId] || ""}
+                          onChange={e => setReconnectAnswers(prev => ({ ...prev, [slotId]: e.target.value }))}
+                          placeholder="Paste answer code..."
+                          style={{
+                            flex: 1, fontSize: 11, background: "#030712", border: "1px solid #374151",
+                            borderRadius: 6, padding: "6px 8px", color: "#d1d5db", height: 60,
+                            fontFamily: "monospace", resize: "none",
+                          }}
+                        />
+                        <button
+                          onClick={async () => {
+                            const ok = await multiplayer.receiveAnswer(reconnectAnswers[slotId] || "");
+                            if (ok) {
+                              setReconnectCodes(prev => { const n = { ...prev }; delete n[slotId]; return n; });
+                              setReconnectAnswers(prev => { const n = { ...prev }; delete n[slotId]; return n; });
+                            }
+                          }}
+                          disabled={!reconnectAnswers[slotId]?.trim()}
+                          style={{
+                            padding: "6px 10px", background: reconnectAnswers[slotId]?.trim() ? "#15803d" : "#374151",
+                            border: "none", borderRadius: 6, color: "white", fontSize: 12,
+                            cursor: reconnectAnswers[slotId]?.trim() ? "pointer" : "not-allowed",
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          Connect
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="app-header bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
         <div className="px-4 py-2 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => onNavigate("/")}
+              onClick={() => {
+                sessionStorage.removeItem("mp_mapbuilder_progress"); // ← add
+                onNavigate("/");
+              }}
               className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
             >
               ← Home
@@ -1621,10 +1790,11 @@ export default function DraftMapBuilder({
                       (p) => p.multiplayerSlotId === multiplayer.mySlotId,
                     );
 
-                const isMyTurn =
-                  !multiplayer?.role ||
-                  !isMapGuest ||
-                  mantisInfo.pidx === myPlayersArrayIndex; // guest: only on their turn
+                const isMyTurn = !multiplayer?.role
+                  ? true
+                  : isMapHost
+                    ? mantisInfo.player?.multiplayerSlotId === "player_1"
+                    : mantisInfo.pidx === myPlayersArrayIndex; // guest: only on their turn
 
                 // For multiplayer guests, actions send to host instead of applying locally
                 const onDraw = isMapGuest

@@ -149,6 +149,7 @@ export default function DraftSimulator({
   multiplayer,
   onStateReceivedRef,
   onPeerMessageRef,
+  onPeerConnectedRef,
 }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [playerCount, setPlayerCount] = useState(4);
@@ -178,6 +179,7 @@ export default function DraftSimulator({
   const [mpGuestState, setMpGuestState] = useState(null);
   const [reconnectCodes, setReconnectCodes] = useState({});
   const [reconnectAnswers, setReconnectAnswers] = useState({});
+  const [copiedCode, setCopiedCode] = useState(null);
   const { role: mpRole, broadcastState, sendToHost, peers, createOfferForSlot, receiveAnswer } = multiplayer;
   const isMultiplayerHost = mpRole === "host";
   const isMultiplayerGuest = mpRole === "guest";
@@ -861,6 +863,7 @@ export default function DraftSimulator({
   ]);
 
   const cancelDraft = useCallback(() => {
+    sessionStorage.removeItem("mp_host_draft_state");
     setDraftStarted(false);
     setDraftHistory([]);
     setPlayerBags([]);
@@ -2250,7 +2253,17 @@ export default function DraftSimulator({
                       <div className="text-xs text-gray-400">Share with Player {playerNum}:</div>
                       <div className="flex gap-2">
                         <textarea readOnly value={code} className="flex-1 text-xs bg-gray-950 border border-gray-600 rounded p-1.5 text-gray-300 resize-none h-12 font-mono" />
-                        <button onClick={() => navigator.clipboard.writeText(code)} className="px-2 py-1 bg-gray-600 hover:bg-gray-500 rounded text-xs text-white self-start">Copy</button>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(code).then(() => {
+                              setCopiedCode(slotId);
+                              setTimeout(() => setCopiedCode(null), 2000);
+                            });
+                          }}
+                          className="px-2 py-1 bg-gray-600 hover:bg-gray-500 rounded text-xs text-white self-start"
+                        >
+                          {copiedCode === slotId ? "✓" : "Copy"}
+                        </button>
                       </div>
                       <div className="text-xs text-gray-400">Paste their answer code:</div>
                       <div className="flex gap-2">
@@ -2407,6 +2420,51 @@ export default function DraftSimulator({
     );
   };
 
+  // Persist host draft state to sessionStorage
+  useEffect(() => {
+    if (!isMultiplayerHost || !draftStarted) return;
+    try {
+      sessionStorage.setItem("mp_host_draft_state", JSON.stringify({
+        playerCount, factions, draftHistory, playerBags, playerProgress,
+        currentPlayer, round, draftLimits, draftVariant, rotisseriePool,
+        draftStarted, draftPhase, firstRoundPickCount, subsequentRoundPickCount,
+        pendingSwaps, expansionsEnabled, frankenDrazSettings,
+      }));
+    } catch {}
+  }, [isMultiplayerHost, draftStarted, factions, playerBags, playerProgress,
+      currentPlayer, round, draftPhase, pendingSwaps, rotisseriePool]);
+
+  // Restore host state on mount
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem("mp_host_draft_state");
+      if (!saved) return;
+      const s = JSON.parse(saved);
+      if (!s.draftStarted) return;
+      setPlayerCount(s.playerCount);
+      setFactions(s.factions);
+      setDraftHistory(s.draftHistory ?? []);
+      setPlayerBags(s.playerBags);
+      setPlayerProgress(s.playerProgress);
+      setCurrentPlayer(s.currentPlayer);
+      setRound(s.round);
+      setDraftLimits(s.draftLimits);
+      setDraftVariant(s.draftVariant);
+      setRotisseriePool(s.rotisseriePool ?? {});
+      setDraftStarted(true);
+      setDraftPhase(s.draftPhase);
+      setFirstRoundPickCount(s.firstRoundPickCount);
+      setSubsequentRoundPickCount(s.subsequentRoundPickCount);
+      setPendingSwaps(s.pendingSwaps ?? []);
+      setExpansionsEnabled(s.expansionsEnabled);
+      setFrankenDrazSettings(s.frankenDrazSettings);
+      mpBroadcastedStart.current = true;
+      multiplayer.startHosting();
+      const guestSlots = Array.from({ length: s.playerCount - 1 }, (_, i) => `player_${i + 2}`);
+      multiplayer.markSlotsDisconnected(guestSlots);
+    } catch {}
+  }, []); // mount only — deps intentionally empty
+
   onPeerMessageRef.current = (slotId, msg) => {
     if (msg.type === "PICK") {
       const { playerIndex, picks } = msg;
@@ -2418,6 +2476,17 @@ export default function DraftSimulator({
       mpCheckAndApplyAllFactions(phase);
     }
   };
+
+  if (onPeerConnectedRef) {
+    onPeerConnectedRef.current = (slotId) => {
+      if (isMultiplayerHost && draftStarted) {
+        multiplayer.sendToPeer(slotId, {
+          type: "STATE",
+          state: buildBroadcastPayload({}),
+        });
+      }
+    };
+  }
 
   if (isDisconnectedGuest) {
     return <DisconnectedGuestScreen multiplayer={multiplayer} />;

@@ -52,7 +52,7 @@ function waitForICE(pc) {
   });
 }
 
-export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage }) {
+export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage, onPeerConnected }) {
   const [role, setRole] = useState(null);
   const [phase, setPhase] = useState("idle");
   const [peers, setPeers] = useState({});
@@ -70,6 +70,10 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage }) {
   const clearError = useCallback(() => setError(null), []);
 
   // ── HOST ──────────────────────────────────────────────────────────────
+
+  const markSlotsDisconnected = useCallback((slotIds) => {
+    setPeers(Object.fromEntries(slotIds.map(id => [id, { connected: false }])));
+  }, []);
 
   const startHosting = useCallback(() => {
     setRole("host");
@@ -89,6 +93,7 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage }) {
             ...prev,
             [slotId]: { ...prev[slotId], connected: true },
           }));
+          onPeerConnected?.(slotId);
         };
         channel.onclose = () => {
           setPeers((prev) => ({
@@ -186,6 +191,7 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage }) {
             setPhase("connected");
           };
           channel.onclose = () => {
+            setRole(null);
             setPhase("idle");
             setError("Disconnected from host.");
           };
@@ -248,7 +254,9 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage }) {
     savedGuestState: savedGuestState.current,                          
     clearSavedGuestState: () => {                                      
       sessionStorage.removeItem("mp_guest_state");                    
-      sessionStorage.removeItem("mp_guest_slot");                     
+      sessionStorage.removeItem("mp_guest_slot");  
+      sessionStorage.removeItem("mp_mapbuilder_data");                   
     }, 
+    markSlotsDisconnected,
   };
 }
