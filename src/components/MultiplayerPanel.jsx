@@ -141,6 +141,14 @@ export default function MultiplayerPanel({ playerCount, multiplayer }) {
                       </div>
                     </div>
 
+                    {!peer?.connected && offerCodes[slotId] && (
+                      <button
+                        onClick={() => setOfferCodes((prev) => { const n = { ...prev }; delete n[slotId]; return n; })}
+                        className="w-full px-3 py-1.5 bg-yellow-700 hover:bg-yellow-600 text-white rounded text-xs font-semibold transition-colors"
+                      >
+                        Player disconnected — Generate New Code
+                      </button>
+                    )}
                     {!peer?.connected && (
                       <div>
                         <div className="text-xs text-gray-400 mb-1">

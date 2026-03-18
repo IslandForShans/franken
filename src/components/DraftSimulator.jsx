@@ -82,6 +82,68 @@ const powerDraftLimits = {
   table_position: 1,
 };
 
+function DisconnectedGuestScreen({ multiplayer }) {
+  const [offerInput, setOfferInput] = useState("");
+  const [myAnswerCode, setMyAnswerCode] = useState("");
+  const { phase, error, clearError, joinWithOfferCode, clearSavedGuestState } = multiplayer;
+
+  const handleJoin = async () => {
+    const answerCode = await joinWithOfferCode(offerInput.trim());
+    if (answerCode) setMyAnswerCode(answerCode);
+  };
+
+  return (
+    <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-4">
+        <div className="text-center">
+          <div className="text-4xl mb-2">🔌</div>
+          <h2 className="text-xl font-bold text-yellow-400">Disconnected from Draft</h2>
+          <p className="text-sm text-gray-400 mt-1">
+            Ask the host to generate a new offer code for your slot, then paste it below.
+          </p>
+        </div>
+        {error && (
+          <div className="p-2 bg-red-900/50 border border-red-500 rounded text-red-300 text-xs flex justify-between gap-2">
+            <span>{error}</span>
+            <button onClick={clearError} className="text-red-400 hover:text-red-200 shrink-0">✕</button>
+          </div>
+        )}
+        {!myAnswerCode ? (
+          <>
+            <textarea
+              value={offerInput}
+              onChange={(e) => setOfferInput(e.target.value)}
+              placeholder="Paste offer code here..."
+              className="w-full text-xs bg-gray-950 border border-gray-600 rounded p-2 text-gray-300 resize-none h-20 font-mono"
+            />
+            <button
+              onClick={handleJoin}
+              disabled={!offerInput.trim() || phase === "connecting"}
+              className="w-full px-4 py-2 bg-green-700 hover:bg-green-600 disabled:opacity-40 text-white rounded-lg text-sm font-semibold transition-colors"
+            >
+              {phase === "connecting" ? "Connecting..." : "Reconnect to Draft"}
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="text-xs text-gray-400">Send this answer code back to the host:</div>
+            <textarea readOnly value={myAnswerCode} className="w-full text-xs bg-gray-950 border border-gray-600 rounded p-2 text-gray-300 resize-none h-20 font-mono" />
+            <button onClick={() => navigator.clipboard.writeText(myAnswerCode)} className="w-full px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg text-sm">
+              Copy Answer Code
+            </button>
+          </>
+        )}
+        <button
+          onClick={() => { clearSavedGuestState(); window.location.href = "/"; }}
+          className="w-full text-xs text-gray-500 hover:text-gray-300 transition-colors"
+        >
+          Leave draft
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function DraftSimulator({
   onNavigate,
   multiplayer,
@@ -114,9 +176,12 @@ export default function DraftSimulator({
   const mpCollectedFactions = useRef({});
   const mpBroadcastedStart = useRef(false);
   const [mpGuestState, setMpGuestState] = useState(null);
-  const { role: mpRole, broadcastState, sendToHost } = multiplayer;
+  const [reconnectCodes, setReconnectCodes] = useState({});
+  const [reconnectAnswers, setReconnectAnswers] = useState({});
+  const { role: mpRole, broadcastState, sendToHost, peers, createOfferForSlot, receiveAnswer } = multiplayer;
   const isMultiplayerHost = mpRole === "host";
   const isMultiplayerGuest = mpRole === "guest";
+  const isDisconnectedGuest = !isMultiplayerGuest && !isMultiplayerHost && !!multiplayer.savedGuestState;
   const myPlayerIndex = multiplayer.mySlotId
     ? parseInt(multiplayer.mySlotId.replace("player_", ""), 10) - 1
     : 0;
@@ -2156,6 +2221,70 @@ export default function DraftSimulator({
   }, []);
 
   const renderCurrentPlayerInfo = () => {
+    // ── HOST: reconnect panel for disconnected peers ─────────────────
+    if (isMultiplayerHost && draftStarted) {
+      const guestSlots = Array.from({ length: playerCount - 1 }, (_, i) => `player_${i + 2}`);
+      const disconnectedSlots = guestSlots.filter(slotId => peers[slotId] && !peers[slotId].connected);
+      if (disconnectedSlots.length > 0) {
+        return (
+          <div className="p-3 bg-red-900/30 rounded-lg border border-red-600 space-y-3">
+            <h3 className="font-bold text-red-400 text-sm">⚠️ Player Disconnected</h3>
+            {disconnectedSlots.map((slotId, i) => {
+              const playerNum = parseInt(slotId.replace("player_", ""), 10);
+              const code = reconnectCodes[slotId];
+              return (
+                <div key={slotId} className="space-y-2">
+                  <div className="text-xs text-gray-300">Player {playerNum} disconnected</div>
+                  {!code ? (
+                    <button
+                      onClick={async () => {
+                        const newCode = await createOfferForSlot(slotId);
+                        if (newCode) setReconnectCodes(prev => ({ ...prev, [slotId]: newCode }));
+                      }}
+                      className="w-full px-3 py-1.5 bg-yellow-700 hover:bg-yellow-600 text-white rounded text-xs font-semibold transition-colors"
+                    >
+                      Generate New Offer Code for Player {playerNum}
+                    </button>
+                  ) : (
+                    <>
+                      <div className="text-xs text-gray-400">Share with Player {playerNum}:</div>
+                      <div className="flex gap-2">
+                        <textarea readOnly value={code} className="flex-1 text-xs bg-gray-950 border border-gray-600 rounded p-1.5 text-gray-300 resize-none h-12 font-mono" />
+                        <button onClick={() => navigator.clipboard.writeText(code)} className="px-2 py-1 bg-gray-600 hover:bg-gray-500 rounded text-xs text-white self-start">Copy</button>
+                      </div>
+                      <div className="text-xs text-gray-400">Paste their answer code:</div>
+                      <div className="flex gap-2">
+                        <textarea
+                          value={reconnectAnswers[slotId] || ""}
+                          onChange={e => setReconnectAnswers(prev => ({ ...prev, [slotId]: e.target.value }))}
+                          placeholder="Paste answer code..."
+                          className="flex-1 text-xs bg-gray-950 border border-gray-600 rounded p-1.5 text-gray-300 resize-none h-12 font-mono"
+                        />
+                        <button
+                          onClick={async () => {
+                            const ok = await receiveAnswer(reconnectAnswers[slotId] || "");
+                            if (ok) {
+                              setReconnectCodes(prev => { const n = { ...prev }; delete n[slotId]; return n; });
+                              setReconnectAnswers(prev => { const n = { ...prev }; delete n[slotId]; return n; });
+                            }
+                          }}
+                          disabled={!reconnectAnswers[slotId]?.trim()}
+                          className="px-2 py-1 bg-green-700 hover:bg-green-600 disabled:opacity-40 rounded text-xs text-white self-start"
+                        >
+                          Connect
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+    }
+    // ── END HOST RECONNECT ────────────────────────────────────────────
+
     if (draftPhase === "reduction") {
       return (
         <div className="p-3 bg-orange-900/30 rounded-lg border border-orange-600">
@@ -2289,6 +2418,10 @@ export default function DraftSimulator({
       mpCheckAndApplyAllFactions(phase);
     }
   };
+
+  if (isDisconnectedGuest) {
+    return <DisconnectedGuestScreen multiplayer={multiplayer} />;
+  }
 
   return isMultiplayerGuest ? (
     <MultiplayerGuestView

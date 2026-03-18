@@ -60,6 +60,12 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage }) {
 
   const peerRefs = useRef({});
   const hostRef = useRef(null);
+  const savedGuestState = useRef(
+    (() => {
+      try { return JSON.parse(sessionStorage.getItem("mp_guest_state")); } catch { return null; }
+    })()
+  );
+
 
   const clearError = useCallback(() => setError(null), []);
 
@@ -175,6 +181,7 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage }) {
           hostRef.current.channel = channel;
 
           channel.onopen = () => {
+            sessionStorage.setItem("mp_guest_slot", slotId);
             setRole("guest");
             setPhase("connected");
           };
@@ -185,6 +192,7 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage }) {
           channel.onmessage = (ev) => {
             const msg = JSON.parse(ev.data);
             if (msg.type === "STATE") {
+              sessionStorage.setItem("mp_guest_state", JSON.stringify(msg.state));
               onStateReceived?.(msg.state);
             } else {
               onPeerMessage?.("host", msg);
@@ -237,5 +245,10 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage }) {
     joinWithOfferCode,
     sendToHost,
     mySlotId: hostRef.current?.slotId ?? null,
+    savedGuestState: savedGuestState.current,                          
+    clearSavedGuestState: () => {                                      
+      sessionStorage.removeItem("mp_guest_state");                    
+      sessionStorage.removeItem("mp_guest_slot");                     
+    }, 
   };
 }
