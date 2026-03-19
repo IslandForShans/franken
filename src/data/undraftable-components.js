@@ -1401,19 +1401,19 @@ export const undraftableComponents = {
       name: "Mindsieve",
       faction: "The Naalu Collective",
       triggerComponent: "The Oracle",
-      type: "gain_extra",
+      type: "optional_swap",
     },
     {
       name: "Valefar Assimilator Z",
       faction: "The Nekro Virus",
-      triggerComponent: "Galactic Threat",
-      type: "gain_extra",
+      triggerComponent: "Technological Singularity",
+      type: "optional_swap",
     },
     {
       name: "Deepgloom Executable",
       faction: "The Yssaril Tribes",
       triggerComponent: "Crafty",
-      type: "gain_extra",
+      type: "optional_swap",
     },
     {
       name: "Thunder's Paradox",
@@ -1444,19 +1444,19 @@ export const undraftableComponents = {
       name: "Stabilization Arrays",
       faction: "The Mirveda Protectorate",
       triggerComponent: "Gauss Cannon II",
-      type: "gain_extra",
+      type: "optional_swap",
     },
     {
       name: "Dreamwalkers",
       faction: "The Myko-Mentori",
       triggerComponent: "Mycelium-Ring II",
-      type: "gain_extra",
+      type: "optional_swap",
     },
     {
       name: "Anomaly Stabilization",
       faction: "The Nivyn Star Kings",
       triggerComponent: "Voidflare Warden I",
-      type: "gain_extra",
+      type: "optional_swap",
     },
     {
       name: "Insurrectionist Networking",
@@ -1492,7 +1492,7 @@ export const undraftableComponents = {
       name: "Mercenary Captains",
       faction: "The Nokar Sellships",
       triggerComponent: "Hired Guns",
-      type: "gain_extra",
+      type: "optional_swap",
     },
     //BR
     {
