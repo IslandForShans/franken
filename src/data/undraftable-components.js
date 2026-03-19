@@ -200,7 +200,7 @@ export const undraftableComponents = {
       name: "Miniaturization",
       faction: "The Ral Nel Consortium",
       triggerComponent: "Linkship II",
-      tpye: "gain_extra",
+      type: "gain_extra",
     },
     {
       name: "Scheming",
