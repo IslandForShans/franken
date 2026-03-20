@@ -29,7 +29,7 @@ function MapBuilderDisconnectedScreen({ multiplayer }) {
         <div className="text-center">
           <div className="text-4xl mb-2">🔌</div>
           <h2 className="text-xl font-bold text-yellow-400">Disconnected from Map Builder</h2>
-          <p className="text-sm text-gray-400 mt-1">Ask the host to generate a new offer code for your slot.</p>
+          <p className="text-sm text-gray-400 mt-1">Ask the host to generate a new offer code for your slot. When you are reconnected, the map will appear blank, once the next tile is placed it should reload the map.</p>
         </div>
         {error && (
           <div className="p-2 bg-red-900/50 border border-red-500 rounded text-red-300 text-xs flex justify-between gap-2">

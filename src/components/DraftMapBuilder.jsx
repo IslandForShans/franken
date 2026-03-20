@@ -458,6 +458,7 @@ export default function DraftMapBuilder({
   const [reconnectAnswers, setReconnectAnswers] = useState({});
   const [reconnectCopied, setReconnectCopied] = useState(null);
   const [useAltSlices, setUseAltSlices] = useState(false);
+  const [showHomeConfirm, setShowHomeConfirm] = useState(false);
 
   const disconnectedSlots = isMapHost
     ? Object.entries(multiplayer?.peers ?? {})
@@ -938,6 +939,24 @@ export default function DraftMapBuilder({
           mantisDrawAfterMulligan();
         }
       }
+      if (msg.type === "REQUEST_MAP_STATE") {
+        if (!isMapHost) return;
+        multiplayer.sendToPeer(slotId, {
+          type: "MANTIS_STATE",
+          mantis,
+          placed,
+          mode,
+          fillDone,
+          useAltSlices,
+        });
+      }
+      if (msg.type === "SESSION_ENDED") {
+        sessionStorage.removeItem("mp_mapbuilder_progress");
+        sessionStorage.removeItem("mp_guest_slot");
+        sessionStorage.removeItem("mp_mapbuilder_data");
+        sessionStorage.removeItem("current_page");
+        onNavigate("/");
+      }
     };
   }, [
     onPeerMessageRef,
@@ -959,6 +978,12 @@ export default function DraftMapBuilder({
       });
     });
   }, [mantis, placed]);
+
+  useEffect(() => {
+    if (!isMapGuest) return;
+    // Ask the host for the current map state once we're mounted
+    multiplayer.sendToHost({ type: "REQUEST_MAP_STATE" });
+  }, []); // mount only
 
   // Mantis derived values
   const mantisInfo = useMemo(() => {
@@ -1146,14 +1171,85 @@ export default function DraftMapBuilder({
         </div>
       )}
 
+      {/* ── HOST: home confirmation modal ── */}
+      {showHomeConfirm && (
+        <div style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)",
+          zIndex: 1001, display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
+        }}>
+          <div style={{
+            background: "#1e293b", border: "1px solid #4b5563", borderRadius: 12,
+            padding: 28, width: "100%", maxWidth: 400, display: "flex", flexDirection: "column", gap: 16,
+          }}>
+            <h3 style={{ color: "#fcd34d", fontWeight: 700, fontSize: 18, margin: 0 }}>
+              Leave Map Builder?
+            </h3>
+            <p style={{ color: "#d1d5db", fontSize: 14, margin: 0 }}>
+              Choose an option below. Both will end the multiplayer session and return everyone to the home screen.
+            </p>
+            <button
+              onClick={() => {
+                // Map is done — clean up and go home
+                sessionStorage.removeItem("mp_mapbuilder_progress");
+                sessionStorage.removeItem("mp_host_draft_state");
+                sessionStorage.removeItem("mp_mapbuilder_data");
+                sessionStorage.removeItem("current_page");
+                Object.keys(multiplayer.peers ?? {}).forEach((slotId) => {
+                  multiplayer.sendToPeer(slotId, { type: "SESSION_ENDED" });
+                });
+                onNavigate("/");
+              }}
+              style={{
+                padding: "10px 16px", background: "#15803d", border: "none", borderRadius: 8,
+                color: "white", fontWeight: 700, fontSize: 14, cursor: "pointer",
+              }}
+            >
+              ✅ Map is built — End Session
+            </button>
+            <button
+              onClick={() => {
+                // Cancel draft — clean up and go home
+                sessionStorage.removeItem("mp_mapbuilder_progress");
+                sessionStorage.removeItem("mp_host_draft_state");
+                sessionStorage.removeItem("mp_mapbuilder_data");
+                sessionStorage.removeItem("current_page");
+                Object.keys(multiplayer.peers ?? {}).forEach((slotId) => {
+                  multiplayer.sendToPeer(slotId, { type: "SESSION_ENDED" });
+                });
+                onNavigate("/");
+              }}
+              style={{
+                padding: "10px 16px", background: "#7f1d1d", border: "none", borderRadius: 8,
+                color: "white", fontWeight: 700, fontSize: 14, cursor: "pointer",
+              }}
+            >
+              ❌ Cancel Draft — End Session
+            </button>
+            <button
+              onClick={() => setShowHomeConfirm(false)}
+              style={{
+                padding: "8px 16px", background: "transparent", border: "1px solid #4b5563",
+                borderRadius: 8, color: "#9ca3af", fontSize: 13, cursor: "pointer",
+              }}
+            >
+              Stay in Map Builder
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="app-header bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-lg">
         <div className="px-4 py-2 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
-                sessionStorage.removeItem("mp_mapbuilder_progress"); // ← add
-                onNavigate("/");
+                if (isMapHost) {
+                  setShowHomeConfirm(true);
+                } else {
+                  sessionStorage.removeItem("mp_mapbuilder_progress");
+                  onNavigate("/");
+                }
               }}
               className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-colors"
             >
