@@ -4,6 +4,14 @@ import { ICON_MAP } from "../utils/dataProcessor.js";
 import { isComponentUndraftable } from "../data/undraftable-components.js";
 import "./UnifiedStyles.css";
 import { formatCategoryName } from "../utils/formatters.js";
+import {
+  FLEXI_FRANKEN_BASE_LIMITS,
+  FLEXI_FRANKEN_TOTAL_POINTS,
+  FLEXI_POINT_COSTS,
+  getCategoryItemCosts,
+  calcFlexiPointsUsed,
+  getNextExtraCost,
+} from "../utils/flexiFranken.js";
 
 const TECH_ICONS = {
   red: ICON_MAP.techColors.Red,
@@ -22,9 +30,42 @@ export default function FrankenDrazBuilder({
   expansionsEnabled = {},
   activeCategories = [],
   bannedComponents = new Set(),
+  flexiFranken = false,       // NEW
+  redrawPointsSpent = 0,      // NEW — points already used in redraw phase
 }) {
   const [selectedCategory, setSelectedCategory] = useState("abilities");
   const [expandedFaction, setExpandedFaction] = useState(null);
+
+  // ── FlexiFranken helpers ──────────────────────────────────────────────────
+  const flexiPointsUsed = flexiFranken
+    ? calcFlexiPointsUsed(builtFaction) + redrawPointsSpent
+    : 0;
+  const flexiPointsRemaining = FLEXI_FRANKEN_TOTAL_POINTS - flexiPointsUsed;
+
+  const getBaseLimit = (category) =>
+    flexiFranken
+      ? (FLEXI_FRANKEN_BASE_LIMITS[category] ?? factionLimits[category] ?? 0)
+      : (factionLimits[category] ?? 0);
+
+  const getMaxCount = (category) => {
+    const base = getBaseLimit(category);
+    if (!flexiFranken) return base;
+    const info = FLEXI_POINT_COSTS[category];
+    if (!info) return base;
+    if (info.maxExtras != null) return base + info.maxExtras;
+    return Infinity;
+  };
+
+  // Whether we can add one more item to this category
+  const canAddMore = (category) => {
+    const base = getBaseLimit(category);
+    const nonAutoCount = (builtFaction[category] || []).filter(i => !i.isExtra).length;
+    if (nonAutoCount < base) return true;             // within base limit
+    if (!flexiFranken) return false;                  // no flexi in non-flexi mode
+    const cost = getNextExtraCost(builtFaction, category);
+    if (cost == null) return false;                   // no extras allowed / at max
+    return flexiPointsRemaining >= cost;
+  };
 
   // Only show categories that are active in this draft
   const categories = [
@@ -89,16 +130,10 @@ export default function FrankenDrazBuilder({
   };
 
   // Get current count for a category
-  const getCategoryCount = (category) => {
-    return (builtFaction[category] || []).length;
-  };
+  const getCategoryCount = (category) => (builtFaction[category] || []).length;
 
-  // Check if category is at limit
-  const isCategoryAtLimit = (category) => {
-    const count = getCategoryCount(category);
-    const limit = factionLimits[category];
-    return count >= limit;
-  };
+  // Check if category is at its hard limit (accounting for flexi)
+  const isCategoryAtLimit = (category) => !canAddMore(category);
 
   // Render a component card
   const renderComponentCard = (component, category) => {
@@ -138,15 +173,29 @@ export default function FrankenDrazBuilder({
             />
           )}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
               <div className="font-bold text-yellow-400 text-sm uppercase">
                 {component.name}
               </div>
-              {isAdded && (
-                <span className="text-green-400 text-xs font-semibold flex-shrink-0">
-                  ✓ ADDED
-                </span>
-              )}
+              <div className="flex items-center gap-1 flex-shrink-0">
+                {/* FlexiFranken cost preview */}
+                {flexiFranken && !isAdded && (() => {
+                  const base = getBaseLimit(category);
+                  const nonAutoCount = (builtFaction[category] || []).filter(i => !i.isExtra).length;
+                  if (nonAutoCount < base) return null;
+                  const cost = getNextExtraCost(builtFaction, category);
+                  if (cost == null) return <span className="text-xs text-red-400 font-bold">MAX</span>;
+                  const affordable = flexiPointsRemaining >= cost;
+                  return (
+                    <span className={`text-xs px-1.5 py-0.5 rounded font-bold ${affordable ? 'bg-purple-900/60 text-purple-300' : 'bg-red-900/60 text-red-400'}`}>
+                      {cost}pt
+                    </span>
+                  );
+                })()}
+                {isAdded && (
+                  <span className="text-green-400 text-xs font-semibold">✓ ADDED</span>
+                )}
+              </div>
             </div>
             <div className="text-xs text-gray-400 mb-1">
               {component.faction}
@@ -387,6 +436,12 @@ export default function FrankenDrazBuilder({
 
   // Render built faction component
   const renderBuiltComponent = (component, category, index) => {
+    // Flexi: compute cost for this item's position in the category
+    const itemCosts = flexiFranken
+      ? getCategoryItemCosts(builtFaction[category] || [], category)
+      : null;
+    const flexiCost = itemCosts ? itemCosts[index] : null;
+
     return (
       <div
         key={`built-${category}-${index}`}
@@ -394,31 +449,62 @@ export default function FrankenDrazBuilder({
       >
         <div className="flex items-center gap-2">
           {component.icon && (
-            <img
-              src={component.icon}
-              alt={component.faction}
-              className="w-4 h-4"
-            />
+            <img src={component.icon} alt={component.faction} className="w-4 h-4" />
           )}
           <div>
-            <div className="font-semibold text-sm text-blue-300">
-              {component.name}
-            </div>
+            <div className="font-semibold text-sm text-blue-300">{component.name}</div>
             <div className="text-xs text-gray-400">{component.faction}</div>
           </div>
         </div>
-        <button
-          onClick={() => onRemoveComponent(category, index)}
-          className="px-2 py-1 bg-red-600 hover:bg-red-500 text-white text-xs rounded transition-colors"
-        >
-          Remove
-        </button>
+        <div className="flex items-center gap-2">
+          {flexiCost != null && flexiCost > 0 && (
+            <span className="text-xs bg-purple-800 text-purple-200 px-1.5 py-0.5 rounded font-bold">
+              {flexiCost}pt
+            </span>
+          )}
+          <button
+            onClick={() => onRemoveComponent(category, index)}
+            className="px-2 py-1 bg-red-600 hover:bg-red-500 text-white text-xs rounded transition-colors"
+          >
+            Remove
+          </button>
+        </div>
       </div>
     );
   };
 
   return (
     <div className="bg-gray-800/50 rounded-lg p-4">
+      {/* FlexiFranken Point Tracker */}
+      {flexiFranken && (
+        <div className={`mb-4 p-3 rounded-lg border-2 flex items-center justify-between ${
+          flexiPointsRemaining < 0  ? "border-red-500 bg-red-900/20"
+          : flexiPointsRemaining === 0 ? "border-yellow-500 bg-yellow-900/20"
+          : "border-purple-500 bg-purple-900/20"
+        }`}>
+          <div>
+            <span className="font-bold text-purple-300 text-sm">⭐ FlexiFranken Points</span>
+            {redrawPointsSpent > 0 && (
+              <span className="text-xs text-purple-400 ml-2">
+                ({redrawPointsSpent}pt used in redraw)
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {flexiPointsRemaining < 0 && (
+              <span className="text-red-400 text-xs">⚠️ Over budget!</span>
+            )}
+            <span className={`text-xl font-bold ${
+              flexiPointsRemaining < 0 ? "text-red-400"
+              : flexiPointsRemaining === 0 ? "text-yellow-400"
+              : "text-purple-300"
+            }`}>
+              {flexiPointsRemaining} / {FLEXI_FRANKEN_TOTAL_POINTS} remaining
+            </span>
+          </div>
+        </div>
+      )}
+
       <h3 className="text-xl font-bold text-yellow-400 mb-4">
         Player {playerIndex + 1} - Build Your Faction
       </h3>
@@ -514,21 +600,29 @@ export default function FrankenDrazBuilder({
               const limit = factionLimits[cat];
               const atLimit = count >= limit;
 
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
-                    selectedCategory === cat
-                      ? "bg-blue-600 text-white"
-                      : atLimit
-                        ? "bg-green-800 text-green-200"
-                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
-                >
-                  {formatCategoryName(cat).replace(" ", "\n")} ({count}/{limit})
-                </button>
-              );
+              {(() => {
+                const count = getCategoryCount(cat);
+                const base = getBaseLimit(cat);
+                const overBase = count > base;
+                const atFlexiLimit = isCategoryAtLimit(cat);
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
+                      selectedCategory === cat
+                        ? "bg-blue-600 text-white"
+                        : overBase
+                          ? "bg-purple-900 text-purple-200"
+                          : count >= base && count > 0
+                            ? "bg-green-800 text-green-200"
+                            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    }`}
+                  >
+                    {formatCategoryName(cat).replace(" ", "\n")} ({count}/{base}{flexiFranken && FLEXI_POINT_COSTS[cat] ? "+" : ""})
+                  </button>
+                );
+              })()}
             })}
           </div>
 
@@ -559,7 +653,9 @@ export default function FrankenDrazBuilder({
               const items = builtFaction[cat] || [];
               const count = items.length;
               const limit = factionLimits[cat];
-              const isOverLimit = count > limit;
+              const isOverLimit = flexiFranken
+                    ? getCategoryCount(cat) > getMaxCount(cat)
+                    : count > limit;
 
               if (items.length === 0) return null;
 
@@ -585,7 +681,8 @@ export default function FrankenDrazBuilder({
                             : "text-gray-400"
                       }`}
                     >
-                      {count}/{limit} {isOverLimit && "⚠️ OVER LIMIT"}
+                      {count}/{flexiFranken ? `${getBaseLimit(cat)}+` : limit}{" "}
+                      {isOverLimit && "⚠️ OVER LIMIT"}
                     </span>
                   </div>
                   <div className="space-y-2">

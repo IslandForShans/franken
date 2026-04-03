@@ -18,6 +18,14 @@ import {
 } from "../data/undraftable-components.js";
 import { executeSwap, findFullComponentData } from "../utils/swapUtils.js";
 import { isBlueReverieFaction } from "../utils/expansionFilters.js";
+import {
+  FLEXI_FRANKEN_BASE_LIMITS,
+  FLEXI_FRANKEN_TOTAL_POINTS,
+  FLEXI_POINT_COSTS,
+  calcFlexiPointsUsed,
+  getNextExtraCost,
+  FLEXI_TOOLTIP,
+} from "../utils/flexiFranken.js";
 
 // Tech color icons mapping
 const TECH_ICONS = {
@@ -114,6 +122,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [tierFilter, setTierFilter] = useState(new Set());
   const [tierSort, setTierSort] = useState(false);
   const headerRef = useRef(null);
+  const [flexiFrankenMode, setFlexiFrankenMode] = useState(false);
 
   // Hover preview state for component popups
   const [hoveredComponent] = useState(null);
@@ -244,6 +253,19 @@ export default function TheorycraftingApp({ onNavigate }) {
     );
   };
 
+  const handleToggleFlexiFranken = () => {
+    const next = !flexiFrankenMode;
+    setFlexiFrankenMode(next);
+    if (next) {
+      // FlexiFranken is incompatible with power/unlimited
+      setPowerMode(false);
+      setUnlimitedMode(false);
+      setDraftLimits(FLEXI_FRANKEN_BASE_LIMITS);
+    } else {
+      setDraftLimits(baseFactionLimits);
+    }
+  };
+
   // Filter components based on global search term
   const filterComponentsBySearch = (components, searchTerm) => {
     if (!searchTerm) return components;
@@ -364,10 +386,23 @@ export default function TheorycraftingApp({ onNavigate }) {
   const handleAddComponent = (cat, item) => {
     // Skip limit check in unlimited mode
     if (!unlimitedMode) {
-      const currentLimit = powerMode
-        ? powerFactionLimits[cat]
-        : baseFactionLimits[cat];
-      if (customFaction[cat].length >= currentLimit) return;
+      if (flexiFrankenMode) {
+        // FlexiFranken validation
+        const base = FLEXI_FRANKEN_BASE_LIMITS[cat] ?? 0;
+        const nonAutoCount = (customFaction[cat] || []).filter(i => !i.isExtra).length;
+        if (nonAutoCount >= base) {
+          const cost = getNextExtraCost(customFaction, cat);
+          if (cost == null) return; // no extras allowed / at max
+          const used = calcFlexiPointsUsed(customFaction);
+          if (FLEXI_FRANKEN_TOTAL_POINTS - used < cost) return; // not enough points
+        }
+        // fall through to the add logic below (skip standard limit check)
+      } else {
+        const currentLimit = powerMode
+          ? powerFactionLimits[cat]
+          : baseFactionLimits[cat];
+        if (customFaction[cat].length >= currentLimit) return;
+      }
     }
 
     setCustomFaction((prev) => {
@@ -1110,6 +1145,36 @@ export default function TheorycraftingApp({ onNavigate }) {
                       ? "Adding Blue Reverie components"
                       : "Add Blue Reverie components (from DS data)"}
                   </div>
+                  <div className="border-t border-gray-700 pt-3 mt-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-semibold text-purple-400">
+                      FlexiFranken Mode
+                    </span>
+                    <span
+                      title={FLEXI_TOOLTIP}
+                      className="cursor-help text-purple-400 hover:text-purple-200 text-base leading-none"
+                    >
+                      ℹ️
+                    </span>
+                  </div>
+                  <label className="flex items-center cursor-pointer mb-1">
+                    <input
+                      type="checkbox"
+                      checked={flexiFrankenMode}
+                      onChange={handleToggleFlexiFranken}
+                      className="mr-2"
+                      disabled={powerMode || unlimitedMode}
+                    />
+                    <span className={`font-medium text-sm ${powerMode || unlimitedMode ? "text-gray-500" : "text-white"}`}>
+                      Enable FlexiFranken
+                    </span>
+                  </label>
+                  {flexiFrankenMode && (
+                    <div className="text-xs text-gray-400">
+                      6-pt point-buy · 4 Abilities · 3 Techs · 1 other
+                    </div>
+                  )}
+                </div>
                 </div>
               </div>
 
@@ -1232,7 +1297,15 @@ export default function TheorycraftingApp({ onNavigate }) {
               draftLimits={
                 unlimitedMode
                   ? Object.fromEntries(categories.map((cat) => [cat, 999]))
-                  : draftLimits
+                  : flexiFrankenMode
+                    ? Object.fromEntries(categories.map((cat) => {
+                        const base = FLEXI_FRANKEN_BASE_LIMITS[cat] ?? 0;
+                        const info = FLEXI_POINT_COSTS[cat];
+                        if (!info) return [cat, base];
+                        if (info.maxExtras != null) return [cat, base + info.maxExtras];
+                        return [cat, base + 20]; // effectively unlimited (point-gated)
+                      }))
+                    : draftLimits
               }
               selectedCategory={selectedCategory}
               availableComponents={availableComponentsForSidebar}
@@ -1283,6 +1356,24 @@ export default function TheorycraftingApp({ onNavigate }) {
           </div>
 
           <div className="flex-1 overflow-auto p-4 bg-gradient-to-b from-gray-900 to-gray-800">
+            {/* FlexiFranken Point Tracker */}
+            {flexiFrankenMode && (
+              <div className={`p-3 rounded-lg border-2 flex items-center justify-between ${
+                calcFlexiPointsUsed(customFaction) > FLEXI_FRANKEN_TOTAL_POINTS ? "border-red-500 bg-red-900/20"
+                : calcFlexiPointsUsed(customFaction) === FLEXI_FRANKEN_TOTAL_POINTS ? "border-yellow-500 bg-yellow-900/20"
+                : "border-purple-500 bg-purple-900/20"
+              }`}>
+                <span className="font-bold text-purple-300 text-sm">⭐ FlexiFranken Points</span>
+                <span className={`text-xl font-bold ${
+                  FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) < 0 ? "text-red-400"
+                  : FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) === 0 ? "text-yellow-400"
+                  : "text-purple-300"
+                }`}>
+                  {FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction)} / {FLEXI_FRANKEN_TOTAL_POINTS} remaining
+                </span>
+              </div>
+            )}
+            
             <FactionSheet
               drafted={{
                 ...customFaction,

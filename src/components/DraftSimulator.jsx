@@ -171,11 +171,18 @@ export default function DraftSimulator({
   const [pendingPicks, setPendingPicks] = useState([]);
   const [isPickingPhase, setIsPickingPhase] = useState(true);
   const [pendingSwaps, setPendingSwaps] = useState([]);
+  const [flexiFranken, setFlexiFranken] = useState(false);
+  const [playerRedrawPointsSpent, setPlayerRedrawPointsSpent] = useState([]);
+  const [redrawState, setRedrawState] = useState(null);
+  // redrawState shape:
+  // { round: 1|2, undraftedFactions: [{name,icon}],
+  //   selections: { [playerIdx]: { discard:{name,icon}|null, take:{name,icon}|null } } }
 
   // ─── MULTIPLAYER ────────────────────────────────────────────────────────────
   const mpCollectedPicks = useRef({});
   const mpCollectedFactions = useRef({});
   const mpBroadcastedStart = useRef(false);
+  const mpRedrawDecisions = useRef({});
   const [mpGuestState, setMpGuestState] = useState(null);
   const [reconnectCodes, setReconnectCodes] = useState({});
   const [reconnectAnswers, setReconnectAnswers] = useState({});
@@ -1181,22 +1188,34 @@ export default function DraftSimulator({
         const completedRound = nextPlayer === 0;
 
         if (completedRound && draftVariant !== "rotisserie") {
-          // Check if bags are empty for FrankenDraz to transition to build phase
           if (draftVariant === "frankendraz") {
-            const allBagsEmpty = playerBags.every(
-              (bag) =>
-                (!bag.factions || bag.factions.length === 0) &&
-                (!bag.blue_tiles || bag.blue_tiles.length === 0) &&
-                (!bag.red_tiles || bag.red_tiles.length === 0),
-            );
+              const allBagsEmpty = playerBags.every(
+                (bag) =>
+                  (!bag.factions || bag.factions.length === 0) &&
+                  (!bag.blue_tiles || bag.blue_tiles.length === 0) &&
+                  (!bag.red_tiles || bag.red_tiles.length === 0),
+              );
 
-            if (allBagsEmpty) {
-              console.log("FrankenDraz draft complete - moving to build phase");
-              setDraftPhase("build");
-              setIsPickingPhase(false);
-              return;
+              if (allBagsEmpty) {
+                if (flexiFranken) {
+                  const undraftedFactions = getUndraftedFactions(updatedFactions);
+                  const initRedrawState = {
+                    round: 1,
+                    undraftedFactions,
+                    selections: Object.fromEntries(
+                      Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+                    ),
+                  };
+                  setPlayerRedrawPointsSpent(Array(playerCount).fill(0));
+                  setRedrawState(initRedrawState);
+                  setDraftPhase("redraw");
+                } else {
+                  setDraftPhase("build");
+                }
+                setIsPickingPhase(false);
+                return;
+              }
             }
-          }
 
           setRound((r) => r + 1);
           setPlayerBags((prev) => {
@@ -1588,6 +1607,67 @@ export default function DraftSimulator({
     frankenDrazSettings.redTilesPerBag,
   ]);
 
+  const getUndraftedFactions = useCallback((currentFactions = factions) => {
+    let all = expansionsEnabled.dsOnly ? [] : factionsData.factions
+      .filter(f => !bannedFactions.has(f.name))
+      .filter(f => expansionsEnabled.pok  || !pokExclusions.factions.includes(f.name))
+      .filter(f => expansionsEnabled.te   || !teExclusions.factions.includes(f.name))
+      .filter(f => expansionsEnabled.firmobs || !noFirmament.factions.includes(f.name))
+      .filter(f => expansionsEnabled.br   || !brExclusions.factions.includes(f.name))
+      .map(f => ({ name: f.name, icon: f.icon }));
+
+    if (expansionsEnabled.ds && discordantStarsData?.factions) {
+      const ds = discordantStarsData.factions
+        .filter(f => !bannedFactions.has(f.name))
+        .filter(f => expansionsEnabled.br || !brExclusions.factions.includes(f.name))
+        .map(f => ({ name: f.name, icon: f.icon }));
+      all = [...all, ...ds];
+    }
+
+    const drafted = new Set(
+      currentFactions.flatMap(f => (f.factions || []).map(x => x.name))
+    );
+    return all.filter(f => !drafted.has(f.name));
+  }, [factions, expansionsEnabled, bannedFactions]);
+
+  const applyRedrawAndAdvance = useCallback((currentFactions, selections, round, undraftedFactions) => {
+    // Apply each player's swap
+    const newFactions = currentFactions.map((faction, idx) => {
+      const sel = selections[idx];
+      if (!sel || !sel.discard || !sel.take) return faction;
+      const updated = { ...faction };
+      updated.factions = (updated.factions || [])
+        .filter(f => f.name !== sel.discard.name);
+      updated.factions = [...updated.factions, sel.take];
+      return updated;
+    });
+
+    if (round === 1 && flexiFranken) {
+      // Advance to round 2
+      const newUndrafted = getUndraftedFactions(newFactions);
+      const newRedrawState = {
+        round: 2,
+        undraftedFactions: newUndrafted,
+        selections: Object.fromEntries(
+          Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+        ),
+      };
+      setFactions(newFactions);
+      setRedrawState(newRedrawState);
+      if (isMultiplayerHost) {
+        broadcastState(buildBroadcastPayload({ factions: newFactions, draftPhase: "redraw", redrawState: newRedrawState, playerRedrawPointsSpent }));
+      }
+    } else {
+      // Advance to build phase
+      setFactions(newFactions);
+      setRedrawState(null);
+      setDraftPhase("build");
+      if (isMultiplayerHost) {
+        broadcastState(buildBroadcastPayload({ factions: newFactions, draftPhase: "build", redrawState: null, playerRedrawPointsSpent }));
+      }
+    }
+  }, [flexiFranken, getUndraftedFactions, playerCount, isMultiplayerHost, playerRedrawPointsSpent]);
+
   // ─── MULTIPLAYER FUNCTIONS ───────────────────────────────────────────────────
 
   // Collect triggered swaps across all factions
@@ -1614,7 +1694,6 @@ export default function DraftSimulator({
     return allSwaps;
   };
 
-  // Build a full broadcast payload, allowing specific fields to be overridden
   const buildBroadcastPayload = (overrides = {}) => ({
     factions,
     playerBags,
@@ -1631,7 +1710,10 @@ export default function DraftSimulator({
     pendingSwaps,
     expansionsEnabled,
     factionLimits: getCurrentFactionLimits(),
-    frankenDrazSettings, // ← add this
+    frankenDrazSettings,
+    flexiFranken,              // NEW
+    redrawState,               // NEW
+    playerRedrawPointsSpent,   // NEW
     ...overrides,
   });
 
@@ -1678,33 +1760,56 @@ export default function DraftSimulator({
 
     const newRound = round + 1;
 
-    // FrankenDraz: check if all bags are empty → go to build phase
-    if (draftVariant === "frankendraz") {
-      const allEmpty = rotatedBags.every(
-        (bag) =>
-          (!bag.factions || bag.factions.length === 0) &&
-          (!bag.blue_tiles || bag.blue_tiles.length === 0) &&
-          (!bag.red_tiles || bag.red_tiles.length === 0),
-      );
-      if (allEmpty) {
-        setFactions(newFactions);
-        setPlayerBags(rotatedBags);
-        setDraftHistory(newHistory);
-        setDraftPhase("build");
-        setPendingPicks([]);
-        setIsPickingPhase(true);
-        broadcastState(
-          buildBroadcastPayload({
-            factions: newFactions,
-            playerBags: rotatedBags,
-            round: newRound,
-            draftPhase: "build",
-            draftHistory: newHistory,
-          }),
+    // FrankenDraz: check if all bags are empty → go to redraw or build phase
+      if (draftVariant === "frankendraz") {
+        const allEmpty = rotatedBags.every(
+          (bag) =>
+            (!bag.factions || bag.factions.length === 0) &&
+            (!bag.blue_tiles || bag.blue_tiles.length === 0) &&
+            (!bag.red_tiles || bag.red_tiles.length === 0),
         );
-        return;
+        if (allEmpty) {
+          setFactions(newFactions);
+          setPlayerBags(rotatedBags);
+          setDraftHistory(newHistory);
+          setPendingPicks([]);
+          setIsPickingPhase(true);
+
+          if (flexiFranken) {
+            // Enter redraw phase
+            const undraftedFactions = getUndraftedFactions(newFactions);
+            const initRedrawState = {
+              round: 1,
+              undraftedFactions,
+              selections: Object.fromEntries(
+                Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+              ),
+            };
+            setPlayerRedrawPointsSpent(Array(playerCount).fill(0));
+            setRedrawState(initRedrawState);
+            setDraftPhase("redraw");
+            broadcastState(buildBroadcastPayload({
+              factions: newFactions,
+              playerBags: rotatedBags,
+              round: newRound,
+              draftPhase: "redraw",
+              draftHistory: newHistory,
+              redrawState: initRedrawState,
+              playerRedrawPointsSpent: Array(playerCount).fill(0),
+            }));
+          } else {
+            setDraftPhase("build");
+            broadcastState(buildBroadcastPayload({
+              factions: newFactions,
+              playerBags: rotatedBags,
+              round: newRound,
+              draftPhase: "build",
+              draftHistory: newHistory,
+            }));
+          }
+          return;
+        }
       }
-    }
 
     // Standard: check if all players have met their draft limits
     const allLimitsMet = newFactions.every((faction) =>
@@ -2475,6 +2580,33 @@ export default function DraftSimulator({
       mpCollectedFactions.current[playerIndex] = faction;
       mpCheckAndApplyAllFactions(phase);
     }
+    if (msg.type === "REDRAW_DECISION") {
+      const { playerIndex, discard, take, round } = msg;
+      mpRedrawDecisions.current[playerIndex] = { discard, take };
+
+      if (Object.keys(mpRedrawDecisions.current).length >= playerCount) {
+        const decisions = { ...mpRedrawDecisions.current };
+        mpRedrawDecisions.current = {};
+
+        // Apply round-2 points if needed
+        if (round === 2) {
+          setPlayerRedrawPointsSpent(prev => {
+            const next = [...prev];
+            Object.entries(decisions).forEach(([idx, { take: t }]) => {
+              if (t) next[parseInt(idx)] = (next[parseInt(idx)] || 0) + 1;
+            });
+            return next;
+          });
+        }
+
+        applyRedrawAndAdvance(factions, decisions, round, redrawState?.undraftedFactions ?? []);
+      }
+    }
+  };
+
+  const handleHostRedrawSubmit = (discard, take) => {
+    mpRedrawDecisions.current[0] = { discard, take };
+    // will be applied when all guests respond
   };
 
   if (onPeerConnectedRef) {
@@ -2830,6 +2962,8 @@ export default function DraftSimulator({
                       setSubsequentRoundPickCount={setSubsequentRoundPickCount}
                       frankenDrazSettings={frankenDrazSettings}
                       setFrankenDrazSettings={setFrankenDrazSettings}
+                      flexiFranken={flexiFranken}
+                      setFlexiFranken={setFlexiFranken}
                     />
                     <MultiplayerPanel
                       playerCount={playerCount}
@@ -2860,6 +2994,177 @@ export default function DraftSimulator({
                     title={`Player ${currentPlayer + 1}'s Draft`}
                     isCurrentPlayer={true}
                   />
+                );
+              } else if (draftStarted && draftPhase === "redraw" && redrawState) {
+                const isFreeRound = redrawState.round === 1;
+                const mySelection = redrawState.selections[isMultiplayerHost ? 0 : myPlayerIndex] ?? {};
+
+                // For solo: host manages all players. For MP: each player manages their own.
+                const managedPlayerIndices = isMultiplayerHost && !isMultiplayerGuest
+                  ? Array.from({ length: playerCount }, (_, i) => i)
+                  : [myPlayerIndex];
+
+                return (
+                  <>
+                    <div className="mb-4 p-4 bg-violet-900/30 rounded-lg border border-violet-600">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="font-bold text-violet-400 text-lg">
+                          ♻️ Redraw Phase — Round {redrawState.round}
+                        </h3>
+                        {!isFreeRound && (
+                          <span className="text-yellow-400 text-sm font-semibold bg-yellow-900/30 px-2 py-0.5 rounded">
+                            Costs 1 Flexi Point
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-violet-300 text-sm mb-3">
+                        {isFreeRound
+                          ? "You may discard one drafted faction and pick a replacement from the undrafted pool — for free."
+                          : "One more optional swap — this one costs 1 FlexiFranken point from your build budget."}
+                      </p>
+                    </div>
+
+                    {managedPlayerIndices.map((pidx) => {
+                      const playerFactions = factions[pidx]?.factions || [];
+                      const sel = redrawState.selections[pidx] ?? {};
+                      return (
+                        <div key={pidx} className="mb-6 p-4 bg-gray-800/50 rounded-lg border border-gray-600">
+                          <h4 className="font-bold text-yellow-400 mb-3">
+                            {factions[pidx]?.name || `Player ${pidx + 1}`}
+                          </h4>
+
+                          {/* Drafted factions — click to select one to discard */}
+                          <div className="mb-3">
+                            <div className="text-xs text-gray-400 mb-2 font-semibold uppercase">
+                              Step 1: Select a faction to discard (or skip)
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {playerFactions.map((fac) => (
+                                <button
+                                  key={fac.name}
+                                  onClick={() => {
+                                    const newSel = sel.discard?.name === fac.name
+                                      ? { ...sel, discard: null, take: null }
+                                      : { ...sel, discard: fac, take: null };
+                                    setRedrawState(prev => ({
+                                      ...prev,
+                                      selections: { ...prev.selections, [pidx]: newSel },
+                                    }));
+                                  }}
+                                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors ${
+                                    sel.discard?.name === fac.name
+                                      ? "border-red-500 bg-red-900/40 text-red-300"
+                                      : "border-gray-600 bg-gray-700 hover:border-red-500 text-white"
+                                  }`}
+                                >
+                                  {fac.icon && <img src={fac.icon} alt={fac.name} className="w-5 h-5" />}
+                                  {fac.name}
+                                  {sel.discard?.name === fac.name && <span className="text-red-400 ml-1">✕</span>}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Undrafted pool — click to select replacement */}
+                          {sel.discard && (
+                            <div className="mb-3">
+                              <div className="text-xs text-gray-400 mb-2 font-semibold uppercase">
+                                Step 2: Pick a replacement
+                              </div>
+                              <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
+                                {redrawState.undraftedFactions.map((fac) => (
+                                  <button
+                                    key={fac.name}
+                                    onClick={() => {
+                                      setRedrawState(prev => ({
+                                        ...prev,
+                                        selections: {
+                                          ...prev.selections,
+                                          [pidx]: { ...sel, take: sel.take?.name === fac.name ? null : fac },
+                                        },
+                                      }));
+                                    }}
+                                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors ${
+                                      sel.take?.name === fac.name
+                                        ? "border-green-500 bg-green-900/40 text-green-300"
+                                        : "border-gray-600 bg-gray-700 hover:border-green-500 text-white"
+                                    }`}
+                                  >
+                                    {fac.icon && <img src={fac.icon} alt={fac.name} className="w-5 h-5" />}
+                                    {fac.name}
+                                    {sel.take?.name === fac.name && <span className="text-green-400 ml-1">✓</span>}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+
+                    {/* Action buttons */}
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => {
+                          if (isMultiplayerHost) {
+                            // Multiplayer: host records their decision and waits for guests
+                            const hostSel = redrawState.selections[0] ?? {};
+                            const isRound2 = redrawState.round === 2;
+                            if (isRound2 && hostSel.take) {
+                              setPlayerRedrawPointsSpent(prev => {
+                                const next = [...prev];
+                                next[0] = (next[0] || 0) + 1;
+                                return next;
+                              });
+                            }
+                            mpRedrawDecisions.current[0] = {
+                              discard: hostSel.discard,
+                              take: hostSel.take,
+                            };
+                          } else {
+                            // Solo: apply all decisions now
+                            const isRound2 = redrawState.round === 2;
+                            if (isRound2) {
+                              const newSpent = [...playerRedrawPointsSpent];
+                              Object.entries(redrawState.selections).forEach(([idx, sel]) => {
+                                if (sel.take) newSpent[parseInt(idx)] = (newSpent[parseInt(idx)] || 0) + 1;
+                              });
+                              setPlayerRedrawPointsSpent(newSpent);
+                            }
+                            applyRedrawAndAdvance(
+                              factions,
+                              redrawState.selections,
+                              redrawState.round,
+                              redrawState.undraftedFactions,
+                            );
+                          }
+                        }}
+                        className="px-6 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-semibold transition-colors"
+                      >
+                        {isMultiplayerHost ? "Submit My Decision" : "Confirm & Continue"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          // Skip this round entirely
+                          if (isMultiplayerHost) {
+                            mpRedrawDecisions.current[0] = { discard: null, take: null };
+                          } else {
+                            applyRedrawAndAdvance(
+                              factions,
+                              Object.fromEntries(
+                                Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+                              ),
+                              redrawState.round,
+                              redrawState.undraftedFactions,
+                            );
+                          }
+                        }}
+                        className="px-6 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-semibold transition-colors"
+                      >
+                        Skip This Round
+                      </button>
+                    </div>
+                  </>
                 );
               } else if (draftStarted && draftPhase === "build") {
                 const visibleFactions = isMultiplayerHost
@@ -2919,6 +3224,8 @@ export default function DraftSimulator({
                             expansionsEnabled={expansionsEnabled}
                             activeCategories={categories}
                             bannedComponents={bannedComponents}
+                            flexiFranken={flexiFranken}
+                            redrawPointsSpent={playerRedrawPointsSpent[actualIndex] ?? 0}
                           />
                         );
                       })}

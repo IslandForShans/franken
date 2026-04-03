@@ -15,6 +15,8 @@ export default function DraftSettingsPanel({
   setSubsequentRoundPickCount,
   frankenDrazSettings,
   setFrankenDrazSettings,
+  flexiFranken,
+  setFlexiFranken,
 }) {
   const handleLimitChange = (cat, val) => {
     setDraftLimits({ ...draftLimits, [cat]: parseInt(val) });
@@ -147,6 +149,30 @@ export default function DraftSettingsPanel({
               style={{ width: "4rem", marginLeft: "0.25rem" }}
             />
           </label>
+          {/* FlexiFranken toggle */}
+          <div className="col-span-full mt-3 pt-3 border-t border-purple-700">
+            <div className="flex items-center gap-2 mb-1">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={flexiFranken}
+                  onChange={(e) => setFlexiFranken(e.target.checked)}
+                />
+                <span className="font-bold text-purple-300 text-sm">FlexiFranken Mode</span>
+              </label>
+              <span
+                title={`FlexiFranken — Point Buy System\n\nBase Limits:\n  4 Abilities · 3 Faction Techs\n  1 of everything else\n\nYou have 6 points for extras:\n  Ability/Faction Tech/Agent/Commander/Hero/Promissory/Commodity:\n    1st extra=1pt, 2nd=2pt, 3rd=3pt…\n  Breakthrough/Flagship/Mech: 2pt, max 1 extra.\n\nAuto-gained components are always free.\n\nRedraw Phase (before Build):\n  Round 1 (Free): Swap one faction for an undrafted one.\n  Round 2 (1pt): Swap again for 1 Flexi point.`}
+                className="cursor-help text-purple-400 hover:text-purple-200 text-base leading-none"
+              >
+                ℹ️
+              </span>
+            </div>
+            {flexiFranken && (
+              <div className="text-xs text-purple-400 ml-6">
+                6-pt point-buy system + redraw phase before build.
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

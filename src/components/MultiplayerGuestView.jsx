@@ -414,6 +414,127 @@ export default function MultiplayerGuestView({
     );
   }
 
+  // ── REDRAW PHASE ─────────────────────────────────────────────────────────
+  if (draftPhase === "redraw") {
+    const redrawState = mpState?.redrawState;
+    if (!redrawState) return <div className="text-gray-400 p-8 text-center">Loading redraw phase...</div>;
+
+    const myFactions = myFaction.factions || [];
+    const [localSel, setLocalSel] = React.useState({ discard: null, take: null });
+    const [submitted, setSubmitted] = React.useState(false);
+    const isFreeRound = redrawState.round === 1;
+    const myRedrawPointsSpent = mpState?.playerRedrawPointsSpent?.[myPlayerIndex] ?? 0;
+    const flexiTotal = 6;
+    const flexiRemaining = flexiTotal - myRedrawPointsSpent;
+
+    return (
+      <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex flex-col">
+        {renderHeader(false)}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="p-4 bg-violet-900/30 rounded-lg border border-violet-600">
+            <div className="flex items-center gap-3 mb-2">
+              <h3 className="font-bold text-violet-400 text-lg">
+                ♻️ Redraw Phase — Round {redrawState.round}
+              </h3>
+              {!isFreeRound && (
+                <span className="text-yellow-400 text-sm font-semibold bg-yellow-900/30 px-2 py-0.5 rounded">
+                  Costs 1 Flexi Point ({flexiRemaining} remaining)
+                </span>
+              )}
+            </div>
+            <p className="text-violet-300 text-sm">
+              {isFreeRound
+                ? "Optionally discard one of your factions and pick a replacement — for free."
+                : "One more optional swap — costs 1 FlexiFranken point."}
+            </p>
+          </div>
+
+          {!submitted ? (
+            <>
+              {/* Discard selection */}
+              <div className="p-3 bg-gray-800/50 rounded-lg border border-gray-600">
+                <div className="text-xs text-gray-400 mb-2 font-semibold uppercase">
+                  Step 1: Select a faction to discard (optional)
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {myFactions.map((fac) => (
+                    <button
+                      key={fac.name}
+                      onClick={() => setLocalSel(prev =>
+                        prev.discard?.name === fac.name
+                          ? { discard: null, take: null }
+                          : { discard: fac, take: null }
+                      )}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors ${
+                        localSel.discard?.name === fac.name
+                          ? "border-red-500 bg-red-900/40 text-red-300"
+                          : "border-gray-600 bg-gray-700 hover:border-red-500 text-white"
+                      }`}
+                    >
+                      {fac.icon && <img src={fac.icon} alt={fac.name} className="w-5 h-5" />}
+                      {fac.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Replacement selection */}
+              {localSel.discard && (
+                <div className="p-3 bg-gray-800/50 rounded-lg border border-gray-600">
+                  <div className="text-xs text-gray-400 mb-2 font-semibold uppercase">
+                    Step 2: Pick a replacement
+                  </div>
+                  <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
+                    {(redrawState.undraftedFactions || []).map((fac) => (
+                      <button
+                        key={fac.name}
+                        onClick={() => setLocalSel(prev => ({
+                          ...prev,
+                          take: prev.take?.name === fac.name ? null : fac,
+                        }))}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors ${
+                          localSel.take?.name === fac.name
+                            ? "border-green-500 bg-green-900/40 text-green-300"
+                            : "border-gray-600 bg-gray-700 hover:border-green-500 text-white"
+                        }`}
+                      >
+                        {fac.icon && <img src={fac.icon} alt={fac.name} className="w-5 h-5" />}
+                        {fac.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    onSubmitPicks([{
+                      type: "REDRAW_DECISION",
+                      playerIndex: myPlayerIndex,
+                      round: redrawState.round,
+                      discard: localSel.discard,
+                      take: localSel.take,
+                    }]);
+                    setSubmitted(true);
+                  }}
+                  disabled={localSel.discard && !localSel.take}
+                  className="px-6 py-2 bg-violet-600 hover:bg-violet-500 disabled:bg-gray-600 text-white rounded-lg font-semibold transition-colors"
+                >
+                  {localSel.discard ? "Confirm Swap" : "Skip & Pass"}
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="p-4 bg-yellow-900/30 rounded-lg border border-yellow-600 text-yellow-400 font-semibold text-sm">
+              ✓ Decision submitted — waiting for other players...
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   // ── BUILD PHASE ──────────────────────────────────────────────────────
   if (draftPhase === "build") {
     return (
