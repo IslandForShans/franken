@@ -16,6 +16,7 @@ export default function SwapModal({
   triggerComponent,
   targetCategory,
   availableReplacements,
+  drafted,
   onConfirm,
   onRefuse,
   onCancel,
@@ -384,73 +385,80 @@ export default function SwapModal({
         )}
 
         {step === "chooseReplace" && selectedSwap && (
-          <>
-            <h3 className="swap-modal-title">
-              REPLACE WHICH{" "}
-              {selectedSwap.category?.replace("_", " ").toUpperCase()}?
-            </h3>
-            <div className="text-sm mb-4" style={{ color: "#9ca3af" }}>
-              You selected:{" "}
-              <span className="font-semibold text-green-400">
-                {selectedSwap.name}
+  <>
+    <h3 className="swap-modal-title">
+      REPLACE WHICH{" "}
+      {selectedSwap.category?.replace("_", " ").toUpperCase()}?
+    </h3>
+    <div className="text-sm mb-4" style={{ color: "#9ca3af" }}>
+      You selected:{" "}
+      <span className="font-semibold text-green-400">
+        {selectedSwap.name}
+      </span>
+    </div>
+
+    {(() => {
+      const effectiveReplacements =
+        drafted && selectedSwap?.category
+          ? drafted[selectedSwap.category] || []
+          : availableReplacements;
+
+      return (
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.75rem",
+            }}
+          >
+            {effectiveReplacements
+              .filter((comp) => !comp.isSwap)
+              .map((comp, idx) => {
+                const originalIndex = effectiveReplacements.indexOf(comp);
+                return (
+                  <div key={idx} className="swap-option">
+                    <div className="swap-option-header">
+                      <div style={{ flex: 1 }}>
+                        {renderComponentDetails(comp)}
+                      </div>
+                      <button
+                        onClick={() => handleSelectReplacement(originalIndex)}
+                        className="btn btn-danger"
+                      >
+                        REPLACE
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+
+          {effectiveReplacements.filter((comp) => !comp.isSwap).length === 0 && (
+            <div
+              className="text-center p-4 text-sm"
+              style={{ color: "#9ca3af" }}
+            >
+              All {selectedSwap.category?.replace("_", " ")} components have
+              already been swapped.
+              <br />
+              <span className="text-xs">
+                You cannot swap a component that is already a swap.
               </span>
             </div>
+          )}
+        </>
+      );
+    })()}
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-              }}
-            >
-              {availableReplacements
-                .filter((comp) => !comp.isSwap) // ADD THIS - Filter out already-swapped components
-                .map((comp, idx) => {
-                  // We need to find the original index for the onConfirm callback
-                  const originalIndex = availableReplacements.indexOf(comp);
-
-                  return (
-                    <div key={idx} className="swap-option">
-                      <div className="swap-option-header">
-                        <div style={{ flex: 1 }}>
-                          {renderComponentDetails(comp)}
-                        </div>
-                        <button
-                          onClick={() => handleSelectReplacement(originalIndex)}
-                          className="btn btn-danger"
-                        >
-                          REPLACE
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
-
-            {/* ADD THIS - Show message if no replaceable components */}
-            {availableReplacements.filter((comp) => !comp.isSwap).length ===
-              0 && (
-              <div
-                className="text-center p-4 text-sm"
-                style={{ color: "#9ca3af" }}
-              >
-                All {selectedSwap.category?.replace("_", " ")} components have
-                already been swapped.
-                <br />
-                <span className="text-xs">
-                  You cannot swap a component that is already a swap.
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={() => setStep("chooseSwap")}
-              className="btn btn-secondary mt-4"
-            >
-              ← BACK TO SWAP OPTIONS
-            </button>
-          </>
-        )}
+    <button
+      onClick={() => setStep("chooseSwap")}
+      className="btn btn-secondary mt-4"
+    >
+      ← BACK TO SWAP OPTIONS
+    </button>
+  </>
+)}
 
         <div className="swap-modal-footer">
           {step === "chooseReplace" && (

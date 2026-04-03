@@ -615,6 +615,7 @@ export default function FactionSheet({
             ? drafted[swapModalData.swapOptions[0].category] || []
             : []
         }
+        drafted={drafted}
         onConfirm={handleConfirmSwap}
         onRefuse={handleRefuseSwap}
         onCancel={handleCancelSwap}
