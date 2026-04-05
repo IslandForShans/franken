@@ -24,8 +24,9 @@ import {
   FLEXI_POINT_COSTS,
   calcFlexiPointsUsed,
   getNextExtraCost,
-  FLEXI_TOOLTIP,
 } from "../utils/flexiFranken.js";
+import HoverInfoPopup from "./HoverInfoPopup.jsx";
+import { FlexiPointBuyContent } from "./FlexiInfoContent.jsx";
 
 // Tech color icons mapping
 const TECH_ICONS = {
@@ -1089,6 +1090,34 @@ export default function TheorycraftingApp({ onNavigate }) {
                     ? "No component limits"
                     : "Enable to remove all limits"}
                 </div>
+                <div className="border-t border-gray-700 pt-3 mt-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-semibold text-purple-400">
+                      FlexiFranken Mode
+                    </span>
+                    <HoverInfoPopup content={<FlexiPointBuyContent />} />
+                  </div>
+                  </div>
+                  <label className="flex items-center cursor-pointer mb-1">
+                    <input
+                      type="checkbox"
+                      checked={flexiFrankenMode}
+                      onChange={handleToggleFlexiFranken}
+                      className="mr-2"
+                      disabled={powerMode || unlimitedMode}
+                    />
+                    <span className={`font-medium text-sm ${powerMode || unlimitedMode ? "text-gray-500" : "text-white"}`}>
+                      Enable FlexiFranken
+                    </span>
+                  </label>
+                  {flexiFrankenMode && (
+                    <div className="text-xs text-gray-400">
+                      6-pt point-buy · 4 Abilities · 3 Techs · 1 other
+                    </div>
+                  )}
+                  </div>
+                </div>
 
                 <div className="border-t border-gray-700 pt-3 mt-3">
                   <div className="text-sm font-semibold text-yellow-400 mb-2">
@@ -1145,37 +1174,6 @@ export default function TheorycraftingApp({ onNavigate }) {
                       ? "Adding Blue Reverie components"
                       : "Add Blue Reverie components (from DS data)"}
                   </div>
-                  <div className="border-t border-gray-700 pt-3 mt-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-semibold text-purple-400">
-                      FlexiFranken Mode
-                    </span>
-                    <span
-                      title={FLEXI_TOOLTIP}
-                      className="cursor-help text-purple-400 hover:text-purple-200 text-base leading-none"
-                    >
-                      ℹ️
-                    </span>
-                  </div>
-                  <label className="flex items-center cursor-pointer mb-1">
-                    <input
-                      type="checkbox"
-                      checked={flexiFrankenMode}
-                      onChange={handleToggleFlexiFranken}
-                      className="mr-2"
-                      disabled={powerMode || unlimitedMode}
-                    />
-                    <span className={`font-medium text-sm ${powerMode || unlimitedMode ? "text-gray-500" : "text-white"}`}>
-                      Enable FlexiFranken
-                    </span>
-                  </label>
-                  {flexiFrankenMode && (
-                    <div className="text-xs text-gray-400">
-                      6-pt point-buy · 4 Abilities · 3 Techs · 1 other
-                    </div>
-                  )}
-                </div>
-                </div>
               </div>
 
               <div className="space-y-2 mb-4">
@@ -1373,7 +1371,7 @@ export default function TheorycraftingApp({ onNavigate }) {
                 </span>
               </div>
             )}
-            
+
             <FactionSheet
               drafted={{
                 ...customFaction,

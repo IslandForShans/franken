@@ -451,77 +451,73 @@ export default function MultiplayerGuestView({
 
           {!submitted ? (
             <>
-              {/* Discard selection */}
-              <div className="p-3 bg-gray-800/50 rounded-lg border border-gray-600">
-                <div className="text-xs text-gray-400 mb-2 font-semibold uppercase">
-                  Step 1: Select a faction to discard (optional)
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {myFactions.map((fac) => (
-                    <button
-                      key={fac.name}
-                      onClick={() => setLocalSel(prev =>
-                        prev.discard?.name === fac.name
-                          ? { discard: null, take: null }
-                          : { discard: fac, take: null }
-                      )}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors ${
-                        localSel.discard?.name === fac.name
-                          ? "border-red-500 bg-red-900/40 text-red-300"
-                          : "border-gray-600 bg-gray-700 hover:border-red-500 text-white"
-                      }`}
-                    >
-                      {fac.icon && <img src={fac.icon} alt={fac.name} className="w-5 h-5" />}
-                      {fac.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Replacement selection */}
-              {localSel.discard && (
-                <div className="p-3 bg-gray-800/50 rounded-lg border border-gray-600">
-                  <div className="text-xs text-gray-400 mb-2 font-semibold uppercase">
-                    Step 2: Pick a replacement
+              {!redrawLocalSel.discard ? (
+                <>
+                  <div className="p-3 bg-gray-800/50 rounded-lg border border-gray-600">
+                    <div className="text-xs text-gray-400 mb-2 font-semibold uppercase">
+                      Click a faction to swap it out
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {myFactions.map((fac) => (
+                        <button
+                          key={fac.name}
+                          onClick={() => {
+                            const alreadyTaken = new Set(); // guests can't see others' picks yet
+                            const pool = (redrawState.undraftedFactions || []).filter(
+                              f => !alreadyTaken.has(f.name)
+                            );
+                            if (pool.length === 0) return;
+                            const replacement = pool[Math.floor(Math.random() * pool.length)];
+                            setRedrawLocalSel({ discard: fac, take: replacement });
+                          }}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-gray-600 bg-gray-700 hover:border-red-500 hover:bg-red-900/20 text-white text-sm font-semibold transition-colors"
+                        >
+                          {fac.icon && <img src={fac.icon} alt={fac.name} className="w-5 h-5" />}
+                          {fac.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
-                    {(redrawState.undraftedFactions || []).map((fac) => (
-                      <button
-                        key={fac.name}
-                        onClick={() => setLocalSel(prev => ({
-                          ...prev,
-                          take: prev.take?.name === fac.name ? null : fac,
-                        }))}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors ${
-                          localSel.take?.name === fac.name
-                            ? "border-green-500 bg-green-900/40 text-green-300"
-                            : "border-gray-600 bg-gray-700 hover:border-green-500 text-white"
-                        }`}
-                      >
-                        {fac.icon && <img src={fac.icon} alt={fac.name} className="w-5 h-5" />}
-                        {fac.name}
-                      </button>
-                    ))}
+                </>
+              ) : (
+                <div className="p-3 bg-gray-800/50 rounded-lg border border-gray-600 space-y-3">
+                  <div className="flex items-center gap-4 p-3 bg-gray-900/60 rounded-lg">
+                    <div className="flex items-center gap-2 text-red-400 text-sm">
+                      <span className="font-semibold">Discarding:</span>
+                      {redrawLocalSel.discard.icon && <img src={redrawLocalSel.discard.icon} alt={redrawLocalSel.discard.name} className="w-5 h-5" />}
+                      <span>{redrawLocalSel.discard.name}</span>
+                    </div>
+                    <span className="text-gray-500">→</span>
+                    <div className="flex items-center gap-2 text-green-400 text-sm">
+                      <span className="font-semibold">Gaining:</span>
+                      {redrawLocalSel.take.icon && <img src={redrawLocalSel.take.icon} alt={redrawLocalSel.take.name} className="w-5 h-5" />}
+                      <span>{redrawLocalSel.take.name}</span>
+                    </div>
                   </div>
+                  <button
+                    onClick={() => setRedrawLocalSel({ discard: null, take: null })}
+                    className="text-xs text-gray-400 hover:text-white transition-colors underline"
+                  >
+                    ✕ Cancel swap
+                  </button>
                 </div>
               )}
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 mt-2">
                 <button
                   onClick={() => {
                     onSubmitPicks([{
                       type: "REDRAW_DECISION",
                       playerIndex: myPlayerIndex,
                       round: redrawState.round,
-                      discard: localSel.discard,
-                      take: localSel.take,
+                      discard: redrawLocalSel.discard,
+                      take: redrawLocalSel.take,
                     }]);
-                    setSubmitted(true);
+                    setRedrawSubmitted(true);
                   }}
-                  disabled={localSel.discard && !localSel.take}
-                  className="px-6 py-2 bg-violet-600 hover:bg-violet-500 disabled:bg-gray-600 text-white rounded-lg font-semibold transition-colors"
+                  className="px-6 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-semibold transition-colors"
                 >
-                  {localSel.discard ? "Confirm Swap" : "Skip & Pass"}
+                  {redrawLocalSel.discard ? "Confirm Swap" : "Skip & Pass"}
                 </button>
               </div>
             </>

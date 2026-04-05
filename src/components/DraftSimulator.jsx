@@ -174,6 +174,7 @@ export default function DraftSimulator({
   const [flexiFranken, setFlexiFranken] = useState(false);
   const [playerRedrawPointsSpent, setPlayerRedrawPointsSpent] = useState([]);
   const [redrawState, setRedrawState] = useState(null);
+  const [redrawSelections, setRedrawSelections] = useState({});
   // redrawState shape:
   // { round: 1|2, undraftedFactions: [{name,icon}],
   //   selections: { [playerIdx]: { discard:{name,icon}|null, take:{name,icon}|null } } }
@@ -1199,16 +1200,12 @@ export default function DraftSimulator({
               if (allBagsEmpty) {
                 if (flexiFranken) {
                   const undraftedFactions = getUndraftedFactions(updatedFactions);
-                  const initRedrawState = {
-                    round: 1,
-                    undraftedFactions,
-                    selections: Object.fromEntries(
-                      Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
-                    ),
-                  };
                   setPlayerRedrawPointsSpent(Array(playerCount).fill(0));
-                  setRedrawState(initRedrawState);
-                  setDraftPhase("redraw");
+setRedrawState({ round: 1, undraftedFactions });
+setRedrawSelections(Object.fromEntries(
+  Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+));
+setDraftPhase("redraw");
                 } else {
                   setDraftPhase("build");
                 }
@@ -1631,7 +1628,6 @@ export default function DraftSimulator({
   }, [factions, expansionsEnabled, bannedFactions]);
 
   const applyRedrawAndAdvance = useCallback((currentFactions, selections, round, undraftedFactions) => {
-    // Apply each player's swap
     const newFactions = currentFactions.map((faction, idx) => {
       const sel = selections[idx];
       if (!sel || !sel.discard || !sel.take) return faction;
@@ -1643,27 +1639,36 @@ export default function DraftSimulator({
     });
 
     if (round === 1 && flexiFranken) {
-      // Advance to round 2
       const newUndrafted = getUndraftedFactions(newFactions);
-      const newRedrawState = {
-        round: 2,
-        undraftedFactions: newUndrafted,
-        selections: Object.fromEntries(
-          Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
-        ),
-      };
       setFactions(newFactions);
-      setRedrawState(newRedrawState);
+      setRedrawState({ round: 2, undraftedFactions: newUndrafted });
+      setRedrawSelections(Object.fromEntries(   // NEW — reset selections for round 2
+        Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+      ));
       if (isMultiplayerHost) {
-        broadcastState(buildBroadcastPayload({ factions: newFactions, draftPhase: "redraw", redrawState: newRedrawState, playerRedrawPointsSpent }));
+        broadcastState(buildBroadcastPayload({
+          factions: newFactions,
+          draftPhase: "redraw",
+          redrawState: { round: 2, undraftedFactions: newUndrafted },
+          redrawSelections: Object.fromEntries(
+            Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+          ),
+          playerRedrawPointsSpent,
+        }));
       }
     } else {
-      // Advance to build phase
       setFactions(newFactions);
       setRedrawState(null);
+      setRedrawSelections({});
       setDraftPhase("build");
       if (isMultiplayerHost) {
-        broadcastState(buildBroadcastPayload({ factions: newFactions, draftPhase: "build", redrawState: null, playerRedrawPointsSpent }));
+        broadcastState(buildBroadcastPayload({
+          factions: newFactions,
+          draftPhase: "build",
+          redrawState: null,
+          redrawSelections: {},
+          playerRedrawPointsSpent,
+        }));
       }
     }
   }, [flexiFranken, getUndraftedFactions, playerCount, isMultiplayerHost, playerRedrawPointsSpent]);
@@ -1712,7 +1717,8 @@ export default function DraftSimulator({
     factionLimits: getCurrentFactionLimits(),
     frankenDrazSettings,
     flexiFranken,              // NEW
-    redrawState,               // NEW
+    redrawState,
+    redrawSelections,              // NEW
     playerRedrawPointsSpent,   // NEW
     ...overrides,
   });
@@ -1778,16 +1784,12 @@ export default function DraftSimulator({
           if (flexiFranken) {
             // Enter redraw phase
             const undraftedFactions = getUndraftedFactions(newFactions);
-            const initRedrawState = {
-              round: 1,
-              undraftedFactions,
-              selections: Object.fromEntries(
-                Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
-              ),
-            };
             setPlayerRedrawPointsSpent(Array(playerCount).fill(0));
-            setRedrawState(initRedrawState);
-            setDraftPhase("redraw");
+setRedrawState({ round: 1, undraftedFactions });
+setRedrawSelections(Object.fromEntries(
+  Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+));
+setDraftPhase("redraw");
             broadcastState(buildBroadcastPayload({
               factions: newFactions,
               playerBags: rotatedBags,
@@ -2997,12 +2999,6 @@ export default function DraftSimulator({
                 );
               } else if (draftStarted && draftPhase === "redraw" && redrawState) {
                 const isFreeRound = redrawState.round === 1;
-                const mySelection = redrawState.selections[isMultiplayerHost ? 0 : myPlayerIndex] ?? {};
-
-                // For solo: host manages all players. For MP: each player manages their own.
-                const managedPlayerIndices = isMultiplayerHost && !isMultiplayerGuest
-                  ? Array.from({ length: playerCount }, (_, i) => i)
-                  : [myPlayerIndex];
 
                 return (
                   <>
@@ -3017,100 +3013,98 @@ export default function DraftSimulator({
                           </span>
                         )}
                       </div>
-                      <p className="text-violet-300 text-sm mb-3">
+                      <p className="text-violet-300 text-sm mb-1">
                         {isFreeRound
-                          ? "You may discard one drafted faction and pick a replacement from the undrafted pool — for free."
+                          ? "Click a faction to instantly swap it for a random undrafted one — or skip."
                           : "One more optional swap — this one costs 1 FlexiFranken point from your build budget."}
                       </p>
                     </div>
 
-                    {managedPlayerIndices.map((pidx) => {
+                    {Array.from({ length: playerCount }, (_, pidx) => {
                       const playerFactions = factions[pidx]?.factions || [];
-                      const sel = redrawState.selections[pidx] ?? {};
+                      const sel = redrawSelections[pidx] ?? { discard: null, take: null };
+
+                      const doInstantSwap = (fac) => {
+                        const alreadyTaken = new Set(
+                          Object.values(redrawSelections)
+                            .map(s => s.take?.name)
+                            .filter(Boolean)
+                        );
+                        const pool = (redrawState.undraftedFactions || []).filter(
+                          f => !alreadyTaken.has(f.name)
+                        );
+                        if (pool.length === 0) return;
+                        const replacement = pool[Math.floor(Math.random() * pool.length)];
+                        setRedrawSelections(prev => ({
+                          ...prev,
+                          [pidx]: { discard: fac, take: replacement },
+                        }));
+                      };
+
+                      const clearSwap = () => {
+                        setRedrawSelections(prev => ({
+                          ...prev,
+                          [pidx]: { discard: null, take: null },
+                        }));
+                      };
+
                       return (
-                        <div key={pidx} className="mb-6 p-4 bg-gray-800/50 rounded-lg border border-gray-600">
+                        <div key={pidx} className="mb-4 p-4 bg-gray-800/50 rounded-lg border border-gray-600">
                           <h4 className="font-bold text-yellow-400 mb-3">
                             {factions[pidx]?.name || `Player ${pidx + 1}`}
                           </h4>
 
-                          {/* Drafted factions — click to select one to discard */}
-                          <div className="mb-3">
-                            <div className="text-xs text-gray-400 mb-2 font-semibold uppercase">
-                              Step 1: Select a faction to discard (or skip)
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              {playerFactions.map((fac) => (
-                                <button
-                                  key={fac.name}
-                                  onClick={() => {
-                                    const newSel = sel.discard?.name === fac.name
-                                      ? { ...sel, discard: null, take: null }
-                                      : { ...sel, discard: fac, take: null };
-                                    setRedrawState(prev => ({
-                                      ...prev,
-                                      selections: { ...prev.selections, [pidx]: newSel },
-                                    }));
-                                  }}
-                                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors ${
-                                    sel.discard?.name === fac.name
-                                      ? "border-red-500 bg-red-900/40 text-red-300"
-                                      : "border-gray-600 bg-gray-700 hover:border-red-500 text-white"
-                                  }`}
-                                >
-                                  {fac.icon && <img src={fac.icon} alt={fac.name} className="w-5 h-5" />}
-                                  {fac.name}
-                                  {sel.discard?.name === fac.name && <span className="text-red-400 ml-1">✕</span>}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Undrafted pool — click to select replacement */}
-                          {sel.discard && (
-                            <div className="mb-3">
+                          {!sel.discard ? (
+                            <>
                               <div className="text-xs text-gray-400 mb-2 font-semibold uppercase">
-                                Step 2: Pick a replacement
+                                Click a faction to swap it out
                               </div>
-                              <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
-                                {redrawState.undraftedFactions.map((fac) => (
+                              <div className="flex flex-wrap gap-2">
+                                {playerFactions.map((fac) => (
                                   <button
                                     key={fac.name}
-                                    onClick={() => {
-                                      setRedrawState(prev => ({
-                                        ...prev,
-                                        selections: {
-                                          ...prev.selections,
-                                          [pidx]: { ...sel, take: sel.take?.name === fac.name ? null : fac },
-                                        },
-                                      }));
-                                    }}
-                                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors ${
-                                      sel.take?.name === fac.name
-                                        ? "border-green-500 bg-green-900/40 text-green-300"
-                                        : "border-gray-600 bg-gray-700 hover:border-green-500 text-white"
-                                    }`}
+                                    onClick={() => doInstantSwap(fac)}
+                                    className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-gray-600 bg-gray-700 hover:border-red-500 hover:bg-red-900/20 text-white text-sm font-semibold transition-colors"
                                   >
                                     {fac.icon && <img src={fac.icon} alt={fac.name} className="w-5 h-5" />}
                                     {fac.name}
-                                    {sel.take?.name === fac.name && <span className="text-green-400 ml-1">✓</span>}
                                   </button>
                                 ))}
                               </div>
+                            </>
+                          ) : (
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-4 p-3 bg-gray-900/60 rounded-lg">
+                                <div className="flex items-center gap-2 text-red-400 text-sm">
+                                  <span className="font-semibold">Discarding:</span>
+                                  {sel.discard.icon && <img src={sel.discard.icon} alt={sel.discard.name} className="w-5 h-5" />}
+                                  <span>{sel.discard.name}</span>
+                                </div>
+                                <span className="text-gray-500">→</span>
+                                <div className="flex items-center gap-2 text-green-400 text-sm">
+                                  <span className="font-semibold">Gaining:</span>
+                                  {sel.take.icon && <img src={sel.take.icon} alt={sel.take.name} className="w-5 h-5" />}
+                                  <span>{sel.take.name}</span>
+                                </div>
+                              </div>
+                              <button
+                                onClick={clearSwap}
+                                className="text-xs text-gray-400 hover:text-white transition-colors underline"
+                              >
+                                ✕ Cancel swap
+                              </button>
                             </div>
                           )}
                         </div>
                       );
                     })}
 
-                    {/* Action buttons */}
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 mt-2">
                       <button
                         onClick={() => {
                           if (isMultiplayerHost) {
-                            // Multiplayer: host records their decision and waits for guests
-                            const hostSel = redrawState.selections[0] ?? {};
-                            const isRound2 = redrawState.round === 2;
-                            if (isRound2 && hostSel.take) {
+                            const hostSel = redrawSelections[0] ?? {};
+                            if (redrawState.round === 2 && hostSel.take) {
                               setPlayerRedrawPointsSpent(prev => {
                                 const next = [...prev];
                                 next[0] = (next[0] || 0) + 1;
@@ -3122,18 +3116,16 @@ export default function DraftSimulator({
                               take: hostSel.take,
                             };
                           } else {
-                            // Solo: apply all decisions now
-                            const isRound2 = redrawState.round === 2;
-                            if (isRound2) {
+                            if (redrawState.round === 2) {
                               const newSpent = [...playerRedrawPointsSpent];
-                              Object.entries(redrawState.selections).forEach(([idx, sel]) => {
+                              Object.entries(redrawSelections).forEach(([idx, sel]) => {
                                 if (sel.take) newSpent[parseInt(idx)] = (newSpent[parseInt(idx)] || 0) + 1;
                               });
                               setPlayerRedrawPointsSpent(newSpent);
                             }
                             applyRedrawAndAdvance(
                               factions,
-                              redrawState.selections,
+                              redrawSelections,
                               redrawState.round,
                               redrawState.undraftedFactions,
                             );
@@ -3145,7 +3137,6 @@ export default function DraftSimulator({
                       </button>
                       <button
                         onClick={() => {
-                          // Skip this round entirely
                           if (isMultiplayerHost) {
                             mpRedrawDecisions.current[0] = { discard: null, take: null };
                           } else {

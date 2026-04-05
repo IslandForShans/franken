@@ -45,7 +45,8 @@ export function getCategoryItemCosts(items = [], cat) {
   let baseCount = 0;
   let extraCount = 0;
   return items.map(item => {
-    if (item.isExtra) return null;
+    // Auto-gained and swapped items are always free and don't occupy a slot
+    if (item.isExtra || item.isSwap) return null;
     if (baseCount < baseLimit) { baseCount++; return null; }
     const cost = info ? (info.baseCost + extraCount) : null;
     extraCount++;
