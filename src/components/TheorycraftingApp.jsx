@@ -124,6 +124,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [tierSort, setTierSort] = useState(false);
   const headerRef = useRef(null);
   const [flexiFrankenMode, setFlexiFrankenMode] = useState(false);
+  const [flexiFlagshipPlastic, setFlexiFlagshipPlastic] = useState(false);
 
   // Hover preview state for component popups
   const [hoveredComponent] = useState(null);
@@ -257,8 +258,8 @@ export default function TheorycraftingApp({ onNavigate }) {
   const handleToggleFlexiFranken = () => {
     const next = !flexiFrankenMode;
     setFlexiFrankenMode(next);
+    setFlexiFlagshipPlastic(false);  // NEW
     if (next) {
-      // FlexiFranken is incompatible with power/unlimited
       setPowerMode(false);
       setUnlimitedMode(false);
       setDraftLimits(FLEXI_FRANKEN_BASE_LIMITS);
@@ -1094,7 +1095,7 @@ export default function TheorycraftingApp({ onNavigate }) {
                   <div className="flex items-center gap-2 mb-1">
                     <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm font-semibold text-purple-400">
-                      FlexiFranken Mode
+                      FlexiDraz Mode
                     </span>
                     <HoverInfoPopup content={<FlexiPointBuyContent />} />
                   </div>
@@ -1108,7 +1109,7 @@ export default function TheorycraftingApp({ onNavigate }) {
                       disabled={powerMode || unlimitedMode}
                     />
                     <span className={`font-medium text-sm ${powerMode || unlimitedMode ? "text-gray-500" : "text-white"}`}>
-                      Enable FlexiFranken
+                      Enable FlexiDraz
                     </span>
                   </label>
                   {flexiFrankenMode && (
@@ -1361,13 +1362,40 @@ export default function TheorycraftingApp({ onNavigate }) {
                 : calcFlexiPointsUsed(customFaction) === FLEXI_FRANKEN_TOTAL_POINTS ? "border-yellow-500 bg-yellow-900/20"
                 : "border-purple-500 bg-purple-900/20"
               }`}>
-                <span className="font-bold text-purple-300 text-sm">⭐ FlexiFranken Points</span>
+                <span className="font-bold text-purple-300 text-sm">⭐ Flexi Points</span>
                 <span className={`text-xl font-bold ${
                   FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) < 0 ? "text-red-400"
                   : FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) === 0 ? "text-yellow-400"
                   : "text-purple-300"
                 }`}>
-                  {FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction)} / {FLEXI_FRANKEN_TOTAL_POINTS} remaining
+                  {FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) - (flexiFlagshipPlastic ? 1 : 0)} / {FLEXI_FRANKEN_TOTAL_POINTS} remaining
+                </span>
+              </div>
+            )}
+
+            {flexiFrankenMode && (
+              <div className="mb-4 p-3 rounded-lg border border-gray-600 bg-gray-800/50 flex items-center justify-between">
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={flexiFlagshipPlastic}
+                      onChange={(e) => {
+                        const used = calcFlexiPointsUsed(customFaction) + (flexiFlagshipPlastic ? 1 : 0);
+                        const remaining = FLEXI_FRANKEN_TOTAL_POINTS - used + (flexiFlagshipPlastic ? 1 : 0);
+                        if (e.target.checked && remaining < 1) return;
+                        setFlexiFlagshipPlastic(e.target.checked);
+                      }}
+                      disabled={!flexiFlagshipPlastic && (FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction)) < 1}
+                    />
+                    <span className="font-semibold text-sm text-white">+1 Flagship Plastic Limit</span>
+                  </label>
+                  <div className="text-xs text-gray-400 ml-6 mt-0.5">
+                    Allows adding one additional flagship physically during the game.
+                  </div>
+                </div>
+                <span className={`text-sm font-bold px-2 py-1 rounded ${flexiFlagshipPlastic ? "bg-purple-800 text-purple-200" : "bg-gray-700 text-gray-300"}`}>
+                  1pt
                 </span>
               </div>
             )}

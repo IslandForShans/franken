@@ -24,7 +24,7 @@ export function FlexiPointBuyContent() {
       <div style={{ color: "var(--text-secondary)" }} className="space-y-1">
         <div>
           <span className="text-white font-semibold">1pt base</span>
-          {" — "}Ability, Faction Tech, Agent, Commander, Hero, Promissory, Commodity
+          {" — "}Ability, Faction Tech, Agent, Commander, Hero, Promissory
         </div>
         <div className="text-xs italic">
           Each subsequent extra in the same category costs +1 more.
@@ -32,7 +32,15 @@ export function FlexiPointBuyContent() {
         </div>
         <div className="mt-1">
           <span className="text-white font-semibold">2pt, max 1 extra</span>
-          {" — "}Breakthrough, Flagship, Mech
+          {" — "}Breakthrough
+        </div>
+        <div className="mt-1">
+          <span className="text-white font-semibold">3pt, max 1 extra</span>
+          {" — "}Extra Commodity Value
+        </div>
+        <div className="mt-1">
+          <span className="text-white font-semibold">1pt, max 1 extra</span>
+          {" — "}+1 Flagship Plastic Limit
         </div>
       </div>
 

@@ -175,9 +175,7 @@ export default function DraftSimulator({
   const [playerRedrawPointsSpent, setPlayerRedrawPointsSpent] = useState([]);
   const [redrawState, setRedrawState] = useState(null);
   const [redrawSelections, setRedrawSelections] = useState({});
-  // redrawState shape:
-  // { round: 1|2, undraftedFactions: [{name,icon}],
-  //   selections: { [playerIdx]: { discard:{name,icon}|null, take:{name,icon}|null } } }
+  const [flagshipPlasticUpgrades, setFlagshipPlasticUpgrades] = useState([]);
 
   // ─── MULTIPLAYER ────────────────────────────────────────────────────────────
   const mpCollectedPicks = useRef({});
@@ -1170,16 +1168,26 @@ export default function DraftSimulator({
       );
 
       if (allBagsEmpty) {
-        console.log("All FrankenDraz bags are empty - moving to build phase");
-        setDraftPhase("build");
-        return; // Don't advance to next player
+        if (flexiFranken) {
+          const undraftedFactions = getUndraftedFactions(fc);
+          setPlayerRedrawPointsSpent(Array(playerCount).fill(0));
+          setFlagshipPlasticUpgrades(Array(playerCount).fill(false));
+          setRedrawState({ round: 1, undraftedFactions });
+          setRedrawSelections(Object.fromEntries(
+            Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+          ));
+          setDraftPhase("redraw");
+        } else {
+          setDraftPhase("build");
+        }
+        return;
       }
     }
 
-    advanceToNextPlayer(fc, pg);
+    advanceToNextPlayer(fc, pg, updatedBags);
   };
 
-  const advanceToNextPlayer = (updatedFactions, updatedProgress) => {
+  const advanceToNextPlayer = (updatedFactions, updatedProgress, latestBags = null) => {
     setTimeout(() => {
       let nextPlayer = (currentPlayer + 1) % playerCount;
       let attempts = 0;
@@ -1190,29 +1198,31 @@ export default function DraftSimulator({
 
         if (completedRound && draftVariant !== "rotisserie") {
           if (draftVariant === "frankendraz") {
-              const allBagsEmpty = playerBags.every(
-                (bag) =>
-                  (!bag.factions || bag.factions.length === 0) &&
-                  (!bag.blue_tiles || bag.blue_tiles.length === 0) &&
-                  (!bag.red_tiles || bag.red_tiles.length === 0),
-              );
+          const bagsToCheck = latestBags || playerBags;
+          const allBagsEmpty = bagsToCheck.every(
+            (bag) =>
+              (!bag.factions || bag.factions.length === 0) &&
+              (!bag.blue_tiles || bag.blue_tiles.length === 0) &&
+              (!bag.red_tiles || bag.red_tiles.length === 0),
+          );
 
-              if (allBagsEmpty) {
-                if (flexiFranken) {
-                  const undraftedFactions = getUndraftedFactions(updatedFactions);
-                  setPlayerRedrawPointsSpent(Array(playerCount).fill(0));
-setRedrawState({ round: 1, undraftedFactions });
-setRedrawSelections(Object.fromEntries(
-  Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
-));
-setDraftPhase("redraw");
-                } else {
-                  setDraftPhase("build");
-                }
-                setIsPickingPhase(false);
-                return;
-              }
+          if (allBagsEmpty) {
+            if (flexiFranken) {
+              const undraftedFactions = getUndraftedFactions(updatedFactions);
+              setPlayerRedrawPointsSpent(Array(playerCount).fill(0));
+              setFlagshipPlasticUpgrades(Array(playerCount).fill(false));
+              setRedrawState({ round: 1, undraftedFactions });
+              setRedrawSelections(Object.fromEntries(
+                Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
+              ));
+              setDraftPhase("redraw");
+            } else {
+              setDraftPhase("build");
             }
+            setIsPickingPhase(false);
+            return;
+          }
+        }
 
           setRound((r) => r + 1);
           setPlayerBags((prev) => {
@@ -1720,6 +1730,7 @@ setDraftPhase("redraw");
     redrawState,
     redrawSelections,              // NEW
     playerRedrawPointsSpent,   // NEW
+    flagshipPlasticUpgrades,
     ...overrides,
   });
 
@@ -1785,6 +1796,7 @@ setDraftPhase("redraw");
             // Enter redraw phase
             const undraftedFactions = getUndraftedFactions(newFactions);
             setPlayerRedrawPointsSpent(Array(playerCount).fill(0));
+            setFlagshipPlasticUpgrades(Array(playerCount).fill(false));
 setRedrawState({ round: 1, undraftedFactions });
 setRedrawSelections(Object.fromEntries(
   Array.from({ length: playerCount }, (_, i) => [i, { discard: null, take: null }])
@@ -3016,7 +3028,7 @@ setDraftPhase("redraw");
                       <p className="text-violet-300 text-sm mb-1">
                         {isFreeRound
                           ? "Click a faction to instantly swap it for a random undrafted one — or skip."
-                          : "One more optional swap — this one costs 1 FlexiFranken point from your build budget."}
+                          : "One more optional swap — this one costs 1 Flexi point from your build budget."}
                       </p>
                     </div>
 
@@ -3217,6 +3229,14 @@ setDraftPhase("redraw");
                             bannedComponents={bannedComponents}
                             flexiFranken={flexiFranken}
                             redrawPointsSpent={playerRedrawPointsSpent[actualIndex] ?? 0}
+                            flagshipPlasticUpgrade={flagshipPlasticUpgrades[actualIndex] ?? false}
+                            onToggleFlagshipPlastic={(val) => {
+                              setFlagshipPlasticUpgrades(prev => {
+                                const next = [...prev];
+                                next[actualIndex] = val;
+                                return next;
+                              });
+                            }}
                           />
                         );
                       })}

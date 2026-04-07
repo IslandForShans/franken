@@ -56,6 +56,7 @@ export default function MainPage({ onNavigate }) {
               >
                 Map Builder
               </button>
+              {/*
               <button
                 onClick={() => handleNavigation("/milty")}
                 className="w-full px-4 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition-colors font-semibold text-center"
@@ -68,6 +69,7 @@ export default function MainPage({ onNavigate }) {
               >
                 Combat Simulator
               </button>
+              */}
             </div>
           </div>
         )}
@@ -115,6 +117,7 @@ export default function MainPage({ onNavigate }) {
               >
                 Map Builder
               </button>
+              {/*
               <button
                 onClick={() => handleNavigation("/milty")}
                 className="w-full sm:w-auto px-8 py-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-indigo-900/50"
@@ -127,6 +130,7 @@ export default function MainPage({ onNavigate }) {
               >
                 Combat Simulator
               </button>
+              */}
             </div>
           </div>
         </div>
@@ -386,7 +390,7 @@ export default function MainPage({ onNavigate }) {
             </ul>
           </div>
 
-          {/* Combat Simulator Card */}
+          {/* Combat Simulator Card
           <div
             onClick={() => handleNavigation("/combat")}
             className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 sm:p-8 border border-gray-700 hover:border-orange-500 transition-all hover:shadow-xl hover:shadow-orange-900/30 cursor-pointer"
@@ -422,6 +426,7 @@ export default function MainPage({ onNavigate }) {
               </li>
             </ul>
           </div>
+          */}
         </div>
       </div>
 

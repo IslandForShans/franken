@@ -60,7 +60,7 @@ function NonFactionCard({ card }) {
           {card.note && (
             <p className="text-sm text-blue-400 italic mb-1">{card.note}</p>
           )}
-          <p className="text-sm text-white-300 leading-relaxed">{card.text}</p>
+          <p className="text-sm text-white-300 leading-relaxed whitespace-pre-line">{card.text}</p>
           <div className="text-xs text-gray-400 flex gap-3 flex-wrap">
             <span>
               <span className="text-gray-500">Type:</span> {card.type}

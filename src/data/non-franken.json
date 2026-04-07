@@ -590,35 +590,652 @@
                     "note": "When another player chooses a strategy card during the strategy phase:",
                     "description": "That player must choose a different strategy card instead, if able.",
                     "source": "Base"
+                },
+                {
+                    "name": "Reactor Meltdown",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Destroy 1 space dock in a non-home system.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Reparations",
+                    "amount": 1,
+                    "note": "After another player gains control of a planet you control:",
+                    "description": "Exhaust 1 planet that player controls and ready 1 planet you control.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Repeal Law",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Discard 1 law from play.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Rise of a Messiah",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Place 1 infantry from your reinforcements on each planet you control.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Sabotage",
+                    "amount": 4,
+                    "note": "When another player plays an action card other than 'Sabotage':",
+                    "description": "Cancel that action card.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Salvage",
+                    "amount": 1,
+                    "note": "After you win a space combat:",
+                    "description": "Your opponent gives you all of their commodities.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Shields Holding",
+                    "amount": 4,
+                    "note": "Before you assign hits to your ships during a space combat:",
+                    "description": "Cancel up to 2 hits.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Signal Jamming",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Choose 1 non-home system that contains or is adjacent to 1 of your ships. Place a command token form another player's reinforcements in that system.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Skilled Retreat",
+                    "amount": 4,
+                    "note": "At the start of a combat round:",
+                    "description": "Move all of your ships from the active system into an adjacent system that does not contain another player's ships; the space combat ends in a draw. Then, place a command token from your reinforcements in that system.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Spy",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Choose 1 player. That player gives you 1 random action card form their hand.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Summit",
+                    "amount": 1,
+                    "note": "At the start of the strategy phase:",
+                    "description": "Gain 2 command tokens.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Tactical Bombardment",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Choose 1 system that contains 1 or more of your units that have Bombardment. Exhaust each planet controlled by other players in that system.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Technology Rider",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, research 1 technology.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Trade Rider",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, gain 5 trade goods.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Unexpected Action",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Remove 1 of your command tokens from the game board and return it to your reinforcements.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Unstable Planet",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Choose 1 hazardous planet. Exhaust that planet and destroy up to 3 infantry on it.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Upgrade",
+                    "amount": 1,
+                    "note": "After you activate a system that contains 1 or more of your ships:",
+                    "description": "Replace one of your cruisers in that system with one of your dreadnoughts from your reinforcements.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Uprising",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Exhaust 1 non-home planet controlled by another player. Then gain trade goods equal to its resource value.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Veto",
+                    "amount": 1,
+                    "note": "When an agenda is revealed:",
+                    "description": "Discard that agenda and reveal 1 agenda from the top of the deck. Players vote on this agenda instead.",
+                    "source": "Base"
+                },
+                {
+                    "name": "War Effort",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Place 1 cruiser from your reinforcements in a system that contains 1 or more of your ships.",
+                    "source": "Base"
+                },
+                {
+                    "name": "Warfare Rider",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, place 1 dreadnought from your reinforcements in a system that contains 1 or more of your ships.",
+                    "source": "Base"
                 }
             ],
             "pok": [
                 {
-
+                    "name": "Archaeological Expedition",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Reveal the top 3 cards of an exploration deck that matches a planet you control; gain any relic fragments that you reveal and discard the rest.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Confounding Legal Text",
+                    "amount": 1,
+                    "note": "When another player is elected as the outcome of an agenda:",
+                    "description": "You are the elected player instead.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Coup d'Etat",
+                    "amount": 1,
+                    "note": "When another player would perform a strategic action:",
+                    "description": "End that player's turn; the strategic action is not resolved and the strategy card is not exhausted.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Deadly Plot",
+                    "amount": 1,
+                    "note": "During the agenda phase, when an outcome would be revealed:",
+                    "description": "If you voted for or predicted another outcome, discard the agenda instead: the agenda is resolved with no effect and it is not replaced. Then, exhaust all of your planets.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Decoy Operation",
+                    "amount": 1,
+                    "note": "After another player activates a system that contains 1 or more of your structures:",
+                    "description": "Remove up to 2 of your ground forces from the game board and place them on a planet you control in the actve system.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Diplomatic Pressure",
+                    "amount": 4,
+                    "note": "When an agenda is revealed:",
+                    "description": "Choose another player; that player must give you 1 promissory note form their hand.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Divert Funding",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Return a non-unit upgrade, non-faction technology you own to your technology deck. Then, research another technology.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Exploration Probe",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Explore a frontier token that is in or adjacent to a system that contains 1 or more of your ships.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Manipulate Investments",
+                    "amount": 1,
+                    "note": "At the start of the strategy phase:",
+                    "description": "Place a total of 5 trade goods from the supply on strategy cards of your choice; you must place these tokens on at least 3 different cards.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Nav Suite",
+                    "amount": 1,
+                    "note": "After you activate a system:",
+                    "description": "During the 'Movement' step of this tactical action, ignore the effects of anomalies.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Refit Troops",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Choose 1 or 2 of your infantry on the game board; replace each of those infantry wih mechs.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Reveal Prototype",
+                    "amount": 1,
+                    "note": "At the start of a combat:",
+                    "description": "Spend 4 resources to research a unit upgrade technology of the same type as 1 of your units that is participating in this combat.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Reverse Engineer",
+                    "amount": 1,
+                    "note": "When another player discards an action card that has a component action:",
+                    "description": "Take that action card from the discard pile.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Rout",
+                    "amount": 1,
+                    "note": "At the start of the 'Announce Retreats' step of space combat, if you are the defender:",
+                    "description": "Your opponent must announce a retreat, if able.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Scuttle",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Choose 1 or 2 of your non-fighter ships on the game board and return them to your reinforcements; gain trade goods equal to the combined cost of those ships.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Seize Artifact",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Choose 1 of your neighbours that has 1 or more relic fragments. That player must give you 1 relic fragment of your choice.",
+                    "source": "Prophecy of Kings"
+                },
+                {
+                    "name": "Waylay",
+                    "amount": 1,
+                    "note": "Before you roll dice for ANTI-FIGHTER BARRAGE:",
+                    "description": "Hits from this roll are produced against all ships (not just fighter).",
+                    "source": "Prophecy of Kings"
                 }
             ],
             "codices": [
                 {
-
+                    "name": "Blitz",
+                    "amount": 1,
+                    "note": "At the start of an invasion:",
+                    "description": "Each of your non-fighter ships in the active system that do not have BOMBARDMENT gain BOMBARDMENT 6 until the end of the invasion.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Counterstroke",
+                    "amount": 1,
+                    "note": "After a player activates a system that contains 1 of your command tokens:",
+                    "description": "Return that command token to your tactic pool.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Fighter Conscription",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Place 1 fighter from your reinforcements in each system that contains 1 or more of your space docks or units that have capacity; they cannot be placed in systems that cotain another player's ships.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Forward Supply Base",
+                    "amount": 1,
+                    "note": "After another player activates a system that contains your units:",
+                    "description": "Gain 3 trade goods. Then, choose another player to gain 1 trade good.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Ghost Squad",
+                    "amount": 1,
+                    "note": "After a player commits units to land on a planet you control:",
+                    "description": "Move any number of ground forces from any planet you control in the active system to any other planet you control in the active system.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Hack Election",
+                    "amount": 1,
+                    "note": "Afer an agenda is revealed:",
+                    "description": "During this agenda, voting begins with the speaker and continues counterclockwise.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Harness Energy",
+                    "amount": 1,
+                    "note": "After you activate an anomaly:",
+                    "description": "Replenish your commodities.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Impersonation",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Spend 3 influence to draw 1 secret objective.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Insider Information",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "Look at the top card of the agenda deck.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Master Plan",
+                    "amount": 1,
+                    "note": "After you perform an action:",
+                    "description": "You may perform an additional action this turn.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Plagiarize",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Spend 5 influence and choose a non-faction technology owned by 1 of your neighbours; gain that technology.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Rally",
+                    "amount": 1,
+                    "note": "After you ativate a system that contains another player's ships:",
+                    "description": "Place 2 command tokens from your reinforcements in your fleet pool.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Reflective Shielding",
+                    "amount": 1,
+                    "note": "Whenone of your ships uses SUSTAIN DAMAGE during combat:",
+                    "description": "Produce 2 hits against your opponent's ships in the active system.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Sanction:",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediciton is correct, each player that voted for that outcome returns 1 command token from their fleet supply to their reinforcements.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Scramble Frequency",
+                    "amount": 1,
+                    "note": "After another player makes a BOMBARDMENT, SPACE CANNON, or ANTI-FIGHTER BARRAGE roll:",
+                    "description": "That player rerolls all of their dice.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "Solar Flare",
+                    "amount": 1,
+                    "note": "After you activate a system:",
+                    "description": "During movement, other players cannot use SPACE CANNON against your ships.",
+                    "source": "Codex I"
+                },
+                {
+                    "name": "War Machine",
+                    "amount": 4,
+                    "note": "When 1 or more of your units use PRODUCTION:",
+                    "description": "Apply +4 to the total PRODUCTION value of your units and reduce the combined cost of the produced units by 1.",
+                    "source": "Codex I"
                 }
             ],
             "te": [
                 {
-
+                    "name": "Black Market Dealings",
+                    "amount": 1,
+                    "note": "When you are negotiating a transaction:",
+                    "description": "You and the other player can include relics, action cards, and unscored secret objectives as part of the transaction. This card cannot be cancelled.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Brilliance",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Ready 1 of your planets that has a technology specialty or choose 1 player to gain their breakthrough.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Crash Landing",
+                    "amount": 1,
+                    "note": "When your last ship in the active system is destroyed:",
+                    "description": "Place 1 of your ground forces from the space area of the active system onto a planet in that system other than Mecatol Rex; if the planet contains other players' units, place your ground force into coexistence.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Crisis",
+                    "amount": 1,
+                    "note": "At the end of a player's turn, if there are at least 2 players who have not passed:",
+                    "description": "Skip the next player's turn.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Exchange Program",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Choose another player. you and that player may agree to place 1 infantry from your reinforcements into coexistence on a planet the other player controls that conains their ground forces; if no agreement is reached, you each discard 1 token from your fleet pool.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Extreme Duress",
+                    "amount": 1,
+                    "note": "At the start of another player's turn, if they have a readied strategy card:",
+                    "description": "If that player's next action is not a strategic action, they discard all of their action cards, give you all of their trade goods, and show you all of their secret objectives.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Lie In Wait",
+                    "amount": 1,
+                    "note": "After 2 of your neighbours resolve a transaction:",
+                    "description": "Look at each of those player's hands of action cards, then choose and take 1 action card from each.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Mercenary Contract",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Spend 2 trade goods to place 2 neutral infantry on any non-home planet that contains no units; if that planet was controlled by another player, they return its planet card to the planet card deck.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Pirate Contract",
+                    "amount": 4,
+                    "note": "ACTION:",
+                    "description": "Place 1 neutral destroyer in a non-home system that contains no non-neutral ships.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Pirate Fleet",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Spend 3 resources to place 1 neutral carrier, 1 neutral cruiser, 1 neutral destroyer, and 2 neutral fighters in a non-home system that contains no non-neutral ships.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Puppets on a String",
+                    "amount": 1,
+                    "note": "At the end of any player's turn, if you have passed:",
+                    "description": "Perform 1 action.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Rescue",
+                    "amount": 1,
+                    "note": "After another player moves ships into a system that contains your ships:",
+                    "description": "You may move 1 of your ships into the active system from any system that does not contain one of your command tokens.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Strategize",
+                    "amount": 4,
+                    "note": "ACTION:",
+                    "description": "Perform the secondary ability of any readied or unchosen strategy card.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Overrule",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Perform the primary ability of any readied or unchosen strategy card.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Master Plan Ω",
+                    "amount": 1,
+                    "note": "After you perform an action:",
+                    "description": "Perform an additional action.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Fighter Conscription Ω",
+                    "amount": 1,
+                    "note": "ACTION:",
+                    "description": "Place 1 fighter from your reinforcements in each system that contains 1 or more of your space docks or ships that have a capacity value; they cannot be placed in system that contain other player's ships.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Blitz Ω",
+                    "amount": 1,
+                    "note": "At the start of an invasion:",
+                    "description": "Each of your non-fighter ships in the active system that does not have BOMBARDMENT gains BOMBARDMENT 6 until the end of the invasion.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Hack Election Ω",
+                    "amount": 1,
+                    "note": "After an agenda is revealed:",
+                    "description": "During this agenda, you vote last.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Solar Flare Ω",
+                    "amount": 1,
+                    "note": "After you activate a system:",
+                    "description": "During the 'Movement' step of this tactical action, other players cannot use SPACE CANNON against your ships.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Counterstroke Ω",
+                    "amount": 1,
+                    "note": "After another player activates a system that contains 1 of your command tokens:",
+                    "description": "Return that command token to your tactic pool.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "Ghost Squad Ω",
+                    "amount": 1,
+                    "note": "After another player commits units to land on a planet you control:",
+                    "description": "Move any number of ground forces from any planet you control in the active system to any other planet you control in the active system.",
+                    "source": "Thunder's Edge"
+                },
+                {
+                    "name": "War Machine Ω",
+                    "amount": 4,
+                    "note": "When 1 or more of your units use PRODUCTION:",
+                    "description": "Apply +4 to the total PRODUCTION value of those units and reduce the combined cost of the produced units by 1.",
+                    "source": "Thunder's Edge"
                 }
             ]
         }
     ],
     "agendas": [
         {
-            "base": [
+            "Laws": [
                 {
+                    "base": [
+                        {
+                            "name": "Anti-Intellectual Revolution",
+                            "note": "FOR/AGAINST",
+                            "description": "FOR: After a player researches a technology, they must destroy 1 of their non-fighter ships.\n\nAGAINST: At the start of the next strategy phase, each player chooses and exhausts 1 planet for each technology they own.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Classified Document Leaks",
+                            "note": "Elect Scored Secret Objective",
+                            "description": "When this agenda is revealed, if there are no scored secret, discard this card and reveal another agenda from the top of the deck.\n\nThe elected secret objective becomes a public objective; place it near the other public objectivesin the common play area.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Committee Formation",
+                            "note": "Elect Player",
+                            "description": "The elected player gains this card. Before players vote on an agenda that requires a player to be elected, the owner of this card may discard this card to choose a player to be elected. Players do not vote on this agenda.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Conventions of War",
+                            "note": "FOR/AGAINST",
+                            "description": "FOR: Player cannot use BOMBARDMENT against units that are on cultural planets.\n\nAGAINST: Each player that voted 'Against' discard all of their action cards.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Core Mining",
+                            "note": "Elect Hazardous Planet",
+                            "description": "Attach this card to the elected planet's card. Then, destroy 1 infantry on the planet. The resource value of this planet is increased by 2.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Demilitarized Zone",
+                            "note": "Elect Cultural Planet",
+                            "description": "Attach this card to the elected planet's card. Then, destroy all units on that planet. Player's units cannot land, be produced, or be placed on this planet.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Enforced Travel Ban",
+                            "note": "FOR/AGAINST",
+                            "description": "FOR: Alpha and Beta wormholes have no effect during movement.\n\nAGAINST: Desstroy each PDS in or adjacent to a system tha contains a wormhole.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Executive Sanctions",
+                            "note": "FOR/AGAINST",
+                            "description": "FOR: Each player can have a maximum of 3 action cards in their hand.\n\nAGAINST: Each player discards 1  random action card from their hand.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Fleet Regulations",
+                            "note": "FOR/AGAINST",
+                            "description": "FOR: Each player cannot have more than 4 command tokens in their fleet pool.\n\nAGAINST: Each player places 1 command token from their reinforcements in their fleet pool.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Holy Planet of Ixth",
+                            "note": "Elect Cultural Planet",
+                            "description": "Attach this card to the elected planet's card. The planet's owner gains 1 victory point. Units on this planet cannot use PRODUCTION. When a player gains control of this planet, they gain 1 victory point. When a player loses control of this planet, they lose 1 victory point.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Homeland Defense Act",
+                            "note": "FOR/AGAINST",
+                            "description": "FOR: Each player can have any number of PDS units on planets they control.\n\nAGAINST: Each player destroys 1 of their PDS units.",
+                            "source": "Base"
+                        },
+                        {
+                            "name": "Imperial Arbiter",
+                            "note": "Elect Player",
+                            "description": "The elected player gains this card. At the end of the strategy phase, the owner of this card may discard this card to swap 1 of their strategy cards with 1 of another player's strategy cards.",
+                            "source": "Base"
+                        }
+                    ],
+                    "pok": [
+                        {
 
+                        }
+                    ]
                 }
             ],
-            "pok": [
+            "Directives": [
                 {
+                    "base": [
+                        {
 
+                        }
+                    ],
+                    "pok": [
+                        {
+
+                        }
+                    ]
                 }
             ]
         }

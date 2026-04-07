@@ -32,13 +32,15 @@ export default function FrankenDrazBuilder({
   bannedComponents = new Set(),
   flexiFranken = false,       // NEW
   redrawPointsSpent = 0,      // NEW — points already used in redraw phase
+  flagshipPlasticUpgrade = false,
+  onToggleFlagshipPlastic = () => {},
 }) {
   const [selectedCategory, setSelectedCategory] = useState("abilities");
   const [expandedFaction, setExpandedFaction] = useState(null);
 
   // ── FlexiFranken helpers ──────────────────────────────────────────────────
   const flexiPointsUsed = flexiFranken
-    ? calcFlexiPointsUsed(builtFaction) + redrawPointsSpent
+    ? calcFlexiPointsUsed(builtFaction) + redrawPointsSpent + (flagshipPlasticUpgrade ? 1 : 0)
     : 0;
   const flexiPointsRemaining = FLEXI_FRANKEN_TOTAL_POINTS - flexiPointsUsed;
 
@@ -502,6 +504,41 @@ export default function FrankenDrazBuilder({
               {flexiPointsRemaining} / {FLEXI_FRANKEN_TOTAL_POINTS} remaining
             </span>
           </div>
+        </div>
+      )}
+
+      {/* Flagship Plastic Limit upgrade */}
+      {flexiFranken && (
+        <div className="mb-4 p-3 rounded-lg border border-gray-600 bg-gray-800/50 flex items-center justify-between">
+          <div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={flagshipPlasticUpgrade}
+                onChange={(e) => {
+                  // Only allow checking if we have points, always allow unchecking
+                  if (e.target.checked && flexiPointsRemaining < 1) return;
+                  onToggleFlagshipPlastic(e.target.checked);
+                }}
+                disabled={!flagshipPlasticUpgrade && flexiPointsRemaining < 1}
+              />
+              <span className={`font-semibold text-sm ${!flagshipPlasticUpgrade && flexiPointsRemaining < 1 ? "text-gray-500" : "text-white"}`}>
+                +1 Flagship Plastic Limit
+              </span>
+            </label>
+            <div className="text-xs text-gray-400 ml-6 mt-0.5">
+              Allows fielding one additional flagship physically during the game.
+            </div>
+          </div>
+          <span className={`text-sm font-bold px-2 py-1 rounded ${
+            flagshipPlasticUpgrade
+              ? "bg-purple-800 text-purple-200"
+              : flexiPointsRemaining < 1
+                ? "bg-gray-700 text-gray-500"
+                : "bg-gray-700 text-gray-300"
+          }`}>
+            1pt
+          </span>
         </div>
       )}
 

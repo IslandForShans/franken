@@ -28,10 +28,8 @@ export const FLEXI_POINT_COSTS = {
   commanders:        { baseCost: 1 },
   heroes:            { baseCost: 1 },
   promissory:        { baseCost: 1 },
-  commodity_values:  { baseCost: 1 },
+  commodity_values:  { baseCost: 3, maxExtras: 1 },
   breakthrough:      { baseCost: 2, maxExtras: 1 },
-  flagship:          { baseCost: 2, maxExtras: 1 },
-  mech:              { baseCost: 2, maxExtras: 1 },
 };
 
 /**
@@ -81,7 +79,7 @@ export function getNextExtraCost(builtFaction, cat) {
 }
 
 export const FLEXI_TOOLTIP =
-`FlexiFranken — Point Buy System
+`FlexiDraz — Point Buy System
 
 Base Limits:
   4 Abilities · 3 Faction Techs
@@ -90,11 +88,14 @@ Base Limits:
 You have ${FLEXI_FRANKEN_TOTAL_POINTS} points to spend on extras:
 
   Ability / Faction Tech / Agent / Commander /
-  Hero / Promissory / Commodity:
+  Hero / Promissory:
     1st extra costs 1pt, 2nd costs 2pt, 3rd costs 3pt…
 
-  Breakthrough / Flagship / Mech:
-    Max 1 extra each, costs 2pt.
+  Extra Commodity Value: Max 1 extra, costs 3pt.
+
+  Breakthrough: Max 1 extra, costs 2pt.
+
+  +1 Flagship Plastic Limit: Max 1 extra, costs 1pt.
 
 Auto-gained components (from drafting specific cards) are always FREE.`;
 
