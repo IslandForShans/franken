@@ -215,6 +215,7 @@ export default function DraftSimulator({
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
   const [showBanModal, setShowBanModal] = useState(false);
   const headerRef = useRef(null);
+  const draftPhaseRef = useRef("setup"); useEffect(() => { draftPhaseRef.current = draftPhase; }, [draftPhase]);
 
   // Expansion toggles
   const [expansionsEnabled, setExpansionsEnabled] = useState({
@@ -1188,8 +1189,9 @@ export default function DraftSimulator({
   };
 
   const advanceToNextPlayer = (updatedFactions, updatedProgress, latestBags = null) => {
-    setTimeout(() => {
-      let nextPlayer = (currentPlayer + 1) % playerCount;
+  setTimeout(() => {
+    if (draftPhaseRef.current !== "draft") return;   // ← ADD THIS
+    let nextPlayer = (currentPlayer + 1) % playerCount;
       let attempts = 0;
       const maxAttempts = playerCount;
 
@@ -1280,10 +1282,9 @@ export default function DraftSimulator({
         setPicksThisRound(0);
 
         setTimeout(() => {
-          const factionLimits =
-            draftVariant === "power" ? powerFactionLimits : baseFactionLimits;
-
-          const allPlayersComplete = updatedFactions.every((faction, idx) => {
+        if (draftPhaseRef.current !== "draft") return;   // ← ADD THIS
+        const factionLimits = getCurrentFactionLimits();
+        const allPlayersComplete = updatedFactions.every((faction, idx) => {
             return categories.every((cat) => {
               const current = faction[cat]?.length || 0;
               const limit = draftLimits[cat];
