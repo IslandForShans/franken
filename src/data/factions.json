@@ -198,7 +198,7 @@
           "move": 2,
           "capacity": 1,
           "abilities": ["Anti-Fighter Barrage 6(x3)"],
-          "description": "When this unit uses ANTI-FUGHTER BARRAGE, each result of 9 or 10 also destroys 1 of your opponent's infantry in the space area of the active system"
+          "description": "When this unit uses ANTI-FIGHTER BARRAGE, each result of 9 or 10 also destroys 1 of your opponent's infantry in the space area of the active system"
         }
       ],
       "agents": [
@@ -224,7 +224,7 @@
           "name": "Mirik Aun Sissiri",
           "tier": "E",
           "note": "HELIX PROTOCOL",
-          "description": "ACTION: Move any number of your ships from any systems to any number of other systems that contain 1 of oyur command tokens and no other player's ships. Then, purge this card."
+          "description": "ACTION: Move any number of your ships from any systems to any number of other systems that contain 1 of your command tokens and no other player's ships. Then, purge this card."
         }
       ],
       "promissory": [
@@ -668,7 +668,7 @@
           "id": "keleres_tribunii",
           "name": "The Tribunii Ω",
           "tier": "F",
-          "description": "During setup, choose a Keleres hero that corresponds to an unsued faction; take that faction's home system, command tokens, and control markers. The unchosen Keleres heroes are not used."
+          "description": "During setup, choose a Keleres hero that corresponds to an unused faction; take that faction's home system, command tokens, and control markers. The unchosen Keleres heroes are not used."
         },
         {
           "id": "keleres_cp",

@@ -43,7 +43,7 @@
           "id": "augurs_agent",
           "name": "Clodho - Speaker",
           "tier": "D",
-          "description": "After a player explores a legendary planet or a plane that has a technology specialty, you may exhaust this card to allow that player to gain 2 trade goods."
+          "description": "After a player explores a legendary planet or a planet that has a technology specialty, you may exhaust this card to allow that player to gain 2 trade goods."
         }
       ],
       "commanders": [
@@ -114,7 +114,7 @@
       "starting_fleet": [
         {
           "id": "augurs_starting_fleet",
-          "name": "Augurs Starting Flet",
+          "name": "Augurs Starting Fleet",
           "tier": "C",
           "description": "1 Carrier, 2 Destroyers, 2 Fighters, 4 Infantry, 1 Space Dock, 1 PDS"
         }
@@ -557,7 +557,7 @@
           "id": "celdauri_hero",
           "name": "Titus Flavius - Councilman",
           "tier": "D",
-          "note": "TRADER MOBILIZATION ACT - MERCHANT REARAMENT",
+          "note": "TRADER MOBILIZATION ACT - MERCHANT REARMAMENT",
           "description": "After a player activates a system other than Mecatol Rex: You may place 1 space dock on a planet you control in the active system, convert each of your commodities to a trade good, and use the PRODUCTION ability of each of your units in the active system. Then, purge this card."
         }
       ],
@@ -852,7 +852,7 @@
           "id": "dih-mohn_cf",
           "name": "Capital Fleet",
           "tier": "D",
-          "description": "Destroyers count as 1/2 of a ship against oyur fleet pool."
+          "description": "Destroyers count as 1/2 of a ship against your fleet pool."
         },
         {
           "id": "dih-mohn_me",
@@ -913,7 +913,7 @@
           "name": "Clona Bathru - Founder of Bathru Robotics",
           "tier": "C",
           "note": "[UNLOCK: Research a ship unit upgrade technology.]",
-          "description": "This card satisfies a red tehcnology prerequisite. At the start of a space combat in a system that contains 3 or more different types of your non-fighter ships, produce 1 hit against your opponent's ships."
+          "description": "This card satisfies a red technology prerequisite. At the start of a space combat in a system that contains 3 or more different types of your non-fighter ships, produce 1 hit against your opponent's ships."
         }
       ],
       "heroes": [
@@ -922,7 +922,7 @@
           "name": "Verrisus Ypru - Former Admiral of the Unrelenting Battlegroup",
           "tier": "E",
           "note": "DEFENSE MATRIX OVERLOAD - VOLATILE EMP BURST",
-          "description": "After the 'Roll Dice' step of space combat: You may purhe this card. If you do, all ships in the active system become damaged; during this round of space combat your ships cannot be destroyed."
+          "description": "After the 'Roll Dice' step of space combat: You may purge this card. If you do, all ships in the active system become damaged; during this round of space combat your ships cannot be destroyed."
         }
       ],
       "promissory": [
@@ -1054,7 +1054,7 @@
           "tier": "C",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
-          "description": "You may exhaust this card to allow a player to exchange 1 of their relocs or agendas as part of a transaction. You always vote last during the agenda phase. When an outcome you voted for or predicted is resolved, each player who voted for that outcome gains 1 commodity."
+          "description": "You may exhaust this card to allow a player to exchange 1 of their relics or agendas as part of a transaction. You always vote last during the agenda phase. When an outcome you voted for or predicted is resolved, each player who voted for that outcome gains 1 commodity."
         }
       ],
       "agents": [
@@ -1197,7 +1197,7 @@
           "id": "florzen_sm",
           "name": "Shadow Markets",
           "tier": "C",
-          "description": "When you explore a planet, you may treat that planet as if it had the same trat as another planet you control."
+          "description": "When you explore a planet, you may treat that planet as if it had the same trait as another planet you control."
         }
       ],
       "faction_techs": [
@@ -1207,7 +1207,7 @@
           "tier": "E",
           "tech_type": "Green",
           "prerequisites": ["Green", "Green"],
-          "description": "When a player would perform a strategic actionm you may exhaust this car dand spend 1 token from your strategy pool to end that player's turn; the strategic action is not resolved and the strategy card is not exhausted."
+          "description": "When a player would perform a strategic action you may exhaust this card and spend 1 token from your strategy pool to end that player's turn; the strategic action is not resolved and the strategy card is not exhausted."
         },
         {
           "id": "florzen_c1",
@@ -1259,7 +1259,7 @@
       ],
       "promissory": [
         {
-          "id": "flrozen_pn",
+          "id": "florzen_pn",
           "name": "Underground Market",
           "tier": "C",
           "description": "When you would gain a relic: You may draw 1 additional card; choose 1 to gain and return the rest to the relic deck. Then, shuffle the relic deck. Then, return this card to the Florzen player."
@@ -2041,7 +2041,7 @@
         },
         {
           "id": "glimmer_ip",
-          "name": "Illusory Prescence",
+          "name": "Illusory Presence",
           "tier": "E",
           "description": "During the agenda phase, after another player casts votes, you may exhaust up to 2 planets you control; that player casts an additional number of votes equal to 1 more than the combined influence values of those planets."
         }
@@ -2069,7 +2069,7 @@
           "id": "glimmer_agent",
           "name": "Walik - Dull Green",
           "tier": "D",
-          "description": "When a player produces 1 or mroe units in a system: You may exhaust this card to allow that player to place 1 of the produced units in the space area of an adjacent system that does not contain another player's ships."
+          "description": "When a player produces 1 or more units in a system: You may exhaust this card to allow that player to place 1 of the produced units in the space area of an adjacent system that does not contain another player's ships."
         }
       ],
       "commanders": [
@@ -2108,7 +2108,7 @@
           "move": 1,
           "capacity": 3,
           "abilities": ["Sustain Damage"],
-          "description": "After you activate this system, if it does not contain any planrts, you may place 1 frontier token in this system."
+          "description": "After you activate this system, if it does not contain any planets, you may place 1 frontier token in this system."
         }
       ],
       "mech": [
@@ -2259,7 +2259,7 @@
           "id": "kyro_pn",
           "name": "Kyro Rider",
           "tier": "B",
-          "description": "After an agenda is revealed: You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, place 3 infantry form your reinforcements on a planet you contrl. Then, return this card to the Kyro player."
+          "description": "After an agenda is revealed: You cannot vote on this agenda. Predict aloud an outcome of this agenda. If your prediction is correct, place 3 infantry form your reinforcements on a planet you control. Then, return this card to the Kyro player."
         }
       ],
       "flagship": [
@@ -2345,7 +2345,7 @@
               "secondary": "Red"
             }
           ],
-          "description": "When researching technology, you may discard an aciton card to ignore 1 of that technology's prerequisites. Other player must spend 1 influence as an additional cost to research or gain a technology you own."
+          "description": "When researching technology, you may discard an action card to ignore 1 of that technology's prerequisites. Other player must spend 1 influence as an additional cost to research or gain a technology you own."
         }
       ]
     },
@@ -2536,7 +2536,7 @@
           "tier": "D",
           "tech_type": "Yellow",
           "prerequisites": ["Yellow", "Yellow"],
-          "description": "ACTION: Exhaust this card to choose 1 of your neighbors that has 1 or more relic fragments. That player gains 2 trade goods and msut give you 1 of those relic fragments of your choice."
+          "description": "ACTION: Exhaust this card to choose 1 of your neighbors that has 1 or more relic fragments. That player gains 2 trade goods and must give you 1 of those relic fragments of your choice."
         },
         {
           "id": "kollec_ss",
@@ -2561,7 +2561,7 @@
           "name": "Kado S'mah-Qar - Coordinator",
           "tier": "C",
           "note": "[UNLOCK: Have 4 relic fragments.]",
-          "description": "This card satisfies a blue technology prerequisite. When you retreat, if the active systemdoes not contain 1 of your command tokens, you do not place a command token in the system your ships retreated to."
+          "description": "This card satisfies a blue technology prerequisite. When you retreat, if the active system does not contain 1 of your command tokens, you do not place a command token in the system your ships retreated to."
         }
       ],
       "heroes": [
@@ -2827,7 +2827,7 @@
               "secondary": "Red"
             }
           ],
-          "description": "Adter another player purges 1 or more non-action card components, gain 1 command token or ready this card. During the action phase, you may exhaust this card to explore 1 planet you control."
+          "description": "After another player purges 1 or more non-action card components, gain 1 command token or ready this card. During the action phase, you may exhaust this card to explore 1 planet you control."
         }
       ]
     },
