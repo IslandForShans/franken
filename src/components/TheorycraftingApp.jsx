@@ -125,6 +125,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const headerRef = useRef(null);
   const [flexiFrankenMode, setFlexiFrankenMode] = useState(false);
   const [flexiFlagshipPlastic, setFlexiFlagshipPlastic] = useState(false);
+  const [flexiRound2Redraw, setFlexiRound2Redraw] = useState(false);
 
   // Hover preview state for component popups
   const [hoveredComponent] = useState(null);
@@ -258,7 +259,8 @@ export default function TheorycraftingApp({ onNavigate }) {
   const handleToggleFlexiFranken = () => {
     const next = !flexiFrankenMode;
     setFlexiFrankenMode(next);
-    setFlexiFlagshipPlastic(false);  // NEW
+    setFlexiFlagshipPlastic(false);
+    setFlexiRound2Redraw(false);
     if (next) {
       setPowerMode(false);
       setUnlimitedMode(false);
@@ -325,19 +327,20 @@ export default function TheorycraftingApp({ onNavigate }) {
         return !undraftable || undraftable.type === "draftable_and_swap";
       });
 
-      // Hide unit-upgrade faction techs that are "I" or "V1"
       if (cat === "faction_techs") {
-        all = all.filter((ft) => {
-          const name = ft.name || "";
-          if (name.includes(" I") && !name.includes(" II")) {
-            return false;
-          }
-          if (name.includes(" V1") && !name.includes(" V2")) {
-            return false;
-          }
-          return true;
-        });
-      }
+  const UNIT_EXCEPTIONS = ["Memoria I", "Voidflare Warden I"];
+  all = all.filter((ft) => {
+    const name = ft.name || "";
+    if (UNIT_EXCEPTIONS.includes(name)) return true;
+    if (name.includes(" I") && !name.includes(" II")) {
+      return false;
+    }
+    if (name.includes(" V1") && !name.includes(" V2")) {
+      return false;
+    }
+    return true;
+  });
+}
 
       // Apply global search filter
       all = filterComponentsBySearch(all, globalSearchTerm);
@@ -1368,13 +1371,39 @@ export default function TheorycraftingApp({ onNavigate }) {
                   : FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) === 0 ? "text-yellow-400"
                   : "text-purple-300"
                 }`}>
-                  {FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) - (flexiFlagshipPlastic ? 1 : 0)} / {FLEXI_FRANKEN_TOTAL_POINTS} remaining
+                  {FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) - (flexiFlagshipPlastic ? 1 : 0) - (flexiRound2Redraw ? 1 : 0)} / {FLEXI_FRANKEN_TOTAL_POINTS} remaining
                 </span>
               </div>
             )}
 
             {flexiFrankenMode && (
-              <div className="mb-4 p-3 rounded-lg border border-gray-600 bg-gray-800/50 flex items-center justify-between">
+              <div className="mb-2 mt-2 p-3 rounded-lg border border-gray-600 bg-gray-800/50 flex items-center justify-between">
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={flexiRound2Redraw}
+                      onChange={(e) => {
+                        const remaining = FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) - (flexiFlagshipPlastic ? 1 : 0) - (flexiRound2Redraw ? 1 : 0);
+                        if (e.target.checked && remaining < 1) return;
+                        setFlexiRound2Redraw(e.target.checked);
+                      }}
+                      disabled={!flexiRound2Redraw && (FLEXI_FRANKEN_TOTAL_POINTS - calcFlexiPointsUsed(customFaction) - (flexiFlagshipPlastic ? 1 : 0)) < 1}
+                    />
+                    <span className="font-semibold text-sm text-white">Participated in Round 2 Faction Redraw</span>
+                  </label>
+                  <div className="text-xs text-gray-400 ml-6 mt-0.5">
+                    Spent 1 point to redraw a faction in the second redraw round.
+                  </div>
+                </div>
+                <span className={`text-sm font-bold px-2 py-1 rounded ${flexiRound2Redraw ? "bg-purple-800 text-purple-200" : "bg-gray-700 text-gray-300"}`}>
+                  1pt
+                </span>
+              </div>
+            )}
+
+            {flexiFrankenMode && (
+              <div className="mb-2 p-3 rounded-lg border border-gray-600 bg-gray-800/50 flex items-center justify-between">
                 <div>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input

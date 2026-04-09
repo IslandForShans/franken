@@ -169,6 +169,7 @@ function buildTileMeta(key) {
     planets,
     wormhole,
     anomalies,
+    isHyperlane,
     expansion: getTileExpansion(code, isHyperlane),
     planetCount: data ? planets.length : null,
     legendary: planets.some((p) => p.legendary_ability),
@@ -222,6 +223,7 @@ const HOME_TILE_CODES = new Set([
   "BR4",
   "BR5",
   "BR6",
+  "17r",
   "51",
   "51r",
   "52",
@@ -618,21 +620,30 @@ export default function TI4MapBuilder({ onNavigate }) {
           t.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
           t.name.toLowerCase().includes(searchTerm.toLowerCase()),
       );
-    return base;
+    const EXPANSION_ORDER = { base: 0, pok: 1, te: 2, ds: 3, br: 4, hyperlane: 5, special: 6 };
+    return [...base].sort((a, b) => {
+      const expDiff = (EXPANSION_ORDER[a.expansion] ?? 99) - (EXPANSION_ORDER[b.expansion] ?? 99);
+      if (expDiff !== 0) return expDiff;
+      const aNum = parseInt(a.code, 10);
+      const bNum = parseInt(b.code, 10);
+      if (!isNaN(aNum) && !isNaN(bNum)) return aNum - bNum;
+      return a.code.localeCompare(b.code);
+    });
   }, [section, activeFilters, expansionFilter, searchTerm]);
+
   const placedSet = useMemo(() => new Set(Object.values(placed)), [placed]);
   const mapScale = fitScale * zoomLevel;
 
   const mapString = useMemo(() => {
-    const tokens = ["000", ...MAP_POSITIONS.slice(1).map((p) => p.label)].map(
-      (lbl) => {
-        const key = placed[lbl];
-        if (!key) return "0";
-        return key.split("_")[0];
-      },
-    );
+    const getCode = (key) => {
+      if (!key) return "-1";
+      if (key === "00_gray") return "0gray";
+      if (key === "00_green") return "0g";
+      return key.split("_")[0];
+    };
+    const tokens = mapPositions.map((p) => getCode(placed[p.label]));
     return `{${tokens[0]}} ${tokens.slice(1).join(" ")}`;
-  }, [placed]);
+  }, [placed, mapPositions]);
 
   const homeStats = useMemo(() => {
     if (!generatedHomeLabels) return null;
@@ -1681,7 +1692,18 @@ export default function TI4MapBuilder({ onNavigate }) {
                 <div
                   key={tile.key}
                   draggable={!isPlaced}
-                  onDragStart={() => !isPlaced && onSidebarDragStart(tile.key)}
+onDragStart={(e) => {
+  if (isPlaced) return;
+  onSidebarDragStart(tile.key);
+  const existingImg = e.currentTarget.querySelector("img");
+  if (existingImg && existingImg.complete) {
+    const w = 96, h = Math.round(Math.sqrt(3) * 48);
+    const canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    canvas.getContext("2d").drawImage(existingImg, 0, 0, w, h);
+    e.dataTransfer.setDragImage(canvas, w / 2, h / 2);
+  }
+}}
                   style={{
                     display: "flex",
                     flexDirection: "column",
@@ -2366,7 +2388,16 @@ export default function TI4MapBuilder({ onNavigate }) {
                   {tile ? (
                     <div
                       draggable
-                      onDragStart={() => onMapDragStart(label, tile.key)}
+onDragStart={(e) => {
+  onMapDragStart(label, tile.key);
+  const half = 31;
+  const ghost = document.createElement("img");
+  ghost.src = `${BASE_URL}tiles/${tile.key}.png`;
+  Object.assign(ghost.style, { position: "fixed", top: "-9999px", width: `${half * 2}px` });
+  document.body.appendChild(ghost);
+  e.dataTransfer.setDragImage(ghost, half, Math.sqrt(3) * half / 2);
+  setTimeout(() => document.body.removeChild(ghost), 0);
+}}
                       style={{
                         clipPath: HEX_CLIP,
                         filter: isOver ? "brightness(1.2)" : "brightness(1)",

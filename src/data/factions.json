@@ -2696,6 +2696,18 @@
       ],
       "faction_techs": [
         {
+          "id": "nomad_fs2",
+          "name": "Memoria II",
+          "tech_type": "Unit Upgrade",
+          "prerequisites": ["Green", "Blue", "Yellow"],
+          "cost": 8,
+          "combat": "7(x2)",
+          "move": 1,
+          "capacity": 3,
+          "abilities": ["Sustain Damage", "Anti-Fighter Barrage 8(x3)"],
+          "description": "You may treat this unit as if it were adjacent to systems that contain one or more of your mechs."
+        },
+        {
           "id": "nomad_tcs",
           "name": "Temporal Command Suite",
           "tier": "B",
@@ -2751,19 +2763,7 @@
         {
           "id": "nomad_fs1",
           "name": "Memoria I",
-          "cost": 8,
-          "combat": "7(x2)",
-          "move": 1,
-          "capacity": 3,
-          "abilities": ["Sustain Damage", "Anti-Fighter Barrage 8(x3)"],
-          "description": "You may treat this unit as if it were adjacent to systems that contain one or more of your mechs."
-        },
-        {
-          "id": "nomad_fs2",
-          "name": "Memoria II",
           "tier": "B",
-          "tech_type": "Unit Upgrade",
-          "prerequisites": ["Green", "Blue", "Yellow"],
           "cost": 8,
           "combat": "5(x2)",
           "move": 2,

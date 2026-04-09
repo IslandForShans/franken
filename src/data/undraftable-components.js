@@ -320,7 +320,7 @@ export const undraftableComponents = {
     {
       name: "Singularity Point",
       faction: "The Nivyn Star Kings",
-      triggerComponent: "Voidflare Warden II",
+      triggerComponent: "Voidflare Warden I",
       type: "gain_extra",
     },
     {
@@ -738,6 +738,11 @@ export const undraftableComponents = {
       triggerComponent: "Neural Parasite",
       type: "gain_extra",
     },
+    { name: "Memoria II",
+      faction: "The Nomad",
+      triggerComponent: "Memoria I",
+      type: "optional_swap",
+    },
     //DS
     {
       name: "Zhrgar Stimulants",
@@ -750,6 +755,12 @@ export const undraftableComponents = {
       faction: "The Lanefir Remnants",
       reason: "Just Plain Garbage",
       type: "garbage",
+    },
+    {
+      name: "Voidflare Warden II",
+      faction: "The Nivyn Star Kings",
+      triggerComponent: "Voidflare Warden I",
+      type: "optional_swap",
     },
     //BR
     {
@@ -1013,7 +1024,7 @@ export const undraftableComponents = {
     {
       name: "Krill Drakkon - Star-Crowned King",
       faction: "The Nivyn Star Kings",
-      triggerComponent: "Voidflare Warden II",
+      triggerComponent: "Voidflare Warden I",
       type: "optional_swap",
     },
     {
@@ -1220,7 +1231,6 @@ export const undraftableComponents = {
       faction: "The Clan of Saar",
       type: "base_unit",
     },
-    { name: "Memoria I", faction: "The Nomad", type: "base_unit" },
     { name: "Saturn Engine I", faction: "The Titans of Ul", type: "base_unit" },
     { name: "Hel-Titan I", faction: "The Titans of Ul", type: "base_unit" },
     {
@@ -1302,11 +1312,6 @@ export const undraftableComponents = {
       type: "base_unit",
     },
     { name: "Mycelium Ring I", faction: "The Myko-Mentori", type: "base_unit" },
-    {
-      name: "Voidflare Warden I",
-      faction: "The Nivyn Star Kings",
-      type: "base_unit",
-    },
     {
       name: "Terrafactory I",
       faction: "The Roh'Dhna Mechatronics",

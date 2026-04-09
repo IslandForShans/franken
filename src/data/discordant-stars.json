@@ -3727,6 +3727,16 @@
           "tech_type": "Yellow",
           "prerequisites": ["Yellow"],
           "description": "After 1 or more of your units with SUSTAIN DAMAGE makes a combat roll, you may choose 1 of those units to become damaged to reroll its combat roll."
+        },
+        {
+          "id": "nivyn_vw2",
+          "name": "Voidflare Warden II",
+          "tech_type": "Unit Upgrade",
+          "prerequisites": ["Blue", "Yellow", "Red"],
+          "cost": 2,
+          "combat": 4,
+          "abilities": ["Sustain Damage"],
+          "description": "After a system is activated, you may have this unit become damaged to place or move the Wound token into this system."
         }
       ],
       "agents": [
@@ -3779,21 +3789,11 @@
         {
           "id": "nivyn_vw1",
           "name": "Voidflare Warden I",
+          "tier": "A",
           "cost": 2,
           "combat": 6,
           "abilities": ["Sustain Damage"],
           "description": "After this system is activated, you may have this unit become damaged to place or move the Wound token into this system."
-        },
-        {
-          "id": "nivyn_vw2",
-          "name": "Voidflare Warden II",
-          "tier": "A",
-          "tech_type": "Unit Upgrade",
-          "prerequisites": ["Blue", "Yellow", "Red"],
-          "cost": 2,
-          "combat": 4,
-          "abilities": ["Sustain Damage"],
-          "description": "After a system is activated, you may have this unit become damaged to place or move the Wound token into this system."
         }
       ],
       "starting_techs": [
