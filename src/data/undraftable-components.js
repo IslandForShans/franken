@@ -43,8 +43,8 @@ export const undraftableComponents = {
     {
       name: "Mitosis",
       faction: "The Arborec",
-      reason: "Just Plain Garbage",
-      type: "garbage",
+      triggerComponent: "Letani Warrior II",
+      type: "gain_extra",
     },
     {
       name: "Hubris",
