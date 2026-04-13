@@ -83,24 +83,6 @@ export const undraftableComponents = {
       type: "garbage",
     },
     {
-      name: "Sundered",
-      faction: "The Crimson Rebellion",
-      triggerComponent: "Resonance Generator",
-      type: "gain_extra",
-    },
-    {
-      name: "Incursion",
-      faction: "The Crimson Rebellion",
-      triggerComponent: "Resonance Generator",
-      type: "gain_extra",
-    },
-    {
-      name: "The Sorrow",
-      faction: "The Crimson Rebellion",
-      reason: "Not Draftable",
-      type: "garbage",
-    },
-    {
       name: "Research Team",
       faction: "The Deepwrought Scholarate",
       triggerComponent: "Oceanbound",
@@ -237,6 +219,24 @@ export const undraftableComponents = {
       faction: "The Ghosts of Creuss",
       triggerComponent: "Sai Seravus",
       type: "gain_extra",
+    },
+    {
+      name: "Incursion",
+      faction: "The Crimson Rebellion",
+      triggerComponent: "Exile II",
+      type: "gain_extra"
+    },
+    {
+      name: "Sundered",
+      faction: "The Crimson Rebellion",
+      triggerComponent: "Crimson Home System",
+      type: "gain_extra"
+    },
+    {
+      name: "The Sorrow",
+      faction: "The Crimson Rebellion",
+      triggerComponent: "Crimson Home System",
+      type: "gain_extra"
     },
     // Discordant Stars
     {
@@ -552,18 +552,6 @@ export const undraftableComponents = {
       type: "optional_swap",
     },
     {
-      name: "Crimson Home System",
-      faction: "The Crimson Rebellion",
-      triggerComponent: "Resonance Generator",
-      type: "optional_swap",
-    },
-    {
-      name: "Crimson Home System",
-      faction: "The Crimson Rebellion",
-      triggerComponent: "The Sorrow",
-      type: "gain_extra",
-    },
-    {
       name: "Obsidian Home System",
       faction: "The Obsidian",
       triggerComponent: "Firmament Home System",
@@ -712,12 +700,6 @@ export const undraftableComponents = {
       name: "Valefar Assimilator X",
       faction: "The Nekro Virus",
       triggerComponent: "Tech Singularity",
-      type: "optional_swap",
-    },
-    {
-      name: "Exile II",
-      faction: "The Crimson Rebellion",
-      triggerComponent: "Resonance Generator",
       type: "optional_swap",
     },
     {
@@ -871,12 +853,6 @@ export const undraftableComponents = {
       type: "optional_swap",
     },
     {
-      name: "Ahk Siever",
-      faction: "The Crimson Rebellion",
-      triggerComponent: "Resonance Generator",
-      type: "optional_swap",
-    },
-    {
       name: "Aello",
       faction: "The Deepwrought Scholarate",
       triggerComponent: "Oceanbound",
@@ -899,6 +875,12 @@ export const undraftableComponents = {
       faction: "The Obsidian",
       triggerComponent: "Captain Aroz",
       type: "gain_extra",
+    },
+    {
+      name: "Ahk Siever",
+      faction: "The Crimson Rebellion",
+      triggerComponent: "Crimson Home System",
+      type: "optional_swap"
     },
     //DS
     {
@@ -1106,12 +1088,6 @@ export const undraftableComponents = {
       type: "garbage",
     },
     {
-      name: "Revenant",
-      faction: "The Crimson Rebellion",
-      triggerComponent: "Resonance Generator",
-      type: "optional_swap",
-    },
-    {
       name: "A3 Valiance",
       faction: "Last Bastion",
       triggerComponent: "Phoenix Standard",
@@ -1122,6 +1098,12 @@ export const undraftableComponents = {
       faction: "The Obsidian",
       triggerComponent: "Viper EX-23",
       type: "gain_extra",
+    },
+    {
+      name: "Revenant",
+      faction: "The Crimson Rebellion",
+      triggerComponent: "Exile II",
+      type: "optional_swap"
     },
     //DS
     {
@@ -1179,12 +1161,6 @@ export const undraftableComponents = {
       type: "optional_swap",
     },
     {
-      name: "Quietus",
-      faction: "The Crimson Rebellion",
-      triggerComponent: "Resonance Generator",
-      type: "optional_swap",
-    },
-    {
       name: "D.W.S. Luminous",
       faction: "The Deepwrought Scholarate",
       triggerComponent: "Oceanbound",
@@ -1201,6 +1177,12 @@ export const undraftableComponents = {
       faction: "The Obsidian",
       triggerComponent: "Heaven's Eye",
       type: "gain_extra",
+    },
+    {
+      name: "Quietus",
+      faction: "The Crimson Rebellion",
+      triggerComponent: "Exile II",
+      type: "optional_swap"
     },
     //DS
     {
@@ -1431,6 +1413,12 @@ export const undraftableComponents = {
       faction: "The Titans of Ul",
       triggerComponent: "Terragenesis",
       type: "optional_swap",
+    },
+    {
+      name: "Resonance Generator",
+      faction: "The Crimson Rebellion",
+      triggerComponent: "Crimson Home System",
+      type: "optional_swap"
     },
     //DS
     {

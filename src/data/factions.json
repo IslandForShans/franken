@@ -4658,6 +4658,7 @@
         {
           "id": "crimson_exile2",
           "name": "Exile II",
+          "tier": "A",
           "tech_type": "Unit Upgrade",
           "prerequisites": ["Red", "Red"],
           "cost": 1,
@@ -4750,6 +4751,7 @@
         {
           "id": "crimson_hs",
           "name": "Crimson Home System",
+          "tier": "A",
           "planets": [
             {
               "name": "Ahk Creuxx",
