@@ -123,6 +123,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [tierFilter, setTierFilter] = useState(new Set());
   const [tierSort, setTierSort] = useState(false);
   const headerRef = useRef(null);
+  const importFileRef = useRef(null);
   const [flexiFrankenMode, setFlexiFrankenMode] = useState(false);
   const [flexiFlagshipPlastic, setFlexiFlagshipPlastic] = useState(false);
   const [flexiRound2Redraw, setFlexiRound2Redraw] = useState(false);
@@ -328,7 +329,7 @@ export default function TheorycraftingApp({ onNavigate }) {
       });
 
       if (cat === "faction_techs") {
-  const UNIT_EXCEPTIONS = ["Memoria I", "Voidflare Warden I"];
+  const UNIT_EXCEPTIONS = ["Memoria I", "Voidflare Warden I", "Reality-Field Impactor"];
   all = all.filter((ft) => {
     const name = ft.name || "";
     if (UNIT_EXCEPTIONS.includes(name)) return true;
@@ -735,6 +736,68 @@ export default function TheorycraftingApp({ onNavigate }) {
     linkElement.click();
   };
 
+  const saveState = () => {
+  const state = {
+    version: 1,
+    customFaction,
+    powerMode,
+    unlimitedMode,
+    flexiFrankenMode,
+    flexiFlagshipPlastic,
+    flexiRound2Redraw,
+    dsOnlyMode,
+    dsAddMode,
+    brAddMode,
+    categoryFilter,
+    tierSort,
+    tierFilter: Array.from(tierFilter),
+  };
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${customFaction.name.replace(/\s+/g, "_")}_theorycrafting_save.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+const loadState = (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const state = JSON.parse(ev.target.result);
+      if (state.customFaction) setCustomFaction(state.customFaction);
+      if (state.powerMode !== undefined) setPowerMode(state.powerMode);
+      if (state.unlimitedMode !== undefined) setUnlimitedMode(state.unlimitedMode);
+      if (state.flexiFrankenMode !== undefined) setFlexiFrankenMode(state.flexiFrankenMode);
+      if (state.flexiFlagshipPlastic !== undefined) setFlexiFlagshipPlastic(state.flexiFlagshipPlastic);
+      if (state.flexiRound2Redraw !== undefined) setFlexiRound2Redraw(state.flexiRound2Redraw);
+      if (state.dsOnlyMode !== undefined) setDsOnlyMode(state.dsOnlyMode);
+      if (state.dsAddMode !== undefined) setDsAddMode(state.dsAddMode);
+      if (state.brAddMode !== undefined) setBrAddMode(state.brAddMode);
+      if (state.categoryFilter !== undefined) setCategoryFilter(state.categoryFilter);
+      if (state.tierSort !== undefined) setTierSort(state.tierSort);
+      if (Array.isArray(state.tierFilter)) setTierFilter(new Set(state.tierFilter));
+      if (state.flexiFrankenMode) {
+        setDraftLimits(FLEXI_FRANKEN_BASE_LIMITS);
+      } else if (state.powerMode) {
+        setDraftLimits(powerFactionLimits);
+      } else {
+        setDraftLimits(baseFactionLimits);
+      }
+    } catch {
+      alert("Failed to load save file. Make sure it's a valid theorycrafting save.");
+    }
+  };
+  reader.readAsText(file);
+  // Reset the input so the same file can be reloaded
+  e.target.value = "";
+};
+
   const exportForAsync = () => {
     const formatCategoryNameForExport = (category) => {
       const names = {
@@ -938,6 +1001,21 @@ export default function TheorycraftingApp({ onNavigate }) {
     window.addEventListener("resize", setHeaderHeightVar);
     return () => window.removeEventListener("resize", setHeaderHeightVar);
   }, []);
+
+  useEffect(() => {
+  const hasContent = Object.keys(customFaction).some(
+    (key) => key !== "name" && Array.isArray(customFaction[key]) && customFaction[key].length > 0
+  );
+  if (!hasContent) return;
+
+  const handleBeforeUnload = (e) => {
+    e.preventDefault();
+    e.returnValue = "";
+  };
+
+  window.addEventListener("beforeunload", handleBeforeUnload);
+  return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+}, [customFaction]);
 
   const toggleFactionVisibility = (name) => {
     setVisibleFactions((prev) => {
@@ -1173,7 +1251,7 @@ export default function TheorycraftingApp({ onNavigate }) {
                       Add Blue Reverie (BR)
                     </span>
                   </label>
-                  <div className="text-xs text-gray-400">
+                  <div className="mb-4 text-xs text-gray-400">
                     {brAddMode
                       ? "Adding Blue Reverie components"
                       : "Add Blue Reverie components (from DS data)"}
@@ -1181,27 +1259,44 @@ export default function TheorycraftingApp({ onNavigate }) {
               </div>
 
               <div className="space-y-2 mb-4">
-                <button
-                  onClick={exportFaction}
-                  className="w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-500 font-semibold transition-colors text-sm"
-                >
-                  Export Faction (JSON)
-                </button>
-
-                <button
-                  onClick={exportForAsync}
-                  className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 font-semibold transition-colors text-sm"
-                >
-                  Export as Text
-                </button>
-
-                <button
-                  onClick={exportForAsyncCommands}
-                  className="w-full px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-500 font-semibold transition-colors text-sm"
-                >
-                  Export for Async
-                </button>
-              </div>
+  <button
+    onClick={saveState}
+    className="w-full px-3 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-500 font-semibold transition-colors text-sm"
+  >
+    💾 Save Build
+  </button>
+  <button
+    onClick={() => importFileRef.current?.click()}
+    className="w-full px-3 py-2 bg-yellow-700 text-white rounded hover:bg-yellow-600 font-semibold transition-colors text-sm"
+  >
+    📂 Load Build
+  </button>
+  <input
+    ref={importFileRef}
+    type="file"
+    accept=".json"
+    onChange={loadState}
+    className="hidden"
+  />
+  <button
+    onClick={exportFaction}
+    className="w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-500 font-semibold transition-colors text-sm"
+  >
+    Export Faction (JSON)
+  </button>
+  <button
+    onClick={exportForAsync}
+    className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 font-semibold transition-colors text-sm"
+  >
+    Export as Text
+  </button>
+  <button
+    onClick={exportForAsyncCommands}
+    className="w-full px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-500 font-semibold transition-colors text-sm"
+  >
+    Export for Async
+  </button>
+</div>
 
               <div className="border-t border-gray-700 pt-3">
                 <input
