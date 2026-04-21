@@ -987,8 +987,8 @@ body {
 }
 
 .sidebar-component-item-disabled {
-  background: #f3f4f6;
-  color: #9ca3af;
+  background: #b8b8b8;
+  color: #000000;
   cursor: not-allowed;
   border-color: #e5e7eb;
 }

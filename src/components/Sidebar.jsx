@@ -171,14 +171,39 @@ export default function Sidebar({
       undraftableMeta.type === "gain_extra" ||
       undraftableMeta.type === "gain_when_draft"
     ) {
-      return `This component is an add when drafting ${trigger} component.`;
+      return (
+  <>
+    This component is an add when drafting{" "}
+    <span style={{ fontWeight: 900, color: "#d00000ff"}}>
+      {trigger}
+    </span>{" "}
+    component.
+  </>
+);
     }
     if (undraftableMeta.type === "optional_swap") {
-      return `This component is a swap when drafting ${trigger} component. Please add a component in it's category before attempting to swap.`;
-    }
-    if (undraftableMeta.type === "forced_component") {
-      return `This component is a forced choice when drafting ${trigger} component.`;
-    }
+  return (
+    <>
+      This component is a swap when drafting{" "}
+      <span style={{ fontWeight: 900, color: "#d00000ff" }}>
+        {trigger}
+      </span>{" "}
+      component. Please add a component in its category before attempting to swap.
+    </>
+  );
+}
+
+if (undraftableMeta.type === "forced_component") {
+  return (
+    <>
+      This component is a forced choice when drafting{" "}
+      <span style={{ fontWeight: 900, color: "#d00000ff" }}>
+        {trigger}
+      </span>{" "}
+      component.
+    </>
+  );
+}
     return null;
   };
 

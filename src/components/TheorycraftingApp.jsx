@@ -332,7 +332,7 @@ export default function TheorycraftingApp({ onNavigate }) {
       // Keep all non-base-unit components visible in Theorycrafting sidebar
       all = all.filter((item) => {
         const undraftable = isComponentUndraftable(item.name, item.faction);
-        return !undraftable || undraftable.type === "draftable_and_swap" || undraftable.type !== "base_unit";
+        return !undraftable || undraftable.type === "draftable_and_swap" || !["base_unit", "garbage"].includes(undraftable.type);
       });
 
       const forcedSelections = (customFaction[cat] || []).filter(
