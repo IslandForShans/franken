@@ -611,14 +611,16 @@ export default function Sidebar({
 
               {showUndraftableLocked &&
                 (() => {
-                  const undraftableMeta = isComponentUndraftable(
-                    hoveredComponent.component.name,
-                    hoveredComponent.component.faction,
-                  );
+                  const undraftableMeta =
+                    hoveredComponent.undraftableMeta ||
+                    isComponentUndraftable(
+                      hoveredComponent.component.name,
+                      hoveredComponent.component.faction,
+                    );
                   const lockReason = getUndraftableReason(undraftableMeta);
                   return lockReason ? (
                     <div
-                      className="text-xs mb-3"
+                      className="text-sm mt-1 font-medium"
                       style={{ color: "#fca5a5", lineHeight: 1.35 }}
                     >
                       {lockReason}
@@ -858,11 +860,6 @@ export default function Sidebar({
                       onClick={() =>
                         !isDisabled && handleComponentClick(cat, component)
                       }
-                      title={
-                        supportsHover && showUndraftableLocked && lockReason
-                          ? lockReason
-                          : undefined
-                      }
                       onMouseEnter={(e) => {
                         if (!supportsHover) return;
                         clearHoverTimers();
@@ -871,7 +868,11 @@ export default function Sidebar({
 
                         hoverTimeoutRef.current = setTimeout(() => {
                           setHoverPosition(pos);
-                          setHoveredComponent({ component, category: cat });
+                          setHoveredComponent({
+                            component,
+                            category: cat,
+                            undraftableMeta,
+                          });
                         }, 150);
                       }}
                       onMouseLeave={() => {
@@ -1045,7 +1046,7 @@ export default function Sidebar({
                             <>
                               {showUndraftableLocked && lockReason && (
                                 <div
-                                  className="text-xs mt-1"
+                                  className="text-sm mt-1 font-medium"
                                   style={{ color: "#fca5a5", lineHeight: 1.35 }}
                                 >
                                   {lockReason}
@@ -1233,6 +1234,25 @@ export default function Sidebar({
             >
               {hoveredComponent.component.name}
             </div>
+
+            {showUndraftableLocked &&
+              (() => {
+                const undraftableMeta =
+                  hoveredComponent.undraftableMeta ||
+                  isComponentUndraftable(
+                    hoveredComponent.component.name,
+                    hoveredComponent.component.faction,
+                  );
+                const lockReason = getUndraftableReason(undraftableMeta);
+                return lockReason ? (
+                  <div
+                    className="text-sm mt-1 font-medium"
+                    style={{ color: "#fca5a5", lineHeight: 1.35 }}
+                  >
+                    {lockReason}
+                  </div>
+                ) : null;
+              })()}
 
             {/* ADD THIS SECTION FOR FACTIONS */}
             {hoveredComponent.category === "factions" && (
