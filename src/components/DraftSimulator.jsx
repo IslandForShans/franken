@@ -22,6 +22,7 @@ import {
   isComponentUndraftable,
   getSwapOptionsForTrigger,
   getExtraComponents,
+  getForcedComponentsForTrigger,
 } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
 import { executeSwap } from "../utils/swapUtils.js";
@@ -1505,6 +1506,10 @@ export default function DraftSimulator({
             component.name,
             component.faction,
           );
+          const forcedComponents = getForcedComponentsForTrigger(
+            component.name,
+            component.faction,
+          );
 
           if (extraComponents.length > 0) {
             console.log(
@@ -1582,6 +1587,31 @@ export default function DraftSimulator({
                   },
                 ]);
               }
+            });
+          }
+
+          if (forcedComponents.length > 0) {
+            forcedComponents.forEach((forced) => {
+              const targetCategory = forced.category || category;
+              const fullComponentData = findFullComponentData(
+                forced.name,
+                forced.faction || component.faction,
+                targetCategory,
+              );
+              const forcedComponent = fullComponentData
+                ? {
+                    ...fullComponentData,
+                    isForced: true,
+                    triggerComponent: component.name,
+                  }
+                : {
+                    ...forced,
+                    isForced: true,
+                    triggerComponent: component.name,
+                    faction: forced.faction || component.faction,
+                  };
+
+              newFaction[targetCategory] = [forcedComponent];
             });
           }
         });
@@ -2094,7 +2124,11 @@ setDraftPhase("redraw");
     if (component && !component.isSwap) {
       categories.forEach((cat) => {
         fc[playerIndex][cat] = fc[playerIndex][cat].filter(
-          (item) => !(item.isSwap && item.triggerComponent === component.name),
+          (item) =>
+            !(
+              (item.isSwap || item.isForced) &&
+              item.triggerComponent === component.name
+            ),
         );
       });
     }
@@ -2178,6 +2212,18 @@ setDraftPhase("redraw");
 
   const handleAddComponentToBuild = (playerIndex, category, component) => {
     const fc = [...factions];
+    const forcedInCategory = (fc[playerIndex][category] || []).filter(
+      (item) => item.isForced,
+    );
+    if (
+      forcedInCategory.length > 0 &&
+      !forcedInCategory.some(
+        (forced) =>
+          forced.name === component.name && forced.faction === component.faction,
+      )
+    ) {
+      return;
+    }
 
     // Check if at limit
     const currentCount = (fc[playerIndex][category] || []).length;
@@ -2204,6 +2250,23 @@ setDraftPhase("redraw");
     }
 
     fc[playerIndex][category] = [...fc[playerIndex][category], component];
+
+    const forcedComponents = getForcedComponentsForTrigger(
+      component.name,
+      component.faction,
+    );
+    forcedComponents.forEach((forced) => {
+      const targetCategory = forced.category || category;
+      fc[playerIndex][targetCategory] = [
+        {
+          ...forced,
+          isForced: true,
+          triggerComponent: component.name,
+          faction: forced.faction || component.faction,
+        },
+      ];
+    });
+
     setFactions(fc);
   };
 
@@ -2220,10 +2283,26 @@ setDraftPhase("redraw");
     ) {
       return;
     }
+    if (fc[playerIndex][category][componentIndex].isForced) {
+      return;
+    }
 
     fc[playerIndex][category] = fc[playerIndex][category].filter(
       (_, idx) => idx !== componentIndex,
     );
+
+    const removedComponent = factions[playerIndex][category][componentIndex];
+    if (removedComponent && !removedComponent.isForced) {
+      categories.forEach((cat) => {
+        fc[playerIndex][cat] = (fc[playerIndex][cat] || []).filter(
+          (item) =>
+            !(
+              item.isForced && item.triggerComponent === removedComponent.name
+            ),
+        );
+      });
+    }
+
     setFactions(fc);
   };
 

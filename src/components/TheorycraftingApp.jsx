@@ -13,6 +13,7 @@ import { ICON_MAP } from "../utils/dataProcessor";
 import {
   getSwapOptions,
   getExtraComponents,
+  getForcedComponentsForTrigger,
   getSwapOptionsForTrigger,
   isComponentUndraftable,
 } from "../data/undraftable-components.js";
@@ -328,6 +329,18 @@ export default function TheorycraftingApp({ onNavigate }) {
         return !undraftable || undraftable.type === "draftable_and_swap";
       });
 
+      const forcedSelections = (customFaction[cat] || []).filter(
+        (item) => item.isForced,
+      );
+      if (forcedSelections.length > 0) {
+        all = all.filter((item) =>
+          forcedSelections.some(
+            (forced) =>
+              forced.name === item.name && forced.faction === item.faction,
+          ),
+        );
+      }
+
       if (cat === "faction_techs") {
   const UNIT_EXCEPTIONS = ["Memoria I", "Voidflare Warden I", "Reality-Field Impactor"];
   all = all.filter((ft) => {
@@ -387,6 +400,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     categoryFilter,
     tierFilter,
     tierSort,
+    customFaction,
   ]);
 
   const handleAddComponent = (cat, item) => {
@@ -412,6 +426,17 @@ export default function TheorycraftingApp({ onNavigate }) {
     }
 
     setCustomFaction((prev) => {
+      const forcedInCategory = (prev[cat] || []).filter((i) => i.isForced);
+      if (
+        forcedInCategory.length > 0 &&
+        !forcedInCategory.some(
+          (forced) =>
+            forced.name === item.name && forced.faction === item.faction,
+        )
+      ) {
+        return prev;
+      }
+
       const updated = {
         ...prev,
         [cat]: [...prev[cat], item],
@@ -538,6 +563,42 @@ export default function TheorycraftingApp({ onNavigate }) {
         });
       }
 
+      categories.forEach((sourceCategory) => {
+        (updated[sourceCategory] || []).forEach((sourceItem) => {
+          if (!sourceItem?.name || !sourceItem?.faction || sourceItem.isForced) {
+            return;
+          }
+          const forcedComponents = getForcedComponentsForTrigger(
+            sourceItem.name,
+            sourceItem.faction,
+          );
+
+          forcedComponents.forEach((forced) => {
+            const targetCategory = forced.category || sourceCategory;
+            const fullComponentData = findFullComponentData(
+              forced.name,
+              forced.faction || sourceItem.faction,
+              targetCategory,
+            );
+
+            const forcedComponent = fullComponentData
+              ? {
+                  ...fullComponentData,
+                  isForced: true,
+                  triggerComponent: sourceItem.name,
+                }
+              : {
+                  ...forced,
+                  isForced: true,
+                  triggerComponent: sourceItem.name,
+                  faction: forced.faction || sourceItem.faction,
+                };
+
+            updated[targetCategory] = [forcedComponent];
+          });
+        });
+      });
+
       return updated;
     });
   };
@@ -604,6 +665,20 @@ export default function TheorycraftingApp({ onNavigate }) {
             }
           });
         }
+      }
+
+      if (componentToRemove && !componentToRemove.isForced) {
+        categories.forEach((cat) => {
+          if (updated[cat]) {
+            updated[cat] = updated[cat].filter(
+              (item) =>
+                !(
+                  item.isForced &&
+                  item.triggerComponent === componentToRemove.name
+                ),
+            );
+          }
+        });
       }
 
       return updated;

@@ -2944,7 +2944,7 @@
         {
           "id": "sardakk_starting_tech",
           "name": "Sardakk Starting Tech",
-          "description": "None"
+          "description": "[Franken Only] THE SARDAKK STARTING TECH IS A FORCED COMPONENT WHEN DRAFTING THE SARDAKK BREAKTHROUGH."
         }
       ],
       "starting_fleet": [
@@ -2993,7 +2993,7 @@
               "secondary": "Red"
             }
           ],
-          "description": "After you win a combat, either gain 1 command token or research a unit upgrade technology."
+          "description": "[Drafting this BT forces you to draft the Sardakk Starting Tech] After you win a combat, either gain 1 command token or research a unit upgrade technology."
         }
       ]
     },
@@ -3365,11 +3365,6 @@
           "description": "Capture your opponent's non-structure units that are destroyed during combat."
         },
         {
-          "id": "cabal_devour_mini",
-          "name": "Devour (mini)",
-          "description": "[Franken Only] Capture other player's non-fighter ships if you don't have that ship type on your faction sheet, except your own."
-        },
-        {
           "id": "cabal_amalgamation",
           "name": "Amalgamation",
           "tier": "A",
@@ -3379,7 +3374,7 @@
           "id": "cabal_riftmeld",
           "name": "Riftmeld",
           "tier": "D",
-          "description": "When you research a unit upgrade technology, you may return 1 captured unit of that type to ignore all of the technology's prerequisites."
+          "description": "[Franken Only] When you research a unit upgrade technology, you may return 1 captured unit of that type to ignore all of the technology's prerequisites. If you do not have the Amalgamation ability, you may only capture other players' non-fighter ships if you don't have that ship type on your faction sheet, except your own."
         }
       ],
       "faction_techs": [
@@ -3427,8 +3422,8 @@
         {
           "id": "cabal_hero",
           "name": "It Feeds On Carrion",
-          "note": "[Franken Only] DIMENSIONAL ANCHOR",
-          "description": "ACTION: Each other player rolls a die for each of their non-fighter ships that are in or adjacent to a system that contains your Space Dock; on a 1-3, capture that unit. If this causes a player's ground forces or fighters to be removed, also capture those units. Then, purge this card."
+          "note": "DIMENSIONAL ANCHOR",
+          "description": "[Dimensional Anchor] ACTION: Each other player rolls a die for each of their non-fighter ships that are in or adjacent to a system that contains your Space Dock; on a 1-3, capture that unit. If this causes a player's ground forces or fighters to be removed, also capture those units. Then, purge this card."
         }
       ],
       "promissory": [

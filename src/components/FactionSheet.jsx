@@ -127,6 +127,7 @@ export default function FactionSheet({
 
   const handleRemove = (category, index) => {
     const component = drafted[category][index];
+    if (component?.isForced) return;
 
     if (showReductionHelper) {
       const extraComponents = getExtraComponents(
@@ -278,6 +279,7 @@ export default function FactionSheet({
       category === "red_tiles" ||
       category === "home_systems";
     const isBreakthrough = category === "breakthrough";
+    const canRemove = !item.isForced;
 
     return (
       <div
@@ -485,9 +487,12 @@ export default function FactionSheet({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRemove(category, index);
+                  if (canRemove) {
+                    handleRemove(category, index);
+                  }
                 }}
                 className="btn btn-danger btn-sm"
+                disabled={!canRemove}
               >
                 REMOVE
               </button>

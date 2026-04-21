@@ -23,10 +23,10 @@ export const undraftableComponents = {
       type: "gain_when_draft",
     },
     {
-      name: "Devour (mini)",
+      name: "Devour",
       faction: "The Vuil'Raith Cabal",
       triggerComponent: "Riftmeld",
-      type: "gain_when_draft",
+      type: "gain_extra"
     },
     {
       name: "Gashlai Physiology",
@@ -224,12 +224,6 @@ export const undraftableComponents = {
       name: "Incursion",
       faction: "The Crimson Rebellion",
       triggerComponent: "Exile II",
-      type: "gain_extra"
-    },
-    {
-      name: "Sundered",
-      faction: "The Crimson Rebellion",
-      triggerComponent: "Crimson Home System",
       type: "gain_extra"
     },
     {
@@ -725,6 +719,12 @@ export const undraftableComponents = {
       triggerComponent: "Memoria I",
       type: "optional_swap",
     },
+    {
+      name: "Vortex",
+      faction: "The Vuil'Raith Cabal",
+      triggerComponent: "Riftmeld",
+      type: "optional_swap"
+    },
     //DS
     {
       name: "Zhrgar Stimulants",
@@ -809,6 +809,12 @@ export const undraftableComponents = {
       faction: "The Embers of Muaat",
       triggerComponent: "Muaat Starting Fleet",
       type: "optional_swap",
+    },
+    {
+      name: "The Stillness of Stars",
+      faction: "The Vuil'Raith Cabal",
+      triggerComponent: "Riftmeld",
+      type: "optional_swap"
     },
     //DS
     {
@@ -951,7 +957,7 @@ export const undraftableComponents = {
     {
       name: "It Feeds On Carrion",
       faction: "The Vuil'Raith Cabal",
-      triggerComponent: "Dimensional Tear II",
+      triggerComponent: "Amalgamation",
       type: "optional_swap",
     },
     {
@@ -1336,8 +1342,8 @@ export const undraftableComponents = {
     {
       name: "Sardakk Starting Tech",
       faction: "Sardakk N'orr",
-      reason: "Just Plain Garbage",
-      type: "garbage",
+      triggerComponent: "N'orr Supremacy",
+      type: "forced_component"
     },
   ],
 
@@ -1532,13 +1538,14 @@ export const getSwapOptions = (componentName, faction) => {
 // Get swap options based on what component triggers the swap
 export const getSwapOptionsForTrigger = (triggerComponentName, faction) => {
   const swapOptions = [];
+  const swapTypes = new Set(["optional_swap", "draftable_and_swap"]);
 
   for (const [category, components] of Object.entries(undraftableComponents)) {
     components.forEach((comp) => {
       if (
         comp.triggerComponent === triggerComponentName &&
         comp.faction === faction &&
-        comp.type === "optional_swap"
+        swapTypes.has(comp.type)
       ) {
         swapOptions.push({
           ...comp,
@@ -1549,6 +1556,27 @@ export const getSwapOptionsForTrigger = (triggerComponentName, faction) => {
   }
 
   return swapOptions;
+};
+
+export const getForcedComponentsForTrigger = (triggerComponentName, faction) => {
+  const forcedComponents = [];
+
+  for (const [category, components] of Object.entries(undraftableComponents)) {
+    components.forEach((comp) => {
+      if (
+        comp.triggerComponent === triggerComponentName &&
+        comp.faction === faction &&
+        comp.type === "forced_component"
+      ) {
+        forcedComponents.push({
+          ...comp,
+          category,
+        });
+      }
+    });
+  }
+
+  return forcedComponents;
 };
 
 export const getExtraComponents = (componentName, faction) => {
