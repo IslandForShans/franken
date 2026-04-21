@@ -228,21 +228,18 @@ export default function FactionSheet({
 
   let categories = [
     { key: "abilities", col: 1 },
-    { key: "faction_techs", col: 1 },
-    { key: "agents", col: 2 },
-    { key: "commanders", col: 2 },
-    { key: "heroes", col: 2 },
-    { key: "promissory", col: 1 },
-    { key: "flagship", col: 3 },
-    { key: "mech", col: 3 },
-    { key: "starting_techs", col: 1 },
-    { key: "starting_fleet", col: 3 },
-    { key: "commodity_values", col: 2 },
-    { key: "breakthrough", col: 3 },
-    { key: "table_position", col: 1 },
-    { key: "home_systems", col: 1 },
-    { key: "blue_tiles", col: 2 },
-    { key: "red_tiles", col: 3 },
+    { key: "faction_techs", col: 2 },
+    { key: "agents", col: 3},
+    { key: "commanders", col: 1},
+    { key: "heroes", col: 2},
+    { key: "promissory", col: 3},
+    { key: "starting_techs", col: 1},
+    { key: "starting_fleet", col: 2},
+    { key: "commodities", col: 3},
+    { key: "flagship", col: 1},
+    { key: "mech", col: 2},
+    { key: "home_system", col: 3},
+    { key: "breakthrough", col: 1}
   ];
 
   // Remove any categories the parent explicitly asked to hide (Theorycrafting will use this)
@@ -252,10 +249,10 @@ export default function FactionSheet({
 
   const getColumnCategories = (col) => categories.filter((c) => c.col === col);
 
-  // renderComponent helper function structure:
   const renderComponent = (item, category, index) => {
     const id = getId(item);
-    const isExpanded = expandedId === id;
+    const isAlwaysExpanded = category === "flagship" || category === "mech";
+    const isExpanded = isAlwaysExpanded || expandedId === id;
     const triggeredSwaps = getSwapOptionsForTrigger(item.name, item.faction);
     const hasSwaps = triggeredSwaps && triggeredSwaps.length > 0;
     const showSwapButton =
@@ -271,7 +268,19 @@ export default function FactionSheet({
     const isUnit =
       category === "flagship" ||
       category === "mech" ||
-      category === "starting_fleet";
+      category === "starting_fleet" ||
+      item.unit === true ||
+      item.tech_type === "Unit Upgrade";
+    const hasUnitStats =
+      item.cost !== undefined ||
+      item.combat !== undefined ||
+      item.move !== undefined ||
+      item.capacity !== undefined;
+    const unitAbilities = Array.isArray(item.abilities)
+      ? item.abilities
+      : typeof item.abilities === "string" && item.abilities.trim().length > 0
+        ? [item.abilities]
+        : [];
     const isTech =
       category === "faction_techs" || category === "starting_techs";
     const isTile =
@@ -291,7 +300,11 @@ export default function FactionSheet({
               ? "faction-component-extra"
               : ""
         }`}
-        onClick={() => setExpandedId(isExpanded ? null : id)}
+        onClick={() => {
+          if (!isAlwaysExpanded) {
+            setExpandedId(isExpanded ? null : id);
+          }
+        }}
       >
         {/* Header */}
         <div className="faction-component-header">
@@ -323,7 +336,7 @@ export default function FactionSheet({
             )}
 
             {/* Unit stats - always show */}
-            {isUnit && item.combat && (
+            {isUnit && hasUnitStats && (
               <div
                 className="text-xs mt-2 flex gap-2"
                 style={{ color: "#fff" }}
@@ -331,7 +344,9 @@ export default function FactionSheet({
                 {item.cost !== undefined && (
                   <span className="font-semibold">Cost: {item.cost}</span>
                 )}
-                <span className="font-semibold">Combat: {item.combat}</span>
+                {item.combat !== undefined && (
+                  <span className="font-semibold">Combat: {item.combat}</span>
+                )}
                 {item.move !== undefined && (
                   <span className="font-semibold">Move: {item.move}</span>
                 )}
@@ -344,10 +359,10 @@ export default function FactionSheet({
             )}
 
             {/* Unit abilities - always show */}
-            {isUnit && item.abilities && item.abilities.length > 0 && (
+            {isUnit && unitAbilities.length > 0 && (
               <div className="text-xs mt-1" style={{ color: "#c084fc" }}>
                 <span className="font-semibold">Abilities:</span>{" "}
-                {item.abilities.join(", ")}
+                {unitAbilities.join(", ")}
               </div>
             )}
 

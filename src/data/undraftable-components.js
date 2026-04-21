@@ -1516,14 +1516,31 @@ export const undraftableComponents = {
 };
 
 export const isComponentUndraftable = (componentName, faction = null) => {
+  const allMatches = [];
+
   for (const category of Object.values(undraftableComponents)) {
-    const found = category.find(
-      (comp) =>
-        comp.name === componentName &&
-        (faction ? comp.faction === faction : true),
+    const matches = category.filter(
+      (comp) => comp.name === componentName && (faction ? comp.faction === faction : true),
     );
-    if (found) return found;
+     allMatches.push(...matches);
   }
+
+  if (allMatches.length > 0) {
+    const [found] = allMatches;
+    const triggerComponents = [
+      ...new Set(
+        allMatches
+          .map((match) => match.triggerComponent)
+          .filter(Boolean),
+      ),
+    ];
+
+    return {
+      ...found,
+      triggerComponents,
+    };
+  }
+  
   return null;
 };
 

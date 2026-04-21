@@ -165,7 +165,22 @@ export default function Sidebar({
 
   const getUndraftableReason = (undraftableMeta) => {
     if (!undraftableMeta) return null;
-    const trigger = undraftableMeta.triggerComponent || "another";
+    const triggerComponents = undraftableMeta.triggerComponents?.length
+      ? undraftableMeta.triggerComponents
+      : undraftableMeta.triggerComponent
+        ? [undraftableMeta.triggerComponent]
+        : ["another"];
+    const trigger = triggerComponents.map((triggerName, index) => (
+      <span key={`${triggerName}-${index}`}>
+        {index > 0 && (
+          <>
+            {index > 1 && ", "}
+            <span style={{ fontWeight: 700, color: "#fca5a5" }}> or </span>
+          </>
+        )}
+        <span style={{ fontWeight: 900, color: "#d00000ff" }}>{triggerName}</span>
+      </span>
+    ));
 
     if (
       undraftableMeta.type === "gain_extra" ||
@@ -173,10 +188,8 @@ export default function Sidebar({
     ) {
       return (
   <>
-    This component is an add when drafting{" "}
-    <span style={{ fontWeight: 900, color: "#d00000ff"}}>
-      {trigger}
-    </span>{" "}
+    This component is an add when drafting the{" "}
+    {trigger}{" "}
     component.
   </>
 );
@@ -184,10 +197,8 @@ export default function Sidebar({
     if (undraftableMeta.type === "optional_swap") {
   return (
     <>
-      This component is a swap when drafting{" "}
-      <span style={{ fontWeight: 900, color: "#d00000ff" }}>
-        {trigger}
-      </span>{" "}
+      This component is a swap when drafting the{" "}
+      {trigger}{" "}
       component. Please add a component in its category before attempting to swap.
     </>
   );
@@ -196,10 +207,8 @@ export default function Sidebar({
 if (undraftableMeta.type === "forced_component") {
   return (
     <>
-      This component is a forced choice when drafting{" "}
-      <span style={{ fontWeight: 900, color: "#d00000ff" }}>
-        {trigger}
-      </span>{" "}
+      This component is a forced choice when drafting the{" "}
+      {trigger}{" "}
       component.
     </>
   );
