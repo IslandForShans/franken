@@ -323,10 +323,16 @@ export default function TheorycraftingApp({ onNavigate }) {
     categories.forEach((cat) => {
       let all = getAllComponents(cat);
 
-      // Filter out undraftable components
+      // Keep undraftable metadata on each item so Sidebar can always render lock reasons.
+      all = all.map((item) => ({
+        ...item,
+        undraftableMeta: isComponentUndraftable(item.name, item.faction),
+      }));
+
+      // Keep all non-base-unit components visible in Theorycrafting sidebar
       all = all.filter((item) => {
         const undraftable = isComponentUndraftable(item.name, item.faction);
-        return !undraftable || undraftable.type === "draftable_and_swap";
+        return !undraftable || undraftable.type === "draftable_and_swap" || undraftable.type !== "base_unit";
       });
 
       const forcedSelections = (customFaction[cat] || []).filter(
@@ -1486,6 +1492,7 @@ const loadState = (e) => {
               defaultCollapsed={true}
               isSearching={globalSearchTerm.trim().length > 0}
               noWrapper={true}
+              showUndraftableLocked={true}
             />
           </div>
         )}

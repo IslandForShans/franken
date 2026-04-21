@@ -72,6 +72,7 @@ export default function Sidebar({
   noWrapper = false,
   isOpen = true,
   collapseAllTrigger = null,
+  showUndraftableLocked = false,
 }) {
   const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
   const [showAllComponents, setShowAllComponents] = useState(false);
@@ -160,6 +161,31 @@ export default function Sidebar({
     if (onComponentClick) {
       onComponentClick(category, component);
     }
+  };
+
+  const getUndraftableReason = (undraftableMeta) => {
+    if (!undraftableMeta) return null;
+    const trigger = undraftableMeta.triggerComponent || "another";
+
+    if (
+      undraftableMeta.type === "gain_extra" ||
+      undraftableMeta.type === "gain_when_draft"
+    ) {
+      return `This component is an add when drafting ${trigger} component.`;
+    }
+    if (undraftableMeta.type === "optional_swap") {
+      return `This component is a swap when drafting ${trigger} component. Please add a component in it's category before attempting to swap.`;
+    }
+    if (undraftableMeta.type === "forced_component") {
+      return `This component is a forced choice when drafting ${trigger} component.`;
+    }
+    return null;
+  };
+
+  const resolveUndraftableMeta = (component) => {
+    if (!showUndraftableLocked || !component) return null;
+    if (component.undraftableMeta) return component.undraftableMeta;
+    return isComponentUndraftable(component.name, component.faction);
   };
 
   const toggleCategoryCollapse = (category) => {
@@ -583,6 +609,23 @@ export default function Sidebar({
                 {hoveredComponent.component.name}
               </div>
 
+              {showUndraftableLocked &&
+                (() => {
+                  const undraftableMeta = isComponentUndraftable(
+                    hoveredComponent.component.name,
+                    hoveredComponent.component.faction,
+                  );
+                  const lockReason = getUndraftableReason(undraftableMeta);
+                  return lockReason ? (
+                    <div
+                      className="text-xs mb-3"
+                      style={{ color: "#fca5a5", lineHeight: 1.35 }}
+                    >
+                      {lockReason}
+                    </div>
+                  ) : null;
+                })()}
+
               {/* Faction Preview */}
               {hoveredComponent.category === "factions" &&
                 (() => {
@@ -606,9 +649,16 @@ export default function Sidebar({
                   const componentsByCategory = fullFaction
                     ? categoriesToShow.flatMap((cat) =>
                         (fullFaction[cat] || [])
-                          .filter(
-                            (c) => !isComponentUndraftable(c.name, factionName),
-                          )
+                          .filter((c) => {
+                            const undraftable = isComponentUndraftable(
+                              c.name,
+                              factionName,
+                            );
+                            if (showUndraftableLocked) {
+                              return !undraftable || undraftable.type !== "base_unit";
+                            }
+                            return !undraftable;
+                          })
                           .map((c) => ({ name: c.name, category: cat })),
                       )
                     : [];
@@ -783,7 +833,21 @@ export default function Sidebar({
             // Components (only shown when not collapsed)
             ...(!isCollapsed
               ? components.map((component, idx) => {
-                  const isDisabled = !canPick;
+                  const undraftableMeta = resolveUndraftableMeta(component);
+                  const isUndraftableLocked = Boolean(
+                    undraftableMeta &&
+                      [
+                        "forced_component",
+                        "gain_extra",
+                        "gain_when_draft",
+                        "optional_swap",
+                      ].includes(undraftableMeta.type),
+                  );
+                  const lockReason =
+                    showUndraftableLocked && isUndraftableLocked
+                      ? getUndraftableReason(undraftableMeta)
+                      : null;
+                  const isDisabled = !canPick || isUndraftableLocked;
 
                   return (
                     <div
@@ -793,6 +857,11 @@ export default function Sidebar({
                       }`}
                       onClick={() =>
                         !isDisabled && handleComponentClick(cat, component)
+                      }
+                      title={
+                        supportsHover && showUndraftableLocked && lockReason
+                          ? lockReason
+                          : undefined
                       }
                       onMouseEnter={(e) => {
                         if (!supportsHover) return;
@@ -974,6 +1043,14 @@ export default function Sidebar({
                           {/* ===== MOBILE INLINE DETAILS (no hover on touch devices) ===== */}
                           {!supportsHover && (
                             <>
+                              {showUndraftableLocked && lockReason && (
+                                <div
+                                  className="text-xs mt-1"
+                                  style={{ color: "#fca5a5", lineHeight: 1.35 }}
+                                >
+                                  {lockReason}
+                                </div>
+                              )}
                               {/* Note for commanders, heroes, and starting_techs */}
                               {component.note &&
                                 (cat === "commanders" ||
