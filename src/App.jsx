@@ -9,6 +9,7 @@ import DraftMapBuilder from "./components/DraftMapBuilder";
 import MiltyDraftPage from "./components/MiltyDraftPage";
 import { useWebRTCMultiplayer } from "./hooks/useWebRTCMultiplayer";
 import CombatSimulator from "./components/CombatSimulator";
+import FactionRollerPage from "./components/FactionRollerPage";
 import ChatPanel from "./components/ChatPanel";
 
 const DRAFT_CHAT_NOTES = [
@@ -171,6 +172,8 @@ function App() {
       setCurrentPage("mapbuilder");
     } else if (path === "/combat") {
       setCurrentPage("combat");
+    } else if (path === "/faction-roller") {
+      setCurrentPage("faction-roller");
     } else {
       setCurrentPage("home");
     }
@@ -223,6 +226,9 @@ function App() {
       )}
       {currentPage === "combat" && (
         <CombatSimulator onNavigate={handleNavigate} />
+      )}
+      {currentPage === "faction-roller" && (
+        <FactionRollerPage onNavigate={handleNavigate} />
       )}
       {(currentPage === "draft" || currentPage === "mapbuilder-draft") &&
         multiplayer.role && (

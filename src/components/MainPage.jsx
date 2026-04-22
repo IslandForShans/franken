@@ -56,6 +56,12 @@ export default function MainPage({ onNavigate }) {
               >
                 Map Builder
               </button>
+              <button
+                onClick={() => handleNavigation("/faction-roller")}
+                className="w-full px-4 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 transition-colors font-semibold text-center"
+              >
+                Faction Roller
+              </button>
               {/*
               <button
                 onClick={() => handleNavigation("/milty")}
@@ -116,6 +122,12 @@ export default function MainPage({ onNavigate }) {
                 className="w-full sm:w-auto px-8 py-4 rounded-lg bg-orange-600 hover:bg-orange-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-orange-900/50"
               >
                 Map Builder
+              </button>
+              <button
+                onClick={() => handleNavigation("/faction-roller")}
+                className="w-full sm:w-auto px-8 py-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 transition-all hover:scale-105 font-bold text-lg shadow-lg shadow-emerald-900/50"
+              >
+                Faction Roller
               </button>
               {/*
               <button
