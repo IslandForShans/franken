@@ -5,7 +5,7 @@ import {
   teExclusions,
   brExclusions,
 } from "../utils/expansionFilters";
-import { isComponentUndraftable } from "../data/undraftable-components";
+import { isComponentUndraftable, getSwapOptionsForTrigger } from "../data/undraftable-components";
 
 const CATEGORY_CONFIG = [
   { key: "abilities", label: "Abilities" },
@@ -39,12 +39,15 @@ const BASE_MODE_LIMITS = {
   home_systems: 1,
   breakthrough: 1,
 };
+const MODE2_SELECTION_LIMITS = Object.fromEntries(
+  Object.entries(BASE_MODE_LIMITS).map(([category, limit]) => [category, limit + 1]),
+);
 const POWERED_MODE_LIMITS = {
   abilities: 4,
   faction_techs: 3,
-  agents: 2,
-  commanders: 2,
-  heroes: 2,
+  agents: 1,
+  commanders: 1,
+  heroes: 1,
   promissory: 1,
   starting_techs: 1,
   starting_fleet: 1,
@@ -90,37 +93,41 @@ const cloneBuild = (build) =>
     REQUIRED_CATEGORIES.map((cat) => [cat, [...(build[cat] || [])]]),
   );
 
-const applyRandomSwaps = (build, poolsByCategory, swapCount = 0) => {
+const applyRandomSwaps = (build, swapCount = 0) => {
   const nextBuild = cloneBuild(build);
   const swapLog = [];
 
   if (!swapCount) return { build: nextBuild, swapLog };
 
   for (let attempt = 0; attempt < swapCount; attempt += 1) {
-    const eligibleCats = REQUIRED_CATEGORIES.filter((cat) => {
-      const current = nextBuild[cat] || [];
-      const pool = poolsByCategory[cat] || [];
-      if (!current.length || pool.length < 2) return false;
-      const currentIds = new Set(current.map((item) => item.id));
-      return pool.some((candidate) => !currentIds.has(candidate.id));
+    const eligibleSlots = [];
+    REQUIRED_CATEGORIES.forEach((category) => {
+      const currentItems = nextBuild[category] || [];
+      currentItems.forEach((item, index) => {
+        const options = getSwapOptionsForTrigger(item.name, item.faction)
+          .filter((option) => option.category === category);
+        if (options.length > 0) {
+          eligibleSlots.push({ category, index, item, options });
+        }
+      });
     });
 
-    if (!eligibleCats.length) break;
-    const category = pickRandom(eligibleCats);
-    const currentItems = nextBuild[category];
-    const swapIndex = randomIndex(currentItems);
-    const current = currentItems[swapIndex];
-    const pool = (poolsByCategory[category] || []).filter(
-      (candidate) => !currentItems.some((item) => item.id === candidate.id),
-    );
+    if (!eligibleSlots.length) break;
 
-    if (!pool.length) continue;
+    const slot = pickRandom(eligibleSlots);
+    const replacementOption = pickRandom(slot.options);
+    if (!replacementOption) continue;
 
-    const replacement = pickRandom(pool);
-    nextBuild[category][swapIndex] = replacement;
+    const replacement = {
+      id: `swap-${slot.item.id}-${replacementOption.name}`,
+      name: replacementOption.name,
+      faction: replacementOption.faction,
+      factionIcon: slot.item.factionIcon,
+    };
+    nextBuild[slot.category][slot.index] = replacement;
     swapLog.push({
-      category,
-      from: current,
+      category: slot.category,
+      from: slot.item,
       to: replacement,
     });
   }
@@ -180,6 +187,8 @@ const buildFromPools = (poolsByCategory, limitsByCategory) => {
 
 const hasRequiredSlots = (build) =>
   REQUIRED_CATEGORIES.every((category) => Array.isArray(build[category]) && build[category].length > 0);
+const hasCategoryMinimums = (build, minimumsByCategory) =>
+  REQUIRED_CATEGORIES.every((category) => (build[category] || []).length >= (minimumsByCategory[category] ?? 1));
 
 const extractPoolsFromFactions = (factions) => {
   const pools = Object.fromEntries(REQUIRED_CATEGORIES.map((cat) => [cat, []]));
@@ -339,8 +348,10 @@ export default function FactionRollerPage({ onNavigate }) {
     [globalPools],
   );
   const mode2Matches = useMemo(
-    () =>
-      mode2ComponentCatalog
+    () => {
+      if (!normalize(mode2Query)) return [];
+
+      return mode2ComponentCatalog
         .map((item) => ({
           item,
           score: fuzzyScore(mode2Query, `${item.name} ${item.faction} ${item.categoryLabel}`),
@@ -348,17 +359,23 @@ export default function FactionRollerPage({ onNavigate }) {
         .filter((entry) => entry.score >= 0)
         .sort((a, b) => b.score - a.score)
         .slice(0, 30)
-        .map((entry) => entry.item),
+        .map((entry) => entry.item);
+    },
     [mode2ComponentCatalog, mode2Query],
   );
   const mode3Matches = useMemo(
-    () =>
-      filteredFactions
+    () => {
+      if (!normalize(mode3Query)) {
+        return [...filteredFactions].sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      return filteredFactions
         .map((faction) => ({ faction, score: fuzzyScore(mode3Query, faction.name) }))
         .filter((entry) => entry.score >= 0)
         .sort((a, b) => b.score - a.score)
         .slice(0, 20)
-        .map((entry) => entry.faction),
+        .map((entry) => entry.faction);
+    },
     [filteredFactions, mode3Query],
   );
 
@@ -377,6 +394,11 @@ export default function FactionRollerPage({ onNavigate }) {
   };
 
   const rollMode2 = () => {
+    if (!hasCategoryMinimums(mode2Pools, BASE_MODE_LIMITS)) {
+      setMode2Result({ error: "Select at least the base slot count for every category before rolling." });
+      return;
+    }
+
     const baseBuild = buildFromPools(mode2Pools, BASE_MODE_LIMITS);
 
     if (!hasRequiredSlots(baseBuild)) {
@@ -385,7 +407,7 @@ export default function FactionRollerPage({ onNavigate }) {
     }
 
     const swapCount = randomSwapCount(8);
-    const { build, swapLog } = applyRandomSwaps(baseBuild, mode2Pools, swapCount);
+    const { build, swapLog } = applyRandomSwaps(baseBuild, swapCount);
     setMode2Result({ build, swapLog, swapCount });
   };
 
@@ -403,13 +425,13 @@ export default function FactionRollerPage({ onNavigate }) {
     }
 
     const swapCount = randomSwapCount(8);
-    const { build, swapLog } = applyRandomSwaps(baseBuild, mode3Pools, swapCount);
+    const { build, swapLog } = applyRandomSwaps(baseBuild, swapCount);
     setMode3Result({ build, swapLog, swapCount });
   };
 
   const addMode2Component = (component) => {
     const category = component.category;
-    const limit = BASE_MODE_LIMITS[category] ?? 1;
+    const limit = MODE2_SELECTION_LIMITS[category] ?? 1;
     setMode2Selections((prev) => {
       const current = prev[category] || [];
       if (current.includes(component.id) || current.length >= limit) return prev;
@@ -493,7 +515,7 @@ export default function FactionRollerPage({ onNavigate }) {
               {CATEGORY_CONFIG.map((category) => (
                 <div key={category.key}>
                   <label className="text-xs text-gray-300 mb-1 block">
-                    {category.label} ({(mode2Selections[category.key] || []).length}/{BASE_MODE_LIMITS[category.key]})
+                    {category.label} ({(mode2Selections[category.key] || []).length}/{MODE2_SELECTION_LIMITS[category.key]})
                   </label>
                   <div className="flex flex-wrap gap-1">
                     {(mode2Selections[category.key] || []).map((id) => {
