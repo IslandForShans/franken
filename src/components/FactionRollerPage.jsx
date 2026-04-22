@@ -5,7 +5,12 @@ import {
   teExclusions,
   brExclusions,
 } from "../utils/expansionFilters";
-import { isComponentUndraftable, getSwapOptionsForTrigger } from "../data/undraftable-components";
+import {
+  isComponentUndraftable,
+  getSwapOptionsForTrigger,
+  getForcedComponentsForTrigger,
+  getExtraComponents,
+} from "../data/undraftable-components";
 
 const CATEGORY_CONFIG = [
   { key: "abilities", label: "Abilities" },
@@ -93,6 +98,45 @@ const cloneBuild = (build) =>
     REQUIRED_CATEGORIES.map((cat) => [cat, [...(build[cat] || [])]]),
   );
 
+const EXTRA_CATEGORY_OVERRIDES = {
+  "Artuno the Betrayer": "agents",
+  "The Thundarian": "agents",
+  Awaken: "abilities",
+  Coalescence: "abilities",
+  Devour: "abilities",
+  "Dark Pact": "promissory",
+  "Ghoti Home System": "home_systems",
+};
+
+const findFactionByName = (allFactions, factionName) =>
+  allFactions.find((faction) => faction.name === factionName);
+
+const resolveComponentFromFactionData = (
+  allFactions,
+  factionName,
+  category,
+  componentName,
+  fallback,
+) => {
+  const faction = findFactionByName(allFactions, factionName);
+  const candidates = Array.isArray(faction?.[category]) ? faction[category] : [];
+  const matched = candidates.find((item) => item.name === componentName);
+  if (matched) {
+    return {
+      ...matched,
+      faction: faction.name,
+      factionIcon: faction.icon,
+    };
+  }
+
+  return {
+    ...fallback,
+    name: componentName,
+    faction: factionName,
+    factionIcon: fallback?.factionIcon,
+  };
+};
+
 const applyRandomSwaps = (build, swapCount = 0) => {
   const nextBuild = cloneBuild(build);
   const swapLog = [];
@@ -133,6 +177,89 @@ const applyRandomSwaps = (build, swapCount = 0) => {
   }
 
   return { build: nextBuild, swapLog };
+};
+
+const applyTriggeredComponents = (build, allFactions) => {
+  const nextBuild = cloneBuild(build);
+  const queue = [];
+  const seenQueueKeys = new Set();
+
+  REQUIRED_CATEGORIES.forEach((category) => {
+    (nextBuild[category] || []).forEach((item) => {
+      const key = `${category}|${item.name}|${item.faction}`;
+      if (!seenQueueKeys.has(key)) {
+        seenQueueKeys.add(key);
+        queue.push({ category, item });
+      }
+    });
+  });
+
+  while (queue.length > 0) {
+    const { category, item } = queue.shift();
+    if (!item?.name || !item?.faction) continue;
+
+    const extras = getExtraComponents(item.name, item.faction);
+    extras.forEach((extra) => {
+      const targetCategory =
+        EXTRA_CATEGORY_OVERRIDES[extra.name] ||
+        extra.category ||
+        category;
+      if (!REQUIRED_CATEGORIES.includes(targetCategory)) return;
+
+      const extraItem = resolveComponentFromFactionData(
+        allFactions,
+        extra.faction || item.faction,
+        targetCategory,
+        extra.name,
+        {
+          ...extra,
+          id: `extra-${item.name}-${extra.name}-${targetCategory}`,
+          triggerComponent: item.name,
+        },
+      );
+
+      const exists = (nextBuild[targetCategory] || []).some(
+        (candidate) =>
+          candidate.name === extraItem.name &&
+          candidate.faction === extraItem.faction,
+      );
+      if (exists) return;
+
+      nextBuild[targetCategory] = [...(nextBuild[targetCategory] || []), extraItem];
+      const qKey = `${targetCategory}|${extraItem.name}|${extraItem.faction}`;
+      if (!seenQueueKeys.has(qKey)) {
+        seenQueueKeys.add(qKey);
+        queue.push({ category: targetCategory, item: extraItem });
+      }
+    });
+
+    const forcedComponents = getForcedComponentsForTrigger(item.name, item.faction);
+    forcedComponents.forEach((forced) => {
+      const targetCategory = forced.category || category;
+      if (!REQUIRED_CATEGORIES.includes(targetCategory)) return;
+
+      const forcedItem = resolveComponentFromFactionData(
+        allFactions,
+        forced.faction || item.faction,
+        targetCategory,
+        forced.name,
+        {
+          ...forced,
+          id: `forced-${item.name}-${forced.name}-${targetCategory}`,
+          triggerComponent: item.name,
+        },
+      );
+
+      nextBuild[targetCategory] = [forcedItem];
+      const qKey = `${targetCategory}|${forcedItem.name}|${forcedItem.faction}`;
+      if (!seenQueueKeys.has(qKey)) {
+        seenQueueKeys.add(qKey);
+        queue.push({ category: targetCategory, item: forcedItem });
+      }
+    });
+  }
+
+  return nextBuild;
 };
 
 const flattenFactionComponents = (faction) => {
@@ -243,7 +370,14 @@ const ResultBuild = ({ build, swapLog, title }) => {
               {(build[category.key] || []).map((entry) => (
                 <div key={entry.id} className="mt-1">
                   <div className="text-white font-semibold">{entry?.name}</div>
-                  {entry?.faction && <div className="text-xs text-gray-400">{entry.faction}</div>}
+                  {entry?.faction && (
+                    <div className="text-xs text-gray-400 inline-flex items-center gap-1">
+                      {entry?.factionIcon && (
+                        <img src={entry.factionIcon} alt={entry.faction} className="w-4 h-4 rounded-sm" />
+                      )}
+                      <span>{entry.faction}</span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -285,6 +419,60 @@ export default function FactionRollerPage({ onNavigate }) {
   const [mode1Result, setMode1Result] = useState(null);
   const [mode2Result, setMode2Result] = useState(null);
   const [mode3Result, setMode3Result] = useState(null);
+
+  const formatCategoryNameForExport = (category) => {
+    const names = {
+      abilities: "Abilities",
+      faction_techs: "Faction Techs",
+      agents: "Agents",
+      commanders: "Commanders",
+      heroes: "Heroes",
+      promissory: "Promissory",
+      starting_techs: "Starting Techs",
+      starting_fleet: "Starting Fleet",
+      commodity_values: "Commodity Values",
+      flagship: "Flagship",
+      mech: "Mech",
+      home_systems: "Home System",
+      breakthrough: "Breakthrough",
+    };
+    return names[category] || category.toUpperCase().replace(/_/g, " ");
+  };
+
+  const exportBuildAsText = (build, modeLabel) => {
+    if (!build) return;
+    let output = `Faction Roller Export\n`;
+    output += `Mode: ${modeLabel}\n`;
+    output += `Created: ${new Date().toLocaleDateString()}\n`;
+    output += `${"=".repeat(50)}\n\n`;
+
+    CATEGORY_CONFIG.forEach(({ key }) => {
+      const components = build[key] || [];
+      if (!components.length) return;
+
+      const categoryName = formatCategoryNameForExport(key);
+      output += `${categoryName}:\n`;
+      output += `${"-".repeat(categoryName.length + 1)}\n`;
+      components.forEach((component, idx) => {
+        const num = `${idx + 1}.`.padEnd(4);
+        const withFaction = component.faction
+          ? `${component.name} (${component.faction})`
+          : component.name;
+        output += `${num}${withFaction}\n`;
+      });
+      output += "\n";
+    });
+
+    const blob = new Blob([output], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `faction_roller_${modeLabel.toLowerCase().replace(/\s+/g, "_")}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const allFactions = useMemo(() => {
     const base = factionsData.factions.map((faction) => ({
@@ -408,7 +596,8 @@ export default function FactionRollerPage({ onNavigate }) {
 
     const swapCount = randomSwapCount(8);
     const { build, swapLog } = applyRandomSwaps(baseBuild, swapCount);
-    setMode2Result({ build, swapLog, swapCount });
+    const buildWithTriggeredComponents = applyTriggeredComponents(build, allFactions);
+    setMode2Result({ build: buildWithTriggeredComponents, swapLog, swapCount });
   };
 
   const rollMode3 = () => {
@@ -426,7 +615,8 @@ export default function FactionRollerPage({ onNavigate }) {
 
     const swapCount = randomSwapCount(8);
     const { build, swapLog } = applyRandomSwaps(baseBuild, swapCount);
-    setMode3Result({ build, swapLog, swapCount });
+    const buildWithTriggeredComponents = applyTriggeredComponents(build, allFactions);
+    setMode3Result({ build: buildWithTriggeredComponents, swapLog, swapCount });
   };
 
   const addMode2Component = (component) => {
@@ -505,9 +695,12 @@ export default function FactionRollerPage({ onNavigate }) {
                   key={`${component.category}-${component.id}`}
                   type="button"
                   onClick={() => addMode2Component(component)}
-                  className="w-full text-left px-2 py-1 text-xs border-b border-gray-800 hover:bg-purple-900/30"
+                  className="w-full text-left px-2 py-1 text-xs border-b border-gray-800 hover:bg-purple-900/30 inline-flex items-center gap-2"
                 >
-                  {component.name} ({component.faction}) • {component.categoryLabel}
+                  {component.factionIcon && (
+                    <img src={component.factionIcon} alt={component.faction} className="w-4 h-4 rounded-sm" />
+                  )}
+                  <span>{component.name} ({component.faction}) • {component.categoryLabel}</span>
                 </button>
               ))}
             </div>
@@ -525,8 +718,11 @@ export default function FactionRollerPage({ onNavigate }) {
                           key={id}
                           type="button"
                           onClick={() => removeMode2Component(category.key, id)}
-                          className="text-xs rounded bg-purple-900/50 px-2 py-1 border border-purple-700"
-                        >
+                          className="text-xs rounded bg-purple-900/50 px-2 py-1 border border-purple-700 inline-flex items-center gap-1"
+                          >
+                            {item?.factionIcon && (
+                            <img src={item.factionIcon} alt={item?.faction} className="w-3.5 h-3.5 rounded-sm" />
+                          )}
                           {item?.name || id} ✕
                         </button>
                       );
@@ -547,6 +743,15 @@ export default function FactionRollerPage({ onNavigate }) {
               <p className="mt-3 text-xs text-blue-200">
                 Random swaps applied: {mode2Result.swapCount}
               </p>
+            )}
+            {mode2Result?.build && (
+              <button
+                type="button"
+                onClick={() => exportBuildAsText(mode2Result.build, "Mode 2")}
+                className="mt-2 rounded-lg bg-purple-700 hover:bg-purple-600 px-3 py-2 text-sm font-semibold"
+              >
+                Export faction as text
+              </button>
             )}
             <ResultBuild build={mode2Result?.build} swapLog={mode2Result?.swapLog} title="Franken Result" />
           </section>
@@ -569,9 +774,12 @@ export default function FactionRollerPage({ onNavigate }) {
                   key={faction.name}
                   type="button"
                   onClick={() => addMode3Faction(faction.name)}
-                  className="w-full text-left px-2 py-1 text-sm border-b border-gray-800 hover:bg-green-900/30"
+                  className="w-full text-left px-2 py-1 text-sm border-b border-gray-800 hover:bg-green-900/30 inline-flex items-center gap-2"
                 >
-                  {faction.name}
+                  {faction.icon && (
+                    <img src={faction.icon} alt={faction.name} className="w-4 h-4 rounded-sm" />
+                  )}
+                  <span>{faction.name}</span>
                 </button>
               ))}
               </div>
@@ -581,8 +789,15 @@ export default function FactionRollerPage({ onNavigate }) {
                   key={factionName}
                   type="button"
                   onClick={() => removeMode3Faction(factionName)}
-                  className="text-xs rounded bg-green-900/50 px-2 py-1 border border-green-700"
+                  className="text-xs rounded bg-green-900/50 px-2 py-1 border border-green-700 inline-flex items-center gap-1"
                 >
+                    {findFactionByName(filteredFactions, factionName)?.icon && (
+                    <img
+                      src={findFactionByName(filteredFactions, factionName)?.icon}
+                      alt={factionName}
+                      className="w-3.5 h-3.5 rounded-sm"
+                    />
+                  )}
                   {factionName} ✕
                 </button>
               ))}
@@ -599,6 +814,15 @@ export default function FactionRollerPage({ onNavigate }) {
               <p className="mt-3 text-xs text-blue-200">
                 Random swaps applied: {mode3Result.swapCount}
               </p>
+            )}
+            {mode3Result?.build && (
+              <button
+                type="button"
+                onClick={() => exportBuildAsText(mode3Result.build, "Mode 3")}
+                className="mt-2 rounded-lg bg-green-700 hover:bg-green-600 px-3 py-2 text-sm font-semibold"
+              >
+                Export faction as text
+              </button>
             )}
             <ResultBuild build={mode3Result?.build} swapLog={mode3Result?.swapLog} title="FrankenDraz Result" />
           </section>
