@@ -24,12 +24,56 @@ const CATEGORY_CONFIG = [
 ];
 
 const REQUIRED_CATEGORIES = CATEGORY_CONFIG.map((c) => c.key);
+const BASE_MODE_LIMITS = {
+  abilities: 3,
+  faction_techs: 2,
+  agents: 1,
+  commanders: 1,
+  heroes: 1,
+  promissory: 1,
+  starting_techs: 1,
+  starting_fleet: 1,
+  commodity_values: 1,
+  flagship: 1,
+  mech: 1,
+  home_systems: 1,
+  breakthrough: 1,
+};
+const POWERED_MODE_LIMITS = {
+  abilities: 4,
+  faction_techs: 3,
+  agents: 2,
+  commanders: 2,
+  heroes: 2,
+  promissory: 1,
+  starting_techs: 1,
+  starting_fleet: 1,
+  commodity_values: 1,
+  flagship: 1,
+  mech: 1,
+  home_systems: 1,
+  breakthrough: 1,
+};
 
 const randomIndex = (list) => Math.floor(Math.random() * list.length);
 
 const pickRandom = (list) => {
   if (!list || list.length === 0) return null;
   return list[randomIndex(list)];
+};
+const randomSwapCount = (maxSwaps) => Math.floor(Math.random() * (maxSwaps + 1));
+const normalize = (value) => String(value || "").toLowerCase().trim();
+const fuzzyScore = (query, text) => {
+  const q = normalize(query);
+  const t = normalize(text);
+  if (!q) return 1;
+  if (t.includes(q)) return 100 - t.indexOf(q);
+
+  let qi = 0;
+  for (let i = 0; i < t.length && qi < q.length; i += 1) {
+    if (t[i] === q[qi]) qi += 1;
+  }
+  return qi === q.length ? 10 : -1;
 };
 
 const resolveSet = (factionName, source) => {
@@ -57,20 +101,23 @@ const applyRandomSwaps = (build, poolsByCategory, swapCount = 0) => {
       const current = nextBuild[cat] || [];
       const pool = poolsByCategory[cat] || [];
       if (!current.length || pool.length < 2) return false;
-      return pool.some((candidate) => candidate.id !== current[0]?.id);
+      const currentIds = new Set(current.map((item) => item.id));
+      return pool.some((candidate) => !currentIds.has(candidate.id));
     });
 
     if (!eligibleCats.length) break;
     const category = pickRandom(eligibleCats);
-    const current = nextBuild[category][0];
+    const currentItems = nextBuild[category];
+    const swapIndex = randomIndex(currentItems);
+    const current = currentItems[swapIndex];
     const pool = (poolsByCategory[category] || []).filter(
-      (candidate) => candidate.id !== current.id,
+      (candidate) => !currentItems.some((item) => item.id === candidate.id),
     );
 
     if (!pool.length) continue;
 
     const replacement = pickRandom(pool);
-    nextBuild[category] = [replacement];
+    nextBuild[category][swapIndex] = replacement;
     swapLog.push({
       category,
       from: current,
@@ -111,12 +158,21 @@ const buildFromFaction = (faction) => {
   return build;
 };
 
-const buildFromPools = (poolsByCategory) => {
+const buildFromPools = (poolsByCategory, limitsByCategory) => {
   const build = {};
 
   REQUIRED_CATEGORIES.forEach((category) => {
-    const pick = pickRandom(poolsByCategory[category] || []);
-    build[category] = pick ? [pick] : [];
+    const pool = [...(poolsByCategory[category] || [])];
+    const limit = limitsByCategory[category] ?? 1;
+    const picks = [];
+
+    while (pool.length > 0 && picks.length < limit) {
+      const idx = randomIndex(pool);
+      picks.push(pool[idx]);
+      pool.splice(idx, 1);
+    }
+
+    build[category] = picks;
   });
 
   return build;
@@ -174,10 +230,13 @@ const ResultBuild = ({ build, swapLog, title }) => {
           return (
             <div key={category.key} className="rounded border border-gray-700 p-2">
               <div className="text-gray-400 text-xs uppercase">{category.label}</div>
-              <div className="text-white font-semibold">{item?.name || "—"}</div>
-              {item?.faction && (
-                <div className="text-xs text-gray-400">{item.faction}</div>
-              )}
+              {!build[category.key]?.length && <div className="text-white font-semibold">—</div>}
+              {(build[category.key] || []).map((entry) => (
+                <div key={entry.id} className="mt-1">
+                  <div className="text-white font-semibold">{entry?.name}</div>
+                  {entry?.faction && <div className="text-xs text-gray-400">{entry.faction}</div>}
+                </div>
+              ))}
             </div>
           );
         })}
@@ -207,14 +266,12 @@ export default function FactionRollerPage({ onNavigate }) {
     br: true,
   });
 
-  const [mode1SwapCount, setMode1SwapCount] = useState(0);
-  const [mode2SwapCount, setMode2SwapCount] = useState(0);
-  const [mode3SwapCount, setMode3SwapCount] = useState(0);
-
   const [mode2Selections, setMode2Selections] = useState(
     Object.fromEntries(REQUIRED_CATEGORIES.map((cat) => [cat, []])),
   );
+  const [mode2Query, setMode2Query] = useState("");
   const [mode3FactionSelections, setMode3FactionSelections] = useState([]);
+  const [mode3Query, setMode3Query] = useState("");
 
   const [mode1Result, setMode1Result] = useState(null);
   const [mode2Result, setMode2Result] = useState(null);
@@ -270,6 +327,40 @@ export default function FactionRollerPage({ onNavigate }) {
   }, [filteredFactions, mode3FactionSelections]);
 
   const mode3Pools = useMemo(() => extractPoolsFromFactions(mode3Factions), [mode3Factions]);
+  const mode2ComponentCatalog = useMemo(
+    () =>
+      REQUIRED_CATEGORIES.flatMap((category) =>
+        (globalPools[category] || []).map((component) => ({
+          ...component,
+          category,
+          categoryLabel: CATEGORY_CONFIG.find((c) => c.key === category)?.label || category,
+        })),
+      ),
+    [globalPools],
+  );
+  const mode2Matches = useMemo(
+    () =>
+      mode2ComponentCatalog
+        .map((item) => ({
+          item,
+          score: fuzzyScore(mode2Query, `${item.name} ${item.faction} ${item.categoryLabel}`),
+        }))
+        .filter((entry) => entry.score >= 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 30)
+        .map((entry) => entry.item),
+    [mode2ComponentCatalog, mode2Query],
+  );
+  const mode3Matches = useMemo(
+    () =>
+      filteredFactions
+        .map((faction) => ({ faction, score: fuzzyScore(mode3Query, faction.name) }))
+        .filter((entry) => entry.score >= 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 20)
+        .map((entry) => entry.faction),
+    [filteredFactions, mode3Query],
+  );
 
   const toggleSet = (key) => {
     setEnabledSets((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -282,27 +373,20 @@ export default function FactionRollerPage({ onNavigate }) {
       return;
     }
 
-    const baseBuild = buildFromFaction(faction);
-    const { build, swapLog } = applyRandomSwaps(baseBuild, globalPools, mode1SwapCount);
-
-    if (!hasRequiredSlots(build)) {
-      setMode1Result({ error: "Rolled faction is missing one or more required categories." });
-      return;
-    }
-
-    setMode1Result({ faction, build, swapLog });
+    setMode1Result({ faction });
   };
 
   const rollMode2 = () => {
-    const baseBuild = buildFromPools(mode2Pools);
+    const baseBuild = buildFromPools(mode2Pools, BASE_MODE_LIMITS);
 
     if (!hasRequiredSlots(baseBuild)) {
       setMode2Result({ error: "Select at least one drafted component for every category." });
       return;
     }
 
-    const { build, swapLog } = applyRandomSwaps(baseBuild, mode2Pools, mode2SwapCount);
-    setMode2Result({ build, swapLog });
+    const swapCount = randomSwapCount(8);
+    const { build, swapLog } = applyRandomSwaps(baseBuild, mode2Pools, swapCount);
+    setMode2Result({ build, swapLog, swapCount });
   };
 
   const rollMode3 = () => {
@@ -311,21 +395,33 @@ export default function FactionRollerPage({ onNavigate }) {
       return;
     }
 
-    const baseBuild = buildFromPools(mode3Pools);
+    const baseBuild = buildFromPools(mode3Pools, POWERED_MODE_LIMITS);
 
     if (!hasRequiredSlots(baseBuild)) {
       setMode3Result({ error: "Selected factions do not provide all required component categories." });
       return;
     }
 
-    const { build, swapLog } = applyRandomSwaps(baseBuild, mode3Pools, mode3SwapCount);
-    setMode3Result({ build, swapLog });
+    const swapCount = randomSwapCount(8);
+    const { build, swapLog } = applyRandomSwaps(baseBuild, mode3Pools, swapCount);
+    setMode3Result({ build, swapLog, swapCount });
   };
 
-  const updateMode2Selection = (category, options) => {
-    const ids = Array.from(options).map((option) => option.value);
-    setMode2Selections((prev) => ({ ...prev, [category]: ids }));
+  const addMode2Component = (component) => {
+    const category = component.category;
+    const limit = BASE_MODE_LIMITS[category] ?? 1;
+    setMode2Selections((prev) => {
+      const current = prev[category] || [];
+      if (current.includes(component.id) || current.length >= limit) return prev;
+      return { ...prev, [category]: [...current, component.id] };
+    });
   };
+  const removeMode2Component = (category, id) =>
+    setMode2Selections((prev) => ({ ...prev, [category]: (prev[category] || []).filter((x) => x !== id) }));
+  const addMode3Faction = (factionName) =>
+    setMode3FactionSelections((prev) => (prev.includes(factionName) ? prev : [...prev, factionName]));
+  const removeMode3Faction = (factionName) =>
+    setMode3FactionSelections((prev) => prev.filter((name) => name !== factionName));
 
   return (
     <div className="min-h-[100dvh] bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white p-4 md:p-8">
@@ -340,7 +436,7 @@ export default function FactionRollerPage({ onNavigate }) {
 
         <h1 className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">Faction Roller</h1>
         <p className="text-gray-300 mb-6">
-          Roll random factions and Franken builds with global expansion filtering and swap support.
+          Roll random factions and Franken builds with global expansion filtering.
         </p>
 
         <ExpansionToggles enabledSets={enabledSets} onToggle={toggleSet} />
@@ -351,17 +447,6 @@ export default function FactionRollerPage({ onNavigate }) {
             <p className="text-sm text-gray-300 mb-3">
               Decision paralysis with choosing a faction to play? No more! Roll for a random faction!
             </p>
-            <label className="block text-sm mb-2">
-              Random swaps: <span className="text-yellow-300 font-semibold">{mode1SwapCount}</span>
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="8"
-              value={mode1SwapCount}
-              onChange={(e) => setMode1SwapCount(Number(e.target.value))}
-              className="w-full mb-3"
-            />
             <button
               type="button"
               onClick={rollMode1}
@@ -371,47 +456,60 @@ export default function FactionRollerPage({ onNavigate }) {
             </button>
             {mode1Result?.error && <p className="mt-3 text-sm text-red-300">{mode1Result.error}</p>}
             {mode1Result?.faction && (
-              <div className="mt-3 text-sm text-gray-200">
-                Base faction: <span className="font-bold text-yellow-300">{mode1Result.faction.name}</span>
+              <div className="mt-3 rounded border border-blue-700 bg-blue-900/20 p-3 text-sm text-gray-200">
+                <div className="font-bold text-yellow-300 text-lg">{mode1Result.faction.name}</div>
+                {mode1Result.faction.icon && (
+                  <img src={mode1Result.faction.icon} alt={mode1Result.faction.name} className="mt-2 w-10 h-10" />
+                )}
               </div>
             )}
-            <ResultBuild build={mode1Result?.build} swapLog={mode1Result?.swapLog} title="Rolled Build" />
-          </section>
+        </section>
 
           <section className="rounded-xl border border-purple-500/40 bg-purple-950/20 p-4">
             <h2 className="text-xl font-bold text-purple-300 mb-2">Franken Roller (Drafted Components)</h2>
             <p className="text-sm text-gray-300 mb-3">
               Franken Decision paralysis? Select drafted components and roll a random faction built from them.
             </p>
-            <label className="block text-sm mb-2">
-              Random swaps: <span className="text-yellow-300 font-semibold">{mode2SwapCount}</span>
-            </label>
             <input
-              type="range"
-              min="0"
-              max="8"
-              value={mode2SwapCount}
-              onChange={(e) => setMode2SwapCount(Number(e.target.value))}
-              className="w-full mb-3"
+              type="text"
+              value={mode2Query}
+              onChange={(e) => setMode2Query(e.target.value)}
+              placeholder="Search components or faction..."
+              className="w-full rounded bg-gray-900 border border-gray-700 p-2 text-sm mb-3"
             />
-
-            <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+            <div className="max-h-[220px] overflow-y-auto rounded border border-gray-700">
+              {mode2Matches.map((component) => (
+                <button
+                  key={`${component.category}-${component.id}`}
+                  type="button"
+                  onClick={() => addMode2Component(component)}
+                  className="w-full text-left px-2 py-1 text-xs border-b border-gray-800 hover:bg-purple-900/30"
+                >
+                  {component.name} ({component.faction}) • {component.categoryLabel}
+                </button>
+              ))}
+            </div>
+            <div className="space-y-3 max-h-[240px] overflow-y-auto pr-1 mt-3">
               {CATEGORY_CONFIG.map((category) => (
                 <div key={category.key}>
-                  <label className="text-xs text-gray-300 mb-1 block">{category.label}</label>
-                  <select
-                    multiple
-                    value={mode2Selections[category.key]}
-                    onChange={(e) => updateMode2Selection(category.key, e.target.selectedOptions)}
-                    className="w-full rounded bg-gray-900 border border-gray-700 p-2 text-xs"
-                    size={4}
-                  >
-                    {(globalPools[category.key] || []).map((component) => (
-                      <option key={component.id} value={component.id}>
-                        {component.name} ({component.faction})
-                      </option>
-                    ))}
-                  </select>
+                  <label className="text-xs text-gray-300 mb-1 block">
+                    {category.label} ({(mode2Selections[category.key] || []).length}/{BASE_MODE_LIMITS[category.key]})
+                  </label>
+                  <div className="flex flex-wrap gap-1">
+                    {(mode2Selections[category.key] || []).map((id) => {
+                      const item = (globalPools[category.key] || []).find((component) => component.id === id);
+                      return (
+                        <button
+                          key={id}
+                          type="button"
+                          onClick={() => removeMode2Component(category.key, id)}
+                          className="text-xs rounded bg-purple-900/50 px-2 py-1 border border-purple-700"
+                        >
+                          {item?.name || id} ✕
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               ))}
             </div>
@@ -423,6 +521,11 @@ export default function FactionRollerPage({ onNavigate }) {
               Roll franken faction
             </button>
             {mode2Result?.error && <p className="mt-3 text-sm text-red-300">{mode2Result.error}</p>}
+            {mode2Result?.build && (
+              <p className="mt-3 text-xs text-blue-200">
+                Random swaps applied: {mode2Result.swapCount}
+              </p>
+            )}
             <ResultBuild build={mode2Result?.build} swapLog={mode2Result?.swapLog} title="Franken Result" />
           </section>
 
@@ -431,32 +534,37 @@ export default function FactionRollerPage({ onNavigate }) {
             <p className="text-sm text-gray-300 mb-3">
               Select drafted factions and roll a random faction from their draftable components.
             </p>
-            <label className="block text-sm mb-2">
-              Random swaps: <span className="text-yellow-300 font-semibold">{mode3SwapCount}</span>
-            </label>
             <input
-              type="range"
-              min="0"
-              max="8"
-              value={mode3SwapCount}
-              onChange={(e) => setMode3SwapCount(Number(e.target.value))}
-              className="w-full mb-3"
+              type="text"
+              value={mode3Query}
+              onChange={(e) => setMode3Query(e.target.value)}
+              placeholder="Search factions..."
+              className="w-full rounded bg-gray-900 border border-gray-700 p-2 text-sm mb-3"
             />
-            <select
-              multiple
-              value={mode3FactionSelections}
-              onChange={(e) =>
-                setMode3FactionSelections(Array.from(e.target.selectedOptions).map((o) => o.value))
-              }
-              className="w-full rounded bg-gray-900 border border-gray-700 p-2 text-sm"
-              size={12}
-            >
-              {filteredFactions.map((faction) => (
-                <option key={faction.name} value={faction.name}>
+            <div className="max-h-[220px] overflow-y-auto rounded border border-gray-700">
+              {mode3Matches.map((faction) => (
+                <button
+                  key={faction.name}
+                  type="button"
+                  onClick={() => addMode3Faction(faction.name)}
+                  className="w-full text-left px-2 py-1 text-sm border-b border-gray-800 hover:bg-green-900/30"
+                >
                   {faction.name}
-                </option>
+                </button>
               ))}
-            </select>
+              </div>
+            <div className="mt-3 flex flex-wrap gap-1">
+              {mode3FactionSelections.map((factionName) => (
+                <button
+                  key={factionName}
+                  type="button"
+                  onClick={() => removeMode3Faction(factionName)}
+                  className="text-xs rounded bg-green-900/50 px-2 py-1 border border-green-700"
+                >
+                  {factionName} ✕
+                </button>
+              ))}
+            </div>
             <button
               type="button"
               onClick={rollMode3}
@@ -465,6 +573,11 @@ export default function FactionRollerPage({ onNavigate }) {
               Roll frankendraz faction
             </button>
             {mode3Result?.error && <p className="mt-3 text-sm text-red-300">{mode3Result.error}</p>}
+            {mode3Result?.build && (
+              <p className="mt-3 text-xs text-blue-200">
+                Random swaps applied: {mode3Result.swapCount}
+              </p>
+            )}
             <ResultBuild build={mode3Result?.build} swapLog={mode3Result?.swapLog} title="FrankenDraz Result" />
           </section>
         </div>
