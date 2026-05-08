@@ -235,10 +235,10 @@ export default function FactionSheet({
     { key: "promissory", col: 3},
     { key: "starting_techs", col: 1},
     { key: "starting_fleet", col: 2},
-    { key: "commodities", col: 3},
+    { key: "commodity_values", col: 3},
     { key: "flagship", col: 1},
     { key: "mech", col: 2},
-    { key: "home_system", col: 3},
+    { key: "home_systems", col: 3},
     { key: "breakthrough", col: 1}
   ];
 
