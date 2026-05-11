@@ -66,7 +66,6 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage, onPeerCon
     })()
   );
 
-
   const clearError = useCallback(() => setError(null), []);
 
   // ── HOST ──────────────────────────────────────────────────────────────
@@ -94,8 +93,19 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage, onPeerCon
             [slotId]: { ...prev[slotId], connected: true },
           }));
           onPeerConnected?.(slotId);
+
+          // Keepalive ping every 5s to survive mobile tab switching
+          const keepalive = setInterval(() => {
+            if (channel.readyState === "open") {
+              channel.send(JSON.stringify({ type: "PING" }));
+            } else {
+              clearInterval(keepalive);
+            }
+          }, 5000);
+          peerRefs.current[slotId].keepalive = keepalive;
         };
         channel.onclose = () => {
+          clearInterval(peerRefs.current[slotId]?.keepalive);
           setPeers((prev) => ({
             ...prev,
             [slotId]: { ...prev[slotId], connected: false },
@@ -103,10 +113,15 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage, onPeerCon
         };
         channel.onmessage = (e) => {
           const msg = JSON.parse(e.data);
+          if (msg.type === "PING") return; // ignore keepalives
           onPeerMessage?.(slotId, msg);
         };
 
         pc.oniceconnectionstatechange = () => {
+          if (pc.iceConnectionState === "disconnected") {
+            // Try to recover automatically before marking as failed
+            pc.restartIce();
+          }
           if (pc.iceConnectionState === "failed") {
             setError(
               `Connection failed for slot ${slotId}. Try regenerating the code.`,
@@ -165,15 +180,6 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage, onPeerCon
 
   const joinWithOfferCode = useCallback(
     async (offerCode) => {
-      async function retrieveData(code) {
-        const res = await fetch(
-          `${SIGNALING_URL}/retrieve?code=${code.toUpperCase()}`,
-        );
-        if (!res.ok) throw new Error("Code not found or expired");
-        const { data } = await res.json();
-        return JSON.parse(decodeURIComponent(escape(atob(data))));
-      }
-
       try {
         setPhase("connecting");
         const { sdp, slotId } = await retrieveData(offerCode.trim());
@@ -189,14 +195,26 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage, onPeerCon
             sessionStorage.setItem("mp_guest_slot", slotId);
             setRole("guest");
             setPhase("connected");
+
+            // Keepalive ping every 5s to survive mobile tab switching
+            const keepalive = setInterval(() => {
+              if (channel.readyState === "open") {
+                channel.send(JSON.stringify({ type: "PING" }));
+              } else {
+                clearInterval(keepalive);
+              }
+            }, 5000);
+            hostRef.current.keepalive = keepalive;
           };
           channel.onclose = () => {
+            clearInterval(hostRef.current?.keepalive);
             setRole(null);
             setPhase("idle");
             setError("Disconnected from host.");
           };
           channel.onmessage = (ev) => {
             const msg = JSON.parse(ev.data);
+            if (msg.type === "PING") return; // ignore keepalives
             if (msg.type === "STATE") {
               sessionStorage.setItem("mp_guest_state", JSON.stringify(msg.state));
               onStateReceived?.(msg.state);
@@ -207,6 +225,9 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage, onPeerCon
         };
 
         pc.oniceconnectionstatechange = () => {
+          if (pc.iceConnectionState === "disconnected") {
+            pc.restartIce();
+          }
           if (pc.iceConnectionState === "failed") {
             setError(
               "Connection to host failed. Ask host to regenerate the offer code.",
@@ -251,12 +272,12 @@ export function useWebRTCMultiplayer({ onStateReceived, onPeerMessage, onPeerCon
     joinWithOfferCode,
     sendToHost,
     mySlotId: hostRef.current?.slotId ?? null,
-    savedGuestState: savedGuestState.current,                          
-    clearSavedGuestState: () => {                                      
-      sessionStorage.removeItem("mp_guest_state");                    
-      sessionStorage.removeItem("mp_guest_slot");  
-      sessionStorage.removeItem("mp_mapbuilder_data");                   
-    }, 
+    savedGuestState: savedGuestState.current,
+    clearSavedGuestState: () => {
+      sessionStorage.removeItem("mp_guest_state");
+      sessionStorage.removeItem("mp_guest_slot");
+      sessionStorage.removeItem("mp_mapbuilder_data");
+    },
     markSlotsDisconnected,
   };
 }
