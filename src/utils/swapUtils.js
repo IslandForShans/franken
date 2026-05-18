@@ -1,56 +1,64 @@
 import { factionsData, discordantStarsData } from "../data/processedData";
 
-/**
- * Find full component data from JSON files
- */
+const getFactionCategoryData = (faction, targetCategory) => {
+  if (!faction) return null;
+  return (
+    faction[targetCategory] ||
+    (targetCategory === "home_systems" ? faction.home_system : null)
+  );
+};
+
+const findFactionComponent = (
+  factions,
+  componentName,
+  factionName,
+  category,
+) => {
+  const faction = factions?.find((item) => item.name === factionName);
+  const categoryData = getFactionCategoryData(faction, category);
+  const found = categoryData?.find((item) => item.name === componentName);
+
+  if (!found) return null;
+
+  return {
+    ...found,
+    faction: faction.name,
+    factionIcon: faction.icon,
+    icon: faction.icon,
+  };
+};
+
+const findTileComponent = (tiles, componentName, category) => {
+  const found = tiles?.[category]?.find((tile) => tile.name === componentName);
+  return found ? { ...found } : null;
+};
+
 export const findFullComponentData = (
   componentName,
   factionName,
   targetCategory,
 ) => {
-  // Try base factions first
-  const baseFaction = factionsData.factions.find((f) => f.name === factionName);
-  if (baseFaction && baseFaction[targetCategory]) {
-    const found = baseFaction[targetCategory].find(
-      (c) => c.name === componentName,
-    );
-    if (found) {
-      return {
-        ...found,
-        faction: baseFaction.name,
-        factionIcon: baseFaction.icon,
-        icon: baseFaction.icon,
-      };
-    }
-  }
-
-  // Try DS factions
-  if (discordantStarsData?.factions) {
-    const dsFaction = discordantStarsData.factions.find(
-      (f) => f.name === factionName,
-    );
-    if (dsFaction) {
-      // Handle DS's different naming for home_systems
-      let categoryData = dsFaction[targetCategory];
-      if (!categoryData && targetCategory === "home_systems") {
-        categoryData = dsFaction["home_system"];
-      }
-
-      if (categoryData) {
-        const found = categoryData.find((c) => c.name === componentName);
-        if (found) {
-          return {
-            ...found,
-            faction: dsFaction.name,
-            factionIcon: dsFaction.icon,
-            icon: dsFaction.icon,
-          };
-        }
-      }
-    }
-  }
-
-  return null;
+  return (
+    findFactionComponent(
+      factionsData.factions,
+      componentName,
+      factionName,
+      targetCategory,
+    ) ||
+    findFactionComponent(
+      discordantStarsData?.factions,
+      componentName,
+      factionName,
+      targetCategory,
+    ) ||
+    findTileComponent(factionsData.tiles, componentName, targetCategory) ||
+    findTileComponent(
+      discordantStarsData?.tiles,
+      componentName,
+      targetCategory,
+    ) ||
+    null
+  );
 };
 
 /**

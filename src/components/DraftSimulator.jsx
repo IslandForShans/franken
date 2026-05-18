@@ -25,7 +25,17 @@ import {
   getForcedComponentsForTrigger,
 } from "../data/undraftable-components.js";
 import BanManagementModal from "./BanManagementModal.jsx";
-import { executeSwap } from "../utils/swapUtils.js";
+import { executeSwap, findFullComponentData } from "../utils/swapUtils.js";
+import {
+  createExtraComponent,
+  createForcedComponent,
+  getExtraComponentCategory,
+  getForcedComponentCategory,
+  hasExtraComponent,
+  isTriggeredForcedComponent,
+  isTriggeredSwapOrForcedComponent,
+} from "../utils/componentCategories.js";
+import { hasComponent, isSameComponent } from "../utils/componentIdentity.js";
 import FrankenDrazBuilder from "./FrankenDrazBuilder.jsx";
 import MultiplayerPanel from "./MultiplayerPanel";
 import MultiplayerGuestView from "./MultiplayerGuestView";
@@ -1427,74 +1437,6 @@ export default function DraftSimulator({
   };
 
   const addAllExtraComponents = (currentFactions) => {
-    // Helper function to find full component data from JSON
-    const findFullComponentData = (
-      componentName,
-      factionName,
-      targetCategory,
-    ) => {
-      // First try to find in base factions
-      const baseFaction = factionsData.factions.find(
-        (f) => f.name === factionName,
-      );
-      if (baseFaction && baseFaction[targetCategory]) {
-        const found = baseFaction[targetCategory].find(
-          (c) => c.name === componentName,
-        );
-        if (found) {
-          return {
-            ...found,
-            faction: baseFaction.name,
-            factionIcon: baseFaction.icon,
-            icon: baseFaction.icon,
-          };
-        }
-      }
-
-      // Try DS factions
-      if (discordantStarsData?.factions) {
-        const dsFaction = discordantStarsData.factions.find(
-          (f) => f.name === factionName,
-        );
-        if (dsFaction) {
-          // Handle DS's different naming for home_systems
-          let categoryData = dsFaction[targetCategory];
-          if (!categoryData && targetCategory === "home_systems") {
-            categoryData = dsFaction["home_system"];
-          }
-
-          if (categoryData) {
-            const found = categoryData.find((c) => c.name === componentName);
-            if (found) {
-              return {
-                ...found,
-                faction: dsFaction.name,
-                factionIcon: dsFaction.icon,
-                icon: dsFaction.icon,
-              };
-            }
-          }
-        }
-      }
-
-      // If not found in factions, try tiles
-      if (factionsData.tiles[targetCategory]) {
-        const found = factionsData.tiles[targetCategory].find(
-          (t) => t.name === componentName,
-        );
-        if (found) return { ...found };
-      }
-
-      if (discordantStarsData?.tiles?.[targetCategory]) {
-        const found = discordantStarsData.tiles[targetCategory].find(
-          (t) => t.name === componentName,
-        );
-        if (found) return { ...found };
-      }
-
-      return null;
-    };
-
     const updatedFactions = currentFactions.map((faction, playerIdx) => {
       const newFaction = { ...faction };
 
@@ -1518,21 +1460,7 @@ export default function DraftSimulator({
             );
 
             extraComponents.forEach((extra) => {
-              let targetCategory = extra.category || category;
-
-              const categoryMap = {
-                "Artuno the Betrayer": "agents",
-                "The Thundarian": "agents",
-                Awaken: "abilities",
-                Coalescence: "abilities",
-                Devour: "abilities",
-                "Dark Pact": "promissory",
-                "Ghoti Home System": "home_systems",
-              };
-
-              if (categoryMap[extra.name]) {
-                targetCategory = categoryMap[extra.name];
-              }
+              const targetCategory = getExtraComponentCategory(extra, category);
 
               // Try to find the full component data from JSON
               const fullComponentData = findFullComponentData(
@@ -1541,35 +1469,17 @@ export default function DraftSimulator({
                 targetCategory,
               );
 
-              const extraComponent = fullComponentData
-                ? {
-                    ...fullComponentData, // Use full component data if found
-                    isExtra: true, // mark as extra
-                    triggerComponent: component.name, // reference the source
-                  }
-                : {
-                    ...extra, // fallback to basic extra data
-                    isExtra: true,
-                    triggerComponent: component.name,
-                    description:
-                      extra.description || `Gained from ${component.name}`,
-                    faction: extra.faction || component.faction,
-                    icon: extra.icon || component.icon || component.factionIcon,
-                    factionIcon:
-                      extra.factionIcon ||
-                      component.factionIcon ||
-                      component.icon,
-                  };
+              const extraComponent = createExtraComponent(
+                extra,
+                component,
+                fullComponentData,
+              );
 
               if (!newFaction[targetCategory]) {
                 newFaction[targetCategory] = [];
               }
 
-              const alreadyAdded = newFaction[targetCategory].some(
-                (item) => item.name === extra.name && item.isExtra,
-              );
-
-              if (!alreadyAdded) {
+              if (!hasExtraComponent(newFaction[targetCategory], extra.name)) {
                 newFaction[targetCategory] = [
                   ...newFaction[targetCategory],
                   extraComponent,
@@ -1592,24 +1502,20 @@ export default function DraftSimulator({
 
           if (forcedComponents.length > 0) {
             forcedComponents.forEach((forced) => {
-              const targetCategory = forced.category || category;
+              const targetCategory = getForcedComponentCategory(
+                forced,
+                category,
+              );
               const fullComponentData = findFullComponentData(
                 forced.name,
                 forced.faction || component.faction,
                 targetCategory,
               );
-              const forcedComponent = fullComponentData
-                ? {
-                    ...fullComponentData,
-                    isForced: true,
-                    triggerComponent: component.name,
-                  }
-                : {
-                    ...forced,
-                    isForced: true,
-                    triggerComponent: component.name,
-                    faction: forced.faction || component.faction,
-                  };
+              const forcedComponent = createForcedComponent(
+                forced,
+                component,
+                fullComponentData,
+              );
 
               newFaction[targetCategory] = [forcedComponent];
             });
@@ -2124,11 +2030,7 @@ setDraftPhase("redraw");
     if (component && !component.isSwap) {
       categories.forEach((cat) => {
         fc[playerIndex][cat] = fc[playerIndex][cat].filter(
-          (item) =>
-            !(
-              (item.isSwap || item.isForced) &&
-              item.triggerComponent === component.name
-            ),
+          (item) => !isTriggeredSwapOrForcedComponent(item, component),
         );
       });
     }
@@ -2217,10 +2119,7 @@ setDraftPhase("redraw");
     );
     if (
       forcedInCategory.length > 0 &&
-      !forcedInCategory.some(
-        (forced) =>
-          forced.name === component.name && forced.faction === component.faction,
-      )
+      !forcedInCategory.some((forced) => isSameComponent(forced, component))
     ) {
       return;
     }
@@ -2235,10 +2134,7 @@ setDraftPhase("redraw");
     }
 
     // Check if already added
-    const alreadyAdded = (fc[playerIndex][category] || []).some(
-      (item) =>
-        item.name === component.name && item.faction === component.faction,
-    );
+    const alreadyAdded = hasComponent(fc[playerIndex][category] || [], component);
 
     if (alreadyAdded) {
       return;
@@ -2256,14 +2152,9 @@ setDraftPhase("redraw");
       component.faction,
     );
     forcedComponents.forEach((forced) => {
-      const targetCategory = forced.category || category;
+      const targetCategory = getForcedComponentCategory(forced, category);
       fc[playerIndex][targetCategory] = [
-        {
-          ...forced,
-          isForced: true,
-          triggerComponent: component.name,
-          faction: forced.faction || component.faction,
-        },
+        createForcedComponent(forced, component, null),
       ];
     });
 
@@ -2295,10 +2186,7 @@ setDraftPhase("redraw");
     if (removedComponent && !removedComponent.isForced) {
       categories.forEach((cat) => {
         fc[playerIndex][cat] = (fc[playerIndex][cat] || []).filter(
-          (item) =>
-            !(
-              item.isForced && item.triggerComponent === removedComponent.name
-            ),
+          (item) => !isTriggeredForcedComponent(item, removedComponent),
         );
       });
     }

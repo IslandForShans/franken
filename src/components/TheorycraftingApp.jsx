@@ -26,6 +26,17 @@ import {
   calcFlexiPointsUsed,
   getNextExtraCost,
 } from "../utils/flexiFranken.js";
+import {
+  createExtraComponent,
+  createForcedComponent,
+  getExtraComponentCategory,
+  getForcedComponentCategory,
+  hasExtraComponent,
+  isTriggeredExtraComponent,
+  isTriggeredForcedComponent,
+  isTriggeredSwapComponent,
+} from "../utils/componentCategories.js";
+import { isSameComponent } from "../utils/componentIdentity.js";
 import HoverInfoPopup from "./HoverInfoPopup.jsx";
 import { FlexiPointBuyContent } from "./FlexiInfoContent.jsx";
 
@@ -340,10 +351,7 @@ export default function TheorycraftingApp({ onNavigate }) {
       );
       if (forcedSelections.length > 0) {
         all = all.filter((item) =>
-          forcedSelections.some(
-            (forced) =>
-              forced.name === item.name && forced.faction === item.faction,
-          ),
+          forcedSelections.some((forced) => isSameComponent(forced, item)),
         );
       }
 
@@ -435,10 +443,7 @@ export default function TheorycraftingApp({ onNavigate }) {
       const forcedInCategory = (prev[cat] || []).filter((i) => i.isForced);
       if (
         forcedInCategory.length > 0 &&
-        !forcedInCategory.some(
-          (forced) =>
-            forced.name === item.name && forced.faction === item.faction,
-        )
+        !forcedInCategory.some((forced) => isSameComponent(forced, item))
       ) {
         return prev;
       }
@@ -458,75 +463,7 @@ export default function TheorycraftingApp({ onNavigate }) {
         );
 
         extraComponents.forEach((extra) => {
-          let targetCategory = extra.category || cat;
-
-          const categoryMap = {
-            "Artuno the Betrayer": "agents",
-            "The Thundarian": "agents",
-            Awaken: "abilities",
-            Coalescence: "abilities",
-            Devour: "abilities",
-            "Dark Pact": "promissory",
-            "Ghoti Home System": "home_systems",
-          };
-
-          if (categoryMap[extra.name]) {
-            targetCategory = categoryMap[extra.name];
-          }
-
-          // Find full component data from JSON
-          const findFullComponentData = (
-            componentName,
-            factionName,
-            targetCategory,
-          ) => {
-            // Try base factions first
-            const baseFaction = factionsData.factions.find(
-              (f) => f.name === factionName,
-            );
-            if (baseFaction && baseFaction[targetCategory]) {
-              const found = baseFaction[targetCategory].find(
-                (c) => c.name === componentName,
-              );
-              if (found) {
-                return {
-                  ...found,
-                  faction: baseFaction.name,
-                  factionIcon: baseFaction.icon,
-                  icon: baseFaction.icon,
-                };
-              }
-            }
-
-            // Try DS factions
-            if (discordantStarsData?.factions) {
-              const dsFaction = discordantStarsData.factions.find(
-                (f) => f.name === factionName,
-              );
-              if (dsFaction) {
-                let categoryData = dsFaction[targetCategory];
-                if (!categoryData && targetCategory === "home_systems") {
-                  categoryData = dsFaction["home_system"];
-                }
-
-                if (categoryData) {
-                  const found = categoryData.find(
-                    (c) => c.name === componentName,
-                  );
-                  if (found) {
-                    return {
-                      ...found,
-                      faction: dsFaction.name,
-                      factionIcon: dsFaction.icon,
-                      icon: dsFaction.icon,
-                    };
-                  }
-                }
-              }
-            }
-
-            return null;
-          };
+          const targetCategory = getExtraComponentCategory(extra, cat);
 
           const fullComponentData = findFullComponentData(
             extra.name,
@@ -534,33 +471,17 @@ export default function TheorycraftingApp({ onNavigate }) {
             targetCategory,
           );
 
-          const extraComponent = fullComponentData
-            ? {
-                ...fullComponentData,
-                isExtra: true,
-                triggerComponent: item.name,
-              }
-            : {
-                ...extra,
-                isExtra: true,
-                triggerComponent: item.name,
-                description: extra.description || `Gained from ${item.name}`,
-                faction: extra.faction || item.faction,
-                icon: extra.icon || item.icon || item.factionIcon,
-                factionIcon: extra.factionIcon || item.factionIcon || item.icon,
-              };
+          const extraComponent = createExtraComponent(
+            extra,
+            item,
+            fullComponentData,
+          );
 
           if (!updated[targetCategory]) {
             updated[targetCategory] = [];
           }
 
-          // Don't add if already exists
-          const alreadyAdded = updated[targetCategory].some(
-            (existingItem) =>
-              existingItem.name === extra.name && existingItem.isExtra,
-          );
-
-          if (!alreadyAdded) {
+          if (!hasExtraComponent(updated[targetCategory], extra.name)) {
             updated[targetCategory] = [
               ...updated[targetCategory],
               extraComponent,
@@ -580,25 +501,21 @@ export default function TheorycraftingApp({ onNavigate }) {
           );
 
           forcedComponents.forEach((forced) => {
-            const targetCategory = forced.category || sourceCategory;
+            const targetCategory = getForcedComponentCategory(
+              forced,
+              sourceCategory,
+            );
             const fullComponentData = findFullComponentData(
               forced.name,
               forced.faction || sourceItem.faction,
               targetCategory,
             );
 
-            const forcedComponent = fullComponentData
-              ? {
-                  ...fullComponentData,
-                  isForced: true,
-                  triggerComponent: sourceItem.name,
-                }
-              : {
-                  ...forced,
-                  isForced: true,
-                  triggerComponent: sourceItem.name,
-                  faction: forced.faction || sourceItem.faction,
-                };
+            const forcedComponent = createForcedComponent(
+              forced,
+              sourceItem,
+              fullComponentData,
+            );
 
             updated[targetCategory] = [forcedComponent];
           });
@@ -623,11 +540,7 @@ export default function TheorycraftingApp({ onNavigate }) {
         categories.forEach((cat) => {
           if (updated[cat]) {
             updated[cat] = updated[cat].filter(
-              (item) =>
-                !(
-                  item.isSwap &&
-                  item.triggerComponent === componentToRemove.name
-                ),
+              (item) => !isTriggeredSwapComponent(item, componentToRemove),
             );
           }
         });
@@ -642,31 +555,13 @@ export default function TheorycraftingApp({ onNavigate }) {
 
         if (extraComponents.length > 0) {
           extraComponents.forEach((extra) => {
-            let targetCategory = extra.category || category;
-
-            const categoryMap = {
-              "Artuno the Betrayer": "agents",
-              "The Thundarian": "agents",
-              Awaken: "abilities",
-              Coalescence: "abilities",
-              Devour: "abilities",
-              "Dark Pact": "promissory",
-              "Ghoti Home System": "home_systems",
-            };
-
-            if (categoryMap[extra.name]) {
-              targetCategory = categoryMap[extra.name];
-            }
+            const targetCategory = getExtraComponentCategory(extra, category);
 
             // Remove the extra component that matches this trigger
             if (updated[targetCategory]) {
               updated[targetCategory] = updated[targetCategory].filter(
                 (item) =>
-                  !(
-                    item.isExtra &&
-                    item.triggerComponent === componentToRemove.name &&
-                    item.name === extra.name
-                  ),
+                  !isTriggeredExtraComponent(item, extra, componentToRemove),
               );
             }
           });
@@ -677,11 +572,7 @@ export default function TheorycraftingApp({ onNavigate }) {
         categories.forEach((cat) => {
           if (updated[cat]) {
             updated[cat] = updated[cat].filter(
-              (item) =>
-                !(
-                  item.isForced &&
-                  item.triggerComponent === componentToRemove.name
-                ),
+              (item) => !isTriggeredForcedComponent(item, componentToRemove),
             );
           }
         });

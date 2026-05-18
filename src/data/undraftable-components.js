@@ -1,5 +1,3 @@
-import { trim } from "lodash";
-
 export const undraftableComponents = {
   // Abilities that are gained/optionally swapped when drafting other components
   abilities: [

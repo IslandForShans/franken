@@ -11,6 +11,11 @@ import {
   getForcedComponentsForTrigger,
   getExtraComponents,
 } from "../data/undraftable-components";
+import {
+  getExtraComponentCategory,
+  getForcedComponentCategory,
+} from "../utils/componentCategories";
+import { hasComponent } from "../utils/componentIdentity";
 
 const CATEGORY_CONFIG = [
   { key: "abilities", label: "Abilities" },
@@ -97,16 +102,6 @@ const cloneBuild = (build) =>
   Object.fromEntries(
     REQUIRED_CATEGORIES.map((cat) => [cat, [...(build[cat] || [])]]),
   );
-
-const EXTRA_CATEGORY_OVERRIDES = {
-  "Artuno the Betrayer": "agents",
-  "The Thundarian": "agents",
-  Awaken: "abilities",
-  Coalescence: "abilities",
-  Devour: "abilities",
-  "Dark Pact": "promissory",
-  "Ghoti Home System": "home_systems",
-};
 
 const findFactionByName = (allFactions, factionName) =>
   allFactions.find((faction) => faction.name === factionName);
@@ -200,10 +195,7 @@ const applyTriggeredComponents = (build, allFactions) => {
 
     const extras = getExtraComponents(item.name, item.faction);
     extras.forEach((extra) => {
-      const targetCategory =
-        EXTRA_CATEGORY_OVERRIDES[extra.name] ||
-        extra.category ||
-        category;
+      const targetCategory = getExtraComponentCategory(extra, category);
       if (!REQUIRED_CATEGORIES.includes(targetCategory)) return;
 
       const extraItem = resolveComponentFromFactionData(
@@ -218,11 +210,7 @@ const applyTriggeredComponents = (build, allFactions) => {
         },
       );
 
-      const exists = (nextBuild[targetCategory] || []).some(
-        (candidate) =>
-          candidate.name === extraItem.name &&
-          candidate.faction === extraItem.faction,
-      );
+      const exists = hasComponent(nextBuild[targetCategory] || [], extraItem);
       if (exists) return;
 
       nextBuild[targetCategory] = [...(nextBuild[targetCategory] || []), extraItem];
@@ -235,7 +223,7 @@ const applyTriggeredComponents = (build, allFactions) => {
 
     const forcedComponents = getForcedComponentsForTrigger(item.name, item.faction);
     forcedComponents.forEach((forced) => {
-      const targetCategory = forced.category || category;
+      const targetCategory = getForcedComponentCategory(forced, category);
       if (!REQUIRED_CATEGORIES.includes(targetCategory)) return;
 
       const forcedItem = resolveComponentFromFactionData(
