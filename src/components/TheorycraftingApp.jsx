@@ -134,6 +134,8 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [tierFilter, setTierFilter] = useState(new Set());
   const [tierSort, setTierSort] = useState(false);
+  const [showNonDraftableComponents, setShowNonDraftableComponents] =
+    useState(true);
   const headerRef = useRef(null);
   const importFileRef = useRef(null);
   const [flexiFrankenMode, setFlexiFrankenMode] = useState(false);
@@ -340,10 +342,16 @@ export default function TheorycraftingApp({ onNavigate }) {
         undraftableMeta: isComponentUndraftable(item.name, item.faction),
       }));
 
-      // Keep all non-base-unit components visible in Theorycrafting sidebar
+      // Keep non-base-unit locked components visible unless the filter hides them.
       all = all.filter((item) => {
         const undraftable = isComponentUndraftable(item.name, item.faction);
-        return !undraftable || undraftable.type === "draftable_and_swap" || !["base_unit", "garbage"].includes(undraftable.type);
+        if (!undraftable || undraftable.type === "draftable_and_swap") {
+          return true;
+        }
+        if (!showNonDraftableComponents) {
+          return false;
+        }
+        return !["base_unit", "garbage"].includes(undraftable.type);
       });
 
       const forcedSelections = (customFaction[cat] || []).filter(
@@ -414,6 +422,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     categoryFilter,
     tierFilter,
     tierSort,
+    showNonDraftableComponents,
     customFaction,
   ]);
 
@@ -723,6 +732,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     categoryFilter,
     tierSort,
     tierFilter: Array.from(tierFilter),
+    showNonDraftableComponents,
   };
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -754,6 +764,9 @@ const loadState = (e) => {
       if (state.categoryFilter !== undefined) setCategoryFilter(state.categoryFilter);
       if (state.tierSort !== undefined) setTierSort(state.tierSort);
       if (Array.isArray(state.tierFilter)) setTierFilter(new Set(state.tierFilter));
+      if (state.showNonDraftableComponents !== undefined) {
+        setShowNonDraftableComponents(state.showNonDraftableComponents);
+      }
       if (state.flexiFrankenMode) {
         setDraftLimits(FLEXI_FRANKEN_BASE_LIMITS);
       } else if (state.powerMode) {
@@ -1293,6 +1306,25 @@ const loadState = (e) => {
               </button>
 
               <div className="border-t border-gray-700 pt-3 mt-3 space-y-2">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={showNonDraftableComponents}
+                    onChange={(e) =>
+                      setShowNonDraftableComponents(e.target.checked)
+                    }
+                    className="mr-2"
+                  />
+                  <span className="font-medium text-white text-sm">
+                    Show non-draftable components
+                  </span>
+                </label>
+                <div className="text-xs text-gray-400">
+                  {showNonDraftableComponents
+                    ? "Showing locked sidebar components"
+                    : "Hiding locked sidebar components"}
+                </div>
+
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
@@ -1343,12 +1375,16 @@ const loadState = (e) => {
                     })}
                   </div>
                 </div>
-                {(categoryFilter || tierFilter.size > 0 || tierSort) && (
+                {(categoryFilter ||
+                  tierFilter.size > 0 ||
+                  tierSort ||
+                  !showNonDraftableComponents) && (
                   <button
                     onClick={() => {
                       setCategoryFilter("");
                       setTierFilter(new Set());
                       setTierSort(false);
+                      setShowNonDraftableComponents(true);
                     }}
                     className="w-full text-xs text-gray-400 hover:text-white transition-colors"
                   >
