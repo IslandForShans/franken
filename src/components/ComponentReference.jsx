@@ -57,7 +57,7 @@ const ALL_FACTIONS = [
   })),
   ...(lostLegaciesData?.factions || []).map((f) => ({
     ...f,
-    source: getFactionSource(f, true),
+    source: "LL",
   })),
 ];
 

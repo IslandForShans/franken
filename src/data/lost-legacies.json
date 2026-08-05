@@ -2150,6 +2150,7 @@
     "starting_techs": [
       {
         "id": "ponthous_starting_tech",
+        "name": "Ponthous Starting Tech",
         "techs": [
           {
             "name": "Self-Assembly Routines",

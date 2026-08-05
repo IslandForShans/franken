@@ -1537,6 +1537,8 @@ export const undraftableComponents = {
     { name: "Immortal I", faction: "Pharad'n Order", type: "base_unit" },
     { name: "Commando I", faction: "Qhet Republic", type: "base_unit" },
     { name: "Battlecruiser I", faction: "Qhet Republic", type: "base_unit" },
+    // LL
+    { name: "Replicator I", faction: "The Wrought of Myrr", type: "base_unit" },
   ],
 
   // Starting techs
@@ -1721,6 +1723,13 @@ export const undraftableComponents = {
       triggerComponent: "Honor-Bound",
       type: "optional_swap",
     },
+    // Lost Legacies
+    {
+      name: "Power Word: Wish (Y<>G)",
+      faction: "The Arcanum Ascension",
+      triggerComponent: "Power Word: Wish (B<>R)",
+      type: "gain_extra"
+    }
   ],
 };
 

@@ -76,6 +76,7 @@ export default function Sidebar({
 }) {
   const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
   const [showAllComponents, setShowAllComponents] = useState(false);
+  const [showTierBadges, setShowTierBadges] = useState(true);
   const [collapsedCategories, setCollapsedCategories] = useState(() => {
     if (defaultCollapsed) {
       return new Set(categories);
@@ -829,6 +830,14 @@ if (undraftableMeta.type === "forced_component") {
             ? "Expand All"
             : "Collapse All"}
         </button>
+        <label className="flex items-center justify-center gap-2 mb-2 cursor-pointer text-xs text-gray-300">
+          <input
+            type="checkbox"
+            checked={showTierBadges}
+            onChange={(e) => setShowTierBadges(e.target.checked)}
+          />
+          Show tier badges
+        </label>
         <div className="sidebar-subtitle">
           Hover over components to view details!
         </div>
@@ -920,7 +929,7 @@ if (undraftableMeta.type === "forced_component") {
                         scheduleHoverClose();
                       }}
                     >
-                      <TierBadge tier={component.tier} />
+                      {showTierBadges && <TierBadge tier={component.tier} />}
                       <div className="sidebar-item-row">
                         {component.factionIcon && (
                           <img
