@@ -298,7 +298,7 @@ export default function TheorycraftingApp({ onNavigate }) {
 
     // Add Lost Legacies if enabled
     if (llAddMode) {
-      allComponent = [...allComponents, ...llComponents];
+      allComponents = [...allComponents, ...llComponents];
     }
 
     return allComponents.sort((a, b) =>

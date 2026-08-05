@@ -1,156 +1,6 @@
 {
   "factions": [
     {
-      "name": "",
-      "abilities": [
-        {
-          "id": "",
-          "name": "",
-          "description": ""
-        },
-        {
-          "id": "",
-          "name": "",
-          "description": ""
-        },
-        {
-          "id": "",
-          "name": "",
-          "description": ""
-        }
-      ],
-      "faction_techs": [
-        {
-          "id": "_psychographics",
-          "name": "",
-          "tech_type": "",
-          "prerequisites": [""],
-          "description": ""
-        },
-        {
-          "id": "_sdp",
-          "name": "",
-          "tech_type": "",
-          "prerequisites": [""],
-          "description": ""
-        }
-      ],
-      "agents": [
-        {
-          "id": "_agent",
-          "name": "",
-          "description": ""
-        }
-      ],
-      "commanders": [
-        {
-          "id": "_commander",
-          "name": "",
-          "note": "[UNLOCK: .]",
-          "description": ""
-        }
-      ],
-      "heroes": [
-        {
-          "id": "_hero",
-          "name": "",
-          "note": "",
-          "description": ""
-        }
-      ],
-      "promissory": [
-        {
-          "id": "_pn",
-          "name": "",
-          "description": ""
-        }
-      ],
-      "flagship": [
-        {
-          "id": "_fs",
-          "name": "",
-          "cost": 8,
-          "combat": 5,
-          "move": 1,
-          "capacity": 3,
-          "abilities": ["Sustain Damage"],
-          "description": ""
-        }
-      ],
-      "mech": [
-        {
-          "id": "_mech",
-          "name": "",
-          "cost": 2,
-          "combat": 6,
-          "abilities": ["Sustain Damage"],
-          "description": ""
-        }
-      ],
-      "starting_techs": [
-        {
-          "id": "_starting_tech",
-          "name": " Starting Tech",
-          "techs": [
-            {
-              "name": "",
-              "tech_type": ""
-            },
-            {
-              "name": "",
-              "tech_type": ""
-            }
-          ]
-        }
-      ],
-      "starting_fleet": [
-        {
-          "id": "_starting_fleet",
-          "name": " Starting Fleet",
-          "description": ""
-        }
-      ],
-      "commodity_values": [
-        {
-          "id": "_comms",
-          "name": "Commodities",
-          "description": "3"
-        }
-      ],
-      "home_systems": [
-        {
-          "id": "_hs",
-          "name": " Home System",
-          "tier": "B",
-          "planets": [
-            {
-              "name": "",
-              "resource": 2,
-              "influence": 3
-            },
-            {
-              "name": "",
-              "resource": 2,
-              "influence": 2
-            }
-          ]
-        }
-      ],
-      "breakthrough": [
-        {
-          "id": "_bt",
-          "name": "",
-          "synergy": [
-            {
-              "primary": "",
-              "secondary": ""
-            }
-          ],
-          "description": ""
-        }
-      ]
-    },
-    {
       "name": "The Slavers of Ardentia",
       "abilities": [
         {
@@ -296,7 +146,7 @@
       ]
     },
     {
-      "name": "The Concord of Veyrdith",
+      "name": "The Concord of Verydith",
       "abilities": [
         {
           "id": "verydith_di",
@@ -659,17 +509,17 @@
       ],
       "promissory": [
         {
-          "id": "myrr_pn",
+          "id": "myrr_pnc",
           "name": "Factory Lease: Cultural",
           "description": "At the end of your turn, attach this card to a cultural planet you control. That planet gains PRODUCTION equal to its influence value."
         },
         {
-          "id": "myrr_pn",
+          "id": "myrr_pnh",
           "name": "Factory Lease: Hazardous",
           "description": "At the end of your turn, attach this card to a hazardous planet you control. That planet gains PRODUCTION equal to its resource value."
         },
         {
-          "id": "myrr_pn",
+          "id": "myrr_pni",
           "name": "Factory Lease: Industrial",
           "description": "At the end of your turn, attach this card to an industrial planet you control. That planet gains PRODUCTION equal to the number of planets in this system."
         }
@@ -1689,7 +1539,7 @@
     ],
     "flagship": [
       {
-        "id": "revenant_hs",
+        "id": "revenant_fs",
         "name": "Reliquary Eternal",
         "description": "This unit rolls a number of additional dice equal to the number of unlocked, unexhausted, and unpurged leader types in your play area.",
         "cost": 8,
@@ -2165,7 +2015,7 @@
     ]
   },
   {
-    "name": "The Ponthous Remnant",
+    "name": "The Veterans of Ponthous",
     "abilities": [
       {
         "id": "ponthous_s",
