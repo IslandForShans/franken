@@ -1,0 +1,51 @@
+name: Deploy Website to Pages
+
+on:
+  push:
+    branches: ["main"] # Change to "master" if your default branch uses that name
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # --- START OF NODE SETUP (Keep this section if using React. Delete if only vanilla HTML/CSS) ---
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-node-version: 20
+          cache: 'npm'
+
+      # If you are using yarn or pnpm, change "npm ci" and "npm run build" to your respective manager's build commands.
+      - name: Install Dependencies & Build React
+        run: |
+          npm run deploy
+      # --- END OF NODE SETUP ---
+
+      # IMPORTANT: 
+      # For Vanilla HTML/CSS sites, change path to '.'
+      # For Vite React sites, change path to 'dist'
+      # For Create-React-App sites, change path to 'build'
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' 
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
