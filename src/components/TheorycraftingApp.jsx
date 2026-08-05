@@ -454,6 +454,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     dsOnlyMode,
     dsAddMode,
     brAddMode,
+    llAddMode,
     categoryFilter,
     tierFilter,
     tierSort,
@@ -779,6 +780,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     dsOnlyMode,
     dsAddMode,
     brAddMode,
+    llAddMode,
     categoryFilter,
     tierSort,
     tierFilter: Array.from(tierFilter),
@@ -1012,8 +1014,6 @@ const loadState = (e) => {
     } else if (dsAddMode) {
       // DS Add mode: Show base + DS factions (not BR)
       filteredFactions = [...baseFactions, ...dsFactions];
-    } else if (llAddMode) {
-      filteredFactions = [...baseFactions, ...llFactions];
     } else {
       // Default mode: Show only base factions
       filteredFactions = baseFactions;
@@ -1286,7 +1286,7 @@ const loadState = (e) => {
                       : "Add Discordant Stars to base game components"}
                   </div>
 
-                  <label className="flex items-center cursor-pointer">
+                  <label className="flex items-center cursor-pointer mb-2">
                     <input
                       type="checkbox"
                       checked={brAddMode}
