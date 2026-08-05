@@ -34,6 +34,7 @@ jobs:
       # If you are using yarn or pnpm, change "npm ci" and "npm run build" to your respective manager's build commands.
       - name: Install Dependencies & Build React
         run: |
+          npm run build
           npm run deploy
       # --- END OF NODE SETUP ---
 
