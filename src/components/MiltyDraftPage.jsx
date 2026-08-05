@@ -597,6 +597,7 @@ export default function MiltyDraftPage({ onNavigate }) {
                         firmobs: "Firmament / Obsidian",
                         dsOnly: "DS Only Mode",
                         br: "Blue Reverie",
+                        ll: "Lost Legacies",
                       }[k] ?? k}
                     </span>
                   </label>

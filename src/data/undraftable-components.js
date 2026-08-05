@@ -526,6 +526,79 @@ export const undraftableComponents = {
       triggerComponent: "Prescience",
       type: "gain_extra",
     },
+    // Lost Legacies
+    {
+      name: "Sieze Command",
+      faction: "The Slavers of Ardentia",
+      triggerComponent: "Borrowed Authority",
+      type: "gain_extra"
+    },
+    {
+      name: "Shared Discoveries",
+      faction: "The Explorers of Kairn",
+      triggerComponent: "Expeditionary Cache",
+      type: "gain_extra"
+    },
+    {
+      name: "Forbidden Knowledge",
+      faction: "The Arcanum Ascension",
+      triggerComponent: "Primordial Secrets",
+      type: "gain_extra"
+    },
+    {
+      name: "Traces of Ruin",
+      faction: "The Thrones of Ruin",
+      triggerComponent: "Thrones of Ruin",
+      type: "gain_extra"
+    },
+    {
+      name: "Traces of Ruin",
+      faction: "The Thrones of Ruin",
+      triggerComponent: "Seraphane the Eternal - Bearer of Thrones",
+      type: "gain_extra"
+    },
+    {
+      name: "Traces of Ruin",
+      faction: "The Thrones of Ruin",
+      triggerComponent: "Thronebound Covenant",
+      type: "gain_extra"
+    },
+    {
+      name: "New Moon",
+      faction: "The Aeterna Reclamation",
+      triggerComponent: "Cycle of Reclamation",
+      type: "gain_extra"
+    },
+    {
+      name: "Waning Moon",
+      faction: "The Aeterna Reclamation",
+      triggerComponent: "Cycle of Reclamation",
+      type: "gain_extra"
+    },
+    {
+      name: "Waxing Moon",
+      faction: "The Aeterna Reclamation",
+      triggerComponent: "Cycle of Reclamation",
+      type: "gain_extra"
+    },
+    {
+      name: "Full Moon",
+      faction: "The Aeterna Reclamation",
+      triggerComponent: "Cycle of Reclamation",
+      type: "gain_extra"
+    },
+    {
+      name: "Lunar Eclipse",
+      faction: "The Aeterna Reclamation",
+      triggerComponent: "Cycle of Reclamation",
+      type: "gain_extra"
+    },
+    {
+      name: "Allure of Darkness",
+      faction: "The Revenant Glory",
+      triggerComponent: "Ashara of the Silent Choir - Duke of the Necromancer",
+      type: "gain_extra"
+    }
   ],
 
   // Home systems with optional swaps
@@ -638,7 +711,7 @@ export const undraftableComponents = {
       name: "Malevolency",
       faction: "The Obsidian",
       triggerComponent: "Black Ops (Firmament)",
-      type: "gain_extra",
+      type: "garbage",
     },
     //DS
     {
@@ -677,6 +750,25 @@ export const undraftableComponents = {
       triggerComponent: "Secrets of the Weave",
       type: "gain_extra",
     },
+    // Lost Legacies
+    {
+      name: "Factory Lease: Cultural",
+      faction: "The Wrought of Myrr",
+      triggerComponent: "Factory Lease",
+      type: "gain_extra"
+    },
+    {
+      name: "Factory Lease: Hazardous",
+      faction: "The Wrought of Myrr",
+      triggerComponent: "Factory Lease",
+      type: "gain_extra"
+    },
+    {
+      name: "Factory Lease: Industrial",
+      faction: "The Wrought of Myrr",
+      triggerComponent: "Factory Lease",
+      type: "gain_extra"
+    }
   ],
 
   // Faction techs
@@ -715,7 +807,7 @@ export const undraftableComponents = {
     { name: "Memoria II",
       faction: "The Nomad",
       triggerComponent: "Memoria I",
-      type: "optional_swap",
+      type: "gain_extra",
     },
     {
       name: "Vortex",
@@ -740,7 +832,7 @@ export const undraftableComponents = {
       name: "Voidflare Warden II",
       faction: "The Nivyn Star Kings",
       triggerComponent: "Voidflare Warden I",
-      type: "optional_swap",
+      type: "gain_extra",
     },
     //BR
     {
@@ -749,6 +841,61 @@ export const undraftableComponents = {
       triggerComponent: "Kohi",
       type: "optional_swap",
     },
+    {
+      name: "Mobius Spike - The Reaper",
+      faction: "Belkosea Allied States",
+      triggerComponent: "Wyvern II",
+      type: "optional_swap"
+    },
+    // Lost Legacies
+    {
+      name: "Ultimate Evolution III",
+      faction: "The Dominion of Kryxos",
+      triggerComponent: "Ultimate Evolution II",
+      type: "gain_extra"
+    },
+    {
+      name: "Warspawn Juggernaut III",
+      faction: "The Dominion of Kryxos",
+      triggerComponent: "Warspawn Juggernaut II",
+      type: "gain_extra"
+    },
+    {
+      name: "Ultimate Evolution II",
+      faction: "The Dominion of Kryxos",
+      triggerComponent: "Ultimate Evolution I",
+      type: "gain_extra"
+    },
+    {
+      name: "Warspawn Juggernaut II",
+      faction: "The Dominion of Kryxos",
+      triggerComponent: "Warspawn Juggernaut I",
+      type: "gain_extra"
+    },
+    {
+      name: "Power Word: Disintegrate",
+      faction: "The Arcanum Ascension",
+      triggerComponent: "Primordial Secrets",
+      type: "gain_extra"
+    },
+    {
+      name: "Power Word: Miracle",
+      faction: "The Arcanum Ascension",
+      triggerComponent: "Primordial Secrets",
+      type: "gain_extra"
+    },
+    {
+      name: "Power Word: Fabricate",
+      faction: "The Arcanum Ascension",
+      triggerComponent: "Primordial Secrets",
+      type: "gain_extra"
+    },
+    {
+      name: "Power Word: Plane Shift",
+      faction: "The Arcanum Ascension",
+      triggerComponent: "Primordial Secrets",
+      type: "gain_extra"
+    }
   ],
 
   // Leaders
@@ -787,7 +934,7 @@ export const undraftableComponents = {
     {
       name: "Myru Vos",
       faction: "The Firmament",
-      triggerComponent: "Plots Within Plots",
+      triggerComponent: "Captain Aroz",
       type: "optional_swap",
     },
     {
@@ -840,6 +987,25 @@ export const undraftableComponents = {
       triggerComponent: "Immortal II",
       type: "draftable_and_swap",
     },
+    // Lost Legacies
+    {
+      name: "Zexan Myrix - Revenant of Xytheris",
+      faction: "The Revenant Glory",
+      reason: "Just Plain Garbage",
+      type: "garbage"
+    },
+    {
+      name: "Runebearer Lothos - Revenant of the Arcanum",
+      faction: "The Revenant Glory",
+      reason: "Just Plain Garbage",
+      type: "garbage"
+    },
+    {
+      name: "Koral Vel - Revenant of Verydith",
+      faction: "The Revenant Glory",
+      reason: "Just Plain Garbage",
+      type: "garbage"
+    }
   ],
 
   commanders: [
@@ -948,6 +1114,25 @@ export const undraftableComponents = {
       triggerComponent: "Honor-Bound",
       type: "optional_swap",
     },
+    // Lost Legacies
+    {
+      name: "Melloh Terras - Revenant of Ponthous",
+      faction: "The Revenant Glory",
+      reason: "Just Plain Garbage",
+      type: "garbage"
+    },
+    {
+      name: "Arlir Mirrored - Revenant of Oblivion",
+      faction: "The Revenant Glory",
+      reason: "Just Plain Garbage",
+      type: "garbage"
+    },
+    {
+      name: "DOMI.N.O - Revenant of Myrr",
+      faction: "The Revenant Glory",
+      reason: "Just Plain Garbage",
+      type: "garbage"
+    }
   ],
 
   heroes: [
@@ -1038,6 +1223,25 @@ export const undraftableComponents = {
       triggerComponent: "Immortal II",
       type: "optional_swap",
     },
+    // Lost Legacies
+    {
+      name: "Pryxos XIV - Revenant of Kryxos",
+      faction: "The Revenant Glory",
+      reason: "Just Plain Garbage",
+      type: "garbage"
+    },
+    {
+      name: "Zairos the First - Revenant of Kairn",
+      faction: "The Revenant Glory",
+      reason: "Just Plain Garbage",
+      type: "garbage"
+    },
+    {
+      name: "Lost Throne of Pride - Revenant of Ruin",
+      faction: "The Revenant Glory",
+      reason: "Just Plain Garbage",
+      type: "garbage"
+    }
   ],
 
   // Mechs
@@ -1173,7 +1377,7 @@ export const undraftableComponents = {
     {
       name: "Heaven's Eye",
       faction: "The Firmament",
-      triggerComponent: "Plots Within Plots",
+      triggerComponent: "The Sowing",
       type: "optional_swap",
     },
     {
@@ -1354,6 +1558,13 @@ export const undraftableComponents = {
       reason: "Just Plain Garbage",
       type: "garbage",
     },
+    // Lost Legacies
+    {
+      name: "Kryxos Starting Fleet",
+      faction: "The Dominion of Kryxos",
+      triggerComponent: "Testing Yard",
+      type: "optional_swap"
+    }
   ],
 
   //Commodities

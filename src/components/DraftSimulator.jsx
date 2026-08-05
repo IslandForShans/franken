@@ -11,12 +11,13 @@ import DraftHistory from "./DraftHistory.jsx";
 import DraftSettingsPanel from "./DraftSettingsPanel.jsx";
 import DraftSummary from "./DraftSummary.jsx";
 import { shuffleArray } from "../utils/shuffle.js";
-import { factionsData, discordantStarsData } from "../data/processedData.js";
+import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData.js";
 import {
   pokExclusions,
   teExclusions,
   noFirmament,
   brExclusions,
+  llExclusions,
 } from "../utils/expansionFilters.js";
 import {
   isComponentUndraftable,
@@ -237,6 +238,7 @@ export default function DraftSimulator({
     firmobs: false,
     dsOnly: false,
     br: false,
+    ll: false,
   });
 
   const [frankenDrazSettings, setFrankenDrazSettings] = useState({
@@ -386,6 +388,7 @@ export default function DraftSimulator({
         pok: expansionsEnabled.pok,
         te: expansionsEnabled.te,
         br: expansionsEnabled.br,
+        ll: expansionsEnabled.ll,
       });
 
       // If DS Only mode is enabled, skip base game FACTIONS but still include all tiles
@@ -410,6 +413,10 @@ export default function DraftSimulator({
             .filter(
               (f) =>
                 expansionsEnabled.br || !brExclusions.factions.includes(f.name),
+            )
+            .filter(
+              (f) =>
+                expansionsEnabled.ll || !llExclusions.factions.includes(f.name),
             )
             .flatMap((f) =>
               (f[category] || [])
@@ -449,7 +456,32 @@ export default function DraftSimulator({
               })
           : [];
 
+      const llComponents =
+        expansionsEnabled.ll && lostLegaciesData?.factions
+          ? lostLegaciesData.factions
+              .filter((f) => !bannedFactions.has(f.name))
+              .flatMap((f) => {
+                // Handle DS's different naming: "home_system" vs "home_systems"
+                let categoryData = f[category];
+                if (!categoryData && category === "home_systems") {
+                  categoryData = f["home_system"];
+                }
+
+                if (!categoryData || !Array.isArray(categoryData)) return [];
+                return categoryData
+                  .filter((comp) => !bannedComponents.has(comp.name))
+                  .filter((comp) => !isComponentUndraftable(comp.name, f.name))
+                  .map((item) => ({
+                    ...item,
+                    faction: f.name,
+                    factionIcon: f.icon,
+                    icon: f.icon,
+                  }));
+              })
+          : [];
+
       console.log(`DS components: ${dsComponents.length}`);
+      console.log(`LL components: ${llComponents.length}`);
 
       // DS Only mode only excludes base game FACTIONS, not tiles
       // When dsOnly is enabled, include ALL tiles (Base, PoK, TE)
@@ -634,6 +666,13 @@ export default function DraftSimulator({
           )
           .map((f) => ({ name: f.name, icon: f.icon }));
         allFactions = [...allFactions, ...dsFactions];
+      }
+
+      if (expansionsEnabled.ll && lsotLegaciesData?.factions) {
+        const dsFactions = lostLegaciesData.factions
+          .filter((f) => !bannedFactions.has(f.name))
+          .map((f) => ({ name: f.name, icon: f.icon }));
+        allFactions = [...allFactions, ...llFactions];
       }
 
       // Get blue and red tiles
@@ -1566,6 +1605,13 @@ export default function DraftSimulator({
         .filter(f => expansionsEnabled.br || !brExclusions.factions.includes(f.name))
         .map(f => ({ name: f.name, icon: f.icon }));
       all = [...all, ...ds];
+    }
+
+    if (expansionsEnabled.ll && lostLegaciesData?.factions) {
+      const ds = lostLegaciesData.factions
+        .filter(f => !bannedFactions.has(f.name))
+        .map(f => ({ name: f.name, icon: f.icon }));
+      all = [...all, ...ll];
     }
 
     const drafted = new Set(
@@ -2926,6 +2972,29 @@ setDraftPhase("redraw");
                           </label>
                           <div className="text-xs text-gray-200 ml-6">
                             Adds: 6 New factions by the creator of DS
+                          </div>
+                        </div>
+
+                        {/* Lost Legacies */}
+                        <div>
+                          <label className="flex items-center cursor-pointer mb-1">
+                            <input
+                              type="checkbox"
+                              checked={expansionsEnabled.ll}
+                              onChange={(e) =>
+                                setExpansionsEnabled((prev) => ({
+                                  ...prev,
+                                  ll: e.target.checked,
+                                }))
+                              }
+                              className="mr-2"
+                            />
+                            <span className="font-medium text-white text-sm">
+                              Lost Legacies
+                            </span>
+                          </label>
+                          <div className="text-xs text-gray-200 ml-6">
+                            Adds: 13 New Factions
                           </div>
                         </div>
                       </div>

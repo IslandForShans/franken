@@ -244,6 +244,10 @@ export default function MainPage({ onNavigate }) {
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">•</span>
+                <span>Lost Legacies (13 factions)</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-400 mr-2">•</span>
                 <span>Independent toggles</span>
               </li>
             </ul>

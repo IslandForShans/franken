@@ -8,7 +8,7 @@ import React, {
 import { createPortal } from "react-dom";
 import FactionSheet from "./FactionSheet.jsx";
 import Sidebar from "./Sidebar.jsx";
-import { factionsData, discordantStarsData } from "../data/processedData";
+import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData";
 import { ICON_MAP } from "../utils/dataProcessor";
 import {
   getSwapOptions,
@@ -128,6 +128,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [dsOnlyMode, setDsOnlyMode] = useState(false);
   const [dsAddMode, setDsAddMode] = useState(false);
   const [brAddMode, setBrAddMode] = useState(false);
+  const [llAddMode, setLlAddMode] = useState(false);
   const [factionFilterOpen, setFactionFilterOpen] = useState(false);
   const [visibleFactions, setVisibleFactions] = useState(new Set());
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -158,6 +159,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     let baseComponents = [];
     let dsComponents = [];
     let brComponents = [];
+    let llComponents = [];
 
     // Get base game components
     baseComponents = [
@@ -248,6 +250,34 @@ export default function TheorycraftingApp({ onNavigate }) {
         ),
     ];
 
+    // Get Lost Legacies Components
+    llComponents = [
+      ...lostLegaciesData.factions
+        .flatMap((f) =>
+          (f[category] || []).map((item) => {
+            const isUnitUpgrade = item.tech_type === "Unit Upgrade";
+
+            return {
+              ...item,
+              faction: f.name,
+              factionIcon: f.icon,
+              isBlueReverie: true,
+
+              // Make unit upgrades render like units
+              ...(isUnitUpgrade && {
+                unit: true,
+                stats: {
+                  cost: item.cost,
+                  combat: item.combat,
+                  abilities: item.abilities,
+                  description: item.description,
+                },
+              }),
+            };
+          }),
+        ),
+    ];
+
     // Combine based on mode
     let allComponents = [];
     if (dsOnlyMode) {
@@ -264,6 +294,11 @@ export default function TheorycraftingApp({ onNavigate }) {
     // Add Blue Reverie if enabled
     if (brAddMode) {
       allComponents = [...allComponents, ...brComponents];
+    }
+
+    // Add Lost Legacies if enabled
+    if (llAddMode) {
+      allComponent = [...allComponents, ...llComponents];
     }
 
     return allComponents.sort((a, b) =>
@@ -364,7 +399,7 @@ export default function TheorycraftingApp({ onNavigate }) {
       }
 
       if (cat === "faction_techs") {
-  const UNIT_EXCEPTIONS = ["Memoria I", "Voidflare Warden I", "Reality-Field Impactor"];
+  const UNIT_EXCEPTIONS = ["Memoria I", "Voidflare Warden I", "Reality-Field Impactor", "Ultimate Evolution I", "Warspawn Juggernaut I"];
   all = all.filter((ft) => {
     const name = ft.name || "";
     if (UNIT_EXCEPTIONS.includes(name)) return true;
@@ -606,6 +641,15 @@ export default function TheorycraftingApp({ onNavigate }) {
       }
     }
 
+    //If not found, try Lost Legacies
+    if (!faction) {
+      faction = lostLegaciesData.factions.find(
+        (f) => f.name === factionName,
+      );
+
+      factionSource = "Lost Legacies";
+    }
+
     if (faction) {
       const loadedFaction = {
         name: faction.name + ` (${factionSource})`,
@@ -698,6 +742,12 @@ export default function TheorycraftingApp({ onNavigate }) {
     setBrAddMode(newValue);
   };
 
+  const handleToggleLlAddMode = () => {
+    const newValue = !llAddMode;
+    console.log("LL Add Mode toggled:", newValue);
+    setLlAddMode(newValue);
+  };
+
   const exportFaction = () => {
     const factionData = {
       ...customFaction,
@@ -761,6 +811,7 @@ const loadState = (e) => {
       if (state.dsOnlyMode !== undefined) setDsOnlyMode(state.dsOnlyMode);
       if (state.dsAddMode !== undefined) setDsAddMode(state.dsAddMode);
       if (state.brAddMode !== undefined) setBrAddMode(state.brAddMode);
+      if (state.llAddMode !== undefined) setLlAddMode(state.llAddMode);
       if (state.categoryFilter !== undefined) setCategoryFilter(state.categoryFilter);
       if (state.tierSort !== undefined) setTierSort(state.tierSort);
       if (Array.isArray(state.tierFilter)) setTierFilter(new Set(state.tierFilter));
@@ -908,6 +959,7 @@ const loadState = (e) => {
       const original = [
         ...factionsData.factions.flatMap((f) => f.faction_techs || []),
         ...discordantStarsData.factions.flatMap((f) => f.faction_techs || []),
+        ...lostLegaciesData.factions.flatMap((f) => f.faction_techs || []),
       ].find((t) => t.name === ft.name);
 
       if (!original) return ft;
@@ -948,6 +1000,8 @@ const loadState = (e) => {
     const brFactions = discordantStarsData.factions
       .filter((f) => isBlueReverieFaction(f.name))
       .map((f) => ({ ...f, source: "BR" }));
+    const llFactions = lostLegaciesData.factions
+      .map((f) => ({ ...f, source: "LL" }));
 
     // Apply filtering based on mode
     let filteredFactions = [];
@@ -958,6 +1012,8 @@ const loadState = (e) => {
     } else if (dsAddMode) {
       // DS Add mode: Show base + DS factions (not BR)
       filteredFactions = [...baseFactions, ...dsFactions];
+    } else if (llAddMode) {
+      filteredFactions = [...baseFactions, ...llFactions];
     } else {
       // Default mode: Show only base factions
       filteredFactions = baseFactions;
@@ -968,8 +1024,13 @@ const loadState = (e) => {
       filteredFactions = [...filteredFactions, ...brFactions];
     }
 
+    // Add Lost Legacies if enabled
+    if (llAddMode) {
+      filteredFactions = [...filteredFactions, ...llFactions];
+    }
+
     return filteredFactions.sort((a, b) => a.name.localeCompare(b.name));
-  }, [dsOnlyMode, dsAddMode, brAddMode]);
+  }, [dsOnlyMode, dsAddMode, brAddMode, llAddMode]);
 
   useEffect(() => {
     const setHeaderHeightVar = () => {
@@ -1240,6 +1301,23 @@ const loadState = (e) => {
                     {brAddMode
                       ? "Adding Blue Reverie components"
                       : "Add Blue Reverie components (from DS data)"}
+                  </div>
+
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={llAddMode}
+                      onChange={handleToggleLlAddMode}
+                      className="mr-2"
+                    />
+                    <span className="font-medium text-white text-sm">
+                      Add Lost Legacies (LL)
+                    </span>
+                  </label>
+                  <div className="mb-4 text-xs text-gray-400">
+                    {brAddMode
+                      ? "Adding Lost Legacies components"
+                      : "Add Lost Legacies components"}
                   </div>
               </div>
 
@@ -1560,7 +1638,7 @@ const loadState = (e) => {
                 }
               }}
               draftLimits={unlimitedMode ? {} : draftLimits}
-              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}`}
+              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}${llAddMode ? " + LL" : ""}`}
               hiddenCategories={["blue_tiles", "red_tiles"]}
               showReductionHelper={false}
               showSwapHelper={true}
@@ -1598,7 +1676,9 @@ const loadState = (e) => {
                           ? "(DS)"
                           : f.source === "BR"
                             ? "(BR)"
-                            : ""}
+                            : f.source === "LL"
+                              ? "(LL)"
+                              : ""}
                       </span>
                     </label>
                   );

@@ -81,6 +81,24 @@ export const brExclusions = {
   ],
 };
 
+export const llExclusions = {
+  factions: [
+    "The Slavers of Ardentia",
+    "The Concord of Verydith",
+    "The Synod of Veylor",
+    "The Wrought of Myrr",
+    "The Explorers of Kairn",
+    "The Dominion of Kryxos",
+    "The Arcanum Ascension",
+    "The Swarm of Xytheris",
+    "The Covenant of Oblivion",
+    "The Revenant Glory",
+    "The Thrones of Ruin",
+    "The Aeterna Reclamation",
+    "The Veterans of Ponthous"
+  ]
+};
+
 export const isBlueReverieFaction = (name) =>
   brExclusions.factions.includes(name);
 
@@ -92,6 +110,8 @@ export function filterFactionsByExpansions(factions, expansionsEnabled = {}) {
     out = out.filter((f) => !teExclusions.factions.includes(f.name));
   if (!expansionsEnabled.firmobs)
     out = out.filter((f) => !noFirmament.factions.includes(f.name));
+  if (!expansionsEnabled.ll)
+    out = out.filter((f) => !llExclusions.factions.includes(f.name));
   return out;
 }
 

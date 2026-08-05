@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "./UnifiedStyles.css";
 import { ICON_MAP } from "../utils/dataProcessor";
-import { factionsData, discordantStarsData } from "../data/processedData.js";
+import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData.js";
 import {
   isComponentUndraftable,
   getExtraComponents,
@@ -671,6 +671,11 @@ if (undraftableMeta.type === "forced_component") {
                   );
                   if (!fullFaction) {
                     fullFaction = discordantStarsData?.factions?.find(
+                      (f) => f.name === factionName,
+                    );
+                  }
+                  if (!fullFaction) {
+                    fullFaction = lostLegaciesData?.factions?.find(
                       (f) => f.name === factionName,
                     );
                   }

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { factionsData, discordantStarsData } from "../data/processedData";
+import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData";
 import { ICON_MAP } from "../utils/dataProcessor";
 import { isBlueReverieFaction } from "../utils/expansionFilters";
 
@@ -27,6 +27,7 @@ const EXPANSIONS = [
   { key: "PoK", label: "PoK" },
   { key: "TE", label: "TE" },
   { key: "DS", label: "DS" },
+  { key: "LL", label: "LL" },
   { key: "BR", label: "BR" },
 ];
 
@@ -51,6 +52,10 @@ const ALL_FACTIONS = [
     source: getFactionSource(f, false),
   })),
   ...(discordantStarsData?.factions || []).map((f) => ({
+    ...f,
+    source: getFactionSource(f, true),
+  })),
+  ...(lostLegaciesData?.factions || []).map((f) => ({
     ...f,
     source: getFactionSource(f, true),
   })),

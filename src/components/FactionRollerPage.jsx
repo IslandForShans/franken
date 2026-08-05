@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react";
-import { factionsData, discordantStarsData } from "../data/processedData";
+import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData";
 import {
   pokExclusions,
   teExclusions,
   brExclusions,
+  llExclusions,
 } from "../utils/expansionFilters";
 import {
   isComponentUndraftable,
@@ -95,6 +96,7 @@ const resolveSet = (factionName, source) => {
   }
   if (teExclusions.factions.includes(factionName)) return "te";
   if (pokExclusions.factions.includes(factionName)) return "pok";
+  if (llExclusions.factions.includes(factionName)) return "ll";
   return "base";
 };
 
@@ -473,7 +475,12 @@ export default function FactionRollerPage({ onNavigate }) {
       source: "ds",
       setTag: resolveSet(faction.name, "ds"),
     }));
-    return [...base, ...ds];
+    const ll = lostLegaciesData.factions.map((faction) => ({
+      ...faction,
+      source: "ll",
+      setTag: resolveSet(faction.name, "ll"),
+    }));
+    return [...base, ...ds, ...ll];
   }, []);
 
   const filteredFactions = useMemo(
@@ -483,6 +490,7 @@ export default function FactionRollerPage({ onNavigate }) {
         if (faction.setTag === "ds" && !enabledSets.ds) return false;
         if (faction.setTag === "te" && !enabledSets.te) return false;
         if (faction.setTag === "br" && !enabledSets.br) return false;
+        if (faction.setTag === "ll" && !enabledSets.ll) return false;
         return true;
       }),
     [allFactions, enabledSets],

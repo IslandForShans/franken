@@ -131,6 +131,20 @@ export const ICON_MAP = {
     "Qhet Republic": `${ICON_PATH}br/Qhet.png`,
     "Toldar Concordat": `${ICON_PATH}br/Toldar.png`,
     "Uydai Conclave": `${ICON_PATH}br/Uydai.png`,
+    //LL
+    "The Slavers of Ardentia": `${ICON_PATH}ll/ardentia.png`,
+    "The Concord of Verydith": `${ICON_PATH}ll/verydith.png`,
+    "The Synod of Veylor": `${ICON_PATH}ll/veylor.png`,
+    "The Wrought of Myrr": `${ICON_PATH}ll/myrr.png`,
+    "The Explorers of Kairn": `${ICON_PATH}ll/kairn.png`,
+    "The Dominion of Kryxos": `${ICON_PATH}ll/kryxos.png`,
+    "The Arcanum Ascension": `${ICON_PATH}ll/arcanum.png`,
+    "The Swarm of Xytheris": `${ICON_PATH}ll/xytheris.png`,
+    "The Covenant of Oblivion": `${ICON_PATH}ll/oblivion.png`,
+    "The Revenant Glory": `${ICON_PATH}ll/revenant.png`,
+    "The Thrones of Ruin": `${ICON_PATH}ll/thrones.png`,
+    "The Aeterna Reclamation": `${ICON_PATH}ll/aeterna.png`,
+    "The Veterans of Ponthous": `${ICON_PATH}ll/ponthous.png`,
   },
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { factionsData, discordantStarsData } from "../data/processedData.js";
+import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData.js";
 import { ICON_MAP } from "../utils/dataProcessor.js";
 import { isComponentUndraftable } from "../data/undraftable-components.js";
 import "./UnifiedStyles.css";
@@ -97,6 +97,11 @@ export default function FrankenDrazBuilder({
       );
       if (!fullFaction && discordantStarsData?.factions) {
         fullFaction = discordantStarsData.factions.find(
+          (f) => f.name === draftedFaction.name,
+        );
+      }
+      if (!fullFaction && lostLegaciesData?.factions) {
+        fullFaction = lostLegaciesData.factions.find(
           (f) => f.name === draftedFaction.name,
         );
       }
