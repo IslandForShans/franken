@@ -131,6 +131,9 @@ export const ICON_MAP = {
     "Qhet Republic": `${ICON_PATH}br/Qhet.png`,
     "Toldar Concordat": `${ICON_PATH}br/Toldar.png`,
     "Uydai Conclave": `${ICON_PATH}br/Uydai.png`,
+    "Principality of Kaltrim": `${ICON_PATH}br/kaltrim.png`,
+    "Sarcosa Drift": `${ICON_PATH}br/sarcosa.png`,
+    "Xin Court": `${ICON_PATH}br/xin.png`,
     //LL
     "The Slavers of Ardentia": `${ICON_PATH}ll/ardentia.png`,
     "The Concord of Verydith": `${ICON_PATH}ll/verydith.png`,
@@ -144,7 +147,12 @@ export const ICON_MAP = {
     "The Revenant Glory": `${ICON_PATH}ll/revenant.png`,
     "The Thrones of Ruin": `${ICON_PATH}ll/thrones.png`,
     "The Aeterna Reclamation": `${ICON_PATH}ll/aeterna.png`,
-    "The Veterans of Ponthous": `${ICON_PATH}ll/ponthous.png`,
+    "The Ponthous Remnant": `${ICON_PATH}ll/ponthous.png`,
+    "The Iron Keep Vanguards": `${ICON_PATH}ll/vanguard.png`,
+    "The Scrapyard Pack": `${ICON_PATH}ll/scrapyard.png`,
+    "The Stoneborn Stratum": `${ICON_PATH}ll/stoneborn.png`,
+    "The Formless Morpha": `${ICON_PATH}ll/morpha.png`,
+    "The Radiant Thurviali": `${ICON_PATH}ll/thurviali.png`,
   },
 };
 

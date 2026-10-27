@@ -31,14 +31,6 @@ const EXPANSIONS = [
   { key: "BR", label: "BR" },
 ];
 
-const CATEGORY_EXPANSION = {
-  agents: "PoK",
-  commanders: "PoK",
-  heroes: "PoK",
-  mech: "PoK",
-  breakthrough: "TE",
-};
-
 const getFactionSource = (faction, fromDS) => {
   if (fromDS) return isBlueReverieFaction(faction.name) ? "BR" : "DS";
   if (pokFactions.includes(faction.name)) return "PoK";
@@ -296,7 +288,9 @@ function ByFactionView({ factions, search, activeCategories }) {
           .map((cat) => {
             const raw = faction[cat.key];
             if (!raw || (Array.isArray(raw) && raw.length === 0)) return null;
-            const items = Array.isArray(raw) ? raw : [raw];
+            const items = (Array.isArray(raw) ? raw : [raw]).filter(
+              (item) => !item?.hide_from_component_reference,
+            );
 
             // Filter by search
             const filtered = items.filter((item) => {
@@ -418,7 +412,9 @@ function ByCategoryView({
         const allItems = factions.flatMap((faction) => {
           const raw = faction[cat.key];
           if (!raw) return [];
-          const items = Array.isArray(raw) ? raw : [raw];
+          const items = (Array.isArray(raw) ? raw : [raw]).filter(
+            (item) => !item?.hide_from_component_reference,
+          );
           return items.map((item) => ({ item, faction }));
         });
 
@@ -536,23 +532,8 @@ export default function ComponentReference({ onNavigate }) {
   };
 
   const visibleCategories = useMemo(
-    () =>
-      CATEGORIES.filter((c) => {
-        if (!activeCategories.has(c.key)) return false;
-        const requiredExp = CATEGORY_EXPANSION[c.key];
-        if (requiredExp && !activeExpansions.has(requiredExp)) return false;
-        return true;
-      }),
-    [activeCategories, activeExpansions],
-  );
-
-  const expansionCategories = useMemo(
-    () =>
-      CATEGORIES.filter((c) => {
-        const requiredExp = CATEGORY_EXPANSION[c.key];
-        return !requiredExp || activeExpansions.has(requiredExp);
-      }),
-    [activeExpansions],
+    () => CATEGORIES.filter((c) => activeCategories.has(c.key)),
+    [activeCategories],
   );
 
   const visibleFactions = useMemo(
@@ -636,7 +617,7 @@ export default function ComponentReference({ onNavigate }) {
             allCategories={CATEGORIES}
             toggleCategory={toggleCategory}
             visibleCategories={visibleCategories}
-            expansionCategories={expansionCategories}
+            expansionCategories={CATEGORIES}
           />
         )}
       </div>

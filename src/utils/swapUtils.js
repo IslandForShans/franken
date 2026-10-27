@@ -1,4 +1,8 @@
-import { factionsData, discordantStarsData } from "../data/processedData";
+import {
+  factionsData,
+  discordantStarsData,
+  lostLegaciesData,
+} from "../data/processedData";
 
 const getFactionCategoryData = (faction, targetCategory) => {
   if (!faction) return null;
@@ -47,6 +51,12 @@ export const findFullComponentData = (
     ) ||
     findFactionComponent(
       discordantStarsData?.factions,
+      componentName,
+      factionName,
+      targetCategory,
+    ) ||
+    findFactionComponent(
+      lostLegaciesData?.factions,
       componentName,
       factionName,
       targetCategory,

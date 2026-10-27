@@ -78,6 +78,9 @@ export const brExclusions = {
     "Qhet Republic",
     "Toldar Concordat",
     "Uydai Conclave",
+    "Principality of Kaltrim",
+    "Sarcosa Drift",
+    "Xin Court",
   ],
 };
 
