@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData";
+import { factionsData, discordantStarsData, lostLegaciesData, deepReachesData } from "../data/processedData";
 import { ICON_MAP } from "../utils/dataProcessor";
 import { isBlueReverieFaction } from "../utils/expansionFilters";
 
@@ -29,6 +29,7 @@ const EXPANSIONS = [
   { key: "DS", label: "DS" },
   { key: "LL", label: "LL" },
   { key: "BR", label: "BR" },
+  { key: "DR", label: "DR" },
 ];
 
 const getFactionSource = (faction, fromDS) => {
@@ -51,6 +52,7 @@ const ALL_FACTIONS = [
     ...f,
     source: "LL",
   })),
+  ...(deepReachesData?.factions || []).map((f) => ({ ...f, source: "DR" })),
 ];
 
 const CATEGORIES = [

@@ -8,7 +8,7 @@ import React, {
 import { createPortal } from "react-dom";
 import FactionSheet from "./FactionSheet.jsx";
 import Sidebar from "./Sidebar.jsx";
-import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData";
+import { factionsData, discordantStarsData, lostLegaciesData, deepReachesData } from "../data/processedData";
 import { ICON_MAP } from "../utils/dataProcessor";
 import {
   getSwapOptions,
@@ -129,6 +129,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [dsAddMode, setDsAddMode] = useState(false);
   const [brAddMode, setBrAddMode] = useState(false);
   const [llAddMode, setLlAddMode] = useState(false);
+  const [drAddMode, setDrAddMode] = useState(false);
   const [factionFilterOpen, setFactionFilterOpen] = useState(false);
   const [visibleFactions, setVisibleFactions] = useState(new Set());
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -160,6 +161,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     let dsComponents = [];
     let brComponents = [];
     let llComponents = [];
+    let drComponents = [];
 
     // Get base game components
     baseComponents = [
@@ -278,6 +280,15 @@ export default function TheorycraftingApp({ onNavigate }) {
         ),
     ];
 
+    drComponents = deepReachesData.factions.flatMap((f) =>
+      (f[category] || []).map((item) => ({
+        ...item,
+        faction: f.name,
+        factionIcon: f.icon,
+        isDeepReaches: true,
+      })),
+    );
+
     // Combine based on mode
     let allComponents = [];
     if (dsOnlyMode) {
@@ -299,6 +310,9 @@ export default function TheorycraftingApp({ onNavigate }) {
     // Add Lost Legacies if enabled
     if (llAddMode) {
       allComponents = [...allComponents, ...llComponents];
+    }
+    if (drAddMode) {
+      allComponents = [...allComponents, ...drComponents];
     }
 
     return allComponents.sort((a, b) =>
@@ -455,6 +469,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     dsAddMode,
     brAddMode,
     llAddMode,
+    drAddMode,
     categoryFilter,
     tierFilter,
     tierSort,
@@ -651,6 +666,11 @@ export default function TheorycraftingApp({ onNavigate }) {
       factionSource = "Lost Legacies";
     }
 
+    if (!faction) {
+      faction = deepReachesData.factions.find((f) => f.name === factionName);
+      if (faction) factionSource = "DR";
+    }
+
     if (faction) {
       const loadedFaction = {
         name: faction.name + ` (${factionSource})`,
@@ -748,6 +768,7 @@ export default function TheorycraftingApp({ onNavigate }) {
     console.log("LL Add Mode toggled:", newValue);
     setLlAddMode(newValue);
   };
+  const handleToggleDrAddMode = () => setDrAddMode((value) => !value);
 
   const exportFaction = () => {
     const factionData = {
@@ -814,6 +835,7 @@ const loadState = (e) => {
       if (state.dsAddMode !== undefined) setDsAddMode(state.dsAddMode);
       if (state.brAddMode !== undefined) setBrAddMode(state.brAddMode);
       if (state.llAddMode !== undefined) setLlAddMode(state.llAddMode);
+      if (state.drAddMode !== undefined) setDrAddMode(state.drAddMode);
       if (state.categoryFilter !== undefined) setCategoryFilter(state.categoryFilter);
       if (state.tierSort !== undefined) setTierSort(state.tierSort);
       if (Array.isArray(state.tierFilter)) setTierFilter(new Set(state.tierFilter));
@@ -962,6 +984,7 @@ const loadState = (e) => {
         ...factionsData.factions.flatMap((f) => f.faction_techs || []),
         ...discordantStarsData.factions.flatMap((f) => f.faction_techs || []),
         ...lostLegaciesData.factions.flatMap((f) => f.faction_techs || []),
+        ...deepReachesData.factions.flatMap((f) => f.faction_techs || []),
       ].find((t) => t.name === ft.name);
 
       if (!original) return ft;
@@ -1004,6 +1027,8 @@ const loadState = (e) => {
       .map((f) => ({ ...f, source: "BR" }));
     const llFactions = lostLegaciesData.factions
       .map((f) => ({ ...f, source: "LL" }));
+    const drFactions = deepReachesData.factions
+      .map((f) => ({ ...f, source: "DR" }));
 
     // Apply filtering based on mode
     let filteredFactions = [];
@@ -1028,9 +1053,12 @@ const loadState = (e) => {
     if (llAddMode) {
       filteredFactions = [...filteredFactions, ...llFactions];
     }
+    if (drAddMode) {
+      filteredFactions = [...filteredFactions, ...drFactions];
+    }
 
     return filteredFactions.sort((a, b) => a.name.localeCompare(b.name));
-  }, [dsOnlyMode, dsAddMode, brAddMode, llAddMode]);
+  }, [dsOnlyMode, dsAddMode, brAddMode, llAddMode, drAddMode]);
 
   useEffect(() => {
     const setHeaderHeightVar = () => {
@@ -1315,9 +1343,16 @@ const loadState = (e) => {
                     </span>
                   </label>
                   <div className="mb-4 text-xs text-gray-400">
-                    {brAddMode
+                    {llAddMode
                       ? "Adding Lost Legacies components"
                       : "Add Lost Legacies components"}
+                  </div>
+                  <label className="flex items-center cursor-pointer mb-2">
+                    <input type="checkbox" checked={drAddMode} onChange={handleToggleDrAddMode} className="mr-2" />
+                    <span className="font-medium text-white text-sm">Add Deep Reaches (DR)</span>
+                  </label>
+                  <div className="mb-4 text-xs text-gray-400">
+                    {drAddMode ? "Adding Deep Reaches components" : "Add Deep Reaches components"}
                   </div>
               </div>
 
@@ -1638,7 +1673,7 @@ const loadState = (e) => {
                 }
               }}
               draftLimits={unlimitedMode ? {} : draftLimits}
-              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}${llAddMode ? " + LL" : ""}`}
+              title={`${customFaction.name} ${unlimitedMode ? "(Unlimited)" : powerMode ? "(Power Mode)" : "(Standard)"}${dsOnlyMode ? " - DS Only" : dsAddMode ? " + DS" : ""}${brAddMode ? " + BR" : ""}${llAddMode ? " + LL" : ""}${drAddMode ? " + DR" : ""}`}
               hiddenCategories={["blue_tiles", "red_tiles"]}
               showReductionHelper={false}
               showSwapHelper={true}

@@ -1,0 +1,2016 @@
+{
+    "factions": [
+        {
+            "name": "The Architects of Ta",
+            "abilities": [
+                {
+                    "id": "ta_pr",
+                    "name": "Planetary Reconfiguration",
+                    "description": "After you explore a planet, you may attach 1 of your designs from your reinforcements to that planet if it does not already have one. When you lose control of a planet with a design attached to it, return that card to your reinforcements. Designs do not count as attachments for the purposes of scoring objectives."
+                },
+                {
+                    "id": "ta_pa",
+                    "name": "Perfect Architecture",
+                    "description": "When you explore a planet that has an attachment or contains 1 or more of your structures, you may draw 1 additional card; choose 1 to resolve and discard the rest."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "ta_qr",
+                    "name": "Quantum Restructuring",
+                    "tech_type": "Yellow",
+                    "prerequisites": [
+                        "Yellow"
+                    ],
+                    "description": "ACTION: Exhaust this card to choose a planet you control that has an attachment. Place 1 PDS from your reinforcements on that planet."
+                },
+                {
+                    "id": "ta_ro",
+                    "name": "Resource Optimization",
+                    "tech_type": "Green",
+                    "prerequisites": [
+                        "Green",
+                        "Green"
+                    ],
+                    "description": "At the end of your turn, you may exhaust this card and 1 planet you control to ready 1 other planet you control. If that planet has an ability card, you may ready it as well."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "ta_agent",
+                    "name": "Len - The Appraiser",
+                    "description": "ACTION: Exhaust this card and choose a player. That player may select a planet they control and reveal the top 2 cards from a matching exploration deck, attaching the first revealed attachment to that planet. Otherwise, discard those cards and gain 2 trade goods."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "ta_commander",
+                    "name": "Zul - Grand Architect",
+                    "note": "[Control 4 planets that have an attachment.]",
+                    "description": "When you explore a planet: Gain 1 commodity. If the explored planet has an attachment, you may convert that commodity to a trade good."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "ta_hero",
+                    "name": "Zat - Architect Savant",
+                    "note": "Planetary Revaluation - Perfect Efficiency",
+                    "description": "ACTION: Attach the Grand Design card to a planet in your home system. Explore and ready each planet with a design attached to it, including the Grand Design. Then, purge this card."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "ta_pn",
+                    "name": "Advanced Structural Engineering",
+                    "description": "ACTION: Attach this card to a non-home planet you control. This planet gains PRODUCTION equal to its resource value as if it were a unit."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "ta_flagship",
+                    "name": "Worldshaper",
+                    "cost": 8,
+                    "combat": "5(x2)",
+                    "move": 1,
+                    "capacity": 4,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "1 planet of your choice you control in this system has its resource and influence values increased by 1, and 1 planet of your choice controlled by another player in this system has its resource and influence values reduced by 1."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "ta_mech",
+                    "name": "Valuator",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "DEPLOY: When you attach a card to a planet, you may spend 1 resource to place a mech on that planet."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "ta_starting_tech",
+                    "name": "Ta Starting Tech",
+                    "note": "Choose 2 of the following:",
+                    "techs": [
+                        {
+                            "name": "Dark Energy Tap",
+                            "tech_type": "Blue"
+                        },
+                        {
+                            "name": "Scanlink Drone Network",
+                            "tech_type": "Yellow"
+                        },
+                        {
+                            "name": "Psychoarcheology",
+                            "tech_type": "Green"
+                        }
+                    ]
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "ta_starting_fleet",
+                    "name": "Ta Starting Fleet",
+                    "description": "1 Carrier, 2 Cruisers, 2 Fighters, 3 Infantry, 1 PDS, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "ta_comms",
+                    "name": "Commodities",
+                    "description": "3"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "ta_hs",
+                    "name": "Ta Home System",
+                    "planets": [
+                        {
+                            "name": "Ta",
+                            "resource": 3,
+                            "influence": 3
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "ta_bt",
+                    "name": "Safe Havens",
+                    "synergy": [
+                        {
+                            "primary": "Green",
+                            "secondary": "Red"
+                        }
+                    ],
+                    "description": "Once per action, when you exhaust a planet that has an attachment, you may place 1 infantry from your reinforcements on that planet. When another player commits units to a planet you control, if that planet has an attachment, you may exhaust this card to force your ground forces into coexistence on that planet. That combat ends in a draw."
+                }
+            ],
+            "other": [
+                {
+                    "id": "design_transpose",
+                    "name": "Transpose",
+                    "description": "Attach this card to any non-home planet. This planet’s resource and influence values are swapped."
+                },
+                {
+                    "id": "design_abundance",
+                    "name": "Abundance",
+                    "description": "Attach this card to any non-home planet. This planet’s resource value is increased by 2."
+                },
+                {
+                    "id": "design_prestige",
+                    "name": "Prestige",
+                    "description": "Attach this card to any non-home planet. This planet’s influence value is increased by 2."
+                },
+                {
+                    "id": "design_grand",
+                    "name": "Grand Design - Pinnacle",
+                    "description": "This planet’s resource and influence values are doubled and it is treated as having all 3 planet traits. When you exhaust this planet, you may explore it."
+                },
+                {
+                    "id": "worldshaper_positive",
+                    "name": "Worldshaper +",
+                    "description": "Attach this card to a planet you control in the same system as your flagship. This planet’s resource and influence values are increased by 1. This does not count as an attachment for the purposes of scoring objectives."
+                },
+                {
+                    "id": "worldshaper_negative",
+                    "name": "Worldshaper -",
+                    "description": "Attach this card to a planet of your choice that another player controls in the same system as your flagship. This planet’s resource and influence values are decreased by 1. This does not count as an attachment for the purposes of scoring objectives."
+                }
+            ]
+        },
+        {
+            "name": "The Ashen Legion",
+            "abilities": [
+                {
+                    "id": "ashen_pr",
+                    "name": "Phoenix Rising",
+                    "description": "During setup, place 12 infantry from the supply on your faction sheet. These units are captured. When your infantry are removed or destroyed, capture them. Game effects cannot prevent you from using this ability."
+                },
+                {
+                    "id": "ashen_fif",
+                    "name": "Forged In Fire",
+                    "description": "When you would place infantry from your reinforcements on the game board, you must produce those units instead. For each infantry you produce, return 1 captured infantry instead of spending resources."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "ashen_cb1",
+                    "name": "Cinderborn I",
+                    "cost": "1(x2)",
+                    "combat": 7,
+                    "abilities": []
+                },
+                {
+                    "id": "ashen_cb2",
+                    "name": "Cinderborn II",
+                    "tech_type": "Unit Upgrade",
+                    "prerequisites": [
+                        "Green",
+                        "Green"
+                    ],
+                    "cost": "1(x2)",
+                    "combat": 6,
+                    "abilities": [],
+                    "description": "DEPLOY: At the start of a round of ground combat on a planet you control, you may place 1 infantry on that planet."
+                },
+                {
+                    "id": "ashen_af1",
+                    "name": "Ashfall Engine I",
+                    "cost": "4",
+                    "combat": 5,
+                    "move": 1,
+                    "capacity": 2,
+                    "abilities": [
+                        "Sustain Damage",
+                        "Bombardment 5"
+                    ],
+                    "description": "During combat, when this unit is destroyed, you may use its BOMBARDMENT ability against a planet in its system."
+                },
+                {
+                    "id": "ashen_af2",
+                    "name": "Ashfall Engine II",
+                    "cost": "4",
+                    "combat": 4,
+                    "move": 2,
+                    "capacity": 2,
+                    "abilities": [
+                        "Sustain Damage",
+                        "Bombardment 4"
+                    ],
+                    "description": "During combat, when this unit is destroyed or uses its SUSTAIN DAMAGE ability, you may use its BOMBARDMENT ability against a planet in its system."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "ashen_agent",
+                    "name": "Orrun - Ash-Tender",
+                    "description": "After a player’s ship is destroyed during combat: You may exhaust this card to allow that player to place 1 unit of that type from their reinforcements in a different system that contains at least 1 of their ships."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "ashen_commander",
+                    "name": "Karos - Ember-Guide",
+                    "note": "[Produce at least 2 hits during a BOMBARDMENT roll.]",
+                    "description": "When you roll for a units’ BOMBARDMENT ABILITY: For each hit produced, before applying modifiers, either gain 1 commodity or convert 1 commodity to a trade good."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "ashen_hero",
+                    "name": "Asera - Flame-Warden",
+                    "note": "Ashfall Effigy - Hell From Above",
+                    "description": "ACTION: Choose 1 system. Each of your units on the game board may use its BOMBARDMENT against each planet in that system. Then, purge this card."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "ashen_pn",
+                    "name": "From The Ashes",
+                    "description": "During a combat against a player that is not the Ashen Legion player. When 1 of your units would be destroyed during ground combat, it is not destroyed instead. Then, return this card to the Ashen Legion player. The Ashen Legion player then captures 1 infantry from the supply."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "ashen_flagship",
+                    "name": "The Pyre",
+                    "cost": 8,
+                    "combat": "5(x2)",
+                    "move": 1,
+                    "capacity": 3,
+                    "abilities": [
+                        "Sustain Damage",
+                        "Bombardment 5(x3)"
+                    ],
+                    "description": "During your tactical actions, for each infantry destroyed by this unit's BOMBARDMENT ability, place 1 infantry on that planet."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "ashen_mech",
+                    "name": "Balefire Sentinel",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "When this unit is destroyed, place it on this card. At the start of your next turn, place each unit on this card on planets you control in your home system."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "ashen_starting_tech",
+                    "name": "Ashen Starting Tech",
+                    "techs": [
+                        {
+                            "name": "Plasma Scoring",
+                            "tech_type": "Red"
+                        }
+                    ]
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "Ashen Starting Fleet",
+                    "name": "Ashen Starting Fleet",
+                    "description": "1 Carrier, 1 Dreadnought, 6 Infantry, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "ashen_comms",
+                    "name": "Commodities",
+                    "description": "2"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "ashen_hs",
+                    "name": "Ashen Home System",
+                    "planets": [
+                        {
+                            "name": "Pyra",
+                            "resource": 4,
+                            "influence": 1
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "ashen_bt",
+                    "name": "From Fire, Resolve",
+                    "synergy": [
+                        {
+                            "primary": "Red",
+                            "secondary": "Blue"
+                        }
+                    ],
+                    "description": "Roll 1 of your units BOMBARDMENT against a planet in an adjacent system. When you do, you may exhaust this card and cancel all of those hits to place infantry into coexistence on that planet up to the number of hits produced."
+                }
+            ]
+        },
+        {
+            "name": "The Crystellum",
+            "abilities": [
+                {
+                    "id": "crystellum_fragmentation",
+                    "name": "Fragmentation",
+                    "description": "After one of your non-fighter ships is destroyed, capture 1 fighter from the supply."
+                },
+                {
+                    "id": "crystellum_pow",
+                    "name": "Pieces of a Whole",
+                    "description": "At the start of space combat, you may return up to 2 captured fighters from your faction sheet to place that many fighters from your reinforcements in the active system."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "crystellum_rd",
+                    "name": "Resonance Drive",
+                    "tech_type": "Blue",
+                    "prerequisites": [
+                        "Blue",
+                        "Blue"
+                    ],
+                    "description": "During movement, you may exhaust this card and destroy 1 of your non-fighter ships on the board to apply +1 to the move value of a number of ships equal to the cost of the destroyed ship until the end of this tactical action."
+                },
+                {
+                    "id": "crystellum_atom",
+                    "name": "Atomization",
+                    "tech_type": "Yellow",
+                    "prerequisites": [
+                        "Yellow"
+                    ],
+                    "description": "At the start of your turn, you may exhaust this card and destroy 1 of your non-fighter ships with a cost of up to 4 to capture a number of fighters from the supply equal to the cost of the destroyed ship."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "crystellum_agent",
+                    "name": "Shardwright veyla - Fleet Control",
+                    "description": "After a player moves ships into the active system: You may exhaust this card to allow that player to place a number of fighters from their reinforcements in the active system up to the number of non-fighter ships in that system. If that player was another player, capture that many fighters from the supply."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "crystellum_commander",
+                    "name": "High Architect Lumina - Lightkeeper",
+                    "note": "[Have 12 fighters on the game board.]",
+                    "description": "When you produce fighters, you may place them in any system that contains 1 or more of your ships,  your command, token and no other player’s ships. You may produce 3 fighters for their cost insted of 2."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "crystellum_hero",
+                    "name": "Facet - Hive Mind Nexus",
+                    "note": "Mirror - Infinite Reflections",
+                    "description": "ACTION: You may return any number of captured fighters from your faction sheet to place any number of units in any systems that contain at least 1 of your ships with a total cost of up to twice the amount of fighters returned. Then, purge this card."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "crystellum_pn",
+                    "name": "Fracture",
+                    "description": "After 1 of your non-fighter ships in the active system is destroyed during combat: Place a number of fighters up to the cost of the destroyed ship in that unit’s system. Then, return this card to the Crystellum player."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "crystellum_flagship",
+                    "name": "The Fractal",
+                    "cost": 8,
+                    "combat": "7(x2)",
+                    "move": 1,
+                    "capacity": 4,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "When this unit is destroyed, you may return a number of captured fighters from your faction sheet up to the capacity value of this unit to place 1 ship in this system with a cost up to the amount of fighters returned."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "crystellum_mech",
+                    "name": "Refractum",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "DEPLOY: At the start of ground combat, you may return 2 captured fighters to place 1 mech from your reinforcements on that planet."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "crystellum_starting_tech",
+                    "name": "Crystellum Starting Tech",
+                    "techs": [
+                        {
+                            "name": "Antimass Deflectors",
+                            "tech_type": "Blue"
+                        }
+                    ]
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "crystellum_starting_fleet",
+                    "name": "Crystellum Starting Fleet",
+                    "description": "1 Carrier, 1 Dreadnought, 1 Cruiser, 4 Fighters, 4 Infantry, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "crystellum_comms",
+                    "name": "Commodities",
+                    "description": "3"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "crystellum_hs",
+                    "name": "Crystellum Home System",
+                    "planets": [
+                        {
+                            "name": "Prisma",
+                            "resource": 3,
+                            "influence": 0
+                        },
+                        {
+                            "name": "Spire",
+                            "resource": 1,
+                            "influence": 2
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "crystellum_bt",
+                    "name": "Will of the Many",
+                    "synergy": [
+                        {
+                            "primary": "Blue",
+                            "secondary": "Red"
+                        }
+                    ],
+                    "description": "If you have the Fighter II unit upgrade technology. Flip this card and place it on top of Fighter II.\nShard Swarm (Flipped Card) This unit may move without being transported. Fighters in excess of  your capacity count against your fleet limit. When this unit is destroyed, capture it. At the start of your turn, you may place 1 fighter from your reinforcements in any system that contains a planet you control. Cost 1(x2), Combat 8, Move 3."
+                }
+            ]
+        },
+        {
+            "name": "The Dreaming Throne",
+            "abilities": [
+                {
+                    "id": "dream_dn",
+                    "name": "Dream Nexus",
+                    "description": "Systems that contain a nexus token are nebulae. Your ships' movement is not affected by these nebulae."
+                },
+                {
+                    "id": "dream_tw",
+                    "name": "The Waking",
+                    "description": "At the end of the status phase, any player with ships in a system that contains a nexus token may remove 1 nexus token from 1 of those systems."
+                },
+                {
+                    "id": "dream_if",
+                    "name": "Incomprehensible Form",
+                    "description": "When 1 of your ships would be destroyed during space combat, you may instead remove 1 nexus token from the active system."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "dream_neg",
+                    "name": "Non-Euclidean Geometries",
+                    "tech_type": "Blue",
+                    "prerequisites": [
+                        "Blue",
+                        "Blue",
+                        "Blue"
+                    ],
+                    "description": "During your tactical actions, apply +1 to the move value of any ship that starts its movement in a system that contains a nexus token. You may treat nebulae as adjacent to each other for the purposes of movement."
+                },
+                {
+                    "id": "dream_liturgy1",
+                    "name": "Liturgy I",
+                    "cost": 1,
+                    "combat": 9,
+                    "move": 2,
+                    "capacity": 1,
+                    "abilities": [
+                        "Anti-Fighter Barrage 9(x2)"
+                    ],
+                    "description": "At the end of a tactical action in this unit’s system, if it is a non-home system, you may place or move 1 nexus token into this system."
+                },
+                {
+                    "id": "dream_liturgy2",
+                    "name": "Liturgy II",
+                    "tech_type": "Unit Upgrade",
+                    "prerequisites": [
+                        "Red",
+                        "Red"
+                    ],
+                    "cost": 1,
+                    "combat": 8,
+                    "move": 3,
+                    "capacity": 1,
+                    "abilities": [
+                        "Anti-Fighter Barrage 6(x3)"
+                    ],
+                    "description": "At the end of a tactical action in this unit’s system, you may place or move 1 nexus token into a non-home system that contains 1 or more of your ships and no other player’s ships."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "dream_agent",
+                    "name": "Xal'thuun - Dream-Seeker",
+                    "description": "During the “Movement” step of any players tactical action: You may exhaust this card to allow that player to choose 1 non-home system that contains an anomaly. That player ignores any movement effects of that anomaly in that system during this tactical action."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "dream_commander",
+                    "name": "Thul'morah - The Awakened One",
+                    "note": "[Have ships in 2 different anomalies.]",
+                    "description": "When you cast votes, cast an additional number of votes equal to the number of planets in systems that contain 1 or more nexus tokens."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "dream_hero",
+                    "name": "Shuulgoroth - The Nightmare Made Flesh",
+                    "note": "Reality Unbound - Unknown Geometries",
+                    "description": "ACTION: Place or move up to 3 nexus tokens into any non-home systems. Then, you may place your flagship and up to 3 destroyers in any system that contains a planet you control. If that system contains another player’s ships, resolve combat. Then, purge this card."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "dream_pn",
+                    "name": "Visions",
+                    "description": "When you gain this card, place it face up in your play area. While this card is in your play area, your ships' movement is not affected by nebulae. If you activate a system that contains 1 or more of the Dreaming Throne player’s units, return this card to the Dreaming Throne player."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "dream_flagship",
+                    "name": "Nyar'zathul, the Crawling Dream",
+                    "cost": 8,
+                    "combat": "5(x2)",
+                    "move": 1,
+                    "capacity": 3,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "This unit is also a nexus token; it cannot be affected by abilities that place or move nexus tokens. If it is removed using Incomprehensible Form, produce 1 hit and assign it to 1 of your opponent’s ships."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "dream_mech",
+                    "name": "The Recurring",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "When this unit would be destroyed, you may spend 1 influence to instead place it in a system that contains a nexus token."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "dream_starting_tech",
+                    "name": "Dream Starting Tech",
+                    "techs": [
+                        {
+                            "name": "Gravity Drive",
+                            "tech_type": "Blue"
+                        }
+                    ]
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "dream_starting_fleet",
+                    "name": "Dream Starting Fleet",
+                    "description": "1 Carrier, 1 Destroyer, 2 Fighters, 3 Infantry, 1 PDS, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "dream_comms",
+                    "name": "Commodities",
+                    "description": "3"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "dream_hs",
+                    "name": "Dream Home System",
+                    "planets": [
+                        {
+                            "name": "Xyl'ath",
+                            "resource": 3,
+                            "influence": 0
+                        },
+                        {
+                            "name": "Kath'ulun",
+                            "resource": 0,
+                            "influence": 3
+                        }
+                    ],
+                    "anomalies": [
+                        "Nebula"
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "dream_bt",
+                    "name": "Dream-Space Convergence",
+                    "synergy": [
+                        {
+                            "primary": "Blue",
+                            "secondary": "Green"
+                        }
+                    ],
+                    "description": "ACTION: Exhaust this card to move 1 nexus token into a system that contains a planet you control. When you win a combat as the defender in a system that contains a nexus token, you may exhaust this card to remove your command token from that system and return it to your reinforcements."
+                }
+            ]
+        },
+        {
+            "name": "The Iron Tide",
+            "abilities": [
+                {
+                    "id": "iron_sc",
+                    "name": "Salvage Collectors",
+                    "description": "Once per combat you are participating in, after 1 or more ships are destroyed, take a salvage card from your reinforcements of the same type as one of the destroyed units and place it face up in your play area."
+                },
+                {
+                    "id": "iron_modifications",
+                    "name": "Modifications",
+                    "description": "During setup, take the 6 salvage cards and place them in your reinforcements. While a salvage card is in your play area, the corresponding unit gains the abilities and values on that card, if they do not already have them."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "iron_ty1",
+                    "name": "Tideyard I",
+                    "description": "DEPLOY: At the end of your tactical action, you may remove 2 of your mechs from the active system to place this unit on a planet you control in that system. Up to 4 fighters in this unit’s system do not count against your ships’ capacity.",
+                    "abilities": [
+                        "PRODUCTION 5"
+                    ]
+                },
+                {
+                    "id": "iron_ty2",
+                    "name": "Tideyard II",
+                    "tech_type": "Unit Upgrade",
+                    "prerequisites": [
+                        "Yellow",
+                        "Yellow"
+                    ],
+                    "description": "DEPLOY: At the end of your tactical action, you may remove 2 of your mechs from the active system to place this unit on a planet you control in that system. Up to 8 fighters in this unit’s system do not count against your ships’ capacity.",
+                    "abilities": [
+                        "PRODUCTION 7"
+                    ]
+                },
+                {
+                    "id": "iron_mf",
+                    "name": "Modular Fleet",
+                    "tech_type": "Yellow",
+                    "prerequisites": [
+                        "Yellow"
+                    ],
+                    "description": "At the start of your turn, you may choose 1 of your non-fighter ships in a system that contains 1 or more of your units with PRODUCTION. Spend resources equal to the difference between that ship’s cost and the cost of another non-fighter ship in your reinforcements with a higher cost than the chosen ship to replace the chosen ship with that ship."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "iron_agent",
+                    "name": "Shipwright Kastel - Master of Supply",
+                    "description": "ACTION: Choose a player and exhaust this card. You may allow that player to produce 1 unit in a system that contains one of their units with PRODUCTION, reducing the cost of the produced unit by 1. If that player was another player, produce that unit in a system containing your ships for half its cost, rounded up."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "iron_commander",
+                    "name": "Captain Vakros - Master of Logistics",
+                    "note": "[Have a salvage card in your play area.]",
+                    "description": "Your mechs do not count against capacity when being transported or when in a space area that contains 1 or more of your ships with capacity. While your mechs are in the space area of a system they have PRODUCTION 1."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "iron_hero",
+                    "name": "Admiral Thalen - Master of Iron",
+                    "note": "Hyper Forge - Mecha Prime",
+                    "description": "ACTION: Ready each planet that contains one of your units with PRODUCTION. Then, resolve PRODUCTION in one of those systems."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "iron_pn",
+                    "name": "Retrofitting",
+                    "description": "At the start of a space combat against a player other than the Iron Tide player: You may replace 1 of your ships participating in that combat with a ship from your reinforcements that has a cost of 1 more than the replaced ship. At the end of this combat, return this promissory note to the Iron Tide player."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "iron_flagship",
+                    "name": "Iron Dominion",
+                    "cost": 8,
+                    "combat": "7(x2)",
+                    "move": 1,
+                    "capacity": 3,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "Once per combat round, after 1 of your other non-fighter ships is destroyed in this system, you may repair 1 of your damaged units in this system."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "iron_mech",
+                    "name": "Exo-Forge",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage",
+                        "PRODUCTION X"
+                    ],
+                    "description": "This unit's PRODUCTION value is equal to half the resource value of its planet, rounded up."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "iron_starting_tech",
+                    "name": "Iron Starting Tech",
+                    "note": "Choose 1 of the following:",
+                    "techs": [
+                        {
+                            "name": "Self-Assembly Routines",
+                            "tech_type": "Red"
+                        },
+                        {
+                            "name": "Sarween Tools",
+                            "tech_type": "Yellow"
+                        },
+                        {
+                            "name": "Sling Relay",
+                            "tech_type": "Blue"
+                        }
+                    ]
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "iron_starting_fleet",
+                    "name": "Iron Starting Fleet",
+                    "description": "1 Carrier, 1 Dreadnought, 2 Fighters, 1 Infantry, 2 Mechs, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "iron_comms",
+                    "name": "Commodities",
+                    "description": "3"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "iron_hs",
+                    "name": "Iron Home System",
+                    "planets": [
+                        {
+                            "name": "Kymore",
+                            "resource": 1,
+                            "influence": 2
+                        },
+                        {
+                            "name": "Polaris",
+                            "resource": 2,
+                            "influence": 0
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "iron_bt",
+                    "name": "Hyperstatic Relays",
+                    "synergy": [
+                        {
+                            "primary": "Red",
+                            "secondary": "Green"
+                        }
+                    ],
+                    "description": "ACTION: Exhaust this card to choose a system that contains 1 or more of your command tokens and your units; resolve 1 of those units' PRODUCTION abilities in that system. You may reduce the combined cost of the produced units by the number of your units with PRODUCTION in that system, up to a maximum of 3."
+                }
+            ],
+            "other": [
+                {
+                    "name": "War Sun Salvage",
+                    "description": "When you use this unit’s BOMBARDMENT ability, you may roll against each planet in its system.\nHellfire: After rolling for this unit’s BOMBARDMENT ability, you may discard this card to double all hits produced by this unit against 1 planet in that system.\nCost -2, Move +1"
+                },
+                {
+                    "name": "Flagship Salvage",
+                    "description": "Slipspace Transfer: You may discard this card at the start of a round of combat to remove this unit from the board and place it in the active system.\nMove +1"
+                },
+                {
+                    "name": "Dreadnought Salvage",
+                    "description": "At the start of space combat, you may choose 1 of your units of this type to roll 1 die. On a result equal to or greater than that unit's BOMBARDMENT value, produce 1 hit.\nDyadic Jump Drive: After you activate a system, you may discard this card to apply +2 to the MOVE value of each unit of this type on the board that you control.\nCapacity +1"
+                },
+                {
+                    "name": "Carrier Salvage",
+                    "description": "While you are the active player, this unit may ignore the effects of anomalies.\nQuantum Translocation: After you activate a system, you may discard this card to allow this unit to transport ground forces out of systems that contain your command tokens.\nCombat +1"
+                },
+                {
+                    "name": "Cruiser Salvage",
+                    "description": "This unit gains SPACE CANNON 8.\nSlip-Link: After a player moves ships into this unit’s system, you may discard this card to move up to 2 units of this type from adjacent systems into this unit’s system.\nCapacity +1"
+                },
+                {
+                    "name": "Destroyer Salvage",
+                    "description": "During the Anti-Fighter Barrage step of a space combat in a system adjacent to this unit's system, you may use the ANTI-FIGHTER BARRAGE ability of 1 of your units of this type in this system.\nHeat Seekers: After you roll for this unit’s ANTI-FIGHTER BARRAGE ability, you may discard this card to reroll all misses.\nCombat +1"
+                }
+            ]
+        },
+        {
+            "name": "The Kha'Zyrr Net-Runners",
+            "abilities": [
+                {
+                    "id": "netruners_ni",
+                    "name": "Neural Instruments",
+                    "description": "When another player gains a technology, or exhausts a technology for its effect, place 1 of their control tokens on your faction sheet. You cannot have more than 1 of each other player’s control token on your faction sheet at a time."
+                },
+                {
+                    "id": "netrunners_proxyn",
+                    "name": "Proxy Network",
+                    "description": "When you would research a non-faction technology, you must instead return 1 player’s control token from your faction sheet to gain 1 of that player’s non-faction technologies."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "netrunners_dm",
+                    "name": "Data Mining",
+                    "tech_type": "Yellow",
+                    "prerequisites": [
+                        "Yellow",
+                        "Yellow"
+                    ],
+                    "description": "When you gain a technology, for each other player that also owns that technology, gain 1 trade good."
+                },
+                {
+                    "id": "netrunners_mo",
+                    "name": "Mimetic Override",
+                    "tech_type": "Red",
+                    "prerequisites": [
+                        "Red",
+                        "Red",
+                        "Red"
+                    ],
+                    "description": "At the start of a round of combat, you may exhaust this card and choose 1 technology owned by both you and your opponent. During this round of combat, apply +1 to the result of a number of dice up to the number of prerequisites on that technology."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "netrunners_agent",
+                    "name": "Zor No-ahn - Systems Specialist",
+                    "description": "When any player gains a technology: You may exhaust this card to allow that player to return that technology to their technology deck and gain 1 technology of a different color with the same number of prerequisites."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "netrunners_commander",
+                    "name": "Tek Mir-un - Tech Junkie",
+                    "note": "[Own 1 technology in each color owned by at least 1 other player.]",
+                    "description": "When you perform the secondary ability of the “Technology” strategy card: You do not spend a command token."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "netrunners_hero",
+                    "name": "Ky Lir-et - The Technocrat",
+                    "note": "Power Surge - Network Overload",
+                    "description": "ACTION: Remove up to 3 player’s control tokens from your faction sheet to either gain 1 of that player’s non-faction technologies, or force that player to return 1 technology of your choice to their technology deck."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "netrunners_pn",
+                    "name": "Shared Network Access",
+                    "description": "When you research a non-unit upgrade, non-faction technology: You may place this card face up in your play area to ignore 1 prerequisite on that technology. At the start of the status phase, return this card to the Net-Runners player."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "netrunners_flagship",
+                    "name": "Mi-Dum",
+                    "cost": 8,
+                    "combat": 7,
+                    "move": 1,
+                    "capacity": 4,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "When this unit makes a combat roll, it rolls 1 additional die for each red technology your opponent owns."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "netrunners_mech",
+                    "name": "Nimda",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "DEPLOY: When you gain a technology, you may place a mech from your reinforcements on a planet you control."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "netrunners_starting_tech",
+                    "name": "Net-Runners Starting Tech",
+                    "note": "Choose 1 non-faction technology owned by 1 other player."
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "netrunners_starting_fleet",
+                    "name": "Net-Runners Starting Fleet",
+                    "description": "2 Carriers, 1 Destroyer, 2 Fighters, 5 Infantry, 1 PDS, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "netrunners_comms",
+                    "name": "Commodities",
+                    "description": "3"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "netrunners_hs",
+                    "name": "Net-Runners Home System",
+                    "planets": [
+                        {
+                            "name": "Kha",
+                            "resource": 4,
+                            "influence": 4
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "netrunners_bt",
+                    "name": "Emotet",
+                    "synergy": [
+                        {
+                            "primary": "None",
+                            "secondary": "None"
+                        }
+                    ],
+                    "description": "ACTION: Exhaust this card to allow another player to spend 2 trade goods to research 1 non-faction technology. If they do, you may return that player’s control token from your faction sheet to gain that technology and place 1 infantry into coexistence on a non-home planet they control."
+                }
+            ]
+        },
+        {
+            "name": "The Natau Priesthood",
+            "abilities": [
+                {
+                    "id": "natau_cataclysm",
+                    "name": "Cataclysm",
+                    "description": "After creating the game board, you may replace 1 system that is adjacent to your home system with a random, red-backed tile."
+                },
+                {
+                    "id": "natau_sp",
+                    "name": "Sacred Passage",
+                    "description": "Apply +1 to the MOVE value of your ships that begin their movement in an anomaly."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "natau_dm",
+                    "name": "Divine Manifestation",
+                    "tech_type": "Yellow",
+                    "prerequisites": [
+                        "Yellow",
+                        "Yellow"
+                    ],
+                    "description": "Each system that contains 1 or more of your units and an anomaly gains PRODUCTION 2 as if it were a unit you control."
+                },
+                {
+                    "id": "natau_ct",
+                    "name": "Chaos Turbines",
+                    "tech_type": "Blue",
+                    "prerequisites": [
+                        "Blue",
+                        "Blue"
+                    ],
+                    "description": "You may treat non-home systems that contain printed anomalies as adjacent to each other for the purposes of movement."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "natau_agent",
+                    "name": "Serael - The Shepherd",
+                    "description": "After a player activates a non-home system that contains an anomaly: You may exhaust this card to allow that player to treat other systems that contain non-home anomalies as adjacent to the active system during this tactical action."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "natau_commander",
+                    "name": "Kaethos - The Unyielding",
+                    "note": "[Have ships in 4 systems in or adjacent to an anomaly.]",
+                    "description": "Apply +1 to the combat rolls of your ships when in an anomaly."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "natau_hero",
+                    "name": "Naethu - The First Voice",
+                    "note": "The Grand Convocation - Rebirth",
+                    "description": "ACTION: Place this card near the game board. During this game round, your ships may move out of printed, non-home anomalies that contain your command tokens. At the end of this game round, purge this card."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "natau_pn",
+                    "name": "Rupture",
+                    "description": "After you activate a system: Place this card face-up in your play area. You may ignore the effects of anomalies during this tactical action. At the end of your turn, return this card to the Natau player."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "natau_flagship",
+                    "name": "The Chained",
+                    "cost": 8,
+                    "combat": "7(x2)",
+                    "move": 1,
+                    "capacity": 3,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "This unit’s movement is not affected by anomalies. During a combat in an anomaly, apply +2 to the result of each of this unit’s combat rolls."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "natau_mech",
+                    "name": "Schism",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "DEPLOY: During the \"Commit Ground Forces\" step of your tactical action in a system that contains or is adjacent to an anomaly, you may commit 1 mech."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "natau_starting_tech",
+                    "name": "Natau Starting Tech",
+                    "note": "Choose 1 blue or red technology with no prerequisites."
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "natau_starting_fleet",
+                    "name": "Natau Starting Fleet",
+                    "description": "1 Carrier, 2 Cruisers, 3 Fighters, 3 Infantry, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "natau_comms",
+                    "name": "Commodities",
+                    "description": "3"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "natau_hs",
+                    "name": "Natau Home System",
+                    "planets": [
+                        {
+                            "name": "Decay",
+                            "resource": 0,
+                            "influence": 1
+                        },
+                        {
+                            "name": "Demise",
+                            "resource": 1,
+                            "influence": 0
+                        },
+                        {
+                            "name": "Disorder",
+                            "resource": 2,
+                            "influence": 2
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "natau_bt",
+                    "name": "Tether",
+                    "synergy": [
+                        {
+                            "primary": "Blue",
+                            "secondary": "Green"
+                        }
+                    ],
+                    "description": "After another player activates an anomaly that contains your command token and 1 or more of your units, you may exhaust this card to remove your command token from that system. Then, you may remove 1 of your non-fighter ships from another system that contains an anomaly and place it in the active system."
+                }
+            ]
+        },
+        {
+            "name": "The Valhavn Star-Reavers",
+            "abilities": [
+                {
+                    "id": "valhavn_vc",
+                    "name": "Valhöll's Call",
+                    "description": "After 1 or more of your infantry are destroyed during a round of ground combat, you may place 1 infantry from your reinforcements on another planet you control that contains 1 of your PDS units."
+                },
+                {
+                    "id": "valhavn_reave",
+                    "name": "Reave",
+                    "description": "Once per turn, when you would win a ground combat on a planet you do not control, you may destroy each of your units on that planet to gain trade goods equal to that planet's resource value; that combat ends in a draw."
+                },
+                {
+                    "id": "valhavn_bloodlust",
+                    "name": "Bloodlust",
+                    "description": "Once per action, after you commit ground forces to a planet during a tactical action, if there are no units on that planet, you may resolve ground combat."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "valhavn_vp",
+                    "name": "Völundr Protocol",
+                    "tech_type": "Green",
+                    "prerequisites": [
+                        "Green",
+                        "Green",
+                        "Green"
+                    ],
+                    "description": "ACTION: Exhaust this card to ready a planet that contains one of your PDS units. After you win a ground combat, ready this card."
+                },
+                {
+                    "id": "valhavn_br1",
+                    "name": "Bilröst I",
+                    "abilities": [
+                        "Space Cannon 6",
+                        "Planetary Shield"
+                    ],
+                    "description": "During the \"Commit Ground Forces\" step of an invasion in this or an adjacent system, you may commit up to 1 ground force from this unit’s planet."
+                },
+                {
+                    "id": "valhavn_br2",
+                    "name": "Bilröst II",
+                    "tech_type": "Unit Upgrade",
+                    "prerequisites": [
+                        "Red",
+                        "Yellow"
+                    ],
+                    "abilities": [
+                        "Space Cannon 4",
+                        "Planetary Shield"
+                    ],
+                    "description": "During the \"Commit Ground Forces\" step of an invasion in this or an adjacent system, you may commit up to 2 ground forces from this unit’s planet."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "valhavn_agent",
+                    "name": "Thorberg Skafhógg - Höfuthsmithur",
+                    "description": "At the end of a player’s turn: You may exhaust this card to allow that player to either place 1 PDS from their reinforcements onto a planet they control, or place 2 infantry from their reinforcements onto a planet that contains 1 or more of their PDS units. If that player was another player, gain 1 command token."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "valhavn_commander",
+                    "name": "Styrmir Ragnarsson - Fylkir",
+                    "note": "[Have 3 infantry on each of 3 planets that contain your PDS units.]",
+                    "description": "When you roll for your infantry’s text ability: Add +X to the result of each die, where X is the number of PDS units you have on the game board. Other players cannot use their units SPACE CANNON ability against your infantry."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "valhavn_hero",
+                    "name": "Brünnhilde Buthladóttir - Skaldmær",
+                    "note": "Gjallarhorn - Hearth-Call",
+                    "description": "At the start of a ground combat you are participating in: You may purge this card to move up to 3 ground forces from each system that contains 1 or more of your PDS units."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "valhavn_pn",
+                    "name": "Einherjar",
+                    "description": "When you commit 1 or more infantry during invasion on a planet you do not control, you may commit 2 infantry from your reinforcements onto that planet. At the end of your turn, return this card to the Valhavn player."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "valhavn_flagship",
+                    "name": "Sleipnir",
+                    "cost": 8,
+                    "combat": "7(x2)",
+                    "move": 1,
+                    "capacity": 6,
+                    "abilities": [
+                        "Sustain Damage",
+                        "Space Cannon X(x2)"
+                    ],
+                    "description": "When you roll SPACE CANNON, treat each system that contains your PDS as adjacent to this system. This unit’s SPACE CANNON is equal to 10 minus the number of your PDS units on the game board."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "valhavn_mech",
+                    "name": "Heimdallr",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "DEPLOY: When another player activates a system that contains 1 or more of your PDS units, you may place 1 mech with 1 of those units."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "valhavn_starting_tech",
+                    "name": "Valhavn Starting Tech",
+                    "note": "Choose 1 of the following:",
+                    "techs": [
+                        {
+                            "name": "Magen Defense Grid ΩΩ",
+                            "tech_type": "Red"
+                        },
+                        {
+                            "name": "Daxcive Animators",
+                            "tech_type": "Green"
+                        }
+                    ]
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "valhavn_starting_fleet",
+                    "name": "Valhavn Starting Fleet",
+                    "description": "1 Carrier, 1 Destroyer, 2 Fighters, 4 Infantry, 1 PDS, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "valhavn_comms",
+                    "name": "Commodities",
+                    "description": "3"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "valhavn_hs",
+                    "name": "Valhavn Home System",
+                    "planets": [
+                        {
+                            "name": "Valhavn",
+                            "resource": 2,
+                            "influence": 0
+                        },
+                        {
+                            "name": "Vigrid",
+                            "resource": 2,
+                            "influence": 3
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "valhavn_bt",
+                    "name": "Yggdrasil Cannon",
+                    "synergy": [
+                        {
+                            "primary": "Yellow",
+                            "secondary": "Blue"
+                        }
+                    ],
+                    "description": "After 1 or more of your units produces a hit during SPACE CANNON OFFENSE in a system containing your ships: You may cancel 1 of those hits to remove 1 ship from that unit's system and place it into the active system."
+                }
+            ]
+        },
+        {
+            "name": "Mi-Go Yth",
+            "abilities": [
+                {
+                    "id": "migo_harvest",
+                    "name": "Harvest",
+                    "description": "After you gain control of a planet that has a technology specialty, gain the corresponding harvest card and place it in your play area. Any time you control no planets that have a technology specialty that matches a harvest card in your play area, return that harvest card to your reinforcements."
+                },
+                {
+                    "id": "migo_pseudo",
+                    "name": "Pseudomorphism",
+                    "description": "When you spend resources to research technology, if you exhaust a planet to use its technology specialty to ignore any prerequisites, you may reduce the spent resources by that planet’s influence value."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "migo_lma",
+                    "name": "Lagh-Metal Attractors",
+                    "tech_type": "Blue",
+                    "prerequisites": [
+                        "Blue",
+                        "Blue",
+                        "Blue"
+                    ],
+                    "description": "After you activate a system that contains a planet that has a technology specialty, you may exhaust this card to apply +1 to the move value of each of your ships during this tactical action."
+                },
+                {
+                    "id": "migo_sfl",
+                    "name": "Synaptic Feedback Loop",
+                    "tech_type": "Green",
+                    "prerequisites": [
+                        "Green",
+                        "Green"
+                    ],
+                    "description": "After you exhaust a planet that has a technology specialty, you may exhaust this card to ready that planet."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "migo_agent",
+                    "name": "N'ghaath - The Anatomist",
+                    "description": "ACTION: Exhaust this card and choose 1 other player. That player may exhaust a planet that has a technology specialty to research 1 technology of that color. If they do, gain 1 command token or 2 trade goods."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "migo_commander",
+                    "name": "Khal'Yth - The Presever",
+                    "note": "[Control 3 planets that have technology specialties.]",
+                    "description": "Planets you control that have technology specialties have their resource and influence values increased by 1."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "migo_hero",
+                    "name": "Y'goloth - The Ascendant Mind",
+                    "note": "Xenobiological Feedback - Perfect Loop",
+                    "description": "ACTION: Ready up to 4 technologies or planets that have a technology specialty, then purge this card."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "migo_pn",
+                    "name": "Extraction Science",
+                    "description": "When you research a technology: You may return this card to the Mi-Go player to treat 1 of your technology specialties as any color."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "migo_flagship",
+                    "name": "The Whisper",
+                    "cost": 8,
+                    "combat": "8(x2)",
+                    "move": 2,
+                    "capacity": 3,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "At the start of a combat in this unit’s system, choose 1 non-unit upgrade technology in your opponent’s play area. That technology is treated as blank during this combat."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "migo_mech",
+                    "name": "Nevermen",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "If you have 2 or more of this unit on a planet, that planet is counted as having a technology specialty of any color. If that planet already has a technology specialty, it gains another."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "migo_starting_tech",
+                    "name": "Mi-Go Starting Tech",
+                    "note:": "None"
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "migo_starting_fleet",
+                    "name": "Mi-Go Starting Fleet",
+                    "description": "2 Carriers, 1 Destroyer, 2 Fighters, 4 Infantry, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "migo_comms",
+                    "name": "Commodities",
+                    "description": "3"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "migo_hs",
+                    "name": "Mi-Go Home System",
+                    "planets": [
+                        {
+                            "name": "Yuggoth",
+                            "resource": 2,
+                            "influence": 4,
+                            "technology_specialty": ["Green"],
+                            "legendary_ability": "Cerebral Archive - After you research a technology, you may exhaust this card to place a number of commodities on this card equal to the number of prerequisites on that technology.\nWhen you pass, you may remove 2 commodities from this card to research 1 technology."
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "migo_bt",
+                    "name": "Ythic Symbiosis",
+                    "synergy": [
+                        {
+                            "primary": "Green",
+                            "secondary": "Red"
+                        }
+                    ],
+                    "description": "Planets you control that have technology specialties cannot be exhausted by other players. When another player commits units onto one of those planets, you may exhaust 1 technology to force those units into coexistence instead."
+                }
+            ],
+            "other": [
+                {
+                    "id": "migo_bluetechspec",
+                    "name": "Kinetic Morphology",
+                    "description": "After you activate a system, you may exhaust this card to apply +1 to the MOVE value of 1 of your ships during this tactical action."
+                },
+                {
+                    "id": "migo_greentechspec",
+                    "name": "Synaptic Grafting",
+                    "description": "After you exhaust a planet that has a technology specialty, you may exhaust this card to draw 1 action card."
+                },
+                {
+                    "id": "migo_redtechspec",
+                    "name": "Tachyonic Reversion",
+                    "description": "After you roll 1 or more dice during a round of combat, you may exhaust this card to reroll up to 2 of those dice."
+                },
+                {
+                    "id": "migo_yellowtechspec",
+                    "name": "Biomechanical Splicing",
+                    "description": "When 1 or more of your units use PRODUCTION, you may exhaust this card to apply +1 to the total  PRODUCTION value of your units and reduce the combined cost of the produced units by 1."
+                }
+            ]
+        },
+        {
+            "name": "The Deep",
+            "abilities": [
+                {
+                    "id": "deep_ou",
+                    "name": "Origin Unknown",
+                    "description": "When you create the game board, place the Deep Space tile where your home system would normally be placed; Deep Space is not a home system. During setup, gain and ready The Deep planet card and its unit card; you cannot lose these cards."
+                },
+                {
+                    "id": "deep_dml",
+                    "name": "Dark Matter Link",
+                    "description": "After you explore a frontier token, you may place a frontier token in a different system that contains no planets, if able."
+                },
+                {
+                    "id": "deep_es",
+                    "name": "Energy Siphon",
+                    "description": "When you purge an exploration card for its effect, gain 1 command token."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "deep_ag",
+                    "name": "Abyssal Genesis",
+                    "tech_type": "Yellow",
+                    "prerequisites": [
+                        "Yellow",
+                        "Yellow"
+                    ],
+                    "description": "Systems that contain no planets and your ships gain PRODUCTION 2 as if they were 1 of your units.\nACTION: Exhaust this card to produce up to 2 units in a system containing your ships."
+                },
+                {
+                    "id": "deep_ilb",
+                    "name": "It Looks Back",
+                    "tech_type": "Green",
+                    "prerequisites": [
+                        "Green"
+                    ],
+                    "description": "After 1 of your neighbors produces 1 or more units, you may exhaust this card to produce 1 unit of a type that player produced in 1 of your systems that contains a unit with PRODUCTION."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "deep_agent",
+                    "name": "Nhal - The First",
+                    "description": "ACTION: Exhaust this card and choose another player. That player may explore a frontier token in or adjacent to a system containing 1 or more of their ships. If they do, you may place a frontier token in your home system."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "deep_commander",
+                    "name": "Othuum - The Last",
+                    "note": "[Have non-fighter ships in 3 systems that do not contain any planets.]",
+                    "description": "Up to 1 of your non-fighter ships does not count against your fleet pool in each system that contains no planets. Other players must spend 1 influence to activate a system that contains no planets and 1 or more of your ships."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "deep_hero",
+                    "name": "Angdama - The Deep",
+                    "note": "Inevitable Ruin - All-Consuming",
+                    "description": "ACTION: Replace The Deep planet card and its unit card with The Deep, Ascended planet card, its unit card, and its legendary ability card and ready them. Then, purge this card."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "deep_pn",
+                    "name": "Dark Matter",
+                    "description": "ACTION: Place this card face up in your play area and place a frontier token in your home system. At the start of the status phase, return this card to The Deep player."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "deep_flagship",
+                    "name": "Arbiter",
+                    "cost": 8,
+                    "combat": "5(x2)",
+                    "move": 1,
+                    "capacity": 4,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "This unit’s system is treated as having a frontier token. During movement, you may treat this unit’s system as adjacent to your home system."
+                },
+                {
+                    "id": "deep_thedeep",
+                    "name": "The Deep",
+                    "cost": 6,
+                    "combat": 7,
+                    "move": 1,
+                    "capacity": 2,
+                    "abilities": [
+                        "Sustain Damage",
+                        "PRODUCTION 5"
+                    ],
+                    "description": "This unit’s system is your home system. It cannot be captured and you cannot score public objectives if it is not on the game board."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "deep_mech",
+                    "name": "Null",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "DEPLOY: After you explore a frontier token, you may spend 1 influence to place 1 mech from your reinforcements on a planet you control."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "deep_starting_tech",
+                    "name": "Deep Starting Tech",
+                    "techs": [
+                        {
+                            "name": "Dark Energy Tap",
+                            "tech_type": "Blue"
+                        }
+                    ]
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "deep_starting_fleet",
+                    "name": "Deep Starting Fleet",
+                    "description": "1 Carrier, 1 Cruiser, 2 Fighters, 4 Infantry"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "deep_comms",
+                    "name": "Commodities",
+                    "description": "4"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "deep_hs",
+                    "name": "Deep Home System",
+                    "planets": [
+                        {
+                            "name": "Deep Space"
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "deep_bt",
+                    "name": "Event Horizon",
+                    "synergy": [
+                        {
+                            "primary": "Blue",
+                            "secondary": "Green"
+                        }
+                    ],
+                    "description": "You may treat systems that contain no planets as if they were adjacent to the active system for the purpose of declaring and resolving retreats.\nAfter you activate a system, you may exhaust this card to allow up to 2 of your ships to move out of any systems that contain no planets and your command tokens."
+                }
+            ],
+            "other": [
+                {
+                    "id": "deep_deepascended",
+                    "name": "The Deep, Ascended",
+                    "description": "The unit’s system is your home system. It cannot be captured and you cannot score public objectives if it is not on the game board. Abilities that refer to The Deep refer to this unit instead.\nCost 4, Combat 6, Move 2, Capacity 2; Unit Abilities - SUSTAIN DAMAGE, PRODUCTION 7"
+                },
+                {
+                    "id": "deep_planet",
+                    "name": "The Deep (planet)",
+                    "description": "3/1 Res/Inf"
+                },
+                {
+                    "id": "deep_ascendedplanet",
+                    "name": "The Deep, Ascended (planet)",
+                    "description": "5/3 Res/Inf\nDROWN - After another player activates this unit’s system, you may exhaust this card to remove your command token from this system."
+                }
+            ]
+        },
+        {
+            "name": "The J'nahfa Bloom",
+            "abilities": [
+                {
+                    "id": "bloom_sf",
+                    "name": "Sporefall",
+                    "description": "After you resolve the secondary ability of another player’s strategy card, you may place 1 infantry from your reinforcements into coexistence on a non-home planet they control adjacent to a planet you control that contains 1 of your ground forces."
+                },
+                {
+                    "id": "bloom_sd",
+                    "name": "Strain Dispersal",
+                    "description": "During setup, gain your 3 strain cards and place them in your reinforcements. While your units are coexisting on a planet with a trait, place the corresponding card in your play area dormant side up. While you are coexisting on 3 or more planets with the same trait, flip the corresponding card to its active side."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "bloom_hm",
+                    "name": "Hyphal Migration",
+                    "tech_type": "Green",
+                    "prerequisites": [
+                        "Green",
+                        "Green"
+                    ],
+                    "description": "After another player commits units to a planet you do not control in or adjacent to a non-home planet you control containing your ground forces, you may exhaust this card to place 1 infantry from your reinforcements into coexistence on that planet."
+                },
+                {
+                    "id": "bloom_z1",
+                    "name": "Zygomycete I",
+                    "cost": 2,
+                    "combat": 7,
+                    "move": 2,
+                    "capacity": 1
+                },
+                {
+                    "id": "bloom_z2",
+                    "name": "Zygomycete II",
+                    "tech_type": "Unit Upgrade",
+                    "prerequisites": [
+                        "Green",
+                        "Yellow",
+                        "Red"
+                    ],
+                    "cost": 2,
+                    "combat": 6,
+                    "move": 3,
+                    "capacity": 2,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "If the active system contains 1 or more of your coexisting units, this unit can move through systems that contain other players' ships."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "bloom_agent",
+                    "name": "Oo'ka - The Gardener",
+                    "description": "ACTION: You may exhaust this card and choose another player; they may ready 1 planet they control. If they do, you may place 1 infantry into coexistence on a non-home planet that player controls."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "bloom_commander",
+                    "name": "Vaa'kul - Root-Speaker",
+                    "note": "[Have units coexisting on 1 cultural, 1 hazardous, and 1 industrial planet.]",
+                    "description": "When another player commits units to a planet containing your ground forces: You may move up to 1 ground force from either an adjacent planet or a planet you are coexisting on onto that planet."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "bloom_hero",
+                    "name": "Tref'ta - The Blight",
+                    "note": "Fungal Bloom - Rapid Dispersal",
+                    "description": "ACTION: Place 1 infantry from your reinforcements on each planet your units are coexisting on. Then, for each of those planets that contains 3 or more of your ground forces, you may place 1 infantry from your reinforcements into coexistence on a non-home planet in or adjacent to that system. Then, purge this card. "
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "bloom_pn",
+                    "name": "Starter Culture",
+                    "description": "ACTION: Place this card face up in your play area. You and another player may agree to place 1 infantry from each of your reinforcements into coexistence on a non-home planet the other player controls that contains their ground forces. At the start of the status phase, return this card to the J'nahfa player."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "bloom_flagship",
+                    "name": "Mother-of-Millions",
+                    "cost": 8,
+                    "combat": "7(x2)",
+                    "move": 1,
+                    "capacity": 3,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "Apply +1 to the combat rolls of this unit for each dormant strain card in your play area, and roll 1 additional die for each active strain card in your play area."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "bloom_mech",
+                    "name": "Mycelotitan",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "During a ground combat in which you are the defender, if your units participating in that combat stopped coexisting during this action, apply +1 to this unit's combat rolls during this combat."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "bloom_starting_tech",
+                    "name": "J'nahfa Starting Tech",
+                    "note": "Choose 1 red or green technology with no prerequisites."
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "bloom_starting_fleet",
+                    "name": "J'nahfa Starting Fleet",
+                    "description": "1 Carrier, 1 Cruiser, 2 Fighters, 3 Infantry, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "bloom_comms",
+                    "name": "Commodities",
+                    "description": "2"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "bloom_hs",
+                    "name": "J'nahfa Home System",
+                    "planets": [
+                        {
+                            "name": "J'nahfa",
+                            "resource": 3,
+                            "influence": 3
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "bloom_bt",
+                    "name": "Mycelial Bridges",
+                    "synergy": [
+                        {
+                            "primary": "Green",
+                            "secondary": "Yellow"
+                        }
+                    ],
+                    "description": "After you produce 1 or more infantry, you may place up to 1 of the produced infantry into coexistence on different planets containing your coexisting units."
+                }
+            ],
+            "other": [
+                {
+                    "id": "bloom_cultural",
+                    "name": "Neurtropic Dormant/Active",
+                    "description": "Dormant: The amount of action cards you can have in your hand is increased by 1.\nActive: The amount of action cards you can have in your hand is increased by 2. When a player whose planet you are coexisting on draws an action card, you may exhaust this card to draw 1 action card."
+                },
+                {
+                    "id": "bloom_industrial",
+                    "name": "Rhizomatic Dormant/Active",
+                    "description": "Dormant: Your commodity value is increased by 1.\nActive: Your commodity value is increased by 2. When a player whose planet you are coexisting on replenishes their commodities, you may gain 1 commodity, or convert 1 commodity to a trade good."
+                },
+                {
+                    "id": "bloom_hazardous",
+                    "name": "Carnivorous Dormant/Active",
+                    "description": "Dormant: Apply +1 to your infantry's combat rolls while you are the defender.\nActive: Apply +1 to your infantry's combat rolls while you are the defender. Once per ground combat, after 1 or more of your opponents infantry are destroyed, you may place 1 infantry from your reinforcements on that planet."
+                }
+            ]
+        },
+        {
+            "name": "The Choir of Ossyra",
+            "abilities": [
+                {
+                    "id": "ossyra_dr",
+                    "name": "Death's Refrain",
+                    "description": "During the “Repair Units” step of the status phase, you may choose up to 2 of your damaged units on the game board; those units are not repaired."
+                },
+                {
+                    "id": "ossyra_mh",
+                    "name": "Morbid Harmony",
+                    "description": "At the end of your turn, if you have more damaged units with SUSTAIN DAMAGE on the board than not damaged, flip your faction technologies and mech to their requiem side, otherwise, flip them to their lament side; the other side has no effect."
+                }
+            ],
+            "faction_techs": [
+                {
+                    "id": "ossyra_tr",
+                    "name": "Tomb Resonance",
+                    "tech_type": "Yellow",
+                    "prerequisites": [
+                        "Yellow",
+                        "Yellow"
+                    ],
+                    "description": "Lament: When 1 or more of your units use their PRODUCTION ability, you may damage up to 2 ships in that system. Reduce the combined cost of the produced units by 1 for each ship damaged this way.\nRequiem: When 1 or more of your units use their PRODUCTION ability, you may repair up to 2 damaged ships in that system. Reduce the combined cost of the produced units by 1 for each ship repaired this way."
+                },
+                {
+                    "id": "ossyra_oe",
+                    "name": "Oblivion's Echo",
+                    "tech_type": "Red",
+                    "prerequisites": [
+                        "Red",
+                        "Red",
+                        "Red"
+                    ],
+                    "description": "Lament: After 1 of your ships uses its SUSTAIN DAMAGE ability, you may exhaust this card and choose 1 of your opponent's ships that is not damaged in the active system that has SUSTAIN DAMAGE and damage that ship.\nRequiem: After 1 of your ships uses its SUSTAIN DAMAGE ability, you may exhaust this card and repair 1 of your other damaged ships in the active system. If you do, produce 1 hit against your opponent’s ships."
+                }
+            ],
+            "agents": [
+                {
+                    "id": "ossyra_agent",
+                    "name": "Lyra of the Crypt - The Keeper in Silence",
+                    "description": "At the start of a player's turn: You may exhaust this card to allow that player to repair 1 of their damaged ships on the game board. If that player was another player, you may ready 1 exhausted planet you control with a resource value less than that ship's cost."
+                }
+            ],
+            "commanders": [
+                {
+                    "id": "ossyra_commander",
+                    "name": "Keyn of the Hollow - The Watcher in Silence",
+                    "note": "[There are 3 damaged ships on the game board.]",
+                    "description": "After an agenda is revealed, you may predict aloud an outcome of that agenda. If your prediction is correct, you may damage or repair one of your units."
+                }
+            ],
+            "heroes": [
+                {
+                    "id": "ossyra_hero",
+                    "name": "Mortua of the Tributary - The Conductor",
+                    "note": "Funeral Procession - Last Communion",
+                    "description": "At the start of a space combat you are participating in: Place this card near the game board. Then, damage all of your opponent’s ships in this system. Your damaged units, and units they transport, may move out of systems that contain your command tokens. At the end of this game round, purge this card."
+                }
+            ],
+            "promissory": [
+                {
+                    "id": "ossyra_pn",
+                    "name": "Dearly Departed",
+                    "description": "When 1 of your non-fighter ships would be destroyed during combat: You may place this card faceup in your play area instead. At the end of your turn, return this card to the Ossyra player."
+                }
+            ],
+            "flagship": [
+                {
+                    "id": "ossyra_flagship",
+                    "name": "Sepulchre",
+                    "cost": 8,
+                    "combat": "6(x2)",
+                    "move": 1,
+                    "capacity": 4,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "If there are more damaged non-fighter ships than not damaged non-fighter ships in this system, this unit rolls 1 additional combat die. Otherwise, apply +1 to this unit’s combat rolls."
+                }
+            ],
+            "mech": [
+                {
+                    "id": "ossyra_mech",
+                    "name": "Elegy",
+                    "cost": 2,
+                    "combat": 6,
+                    "abilities": [
+                        "Sustain Damage"
+                    ],
+                    "description": "Lament: After this unit uses its SUSTAIN DAMAGE ability during ground combat, you may destroy 1 of your opponent's ground forces on this planet.\nRequiem: After this unit uses its SUSTAIN DAMAGE ability during ground combat, you may place 1 infantry on this planet."
+                }
+            ],
+            "starting_techs": [
+                {
+                    "id": "ossyra_starting_tech",
+                    "name": "Ossyra Starting Tech",
+                    "note": "Choose 1 red technology with no more than 1 prerequisite."
+                }
+            ],
+            "starting_fleet": [
+                {
+                    "id": "ossyra_starting_fleet",
+                    "name": "Ossyra Starting Fleet",
+                    "description": "1 Carrier, 1 Dreadnought, 2 Fighters, 3 Infantry, 1 Space Dock"
+                }
+            ],
+            "commodity_values": [
+                {
+                    "id": "ossyra_comms",
+                    "name": "Commodities",
+                    "description": "3"
+                }
+            ],
+            "home_systems": [
+                {
+                    "id": "ossyra_hs",
+                    "name": "Ossyra Home System",
+                    "planets": [
+                        {
+                            "name": "Ossyra",
+                            "resource": 2,
+                            "influence": 1
+                        },
+                        {
+                            "name": "Vigil",
+                            "resource": 1,
+                            "influence": 2
+                        },
+                        {
+                            "name": "Cineris",
+                            "resource": 1,
+                            "influence": 0
+                        }
+                    ]
+                }
+            ],
+            "breakthrough": [
+                {
+                    "id": "ossyra_bt",
+                    "name": "Cenotaph Circuit",
+                    "synergy": [
+                        {
+                            "primary": "Red",
+                            "secondary": "Green"
+                        }
+                    ],
+                    "description": "Your ships with a printed capacity value gain SUSTAIN DAMAGE. Apply +1 to each of your damaged ships combat rolls. At any time, you may exhaust this card to either repair 1 of your damaged units, or damage one of your units that has SUSTAIN DAMAGE."
+                }
+            ]
+        }
+    ]
+}

@@ -102,6 +102,15 @@ export const llExclusions = {
   ]
 };
 
+export const drExclusions = {
+  factions: [
+    "The Architects of Ta", "The Ashen Legion", "The Crystellum",
+    "The Dreaming Throne", "The Iron Tide", "The Kha'Zyrr Net-Runners",
+    "The Natau Priesthood", "The Valhavn Star-Reavers", "Mi-Go Yth",
+    "The Deep", "The J'nahfa Bloom", "The Choir of Ossyra",
+  ],
+};
+
 export const isBlueReverieFaction = (name) =>
   brExclusions.factions.includes(name);
 
@@ -115,6 +124,8 @@ export function filterFactionsByExpansions(factions, expansionsEnabled = {}) {
     out = out.filter((f) => !noFirmament.factions.includes(f.name));
   if (!expansionsEnabled.ll)
     out = out.filter((f) => !llExclusions.factions.includes(f.name));
+  if (!expansionsEnabled.dr)
+    out = out.filter((f) => !drExclusions.factions.includes(f.name));
   return out;
 }
 

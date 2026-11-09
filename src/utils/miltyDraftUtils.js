@@ -1,10 +1,11 @@
-import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData";
+import { factionsData, discordantStarsData, lostLegaciesData, deepReachesData } from "../data/processedData";
 import {
   pokExclusions,
   teExclusions,
   noFirmament,
   brExclusions,
   llExclusions,
+  drExclusions,
 } from "./expansionFilters";
 import { calculateOptimalResources } from "./resourceCalculator";
 import { shuffleArray } from "./shuffle";
@@ -18,6 +19,7 @@ const DEFAULT_EXPANSIONS = {
   dsOnly: false,
   br: false,
   ll: false,
+  dr: false,
 };
 
 export function clampInt(val, min, max, fallback = min) {
@@ -36,6 +38,8 @@ function factionAllowedByExpansion(name, expansionsEnabled) {
   if (!expansionsEnabled.br && brExclusions.factions.includes(name))
     return false;
   if (!expansionsEnabled.ll && llExclusions.factions.includes(name))
+    return false;
+  if (!expansionsEnabled.dr && drExclusions.factions.includes(name))
     return false;
   return true;
 }
@@ -70,7 +74,11 @@ export function getFilteredFactionPool({
     expansionsEnabled.ll ? (lostLegaciesData?.factions ?? []) : []
   ).filter((f) => !bannedFactions.has(f.name));
 
-  return [...baseFactions, ...filteredDsFactions].map((f) => ({
+  const drFactions = (
+    expansionsEnabled.dr ? (deepReachesData?.factions ?? []) : []
+  ).filter((f) => !bannedFactions.has(f.name));
+
+  return [...baseFactions, ...filteredDsFactions, ...llFactions, ...drFactions].map((f) => ({
     name: f.name,
     icon: f.icon,
     home_systems: Array.isArray(f.home_systems)

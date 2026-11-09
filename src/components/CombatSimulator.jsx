@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { factionsData, discordantStarsData } from "../data/processedData";
+import { factionsData, discordantStarsData, deepReachesData } from "../data/processedData";
 
 // ─── Unit Definitions ─────────────────────────────────────────────────────────
 
@@ -213,6 +213,7 @@ const BASE_UNIT_BY_KEYWORD = {
 const ALL_FACTIONS = [
   ...(factionsData?.factions ?? []),
   ...(discordantStarsData?.factions ?? []),
+  ...(deepReachesData?.factions ?? []),
 ];
 
 const FACTION_PASSIVE_MODIFIERS = {

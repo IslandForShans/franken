@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "./UnifiedStyles.css";
 import { ICON_MAP } from "../utils/dataProcessor";
-import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData.js";
+import { factionsData, discordantStarsData, lostLegaciesData, deepReachesData } from "../data/processedData.js";
 import {
   isComponentUndraftable,
   getExtraComponents,
@@ -679,6 +679,11 @@ if (undraftableMeta.type === "forced_component") {
                     fullFaction = lostLegaciesData?.factions?.find(
                       (f) => f.name === factionName,
                     );
+                    if (!fullFaction) {
+                      fullFaction = deepReachesData?.factions?.find(
+                        (f) => f.name === component.faction,
+                      );
+                    }
                   }
                   // Use active draft categories if available, otherwise fall back to all
                   const categoriesToShow =

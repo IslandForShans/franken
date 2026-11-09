@@ -755,6 +755,115 @@ export const undraftableComponents = {
             faction: "The Radiant Thurviali",
             triggerComponent: "Neurografting",
             type: "optional_swap"
+        },
+        //DR
+        {
+            name: "Phoenix Rising",
+            faction: "The Ashen Legion",
+            triggerComponent: "Cinderborn II",
+            type: "gain_extra"
+        },
+        {
+            name: "Forged In Fire",
+            faction: "The Ashen Legion",
+            triggerComponent: "Cinderborn II",
+            type: "gain_extra"
+        },
+        {
+            name: "Pieces of a Whole",
+            faction: "The Crystellum",
+            triggerComponent: "Fragmentation",
+            type: "gain_extra"
+        },
+        {
+            name: "Fragmentation",
+            faction: "The Crystellum",
+            triggerComponent: "The Fractal",
+            type: "gain_and_draftable"
+        },
+        {
+            name: "Dream Nexus",
+            faction: "The Dreaming Throne",
+            triggerComponent: "Nyar'zathul, the Crawling Dream",
+            type: "gain_extra"
+        },
+        {
+            name: "Dream Nexus",
+            faction: "The Dreaming Throne",
+            triggerComponent: "Liturgy II",
+            type: "gain_extra"
+        },
+        {
+            name: "Incomprehensible Form",
+            faction: "The Dreaming Throne",
+            triggerComponent: "Nyar'zathul, the Crawling Dream",
+            type: "gain_extra"
+        },
+        {
+            name: "Incomprehensible Form",
+            faction: "The Dreaming Throne",
+            triggerComponent: "Liturgy II",
+            type: "gain_extra"
+        },
+        {
+            name: "The Waking",
+            faction: "The Dreaming Throne",
+            triggerComponent: "Liturgy II",
+            type: "gain_extra"
+        },
+        {
+            name: "Modifications",
+            faction: "The Iron Tide",
+            triggerComponent: "Salvage Collectors",
+            type: "gain_extra"
+        },
+        {
+            name: "Neural Instruments",
+            faction: "The Kha'Zyrr Net-Runners",
+            triggerComponent: "Proxy Network",
+            type: "gain_extra"
+        },
+        {
+            name: "Death's Refrain",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Tomb Resonance",
+            type: "gain_extra"
+        },
+        {
+            name: "Death's Refrain",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Oblivion's Echo",
+            type: "gain_extra"
+        },
+        {
+            name: "Death's Refrain",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Elegy",
+            type: "gain_extra"
+        },
+        {
+            name: "Death's Refrain",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Sepulchre",
+            type: "gain_extra"
+        },
+        {
+            name: "Morbid Harmony",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Tomb Resonance",
+            type: "gain_extra"
+        },
+        {
+            name: "Morbid Harmony",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Oblivion's Echo",
+            type: "gain_extra"
+        },
+        {
+            name: "Morbid Harmony",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Elegy",
+            type: "gain_extra"
         }
     ],
 
@@ -829,6 +938,19 @@ export const undraftableComponents = {
             reason: "Unleashed counterpart",
             type: "garbage",
         },
+        //DR
+        {
+            name: "Mi-Go Home System",
+            faction: "Mi-Go Yth",
+            triggerComponent: "Pseudomorphism",
+            type: "draftable_and_swap"
+        },
+        {
+            name: "Deep Home System",
+            faction: "The Deep",
+            reason: "Just Plain Garbage",
+            type: "garbage"
+        }
     ],
 
     // Promissory notes
@@ -1113,6 +1235,19 @@ export const undraftableComponents = {
             faction: "The Stoneborn Stratum",
             reason: "Unleashed counterpart",
             type: "garbage"
+        },
+        //DR
+        {
+            name: "Atomization",
+            faction: "The Crystellum",
+            triggerComponent: "Fragmentation",
+            type: "optional_swap"
+        },
+        {
+            name: "Non-Euclidean Goemetries",
+            faction: "The Dreaming Throne",
+            triggerComponent: "Liturgy II",
+            type: "optiona_swap"
         }
     ],
 
@@ -1241,6 +1376,13 @@ export const undraftableComponents = {
             faction: "The Stoneborn Stratum",
             reason: "Unleashed counterpart",
             type: "garbage"
+        },
+        //DR
+        {
+            name: "Shardwright Veyla - Fleet Control",
+            faction: "The Crystellum",
+            triggerComponent: "Fragmentation",
+            type: "optional_swap"
         }
     ],
 
@@ -1398,6 +1540,31 @@ export const undraftableComponents = {
             faction: "The Stoneborn Stratum",
             reason: "Unleashed counterpart",
             type: "garbage"
+        },
+        //DR
+        {
+            name: "Captain Vakros - Master of Logistics",
+            faction: "The Iron Tide",
+            triggerComponent: "Salvage Collectors",
+            type: "optional_swap"
+        },
+        {
+            name: "Keyn of the Hollow - The Watcher in Silence",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Tomb Resonance",
+            type: "optional_swap"
+        },
+        {
+            name: "Keyn of the Hollow - The Watcher in Silence",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Oblivion's Echo",
+            type: "optional_swap"
+        },
+        {
+            name: "Keyn of the Hollow - The Watcher in Silence",
+            faction: "The Choir of Ossyra",
+            triggerComponent: "Elegy",
+            type: "optional_swap"
         }
     ],
 
@@ -1537,6 +1704,31 @@ export const undraftableComponents = {
             faction: "The Stoneborn Stratum",
             reason: "Unleashed counterpart",
             type: "garbage"
+        },
+        //DR
+        {
+            name: "Facet - Hive Mind Nexus",
+            faction: "The Crystellum",
+            triggerComponent: "Fragmentation",
+            type: "optional_swap"
+        },
+        {
+            name: "Shuulgoroth - The Nightmare Made Flesh",
+            faction: "The Dreaming Throne",
+            triggerComponent: "Liturgy II",
+            type: "optional_swap"
+        },
+        {
+            name: "Ky Lir-et - The Technocrat",
+            faction: "The Kha'Zyrr Net-Runners",
+            triggerComponent: "Proxy Network",
+            type: "optional_swap"
+        },
+        {
+            name: "Angdama - The Deep",
+            faction: "The Deep",
+            triggerComponent: "Origin Unknown",
+            type: "optional_swap"
         }
     ],
 
@@ -1683,6 +1875,19 @@ export const undraftableComponents = {
             faction: "The Stoneborn Stratum",
             reason: "Unleashed counterpart",
             type: "garbage"
+        },
+        //DR
+        {
+            name: "Refractum",
+            faction: "The Crystellum",
+            triggerComponent: "Fragmentation",
+            type: "optional_swap"
+        },
+        {
+            name: "The Recurring",
+            faction: "The Dreaming Throne",
+            triggerComponent: "Liturgy II",
+            type: "optional_swap"
         }
     ],
 
@@ -1744,6 +1949,13 @@ export const undraftableComponents = {
             triggerComponent: "The Lady & The Lord",
             type: "gain_extra",
         },
+        //DR
+        {
+            name: "Mother-of-Millions",
+            faction: "The J'nahfa Bloom",
+            triggerComponent: "Strain Dispersal",
+            type: "optional_swap"
+        }
     ],
 
     // Base units (completely undraftable)
@@ -1882,6 +2094,8 @@ export const undraftableComponents = {
         { name: "Stalactium I Dormant", faction: "The Stoneborn Stratum", type: "base_unit" },
         { name: "Cytoplasmic Transports I", faction: "The Formless Morpha", type: "base_unit" },
         { name: "Fuel Cell I", faction: "The Scrapyard Pack", type: "base_unit" },
+        //DR
+        { name: "Liturgy I", faction: "The Dreaming Throne", type: "base_unit"}
     ],
 
     // Starting techs
@@ -1898,6 +2112,12 @@ export const undraftableComponents = {
             reason: "Just Plain Garbage",
             type: "garbage",
         },
+        {
+            name: "Mi-Go Starting Tech",
+            faction: "Mi-Go Yth",
+            reason: "Just Plain Garbage",
+            type: "garbage"
+        }
     ],
 
     //Starting Fleets
@@ -2084,6 +2304,25 @@ export const undraftableComponents = {
             faction: "The Stoneborn Stratum",
             reason: "Unleashed counterpart",
             type: "garbage"
+        },
+        //DR
+        {
+            name: "Will of the Many",
+            faction: "The Crystellum",
+            triggerComponent: "Fragmentation",
+            type: "optional_swap"
+        },
+        {
+            name: "Dream-Space Convergence",
+            faction: "The Dreaming Throne",
+            triggerComponent: "Liturgy II",
+            type: "optional_swap"
+        },
+        {
+            name: "Emotet",
+            faction: "The Kha'Zyr Net-Runners",
+            triggerComponent: "Proxy Network",
+            type: "optional_swap"
         }
     ],
 };
@@ -2098,11 +2337,18 @@ export const isComponentUndraftable = (componentName, faction = null) => {
         allMatches.push(...matches);
     }
 
-    if (allMatches.length > 0) {
-        const [found] = allMatches;
+    // `gain_and_draftable` components are granted by a trigger but remain
+    // available in the normal draft pool, so they must not be treated as
+    // undraftable by consumers of this helper.
+    const undraftableMatches = allMatches.filter(
+        (match) => match.type !== "gain_and_draftable",
+    );
+
+    if (undraftableMatches.length > 0) {
+        const [found] = undraftableMatches;
         const triggerComponents = [
             ...new Set(
-                allMatches
+                undraftableMatches
                     .map((match) => match.triggerComponent)
                     .filter(Boolean),
             ),
@@ -2176,7 +2422,11 @@ export const getExtraComponents = (componentName, faction) => {
             (comp) =>
                 comp.triggerComponent === componentName &&
                 comp.faction === faction &&
-                (comp.type === "gain_extra" || comp.type === "gain_when_draft"),
+                [
+                    "gain_extra",
+                    "gain_when_draft",
+                    "gain_and_draftable",
+                ].includes(comp.type),
         );
         results.push(...extras.map((extra) => ({ ...extra, category })));
     }

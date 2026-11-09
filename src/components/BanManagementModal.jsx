@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData";
+import { factionsData, discordantStarsData, lostLegaciesData, deepReachesData } from "../data/processedData";
 import {
   filterFactionsByExpansions,
   filterTilesByExpansions,
@@ -149,6 +149,7 @@ export default function BanManagementModal({
     us: false,
     firmobs: false,
     ll: false,
+    dr: false,
   },
 }) {
   const [componentSearchTerm, setComponentSearchTerm] = useState("");
@@ -166,6 +167,9 @@ export default function BanManagementModal({
     }
     if (expansionsEnabled.ll && lostLegaciesData?.factions) {
       factions = [...factions, ...lostLegaciesData.factions];
+    }
+    if (expansionsEnabled.dr && deepReachesData?.factions) {
+      factions = [...factions, ...deepReachesData.factions];
     }
 
     return factions;

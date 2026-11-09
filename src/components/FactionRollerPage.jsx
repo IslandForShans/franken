@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from "react";
-import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData";
+import { factionsData, discordantStarsData, lostLegaciesData, deepReachesData } from "../data/processedData";
 import {
   pokExclusions,
   teExclusions,
   brExclusions,
   llExclusions,
+  drExclusions,
 } from "../utils/expansionFilters";
 import {
   isComponentUndraftable,
@@ -97,6 +98,7 @@ const resolveSet = (factionName, source) => {
   if (teExclusions.factions.includes(factionName)) return "te";
   if (pokExclusions.factions.includes(factionName)) return "pok";
   if (llExclusions.factions.includes(factionName)) return "ll";
+  if (drExclusions.factions.includes(factionName)) return "dr";
   return "base";
 };
 
@@ -329,6 +331,8 @@ const ExpansionToggles = ({ enabledSets, onToggle }) => (
         ["ds", "DS"],
         ["te", "TE"],
         ["br", "BR"],
+        ["ll", "LL"],
+        ["dr", "DR"],
       ].map(([key, label]) => (
         <label key={key} className="inline-flex items-center gap-2 text-sm font-semibold">
           <input
@@ -397,6 +401,8 @@ export default function FactionRollerPage({ onNavigate }) {
     ds: true,
     te: true,
     br: true,
+    ll: false,
+    dr: false,
   });
 
   const [mode2Selections, setMode2Selections] = useState(
@@ -480,7 +486,12 @@ export default function FactionRollerPage({ onNavigate }) {
       source: "ll",
       setTag: resolveSet(faction.name, "ll"),
     }));
-    return [...base, ...ds, ...ll];
+    const dr = deepReachesData.factions.map((faction) => ({
+      ...faction,
+      source: "dr",
+      setTag: "dr",
+    }));
+    return [...base, ...ds, ...ll, ...dr];
   }, []);
 
   const filteredFactions = useMemo(
@@ -491,6 +502,7 @@ export default function FactionRollerPage({ onNavigate }) {
         if (faction.setTag === "te" && !enabledSets.te) return false;
         if (faction.setTag === "br" && !enabledSets.br) return false;
         if (faction.setTag === "ll" && !enabledSets.ll) return false;
+        if (faction.setTag === "dr" && !enabledSets.dr) return false;
         return true;
       }),
     [allFactions, enabledSets],

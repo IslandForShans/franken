@@ -11,7 +11,7 @@ import DraftHistory from "./DraftHistory.jsx";
 import DraftSettingsPanel from "./DraftSettingsPanel.jsx";
 import DraftSummary from "./DraftSummary.jsx";
 import { shuffleArray } from "../utils/shuffle.js";
-import { factionsData, discordantStarsData, lostLegaciesData } from "../data/processedData.js";
+import { factionsData, discordantStarsData, lostLegaciesData, deepReachesData } from "../data/processedData.js";
 import {
   pokExclusions,
   teExclusions,
@@ -239,6 +239,7 @@ export default function DraftSimulator({
     dsOnly: false,
     br: false,
     ll: false,
+    dr: false,
   });
 
   const [frankenDrazSettings, setFrankenDrazSettings] = useState({
@@ -389,6 +390,7 @@ export default function DraftSimulator({
         te: expansionsEnabled.te,
         br: expansionsEnabled.br,
         ll: expansionsEnabled.ll,
+        dr: expansionsEnabled.dr,
       });
 
       // If DS Only mode is enabled, skip base game FACTIONS but still include all tiles
@@ -480,6 +482,16 @@ export default function DraftSimulator({
               })
           : [];
 
+      const drComponents =
+        expansionsEnabled.dr && deepReachesData?.factions
+          ? deepReachesData.factions
+              .filter((f) => !bannedFactions.has(f.name))
+              .flatMap((f) => (f[category] || [])
+                .filter((comp) => !bannedComponents.has(comp.name))
+                .filter((comp) => !isComponentUndraftable(comp.name, f.name))
+                .map((item) => ({ ...item, faction: f.name, factionIcon: f.icon, icon: f.icon })))
+          : [];
+
       console.log(`DS components: ${dsComponents.length}`);
       console.log(`LL components: ${llComponents.length}`);
 
@@ -524,6 +536,8 @@ export default function DraftSimulator({
       const totalComponents = [
         ...factionComponents,
         ...dsComponents,
+        ...llComponents,
+        ...drComponents,
         ...tiles,
         ...usTiles,
       ];
@@ -668,11 +682,16 @@ export default function DraftSimulator({
         allFactions = [...allFactions, ...dsFactions];
       }
 
-      if (expansionsEnabled.ll && lsotLegaciesData?.factions) {
-        const dsFactions = lostLegaciesData.factions
+      if (expansionsEnabled.ll && lostLegaciesData?.factions) {
+        const llFactions = lostLegaciesData.factions
           .filter((f) => !bannedFactions.has(f.name))
           .map((f) => ({ name: f.name, icon: f.icon }));
         allFactions = [...allFactions, ...llFactions];
+      }
+      if (expansionsEnabled.dr && deepReachesData?.factions) {
+        allFactions = [...allFactions, ...deepReachesData.factions
+          .filter((f) => !bannedFactions.has(f.name))
+          .map((f) => ({ name: f.name, icon: f.icon }))];
       }
 
       // Get blue and red tiles
@@ -1608,10 +1627,16 @@ export default function DraftSimulator({
     }
 
     if (expansionsEnabled.ll && lostLegaciesData?.factions) {
-      const ds = lostLegaciesData.factions
+      const ll = lostLegaciesData.factions
         .filter(f => !bannedFactions.has(f.name))
         .map(f => ({ name: f.name, icon: f.icon }));
       all = [...all, ...ll];
+    }
+    if (expansionsEnabled.dr && deepReachesData?.factions) {
+      const dr = deepReachesData.factions
+        .filter(f => !bannedFactions.has(f.name))
+        .map(f => ({ name: f.name, icon: f.icon }));
+      all = [...all, ...dr];
     }
 
     const drafted = new Set(
@@ -2996,6 +3021,18 @@ setDraftPhase("redraw");
                           <div className="text-xs text-gray-200 ml-6">
                             Adds: 13 New Factions
                           </div>
+                        </div>
+                        <div>
+                          <label className="flex items-center cursor-pointer mb-1">
+                            <input
+                              type="checkbox"
+                              checked={expansionsEnabled.dr}
+                              onChange={(e) => setExpansionsEnabled((prev) => ({ ...prev, dr: e.target.checked }))}
+                              className="mr-2"
+                            />
+                            <span className="font-medium text-white text-sm">Deep Reaches (DR)</span>
+                          </label>
+                          <div className="text-xs text-gray-200 ml-6">Adds: 12 new factions</div>
                         </div>
                       </div>
                     </div>

@@ -153,6 +153,19 @@ export const ICON_MAP = {
     "The Stoneborn Stratum": `${ICON_PATH}ll/stoneborn.png`,
     "The Formless Morpha": `${ICON_PATH}ll/morpha.png`,
     "The Radiant Thurviali": `${ICON_PATH}ll/thurviali.png`,
+    //DR
+    "The Architects of Ta": `${ICON_PATH}dr/ta.png`,
+    "The Ashen Legion": `${ICON_PATH}dr/ashen.png`,
+    "The Crystellum": `${ICON_PATH}dr/crystellum.png`,
+    "The Dreaming Throne": `${ICON_PATH}dr/dream.png`,
+    "The Iron Tide": `${ICON_PATH}dr/iron.png`,
+    "The Kha'Zyrr Net-Runners": `${ICON_PATH}dr/netrunners.png`,
+    "The Natau Priesthood": `${ICON_PATH}dr/natau.png`,
+    "The Valhavn Star-Reavers": `${ICON_PATH}dr/valhavn.png`,
+    "Mi-Go Yth": `${ICON_PATH}dr/migo.png`,
+    "The Deep": `${ICON_PATH}dr/deep.png`,
+    "The J'nahfa Bloom": `${ICON_PATH}dr/bloom.png`,
+    "The Choir of Ossyra": `${ICON_PATH}dr/choir.png`,
   },
 };
 

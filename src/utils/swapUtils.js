@@ -2,6 +2,7 @@ import {
   factionsData,
   discordantStarsData,
   lostLegaciesData,
+  deepReachesData,
 } from "../data/processedData";
 
 const getFactionCategoryData = (faction, targetCategory) => {
@@ -57,6 +58,12 @@ export const findFullComponentData = (
     ) ||
     findFactionComponent(
       lostLegaciesData?.factions,
+      componentName,
+      factionName,
+      targetCategory,
+    ) ||
+    findFactionComponent(
+      deepReachesData?.factions,
       componentName,
       factionName,
       targetCategory,
