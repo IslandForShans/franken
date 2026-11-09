@@ -73,10 +73,11 @@ export default function Sidebar({
   isOpen = true,
   collapseAllTrigger = null,
   showUndraftableLocked = false,
+  showTierBadgesByDefault = true,
 }) {
   const [expandedCategory, setExpandedCategory] = useState(selectedCategory);
   const [showAllComponents, setShowAllComponents] = useState(false);
-  const [showTierBadges, setShowTierBadges] = useState(true);
+  const [showTierBadges, setShowTierBadges] = useState(showTierBadgesByDefault);
   const [collapsedCategories, setCollapsedCategories] = useState(() => {
     if (defaultCollapsed) {
       return new Set(categories);

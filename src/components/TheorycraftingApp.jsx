@@ -137,7 +137,7 @@ export default function TheorycraftingApp({ onNavigate }) {
   const [tierFilter, setTierFilter] = useState(new Set());
   const [tierSort, setTierSort] = useState(false);
   const [showNonDraftableComponents, setShowNonDraftableComponents] =
-    useState(true);
+    useState(false);
   const headerRef = useRef(null);
   const importFileRef = useRef(null);
   const [flexiFrankenMode, setFlexiFrankenMode] = useState(false);
@@ -1497,7 +1497,7 @@ const loadState = (e) => {
                       setCategoryFilter("");
                       setTierFilter(new Set());
                       setTierSort(false);
-                      setShowNonDraftableComponents(true);
+                      setShowNonDraftableComponents(false);
                     }}
                     className="w-full text-xs text-gray-400 hover:text-white transition-colors"
                   >
@@ -1532,7 +1532,8 @@ const loadState = (e) => {
               defaultCollapsed={true}
               isSearching={globalSearchTerm.trim().length > 0}
               noWrapper={true}
-              showUndraftableLocked={true}
+              showUndraftableLocked={showNonDraftableComponents}
+              showTierBadgesByDefault={false}
             />
           </div>
         )}
