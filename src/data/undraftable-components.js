@@ -756,6 +756,24 @@ export const undraftableComponents = {
             triggerComponent: "Neurografting",
             type: "optional_swap"
         },
+        {
+            name: "Fluid Transfer",
+            faction: "The Formless Morpha",
+            triggerComponent: "Hydromorphic",
+            type: "gain_extra"
+        },
+        {
+            name: "Fluid Transfer",
+            faction: "The Formless Morpha",
+            triggerComponent: "Synaptic Relays",
+            type: "gain_extra"
+        },
+        {
+            name: "Fluid Transfer",
+            faction: "The Formless Morpha",
+            triggerComponent: "Morphic Symbiosis",
+            type: "gain_extra"
+        },
         //DR
         {
             name: "Phoenix Rising",
